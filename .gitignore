@@ -1,6 +1,7 @@
 # Ignorar node_modules de ambos subproyectos
 pj-client/node_modules/
 server/node_modules/
+server/build/
 
 # Build outputs
 pj-client/dist/
