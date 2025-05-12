@@ -14,13 +14,29 @@ class PersonaController{
         }
     }
 
-    public async ObtenerPersona(req: Request, res: Response): Promise<any> {
+    public async ObtenerPersonaById(req: Request, res: Response): Promise<any> {
         try {
             const { id } = req.params;
             const consulta = 'select * from archivo.t_persona where id_persona = $1';
             const persona = await db.query(consulta, [id]);
             if (persona && persona['rows'].length > 0) {
                 res.json(persona['rows']);
+            } else {
+                res.status(404).json({ text: 'La persona no existe' });
+            }
+        } catch (error) {
+            console.error('Error al obtener persona:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    }
+
+    public async ObtenerPersonaByDNI(req: Request, res: Response): Promise<any> {
+        try {
+            const { dni } = req.params;
+            const consulta = 'select * from archivo.t_persona where dni = $1';
+            const persona = await db.query(consulta, [dni]);
+            if (persona && persona['rows'].length > 0) {
+                res.status(200).json(persona['rows']);
             } else {
                 res.status(404).json({ text: 'La persona no existe' });
             }

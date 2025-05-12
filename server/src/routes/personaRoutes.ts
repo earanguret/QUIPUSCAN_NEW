@@ -13,7 +13,8 @@ class PersonaRoutes{
     }
     config():void{
         this.router.get('/api/persona',personaController.listarPersonas)
-        this.router.get('/api/persona/:id',personaController.ObtenerPersona)
+        this.router.get('/api/persona/:id',personaController.ObtenerPersonaById)
+        this.router.get('/api/persona/dni/:dni',personaController.ObtenerPersonaByDNI)
         this.router.post('/api/persona',personaController.CrearPersona)
         this.router.put('/api/persona/:id',personaController.ModificarPersona) 
     }
