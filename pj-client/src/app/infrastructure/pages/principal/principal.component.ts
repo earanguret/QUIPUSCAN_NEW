@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavegatorComponent } from '../../shared/navegator/navegator.component';
+import { NavegatorComponent } from '../../shared/components/navegator/navegator.component';
 import { CredencialesService } from '../../services/local/credenciales.service';
 
 @Component({
@@ -17,31 +17,31 @@ export class PrincipalComponent implements OnInit {
     console.log();
   }
 
-  inventario_digitalizacion() {
-    this.router.navigate(['principal/inventario']);
+  recepcion_serie_documental() {
+    this.router.navigate(['principal/recepcion/list-serie-documental']);
   }
   preparacion_documentos() {
-    this.router.navigate(['principal/preparaciondocumentos']);
+    this.router.navigate(['principal/preparacion/list-serie-documental']);
   }
   digitalizacion() {
-    this.router.navigate(['principal/digitalizacion']);
-  }
-  controlCalidad() {
-    this.router.navigate(['principal/controlcalidad'])
+    this.router.navigate(['principal/digitalizacion/list-serie-documental']);
   }
   indizador() {
-    this.router.navigate(['principal/indizador'])
+    this.router.navigate(['principal/indizador/list-serie-documental'])
   }
-  usuarios() {
-    this.router.navigate(['/principal/list-usuario']);
+  controlCalidad() {
+    this.router.navigate(['principal/controlcalidad/list-serie-documental'])
   }
   fedatario() {
-    this.router.navigate(['/principal/fedatario'])
+    this.router.navigate(['principal/fedatario/list-serie-documental'])
   }
   boveda() {
-    this.router.navigate(['/principal/boveda'])
+    this.router.navigate(['principal/boveda/list-serie-documental'])
   }
   reporte() {
     this.router.navigate(['/principal/reportes'])
+  }
+  usuarios() {
+    this.router.navigate(['/principal/list-usuario']);
   }
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NavegatorComponent } from '../../../shared/navegator/navegator.component';
-import { SubnavegatorComponent } from '../../../shared/subnavegator/subnavegator.component';
+import { NavegatorComponent } from '../../../shared/components/navegator/navegator.component';
+import { SubnavegatorComponent } from '../../../shared/components/subnavegator/subnavegator.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { UsuarioResponse } from '../../../../domain/dto/UsuarioResponse.dto';
 import { UsuarioService } from '../../../services/remoto/usuario/usuario.service';

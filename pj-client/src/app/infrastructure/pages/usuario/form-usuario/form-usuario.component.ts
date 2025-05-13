@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NavegatorComponent } from '../../../shared/navegator/navegator.component';
-import { SubnavegatorComponent } from '../../../shared/subnavegator/subnavegator.component';
+import { NavegatorComponent } from '../../../shared/components/navegator/navegator.component';
+import { SubnavegatorComponent } from '../../../shared/components/subnavegator/subnavegator.component';
 
 @Component({
   selector: 'app-form-usuario',

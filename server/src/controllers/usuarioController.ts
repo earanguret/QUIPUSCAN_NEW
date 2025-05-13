@@ -76,7 +76,7 @@ class UsuarioController {
     public async CrearUsuario(req: Request, res: Response) {
         try {
             //el campo del password siempre tiene que estar lleno, la validacion se debe hacer desde el fronend
-            const { usuario, id_perfil, password, id_persona, estado, user_app } = req.body;
+            const { username, perfil, password, id_persona, estado, user_app } = req.body;
             const passwordcifrado = await encriptar(password);
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -88,12 +88,12 @@ class UsuarioController {
                             c_aud_uidred, 
                             c_aud_pc, 
                             c_aud_ip, 
-                            c_aud_mac
+                            c_aud_mac,
 
                             id_persona, 
-                            usuario, 
+                            username, 
                             password, 
-                            id_perfil, 
+                            perfil, 
                             estado)
                     VALUES (CURRENT_TIMESTAMP, 'I', '${key.user}',$1, $2, $3, $4, $5, $6 , $7, $8, $9);
                 `;
@@ -103,9 +103,9 @@ class UsuarioController {
                 ipAddressClient,
                 null,
                 id_persona,
-                usuario,
+                username,
                 passwordcifrado,
-                id_perfil,
+                perfil,
                 estado,
             ];
 

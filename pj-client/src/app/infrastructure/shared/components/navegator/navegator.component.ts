@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { UsuarioModel } from '../../../domain/models/Usuario.model';
-import { CredencialesService } from '../../services/local/credenciales.service';
+import { UsuarioModel } from '../../../../domain/models/Usuario.model';
+import { CredencialesService } from '../../../services/local/credenciales.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { RouterModule } from '@angular/router';

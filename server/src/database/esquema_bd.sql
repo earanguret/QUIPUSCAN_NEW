@@ -335,3 +335,67 @@ CREATE TABLE maestro.t_juzgado (
     id_juzgado serial PRIMARY KEY,
     juzgado varchar
 );
+
+--------------------------------------------------------
+--  Insertar datos de ejemplo
+--------------------------------------------------------
+INSERT INTO archivo.t_persona(
+    f_aud, 
+    b_aud, 
+    c_aud_uid, 
+    c_aud_uidred, 
+    c_aud_pc, 
+    c_aud_ip, 
+    c_aud_mac, 
+    create_at,  
+    nombre, 
+    ap_paterno, 
+    ap_materno, 
+    dni
+)
+VALUES (
+    CURRENT_TIMESTAMP,   -- f_aud
+    'I',                 -- b_aud: operación Insert
+    NULL,                -- c_aud_uid: usuario responsable
+    NULL,                 -- c_aud_uidred
+    NULL,                -- c_aud_pc
+    NULL,                -- c_aud_ip
+    NULL,                -- c_aud_mac
+    CURRENT_TIMESTAMP,   -- create_at
+    'ERNESTO FRANCISCO', -- nombre
+    'ARANGURE',          -- ap_paterno
+    'TORRES',            -- ap_materno
+    '74557359'           -- dni
+);
+
+--insertar datos de usuario ADMIN, con password 123456
+INSERT INTO archivo.t_usuario(
+	f_aud, 
+	b_aud, 
+	c_aud_uid, 
+	c_aud_uidred, 
+	c_aud_pc, 
+	c_aud_ip, 
+	c_aud_mac, 
+	create_at, 
+	id_persona, 
+	perfil, 
+	username, 
+	password, 
+	estado, 
+	intentos_login)
+	VALUES (
+	CURRENT_TIMESTAMP, 
+	'I', 
+	null, 
+	null, 
+	null, 
+	null, 
+	null, 
+	CURRENT_TIMESTAMP, 
+	1, 
+	'ADMINISTRADOR', 
+	'ADMIN', 
+	'$2b$10$Okrv.qgAZhFJmgOBnOg0be6ZkEDwHsw4nIgw47OmEDJvm9PBZZwAq', 
+	true, 
+	null);
