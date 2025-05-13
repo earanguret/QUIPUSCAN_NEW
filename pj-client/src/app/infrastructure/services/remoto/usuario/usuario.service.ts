@@ -13,11 +13,11 @@ export class UsuarioService {
   api_uri_usuario=`${environment.urlApi}/usuario`;
   constructor(private http: HttpClient) { }
 
-  listarUsuarios():Observable<UsuarioResponse[]>{
+  ListarUsuarios():Observable<UsuarioResponse[]>{
     return this.http.get<UsuarioResponse[]>(this.api_uri_usuario)
   }
 
-  obtenerUsuariosDetalleById(id_usuario:number):Observable<UsuarioResponse>{
+  ObtenerUsuariosDetalleById(id_usuario:number):Observable<UsuarioResponse>{
     return this.http.get<UsuarioResponse>(this.api_uri_usuario+`/${id_usuario}`)
   }
 

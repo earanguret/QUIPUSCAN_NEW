@@ -3,7 +3,6 @@ import cors from 'cors';
 import morgan from 'morgan'
 import personaRoutes from './routes/personaRoutes';
 import usuarioRoutes from './routes/usuarioRoutes';
-import perfilRoutes from './routes/perfilRoutes';
 
 
 class Server{
@@ -25,7 +24,6 @@ class Server{
     ruotes():void{
         this.app.use('/',personaRoutes);
         this.app.use('/',usuarioRoutes);
-        this.app.use('/',perfilRoutes);
         
     }
     start(): void {

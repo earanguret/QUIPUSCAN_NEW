@@ -1,0 +1,60 @@
+<div class="panel">
+    <app-navegator></app-navegator>
+    <app-subnavegator></app-subnavegator>
+    <div class="container">
+        <!-- presentacion -->
+        <div class="encabezado_pages">
+            <i class="bi bi-card-list icon-custom-encabezado "></i>
+            <p class="titulo_menu">Lista de usuarios</p>
+        </div>
+        <!-- agregar y busqueda -->
+
+        <div class="card rounded shadow border-2 ">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center ">
+                <button type="button" class="btn btn-success"  title="agregar usuario" (click)="CrearUsuario()">+add</button>
+                <input type="text" class="form-control mx-4 " name="buscar" placeholder="BUSCAR POR USUARIO / PERFIL / ESTADO" (input)="buscarEnObjeto($event)">
+            </div>
+            <div class="card-body px-5 bg-white rounded">
+                <div class="table-responsive">
+                    <table class="table text-center  table-hover" id="excel-table">
+                        <thead class="text-white table-success">
+                            <tr>
+                                <th scope="col">Nro</th>
+                                <th scope="col">DNI/CE</th>
+                                <th scope="col">NOMBRE Y APELLIDOS</th>
+                                <th scope="col">USUARIO</th>
+                                <th scope="col">CORREO</th>
+                                <th scope="col">ROL</th>
+                                <th scope="col">ESTADO</th>
+
+                            </tr>
+                        </thead>
+                        <!-- <tbody>
+                            <tr class="hand_cursor" title="click para modificar usuario"
+                                *ngFor="let usuario of listaUsuarios  | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"
+                                (click)="modificarUsuario(usuario.id_usuario)"
+                                [ngStyle]="{ opacity: usuario.estado === 'INACTIVO' ? '0.50' : '1' }">
+
+                                <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
+                                <td>{{usuario.documento}}</td>
+                                <td>{{usuario.nombres+ ' '+usuario.ap_paterno+' '+usuario.ap_materno}}</td>
+                                <td class="text-secondary "> <strong>{{usuario.nombre_usuario}}</strong> </td>
+                                <td>{{usuario.correo}}</td>
+                                <td>{{usuario.rol}}</td>
+                                <td [ngStyle]="{ color: usuario.estado === 'INACTIVO' ? 'grey' : 'green' }">
+                                    {{usuario.estado}}</td>
+
+                            </tr>
+                        </tbody> -->
+
+                    </table>
+
+                </div>
+                <div class="d-flex justify-content-end">
+                    <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

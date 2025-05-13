@@ -3,11 +3,13 @@ import { UsuarioModel } from '../../../domain/models/Usuario.model';
 import { CredencialesService } from '../../services/local/credenciales.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-navegator',
-  imports: [],
+  imports: [RouterModule, CommonModule],
   templateUrl: './navegator.component.html',
   styleUrl: './navegator.component.css'
 })

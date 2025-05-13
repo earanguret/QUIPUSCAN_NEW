@@ -28,13 +28,9 @@
 
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <label class="user_text mx-md-3 mt-2"> {{credenciales.nombre_usuario}} </label>
+                    <label class="user_text mx-md-3 mt-2"> {{credenciales.usuario}} </label>
                 </li>
                 <li class="nav-item">
-
-                    <!-- <a class="nav-link" routerLink="/principal/usuarioform/{{credenciales.id_usuario}}">
-                        <i class="bi bi-person-fill-gear icon-custom mx-md-2" title="modificar usuario"></i>
-                    </a> -->
                     <a class="nav-link" routerLink="/principal/mod-usuario/{{credenciales.id_usuario}}">
                         <i class="bi bi-person-fill-gear icon-custom " title="información del usuario"></i>
                     </a>
@@ -50,12 +46,7 @@
                         <i style="color: rgb(211, 180, 7);" class="bi  bi-info-circle icon-custom mx-2" title="infromacion del sistema"></i>
                     </a>
                 </li>
-                <li *ngIf="credenciales.rol=='ADMINISTRADOR'" class="nav-item">
-                    <!-- principal/backup -->
-                    <a class="nav-link" routerLink="/principal/backup">
-                        <i  class="bi bi-database-fill icon-custom mx-2" title="infromacion del sistema" title="crear copia de seguridad"></i>
-                    </a>
-                </li>
+                
             </ul>
 
         </div>

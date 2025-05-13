@@ -61,6 +61,6 @@ export class LoginComponent implements OnInit {
   }
 
   async login() {
-    
+    this.router.navigate(['/principal']);
   }
 }

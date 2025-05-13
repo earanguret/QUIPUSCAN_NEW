@@ -1,347 +1,337 @@
+-- Crear esquemas
 CREATE SCHEMA IF NOT EXISTS archivo;
-SET search_path TO archivo;
+CREATE SCHEMA IF NOT EXISTS maestro;
 
--- Tabla t_perfil
-CREATE TABLE archivo.t_perfil (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_perfil SERIAL PRIMARY KEY,
-    perfil VARCHAR UNIQUE,
-    mdl_recepcion BOOLEAN,
-    mdl_preparacion BOOLEAN,
-    mdl_digitalizacion BOOLEAN,
-    mdl_indizacion BOOLEAN,
-    mdl_control_calidad BOOLEAN,
-    mdl_fedatar BOOLEAN,
-    mdl_boveda BOOLEAN,
-    mdl_reportes BOOLEAN,
-    mdl_usuarios BOOLEAN,
-    mdl_configuracion BOOLEAN
-);
+-- ====================
+-- TABLAS DEL ESQUEMA: archivo
+-- ====================
 
--- Tabla t_persona
+-- Tabla: archivo.t_persona
 CREATE TABLE archivo.t_persona (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_persona SERIAL PRIMARY KEY,
-    nombre VARCHAR,
-    ap_paterno VARCHAR,
-    ap_materno VARCHAR,
-    dni VARCHAR UNIQUE
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_persona serial PRIMARY KEY,
+    nombre varchar,
+    ap_paterno varchar,
+    ap_materno varchar,
+    dni varchar UNIQUE
 );
 
--- Tabla t_usuario
+-- Tabla: archivo.t_usuario
 CREATE TABLE archivo.t_usuario (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP,
-    id_usuario SERIAL PRIMARY KEY,
-    id_persona INTEGER REFERENCES archivo.t_persona(id_persona),
-    id_perfil INTEGER REFERENCES archivo.t_perfil(id_perfil),
-    username VARCHAR UNIQUE,
-    password VARCHAR,
-    estado BOOLEAN,
-    intentos_login INTEGER
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_usuario serial PRIMARY KEY,
+    id_persona integer REFERENCES archivo.t_persona(id_persona),
+    perfil varchar,
+    username varchar UNIQUE,
+    password varchar,
+    estado boolean,
+    intentos_login integer
 );
 
--- Tabla t_inventario
+-- Tabla: archivo.t_inventario
 CREATE TABLE archivo.t_inventario (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP,
-    id_inventario SERIAL PRIMARY KEY,
-    id_responsable INTEGER REFERENCES archivo.t_usuario(id_usuario),
-    anio INTEGER,
-    cantidad INTEGER,
-    tipo_doc VARCHAR,
-    serie_doc VARCHAR,
-    especialidad VARCHAR,
-    codigo VARCHAR UNIQUE,
-    sede VARCHAR
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_inventario serial PRIMARY KEY,
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    anio integer,
+    cantidad integer,
+    tipo_doc varchar,
+    serie_doc varchar,
+    especialidad varchar,
+    codigo varchar UNIQUE,
+    sede varchar
 );
 
--- Tabla t_expediente
+-- Tabla: archivo.t_expediente
 CREATE TABLE archivo.t_expediente (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP,
-    id_expediente SERIAL PRIMARY KEY,
-    id_inventario INTEGER REFERENCES archivo.t_inventario(id_inventario),
-    id_responsable INTEGER REFERENCES archivo.t_usuario(id_usuario),
-    nro_expediente VARCHAR UNIQUE,
-    juzgado_origen VARCHAR,
-    tipo_proceso VARCHAR,
-    materia VARCHAR,
-    demandante VARCHAR,
-    demandado VARCHAR,
-    fecha_inicial DATE,
-    fecha_final DATE
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_expediente serial PRIMARY KEY,
+    id_inventario integer REFERENCES archivo.t_inventario(id_inventario),
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    nro_expediente varchar UNIQUE,
+    juzgado_origen varchar,
+    tipo_proceso varchar,
+    materia varchar,
+    demandante varchar,
+    demandado varchar,
+    fecha_inicial date,
+    fecha_final date
 );
 
--- Tabla t_digitalizacion
+-- Tabla: archivo.t_digitalizacion
 CREATE TABLE archivo.t_digitalizacion (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP,
-    id_digitalizacion SERIAL PRIMARY KEY,
-    id_expediente INTEGER UNIQUE REFERENCES archivo.t_expediente(id_expediente),
-    id_responsable INTEGER REFERENCES archivo.t_usuario(id_usuario),
-    fojas_total INTEGER,
-    ocr BOOLEAN,
-    escala_gris BOOLEAN,
-    color BOOLEAN,
-    observaciones VARCHAR,
-    dir_ftp VARCHAR,
-    hash_doc VARCHAR,
-    peso_doc INTEGER
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_digitalizacion serial PRIMARY KEY,
+    id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    fojas_total integer,
+    ocr boolean,
+    escala_gris boolean,
+    color boolean,
+    observaciones varchar,
+    dir_ftp varchar,
+    hash_doc varchar,
+    peso_doc integer
 );
 
--- Tabla t_control
-CREATE TABLE archivo.t_control (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP,
-    id_control SERIAL PRIMARY KEY,
-    id_expediente INTEGER UNIQUE REFERENCES archivo.t_expediente(id_expediente),
-    id_responsable INTEGER REFERENCES archivo.t_usuario(id_usuario),
-    observaciones VARCHAR,
-    val_observaciones BOOLEAN,
-    val_datos BOOLEAN,
-    val_nitidez BOOLEAN,
-    val_pruebas_impresion BOOLEAN,
-    val_copia_fiel BOOLEAN
-);
-
--- Tabla t_indizacion
+-- Tabla: archivo.t_indizacion
 CREATE TABLE archivo.t_indizacion (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP,
-    id_indizacion SERIAL PRIMARY KEY,
-    id_expediente INTEGER UNIQUE REFERENCES archivo.t_expediente(id_expediente),
-    id_responsable INTEGER REFERENCES archivo.t_usuario(id_usuario),
-    indizacion VARCHAR,
-    observaciones VARCHAR
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_indizacion serial PRIMARY KEY,
+    id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    indizacion varchar,
+    observaciones varchar
 );
 
--- Tabla t_fedatar
+-- Tabla: archivo.t_control
+CREATE TABLE archivo.t_control (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_control serial PRIMARY KEY,
+    id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    observaciones varchar,
+    val_observaciones boolean,
+    val_datos boolean,
+    val_nitidez boolean,
+    val_pruebas_impresion boolean,
+    val_copia_fiel boolean
+);
+
+-- Tabla: archivo.t_fedatar
 CREATE TABLE archivo.t_fedatar (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP,
-    id_fedatar SERIAL PRIMARY KEY,
-    id_expediente INTEGER UNIQUE REFERENCES archivo.t_expediente(id_expediente),
-    id_responsable INTEGER REFERENCES archivo.t_usuario(id_usuario),
-    observaciones VARCHAR
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_fedatar serial PRIMARY KEY,
+    id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    observaciones varchar
 );
 
--- Tabla t_cd
-CREATE TABLE archivo.t_cd (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    id_cd SERIAL PRIMARY KEY,
-    id_inventario INTEGER REFERENCES archivo.t_inventario(id_inventario),
-    nombre VARCHAR,
-    capacidad INTEGER,
-    peso_ocupado INTEGER,
-    dir_ftp_acta_apertura VARCHAR,
-    dir_ftp_acta_cierre VARCHAR,
-    dir_ftp_tarjeta_apertura VARCHAR,
-    dir_ftp_tarjeta_cierre VARCHAR,
-    peso_acta_apertura INTEGER,
-    peso_acta_cierre INTEGER,
-    peso_tarjeta_apertura INTEGER,
-    peso_tarjeta_cierre INTEGER,
-    fecha_acta_apertura TIMESTAMP,
-    fecha_acta_cierre TIMESTAMP,
-    fecha_tarjeta_apertura TIMESTAMP,
-    fecha_tarjeta_cierre TIMESTAMP
-);
-
--- Tabla t_estado_expediente
-CREATE TABLE archivo.t_estado_expediente (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    id_estado_expediente SERIAL PRIMARY KEY,
-    id_expediente INTEGER UNIQUE REFERENCES archivo.t_expediente(id_expediente),
-    estado_recepcionado CHAR(1),
-    estado_preparado CHAR(1),
-    estado_digitalizado CHAR(1),
-    estado_indizado CHAR(1),
-    estado_controlado CHAR(1),
-    estado_fedatado CHAR(1),
-    id_cd INTEGER REFERENCES archivo.t_cd(id_cd),
-    mensajes VARCHAR
-);
-
--- Tabla t_preparacion
+-- Tabla: archivo.t_preparacion
 CREATE TABLE archivo.t_preparacion (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP,
-    id_preparacion SERIAL PRIMARY KEY,
-    id_responsable INTEGER REFERENCES archivo.t_usuario(id_usuario),
-    fojas_total INTEGER,
-    fojas_unacara INTEGER,
-    fojas_doscaras INTEGER,
-    observaciones VARCHAR,
-    copias_originales BOOLEAN,
-    copias_simples BOOLEAN
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_preparacion serial PRIMARY KEY,
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    fojas_total integer,
+    fojas_unacara integer,
+    fojas_doscaras integer,
+    observaciones varchar,
+    copias_originales boolean,
+    copias_simples boolean
 );
 
--- Tabla t_flujograma
+-- Tabla: archivo.t_cd
+CREATE TABLE archivo.t_cd (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    id_cd serial PRIMARY KEY,
+    id_inventario integer REFERENCES archivo.t_inventario(id_inventario),
+    nombre varchar,
+    capacidad integer,
+    peso_ocupado integer,
+    dir_ftp_acta_apertura varchar,
+    dir_ftp_acta_cierre varchar,
+    dir_ftp_tarjeta_apertura varchar,
+    dir_ftp_tarjeta_cierre varchar,
+    peso_acta_apertura integer,
+    peso_acta_cierre integer,
+    peso_tarjeta_apertura integer,
+    peso_tarjeta_cierre integer,
+    fecha_acta_apertura timestamp,
+    fecha_acta_cierre timestamp,
+    fecha_tarjeta_apertura timestamp,
+    fecha_tarjeta_cierre timestamp
+);
+
+-- Tabla: archivo.t_estado_expediente
+CREATE TABLE archivo.t_estado_expediente (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    id_estado_expediente serial PRIMARY KEY,
+    id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
+    estado_recepcionado char(1),
+    estado_preparado char(1),
+    estado_digitalizado char(1),
+    estado_indizado char(1),
+    estado_controlado char(1),
+    estado_fedatado char(1),
+    id_cd integer REFERENCES archivo.t_cd(id_cd),
+    mensajes varchar
+);
+
+-- Tabla: archivo.t_flujograma
 CREATE TABLE archivo.t_flujograma (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_flujograma SERIAL PRIMARY KEY,
-    id_expediente INTEGER REFERENCES archivo.t_expediente(id_expediente),
-    id_responsable INTEGER REFERENCES archivo.t_usuario(id_usuario),
-    area VARCHAR
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    id_flujograma serial PRIMARY KEY,
+    id_expediente integer REFERENCES archivo.t_expediente(id_expediente),
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    area varchar
 );
 
--- Tablas t_tipo_documento, t_especialidad, t_sede, t_tipo_proceso, t_materia, t_juzgado
-CREATE TABLE archivo.t_tipo_documento (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_tipo_documento SERIAL PRIMARY KEY,
-    tipo_documento VARCHAR
+-- ====================
+-- TABLAS DEL ESQUEMA: maestro
+-- ====================
+
+-- Tabla: maestro.t_tipo_documento
+CREATE TABLE maestro.t_tipo_documento (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    id_tipo_documento serial PRIMARY KEY,
+    tipo_documento varchar
 );
 
-CREATE TABLE archivo.t_especialidad (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_especialidad SERIAL PRIMARY KEY,
-    especialidad VARCHAR
+-- Tabla: maestro.t_especialidad
+CREATE TABLE maestro.t_especialidad (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    id_especialidad serial PRIMARY KEY,
+    especialidad varchar
 );
 
-CREATE TABLE archivo.t_sede (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_sede SERIAL PRIMARY KEY,
-    sede VARCHAR
+-- Tabla: maestro.t_sede
+CREATE TABLE maestro.t_sede (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    id_sede serial PRIMARY KEY,
+    sede varchar
 );
 
-CREATE TABLE archivo.t_tipo_proceso (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_tipo_proceso SERIAL PRIMARY KEY,
-    tipo_proceso VARCHAR
+-- Tabla: maestro.t_tipo_proceso
+CREATE TABLE maestro.t_tipo_proceso (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    id_tipo_proceso serial PRIMARY KEY,
+    tipo_proceso varchar
 );
 
-CREATE TABLE archivo.t_materia (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_materia SERIAL PRIMARY KEY,
-    materia VARCHAR
+-- Tabla: maestro.t_materia
+CREATE TABLE maestro.t_materia (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    id_materia serial PRIMARY KEY,
+    materia varchar
 );
 
-CREATE TABLE archivo.t_juzgado (
-    f_aud TIMESTAMP,
-    b_aud CHAR(1),
-    c_aud_uid VARCHAR(30),
-    c_aud_uidred VARCHAR(30),
-    c_aud_pc VARCHAR(30),
-    c_aud_ip VARCHAR(15),
-    c_aud_mac VARCHAR(17),
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_juzgado SERIAL PRIMARY KEY,
-    juzgado VARCHAR
+-- Tabla: maestro.t_juzgado
+CREATE TABLE maestro.t_juzgado (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    id_juzgado serial PRIMARY KEY,
+    juzgado varchar
 );
