@@ -398,4 +398,4 @@ INSERT INTO archivo.t_usuario(
 	'ADMIN', 
 	'$2b$10$Okrv.qgAZhFJmgOBnOg0be6ZkEDwHsw4nIgw47OmEDJvm9PBZZwAq', 
 	true, 
-	null);
+	0);

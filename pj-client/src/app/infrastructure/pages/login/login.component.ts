@@ -1,6 +1,8 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
+import { LoginService } from '../../services/remoto/login/login.service';
 
 
 @Component({
@@ -12,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 export class LoginComponent implements OnInit {
 
   credentials: any = {
-    usuario: '',
+    username: '',
     password: ''
   };
 
@@ -29,7 +31,7 @@ export class LoginComponent implements OnInit {
 
   ];
 
-  constructor(private router: Router, private renderer: Renderer2) { }
+  constructor(private router: Router, private renderer: Renderer2, private loginService: LoginService) { }
 
   ngOnInit(): void {
     this.changeBackgroundImage()
@@ -61,6 +63,18 @@ export class LoginComponent implements OnInit {
   }
 
   async login() {
-    this.router.navigate(['/principal']);
+    try {
+      // Convertimos el observable en una promesa con firstValueFrom
+      const authResponse = await firstValueFrom(this.loginService.login(this.credentials));
+      if (authResponse) {
+        // console.log('Se logueó correctamente: ' + this.loginService.isAuthenticatedUser());
+        this.router.navigate(['principal']);
+      } else {
+        alert(this.loginService.showMessage());
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Error al intentar autenticar');
+    }
   }
 }

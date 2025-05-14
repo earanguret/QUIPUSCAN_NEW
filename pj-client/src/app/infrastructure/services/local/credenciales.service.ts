@@ -9,8 +9,8 @@ export class CredencialesService {
   private usuario: UsuarioModel = {
     id_usuario: 1,
     id_persona: 1,
-    usuario: '',
-    id_perfil: 0,
+    username: '',
+    perfil: '',
   };
   
   constructor() { }
@@ -27,8 +27,8 @@ export class CredencialesService {
     this.usuario = {
       id_usuario: 0,
       id_persona: 0,
-      usuario: '',
-      id_perfil: 0,
+      username: '',
+      perfil: '',
     };
   }
 

@@ -16,10 +16,10 @@ import { CommonModule } from '@angular/common';
 export class NavegatorComponent {
 
   credenciales: UsuarioModel={
-    usuario:'',
+    username:'',
     id_usuario:0,
     id_persona:0,
-    id_perfil:0,
+    perfil:'',
   };
 
   constructor(private router:Router, private credencialesService:CredencialesService){ this.credenciales=this.credencialesService.credenciales }

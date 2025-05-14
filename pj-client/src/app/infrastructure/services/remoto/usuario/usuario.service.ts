@@ -14,11 +14,11 @@ export class UsuarioService {
   constructor(private http: HttpClient) { }
 
   ListarUsuarios():Observable<UsuarioResponse[]>{
-    return this.http.get<UsuarioResponse[]>(this.api_uri_usuario)
+    return this.http.get<UsuarioResponse[]>(`${this.api_uri_usuario}/detalle`)
   }
 
   ObtenerUsuariosDetalleById(id_usuario:number):Observable<UsuarioResponse>{
-    return this.http.get<UsuarioResponse>(this.api_uri_usuario+`/${id_usuario}`)
+    return this.http.get<UsuarioResponse>(`${this.api_uri_usuario}/${id_usuario}`)
   }
 
   CrearUsuario(cuerpo_usuario:UsuarioModel):Observable<CrearUsuarioResponse>{
@@ -26,10 +26,10 @@ export class UsuarioService {
   }   
 
   ModificarDatosUsuario(id_usuario:number,cuerpo_usuario:UsuarioModel):Observable<ModificarDatosUsuarioResponse>{
-    return this.http.put<ModificarDatosUsuarioResponse>(this.api_uri_usuario+`/${id_usuario}`,cuerpo_usuario)
+    return this.http.put<ModificarDatosUsuarioResponse>(`${this.api_uri_usuario}/modificar/${id_usuario}`,cuerpo_usuario)
   }
 
   ModificarPasswordUsuario(id_usuario:number,password:string):Observable<ModificarDatosUsuarioResponse>{
-    return this.http.put<ModificarDatosUsuarioResponse>(this.api_uri_usuario+`/${id_usuario}/password`,{password})
+    return this.http.put<ModificarDatosUsuarioResponse>(`${this.api_uri_usuario}/modificar/password/${id_usuario}`,{password})
   } 
 }
