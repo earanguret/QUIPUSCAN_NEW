@@ -1,5 +1,91 @@
 <div class="panel">
     <app-navegator></app-navegator>
-    <app-subnavegator></app-subnavegator>
-    <h1>listos en formulario usuario</h1>
+    <app-subnavegator [ruta]="'/principal/list-usuario'"></app-subnavegator>
+    <div class="container-fluid">
+        <div class="encabezado_pages">
+            <i class="bi bi-person icon-custom-encabezado"></i>
+            <p class="titulo_menu">{{titulo}}</p>
+        </div>
+        <div style="width: 100%; max-width: 700px; margin: 0 auto; padding: 10px;">
+            <form>
+                <h3 class="subtitulo_usuario">Datos Personales:</h3>
+                <!-- DATOS DEL PERSONALES -->
+                <fieldset>
+                    <div class="form-group">
+                        <label for="dni" class="form-label">Documento de Identidad (DNI):</label>
+                        <div style="display: flex; align-items: center; gap: 8px; width: 50%;">
+                            <input type="text" class="form-control" name="dni" [(ngModel)]="dataPersona.dni" maxlength="8" appSoloNumeros [disabled]="dni_state">
+                            <img *ngIf="!modificar_usuario" class="icon" src="/icon/lupa.png" width="32px" alt="logo" title="buscar" (click)="BuscarPersonByDNI()" >
+                            <img *ngIf="!modificar_usuario" class="resolucion-icon" src="/icon/actualizar.png" width="32px" alt="logo" title="limpiar" (click)="ReiniciarFormulario()" >
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="nombres" class="form-label " name="nombre">Nombre(s):</label>
+                        <input type="text" class="form-control" name="nombres" [(ngModel)]="dataPersona.nombre" name="nombre" appSoloLetras [disabled]="!dni_state">
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 mt-3">
+                                <label for="ap_paterno" class="form-label ">Apellido Paterno:</label>
+                                <input type="text" class="form-control" name="ap_paterno" [(ngModel)]="dataPersona.ap_paterno" name="ap_paterno" appSoloLetras [disabled]="!dni_state">
+                            </div>
+                            <div class="col-sm-6 mt-3">
+                                <label for="ap_materno" class="form-label ">Apellido Materno:</label>
+                                <input type="text" class="form-control" [(ngModel)]="dataPersona.ap_materno" name="ap_materno" appSoloLetras [disabled]="!dni_state">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <h3 class="subtitulo_usuario mt-4">Datos de Usuario:</h3>
+
+                    <div class="form-group">
+                        <label for="username" class="form-label mt-2">Nombre de Usuario:</label>
+                        <input type="text" class="form-control" name="username" [(ngModel)]="dataUsuario.username" appSoloLetras [disabled]="!dni_state">
+                    </div>
+
+                    <div class="form-group ">
+                        
+                        <div class="row">
+                            
+                            <div class="col-sm-6 mt-3">
+                                <label for="perfil" class="form-label ">Perfil:</label>
+                                <select id="perfil" name="perfil" class="form-control" [(ngModel)]="dataUsuario.perfil" [disabled]="!dni_state">
+                                    <option value="" disabled selected>PERFIL DE USUAIRO </option>
+                                    <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+                                    <option value="SUPERVISORL">SUPERVISOR DE LINEA</option>
+                                    <option value="PREPARADOR">PREPARADOR</option>
+                                    <option value="DIGITALIZADOR">DIGITALIZADOR</option>
+                                    <option value="INDIZADOR">INDIZADOR</option>
+                                    <option value="CONTROLADOR">CONTROLADOR</option>
+                                    <option value="FEDATARIO">FEDATARIO</option>
+                                    <option value="INVITADO">INVITADO</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-6 mt-3">
+                                <label for="estado" class="form-label">Estado:</label>
+                                <select id="estado" name="estado" class="form-control" [(ngModel)]="dataUsuario.estado" [disabled]="!dni_state">
+                                    <option value=null disabled selected> ESTADO </option>
+                                    <option value=true>ACTIVO</option>
+                                    <option value=false>INACTIVO</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- area de password -->
+                    <div class="form-group">
+                        <label for="password" class="form-label mt-3">Password:</label>
+                        <input type="password" class="form-control" name="password" [(ngModel)]="dataUsuario.password" placeholder="***************" [disabled]="!dni_state">
+                    </div>
+                </fieldset>
+            </form>
+
+            <div class="d-grid gap-2 mt-4">
+                <button [ngClass]="modificar_usuario ? 'btn btn-warning' : 'btn btn-success'" type="button" (click)="GuardarRegistroUsuario()" [disabled]="!dni_state">{{boton_text}}</button>
+                <br>
+            </div>
+        </div>
+    </div>
 </div>

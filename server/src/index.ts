@@ -16,7 +16,8 @@ class Server{
     }
     config():void{
         this.app.set('port',process.env.PORT||5000);
-        this.app.use(morgan('dev'));
+        // this.app.use(morgan('dev'));
+        this.app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
         this.app.use(cors());
         this.app.use(express.json({ limit: '250mb' }));
         this.app.use(express.urlencoded({ limit: '250mb', extended: true }));

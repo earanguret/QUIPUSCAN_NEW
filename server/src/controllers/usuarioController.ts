@@ -21,6 +21,7 @@ class UsuarioController {
                             u.id_usuario,
                             u.username,
                             u.estado,
+                            u.perfil,
                             u.intentos_login,
                             p.id_persona,
                             p.nombre,
@@ -40,7 +41,7 @@ class UsuarioController {
         }
     }
 
-    public async obtenerUsuariosDetalleById(req: Request, res: Response): Promise<any> {
+    public async obtenerUsuarioDetalleById(req: Request, res: Response): Promise<any> {
         try {
             const { id } = req.params;
             const consulta = `
@@ -48,6 +49,7 @@ class UsuarioController {
                             u.id_usuario,
                             u.username,
                             u.estado,
+                            u.perfil,
                             u.intentos_login,
                             p.id_persona,
                             p.nombre,
@@ -276,10 +278,10 @@ class UsuarioController {
                             c_aud_ip=$3, 
                             c_aud_mac=$4,
 
-                            nombre_usuario=$5, 
+                            username=$5, 
                             perfil=$6, 
                             estado=$7,
-                            contador_logging=0
+                            intentos_login=0
                     
                         WHERE id_usuario=$8;`;
 
@@ -327,7 +329,7 @@ class UsuarioController {
                                 c_aud_ip=$3, 
                                 c_aud_mac=$4,
 
-                                password=$5, 
+                                password=$5 
                         WHERE id_usuario=$6;
                      `;
             const valores = [

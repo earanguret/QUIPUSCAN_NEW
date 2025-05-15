@@ -13,8 +13,8 @@ class UsuarioRoutes{
     }
     config():void{
         this.router.get('/api/usuario',usuarioController.listarUsuarios)
-        this.router.get('/api/usuario/detalle',usuarioController.listarUsuariosDetalle)
-        this.router.get('/api/usuario/:id',usuarioController.obtenerUsuariosDetalleById)
+        this.router.get('/api/usuario/lista/detalle',usuarioController.listarUsuariosDetalle)
+        this.router.get('/api/usuario/:id',usuarioController.obtenerUsuarioDetalleById)
         this.router.post('/api/usuario/crear',usuarioController.CrearUsuario)
         this.router.post('/api/usuario/login',usuarioController.ValidarLogin)
         this.router.put('/api/usuario/modificar/:id_usuario',usuarioController.ModificarDatosUsuario)

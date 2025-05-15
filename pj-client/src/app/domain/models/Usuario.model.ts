@@ -6,6 +6,6 @@ export interface UsuarioModel{
     username: string;
     perfil: string;
     password?: string;
-    estado?: boolean;
+    estado?:  boolean | null;
 
 }

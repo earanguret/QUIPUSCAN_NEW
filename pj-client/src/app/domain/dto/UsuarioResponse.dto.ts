@@ -4,8 +4,8 @@ export interface UsuarioResponse {
     id_usuario: number;
     username: string;
     perfil: string;
-    estado: string;
-    nombres: string;
+    estado: boolean | null;
+    nombre: string;
     ap_paterno: string | null;
     ap_materno: string | null;
     dni: string | null;

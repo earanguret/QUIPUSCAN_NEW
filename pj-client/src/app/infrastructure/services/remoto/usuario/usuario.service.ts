@@ -14,18 +14,20 @@ export class UsuarioService {
   constructor(private http: HttpClient) { }
 
   ListarUsuarios():Observable<UsuarioResponse[]>{
-    return this.http.get<UsuarioResponse[]>(`${this.api_uri_usuario}/detalle`)
+    return this.http.get<UsuarioResponse[]>(`${this.api_uri_usuario}/lista/detalle`)
   }
 
-  ObtenerUsuariosDetalleById(id_usuario:number):Observable<UsuarioResponse>{
-    return this.http.get<UsuarioResponse>(`${this.api_uri_usuario}/${id_usuario}`)
+  ObtenerUsuario(id_usuario:number):Observable<UsuarioModel>{
+    return this.http.get<UsuarioModel>(`${this.api_uri_usuario}/${id_usuario}`)
   }
 
   CrearUsuario(cuerpo_usuario:UsuarioModel):Observable<CrearUsuarioResponse>{
-    return this.http.post<CrearUsuarioResponse>(this.api_uri_usuario,cuerpo_usuario)
+    cuerpo_usuario.username=cuerpo_usuario.username.trim().toUpperCase()  
+    return this.http.post<CrearUsuarioResponse>(`${this.api_uri_usuario}/crear`,cuerpo_usuario)
   }   
 
   ModificarDatosUsuario(id_usuario:number,cuerpo_usuario:UsuarioModel):Observable<ModificarDatosUsuarioResponse>{
+    cuerpo_usuario.username=cuerpo_usuario.username.trim().toUpperCase()
     return this.http.put<ModificarDatosUsuarioResponse>(`${this.api_uri_usuario}/modificar/${id_usuario}`,cuerpo_usuario)
   }
 

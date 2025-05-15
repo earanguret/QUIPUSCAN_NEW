@@ -19,8 +19,8 @@ export class PersonaService {
     return this.http.get<PersonaResponse[]>(this.api_uri_persona)
   }
 
-  ObtenerDatosPersonaByid(id_persona:number):Observable<PersonaResponse>{
-    return this.http.get<PersonaResponse>(this.api_uri_persona+`/${id_persona}`)
+  ObtenerPersona(id_persona:number):Observable<PersonaModel>{
+    return this.http.get<PersonaModel>(this.api_uri_persona+`/${id_persona}`)
   }
 
   ObtenerDatosPersonaByDNI(dni:string):Observable<PersonaResponse>{
@@ -28,7 +28,7 @@ export class PersonaService {
   }
 
   CrearPersona(cuerpo_persona:PersonaModel):Observable<CrearPersonaMessageResponse>{
-    cuerpo_persona.nombres=cuerpo_persona.nombres.trim().toUpperCase()
+    cuerpo_persona.nombre=cuerpo_persona.nombre.trim().toUpperCase()
     cuerpo_persona.ap_paterno=cuerpo_persona.ap_paterno.trim().toUpperCase()
     cuerpo_persona.ap_materno=cuerpo_persona.ap_materno.trim().toUpperCase()
 
@@ -36,7 +36,7 @@ export class PersonaService {
   }
 
   ModificarPersona(id_persona:number,cuerpo_persona:any):Observable<ModificarPersonaMessageResponse>{
-    cuerpo_persona.nombres=cuerpo_persona.nombres.trim().toUpperCase()
+    cuerpo_persona.nombre=cuerpo_persona.nombre.trim().toUpperCase()
     cuerpo_persona.ap_paterno=cuerpo_persona.ap_paterno.trim().toUpperCase()
     cuerpo_persona.ap_materno=cuerpo_persona.ap_materno.trim().toUpperCase()
     return this.http.put<ModificarPersonaMessageResponse>(this.api_uri_persona+`/${id_persona}`,cuerpo_persona)

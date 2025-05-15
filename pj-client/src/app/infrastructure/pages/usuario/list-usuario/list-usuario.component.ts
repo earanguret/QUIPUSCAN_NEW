@@ -31,6 +31,7 @@ export class ListUsuarioComponent implements OnInit {
     this.usuarioService.ListarUsuarios().subscribe({
       next: (data:UsuarioResponse[])=>{
         this.listaUsuarios=data;
+        console.log(this.listaUsuarios);
       },
       error:()=>{
         console.error('error');
@@ -46,7 +47,7 @@ export class ListUsuarioComponent implements OnInit {
   }
 
   modificarUsuario(id_usuario:number){
-    this.router.navigate(['principal/form-usuario/modificar/'+id_usuario]);
+    this.router.navigate(['principal/form-usuario/',id_usuario]);
   }
 
   buscarEnObjeto(event: any) {

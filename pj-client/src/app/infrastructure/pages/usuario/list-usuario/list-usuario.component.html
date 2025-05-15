@@ -23,29 +23,29 @@
                                 <th scope="col">DNI/CE</th>
                                 <th scope="col">NOMBRE Y APELLIDOS</th>
                                 <th scope="col">USUARIO</th>
-                                <th scope="col">CORREO</th>
-                                <th scope="col">ROL</th>
+                                <th scope="col">PERFIL</th>
                                 <th scope="col">ESTADO</th>
 
                             </tr>
                         </thead>
-                        <!-- <tbody>
+                        <tbody>
                             <tr class="hand_cursor" title="click para modificar usuario"
                                 *ngFor="let usuario of listaUsuarios  | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"
                                 (click)="modificarUsuario(usuario.id_usuario)"
-                                [ngStyle]="{ opacity: usuario.estado === 'INACTIVO' ? '0.50' : '1' }">
+                                [ngStyle]="{ opacity: usuario.estado ? '1':'0.50'  }">
 
                                 <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
-                                <td>{{usuario.documento}}</td>
-                                <td>{{usuario.nombres+ ' '+usuario.ap_paterno+' '+usuario.ap_materno}}</td>
-                                <td class="text-secondary "> <strong>{{usuario.nombre_usuario}}</strong> </td>
-                                <td>{{usuario.correo}}</td>
-                                <td>{{usuario.rol}}</td>
-                                <td [ngStyle]="{ color: usuario.estado === 'INACTIVO' ? 'grey' : 'green' }">
-                                    {{usuario.estado}}</td>
+                                <td>{{usuario.dni}}</td>
+                                <td>{{usuario.nombre+ ' '+usuario.ap_paterno+' '+usuario.ap_materno}}</td>
+                                <td class="text-secondary "> <strong>{{usuario.username}}</strong> </td>
+                                
+                                <td>{{usuario.perfil}}</td>
+                                <td [ngStyle]="{ color: usuario.estado  ? 'green':'grey'  }">
+                                    {{usuario.estado?'ACTIVO':'INACTIVO'}}
+                                </td>
 
                             </tr>
-                        </tbody> -->
+                        </tbody>
 
                     </table>
 

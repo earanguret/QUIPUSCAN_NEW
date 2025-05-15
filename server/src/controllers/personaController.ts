@@ -20,7 +20,7 @@ class PersonaController{
             const consulta = 'select * from archivo.t_persona where id_persona = $1';
             const persona = await db.query(consulta, [id]);
             if (persona && persona['rows'].length > 0) {
-                res.json(persona['rows']);
+                res.json(persona['rows'][0]);
             } else {
                 res.status(404).json({ text: 'La persona no existe' });
             }
@@ -36,7 +36,7 @@ class PersonaController{
             const consulta = 'select * from archivo.t_persona where dni = $1';
             const persona = await db.query(consulta, [dni]);
             if (persona && persona['rows'].length > 0) {
-                res.status(200).json(persona['rows']);
+                res.status(200).json(persona['rows'][0]);
             } else {
                 res.status(404).json({ text: 'La persona no existe' });
             }
@@ -93,7 +93,7 @@ class PersonaController{
     public async ModificarPersona(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
-            const { nombre, ap_paterno, ap_materno, dni, username} = req.body;
+            const { nombre, ap_paterno, ap_materno, dni, user_app} = req.body;
             
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -106,16 +106,16 @@ class PersonaController{
                             c_aud_uidred=$1, 
                             c_aud_pc=$2, 
                             c_aud_ip=$3, 
-                            c_aud_mac=$4
+                            c_aud_mac=$4,
 
                             nombre=$5, 
                             ap_paterno=$6, 
                             ap_materno=$7, 
                             dni=$8
-	                 WHERE id_persona=$11;
+	                 WHERE id_persona=$9;
                 
                 `;
-            const valores = [username, null, ipAddressClient, null, nombre, ap_paterno, ap_materno, dni, id];
+            const valores = [user_app, null, ipAddressClient, null, nombre, ap_paterno, ap_materno, dni, id];
             console.log('datos persona:',valores)
 
             db.query(consulta, valores, (error) => {
