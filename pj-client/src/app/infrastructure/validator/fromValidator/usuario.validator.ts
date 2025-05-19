@@ -38,3 +38,12 @@ export function form_usuario_vf(dataPersona: PersonaModel, dataUsuario: UsuarioM
   
     return errorValidacion;
   }
+
+  export function validarContrasenaInput(value: string): { valido: boolean; password?: string } {
+    const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!regex.test(value)) {
+      return { valido: false };
+    } else {
+      return { valido: true, password: value };
+    }
+  }

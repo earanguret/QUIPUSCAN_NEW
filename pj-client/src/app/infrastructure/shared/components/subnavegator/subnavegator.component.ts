@@ -19,6 +19,7 @@ export class SubnavegatorComponent implements OnInit {
   constructor(private router:Router) { }
 
   volver(){
+    console.log(this.ruta);
     this.router.navigate([this.ruta]);
   }
 }

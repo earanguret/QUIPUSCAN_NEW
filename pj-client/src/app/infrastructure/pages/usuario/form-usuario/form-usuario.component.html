@@ -50,7 +50,7 @@
                             
                             <div class="col-sm-6 mt-3">
                                 <label for="perfil" class="form-label ">Perfil:</label>
-                                <select id="perfil" name="perfil" class="form-control" [(ngModel)]="dataUsuario.perfil" [disabled]="!dni_state">
+                                <select id="perfil" name="perfil" class="form-select" [(ngModel)]="dataUsuario.perfil" [disabled]="!dni_state">
                                     <option value="" disabled selected>PERFIL DE USUAIRO </option>
                                     <option value="ADMINISTRADOR">ADMINISTRADOR</option>
                                     <option value="SUPERVISORL">SUPERVISOR DE LINEA</option>
@@ -65,7 +65,7 @@
 
                             <div class="col-sm-6 mt-3">
                                 <label for="estado" class="form-label">Estado:</label>
-                                <select id="estado" name="estado" class="form-control" [(ngModel)]="dataUsuario.estado" [disabled]="!dni_state">
+                                <select id="estado" name="estado" class="form-select" [(ngModel)]="dataUsuario.estado" [disabled]="!dni_state">
                                     <option value=null disabled selected> ESTADO </option>
                                     <option value=true>ACTIVO</option>
                                     <option value=false>INACTIVO</option>
@@ -77,12 +77,15 @@
                     <!-- area de password -->
                     <div class="form-group">
                         <label for="password" class="form-label mt-3">Password:</label>
-                        <input type="password" class="form-control" name="password" [(ngModel)]="dataUsuario.password" placeholder="***************" [disabled]="!dni_state">
+                        <input type="password" class="form-control" name="password" (input)="validarContrasena($event)" placeholder="***************" [disabled]="!dni_state">
+                        <div class="d-flex justify-content-end">
+                            <p [style]="passWordValido?  'color:green':'color:gray'">{{passWordValido ? "Password válido":" mínimo 8 caracteres, una mayúscula y un número"}} </p>
+                        </div>
                     </div>
                 </fieldset>
             </form>
 
-            <div class="d-grid gap-2 mt-4">
+            <div class="d-grid gap-2 mt-1">
                 <button [ngClass]="modificar_usuario ? 'btn btn-warning' : 'btn btn-success'" type="button" (click)="GuardarRegistroUsuario()" [disabled]="!dni_state">{{boton_text}}</button>
                 <br>
             </div>

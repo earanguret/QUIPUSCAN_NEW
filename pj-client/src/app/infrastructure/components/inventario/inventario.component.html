@@ -1,3 +1,154 @@
-<div class="container">
-    <h1>INVENTARIO</h1>
+<div class="contenedor">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="menu-listado-reportes">
+                <div class="titulo">FILTER</div>
+                <div class="lista">
+                    <div class="item">
+                        <div class="name"><i class="bi bi-archive mx-2"></i> ALL (16)</div>
+                    </div>
+                </div>
+                <div class="titulo">ESPECIALIDAD</div>
+                <div class="lista">
+                    <div class="item">
+                        <div class="name"> <i class="bi bi-geo-alt mx-2"></i> FAMILIA CIVIL (32)</div>
+                    </div>
+                </div>
+                <div class="lista">
+                    <div class="item">
+                        <div class="name"><i class="bi bi-calendar-check mx-2"></i> FAMILIA TUTELAR (15)</div>
+                    </div>
+                </div>
+                <div class="lista">
+                    <div class="item">
+                        <div class="name"><i class="bi bi-bus-front mx-2"></i> PENAL (6)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-3 d-flex justify-content-end">
+                <!-- <button class="buscar-btn">+ add</button> -->
+                <!-- <button class="btn btn-success opacity-75 mx-2">+ ADD</button> -->
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="encabezado_pages d-flex justify-content-start">
+                <i class="bi bi-box-seam icon-custom-encabezado" style="font-size: 3rem;"></i>
+                <p class="titulo_menu"> SERIE DOCUMENTAL</p>
+            </div>
+            <div class="my-4 d-flex" style="max-width: 90%;">
+                <input type="text" class="form-control form-control-busqueda" name="buscar" placeholder="BUSCAR ">
+                <!-- <button class="buscar-btn">+ ADD</button> -->
+                <button class="btn btn-success opacity-75 mx-2" (click)="openModal()">+ ADD</button>
+            </div>
+
+            <div *ngIf="ListInventarioDetalle.length>0">
+                <div *ngFor="let item of ListInventarioDetalle" class="card_panel" (click)="ExpedientesSerieDocumental(item.id_inventario)">
+                    <div class="row p-4">
+                        <div class="col-lg-10 d-flex flex-column px-4 ">
+                            <p class="text-serie-doc m-0"><i class="bi bi-box-seam icon-box"></i>{{ item.serie_doc}} / <samp class="text-codigo">{{item.codigo}}</samp></p>
+                            <div class=" m-1 mb-2 mx-4">
+                                <p class="text-content m-0">RESPONSABLE : {{item.nombre}} {{item.ap_paterno}} {{item.ap_materno}}</p>
+                                <p class="text-content m-0">SEDE: {{item.sede}}</p>
+
+                            </div>
+
+                            <samp class=" ">
+                                <div class=" bg-especialidad m-1">
+                                    <span> {{item.especialidad}} </span>
+                                </div>
+                                <div class="tag-title m-1">
+                                    <span> 2016 </span>
+                                </div>
+                                <div class="tag-title m-1">
+                                    <span> {{item.tipo_doc}} </span>
+                                </div>
+
+                            </samp>
+                        </div>
+                        <div class="col-lg-2 ">
+                            <div class="text-center d-flex flex-column justify-content-between align-items-end h-100">
+                                <div class="text-center px-4 d-flex flex-column align-items-end">
+                                    <span class="number-folio">{{item.cantidad}}</span>
+                                    <samp class="text-folio mx-1">EXP</samp>
+                                </div>
+                                <i class="bi bi-printer icon-printer mx-4" title="imprimir"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal inventario -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">nuevo inventario</h5>
+                
+    
+            </div>
+            <form >
+                
+                <!-- DATOS DE INVENTARIO -->
+                <fieldset class="p-4">
+                    <div class="form-group">
+                        <label for="especialidad" class="form-label">Especialidad:</label>
+                        <select id="especialidad" name="especialidad" class="form-select" [(ngModel)]="data_inventario.especialidad">
+                            <option value="" disabled selected>ELIJE ESPECIALIDAD </option>
+                            <option value="CIVIL">CIVIL</option>
+                            <option value="PENAL">PENAL</option>
+                            <option value="LABORAL CONTENCIOSO ADMINISTRATIVO">LABORAL CONTENCIOSO ADMINISTRATIVO </option>
+                            <option value="LABORAL NUEVA LEY">LABORAL NUEVA LEY</option>
+                            <option value="FAMILIA CIVIL">FAMILIA CIVIL</option>
+                            <option value="FAMILIA TUTELAR">FAMILIA TUTELAR</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="sede" class="form-label ">Sede:</label>
+                        <select id="sede" name="especialidad" class="form-select" [(ngModel)]="data_inventario.sede">
+                            <option value="" disabled selected>SEDE </option>
+                            <option value="CUSCO">CUSCO</option>
+                            <option value="CALCA">CALCA</option>
+                            
+                           
+                        </select>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="anio" class="form-label">Año</label>
+                        <input type="text" class="form-control" name="anio" [(ngModel)]="data_inventario.anio">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="tipo_doc" class="form-label">Tipo de Documento:</label>
+                        <select id="tipo_doc" name="tipo_doc" class="form-select" [(ngModel)]="data_inventario.tipo_doc">
+                            <option value="" disabled selected>ELIJE EL TIPO DE DOCUMENTO </option>
+                            <option value="EXPEDIENTE JURIDICCIONAL">EXPEDIENTE JURIDICCIONAL</option>
+                            <option value="EXPEDIENTE ADMINISTRATIVO">EXPEDIENTE ADMINISTRATIVO</option>
+                            <option value="LEGAJO ADMINISTRATIVO">LEGAJO ADMINISTRATIVO</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="serie_doc" class="form-label">Serie Documental:</label>
+                        <input type="text" class="form-control" name="serie_doc" [(ngModel)]="data_inventario.serie_doc">
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="codigo" class="form-label">Código:</label>
+                        <input type="text" class="form-control" name="codigo"   [(ngModel)]="data_inventario.codigo">
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button" class="cancelar-btn" (click)="closeModal()">SALIR</button>
+                        <button type="button" class="guardar-btn" (click)="GuardarInventario()">Guardar</button>
+                    </div>
+                </fieldset>
+
+                
+            </form>
+            
+        </div>
+    </div>
 </div>

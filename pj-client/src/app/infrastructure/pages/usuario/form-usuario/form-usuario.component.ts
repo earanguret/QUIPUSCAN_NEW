@@ -14,6 +14,7 @@ import { form_usuario_vf } from '../../../validator/fromValidator/usuario.valida
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 import { SoloNumerosDirective } from '../../../directives/solo-numeros.directive';
 import { SoloLetrasDirective } from '../../../directives/solo-letras.directive';
+import { validarContrasenaInput } from '../../../validator/fromValidator/usuario.validator';
 
 @Component({
   selector: 'app-form-usuario',
@@ -41,7 +42,8 @@ export class FormUsuarioComponent implements OnInit {
   };
 
   boton_text: string = 'Guardar';
-  titulo: string = 'Crear usuario';
+  titulo: string = 'Creación de usuario';
+  passWordValido: boolean = false;
   modificar_usuario: boolean = false;
   dni_state: boolean = false;
 
@@ -70,6 +72,20 @@ export class FormUsuarioComponent implements OnInit {
   ComparardatosModificados(actual: any, original: any): boolean {
     return JSON.stringify(actual) !== JSON.stringify(original);
   }
+
+  validarContrasena(event: any) {
+    const inputPassword = event.target.value;
+    const { valido, password } = validarContrasenaInput(inputPassword);
+    if (valido) {
+      this.dataUsuario.password = password;
+      this.passWordValido = true;
+      
+    } else {
+      this.dataUsuario.password = undefined;
+      this.passWordValido = false;
+    }
+  }
+  
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   GuardarRegistroUsuario() {
     const erroresValidacion = form_usuario_vf(this.dataPersona, this.dataUsuario, this.modificar_usuario);

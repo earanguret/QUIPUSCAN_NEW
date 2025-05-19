@@ -153,3 +153,11 @@ i{
 .icon{
     cursor: pointer;
 }
+
+/* encabezado de modales */
+.modal-header{
+    background-color: #176091 !important;
+    padding: 15px;
+    color: white;
+    border-radius: 0px;
+}

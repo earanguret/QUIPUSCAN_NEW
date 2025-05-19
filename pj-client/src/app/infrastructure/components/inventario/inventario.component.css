@@ -1,0 +1,204 @@
+.contenedor {
+    margin: 2% 4%;
+    max-width: 1640px;
+  }
+
+.menu-listado-reportes {
+    box-sizing: border-box;
+    background-color: #F6F4EE;
+    padding: 20px;
+    border-radius: 16px;
+}
+
+.menu-listado-reportes .titulo {
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6E7A89;
+}
+
+.menu-listado-reportes .lista {
+    margin: 10px 0;
+}
+
+.menu-listado-reportes .lista .item .name {
+    display: inline-block;
+    padding: 0 0 0 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #434343;
+    
+}
+
+.menu-listado-reportes .lista .item .name:hover {
+    cursor: pointer;
+    color: #0f0f0f;
+}
+
+/*  */
+.fade {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  }
+  
+  .fade.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card_panel{
+    margin: 0 0 1.6rem;
+    background-color: #f6f6ee;
+    box-shadow: 1px 1px 3px 0 #d3d3d3;
+    list-style-type: none;
+    width: 90%;
+    border-radius: 20PX;
+  }
+  .card_panel:hover{
+
+    background-color: #f6f6ee70;
+    cursor: pointer;
+ 
+  }
+
+  .number-folio{
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #929FB1;
+  }
+
+  .text-folio{
+    font-size: 1rem;
+    font-weight: 700;
+    color: #929FB1;
+  }
+
+  /*  */
+  .bg-especialidad{
+    background-color: #FCF0D3;
+    color: #C28E0E;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 5px;
+    padding: .25rem 1.2rem;
+}
+
+.text-serie-doc{
+    /* font-size: 1.2rem;
+    font-weight: 700;
+    color: #404b5acb; */
+
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #404B5A;
+}
+.text-codigo{
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #404b5a9c;
+}
+
+/* tag */
+.tag-title{
+  
+    
+    background-color: #D5DDE5;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 5px;
+    padding: .25rem 1.2rem;
+   
+
+
+}
+.tag-title span{
+    
+    color: #0080a5;
+ 
+}
+
+.text-content{
+    font-size: 1rem;
+    font-weight: 500;
+    color: #404b5ac0;
+}
+
+.text-content-ejemplo{
+    font-size: 0.92rem;
+    font-weight: 400;
+    color: #404b5ac0;
+}
+
+/*  */
+.guardar-btn{
+    background-color: #B9EACE;
+    color: #227243;
+    border: 1px solid #92DFB2;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600
+}
+.guardar-btn:hover{
+    background-color:  #86d993;
+    color: #227243;
+    border: 1px solid #92DFB2;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600
+
+}
+
+.cancelar-btn{
+   
+    background-color: #E1E7EB;
+    color: #6E7A89;
+    border: 1px solid #dde2e9;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600;
+    
+}
+.cancelar-btn:hover{
+   
+    background-color: #cdcecf;
+    color: #525355;
+    border: 1px solid #d6dadf;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600;
+    
+}
+
+
+/* icono de impresion */
+.icon-printer {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #929FB1;
+    /* transition: font-size 0.3s ease, color 0.3s ease;  */
+}
+
+.icon-printer:hover {
+    font-size: 2.2rem;
+    color: #2f7dc7;
+    cursor: pointer;
+}
+
+.form-control-busqueda{
+    
+    max-width: 50%;
+
+}
+
+.icon-box{
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #929FB1;
+    margin-right: 10px;
+}
+
