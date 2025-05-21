@@ -9,6 +9,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const personaRoutes_1 = __importDefault(require("./routes/personaRoutes"));
 const usuarioRoutes_1 = __importDefault(require("./routes/usuarioRoutes"));
 const inventarioRoutes_1 = __importDefault(require("./routes/inventarioRoutes"));
+const expedienteRoutes_1 = __importDefault(require("./routes/expedienteRoutes"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -28,6 +29,7 @@ class Server {
         this.app.use('/', personaRoutes_1.default);
         this.app.use('/', usuarioRoutes_1.default);
         this.app.use('/', inventarioRoutes_1.default);
+        this.app.use('/', expedienteRoutes_1.default);
     }
     start() {
         const server = this.app.listen(this.app.get('port'), '0.0.0.0', () => {

@@ -3,7 +3,7 @@ export interface InventarioResponse {
     id_inventario: number;
     id_responsable: number;
     especialidad: string;
-    anio: number;
+    anio: number | null;
     tipo_doc: string;
     serie_doc: string;
     sede: string;

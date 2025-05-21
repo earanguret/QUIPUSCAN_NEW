@@ -12,7 +12,7 @@ class InventarioRoutes{
     }
     config():void{
         this.router.get('/api/inventario',inventarioController.listarInventarioDetalle)
-        this.router.get('/api/inventario/:id',inventarioController.listarInventarioDetalle)
+        this.router.get('/api/inventario/:id',inventarioController.ObtenerInventarioDetalleXid)
         this.router.post('/api/inventario',inventarioController.CrearInventario)
     }
 }

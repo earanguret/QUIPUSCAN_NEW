@@ -11,10 +11,6 @@ import { InventarioRequest } from '../../../../domain/dto/InventarioRequest.dto'
 })
 export class InventarioService {
 
-  // this.router.get('/api/inventario',inventarioController.listarInventario)
-  //       this.router.get('/api/inventario/:id',inventarioController.listarInventarioDetalle)
-  //       this.router.post('/api/inventario',inventarioController.CrearInventario)
-
   api_uri_inventario=`${environment.urlApi}/inventario`;
   constructor(private http: HttpClient) { }
 

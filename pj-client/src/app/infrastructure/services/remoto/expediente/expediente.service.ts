@@ -1,0 +1,41 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../../../environment/environment';
+import { HttpClient } from '@angular/common/http';
+import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { ExpedienteModel } from '../../../../domain/models/expediente.model';
+import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ExpedienteService {
+
+  api_uri_expediente=`${environment.urlApi}/expediente`;
+  constructor(private http: HttpClient) { }
+  // this.router.get('/api/expediente',expedienteController.listarExpedientes)
+  // this.router.get('/api/expediente/:id',expedienteController.ObtenerExpedienteDetalleXid)
+  // this.router.post('/api/expediente',expedienteController.CrearExpediente)
+  //this.router.get('/api/expediente/lista/:id_inventario',expedienteController.ObtenerExpedientesDetalleById_inventario)
+
+  ListarExpedientes():Observable<ExpedienteResponse[]>{
+    return this.http.get<ExpedienteResponse[]>(this.api_uri_expediente)
+  }
+  ListarExpedientesXidInventario(id_inventario:number):Observable<ExpedienteResponse[]>{
+    return this.http.get<ExpedienteResponse[]>(`${this.api_uri_expediente}/lista/${id_inventario}`)
+  }
+
+  ObtenerExpedienteDetalleXid(id:number):Observable<any>{
+    return this.http.get<any>(`${this.api_uri_expediente}/${id}`)
+  }
+
+  CrearExpediente(cuerpo_expediente:ExpedienteRequest):Observable<CrearExpedienteResponse>{
+    cuerpo_expediente.nro_expediente=cuerpo_expediente.nro_expediente.trim().toUpperCase()
+    return this.http.post<CrearExpedienteResponse>(this.api_uri_expediente,cuerpo_expediente)
+  }
+
+  EliminarExpediente(id:number):Observable<EliminarExpedienteResponse>{
+    return this.http.delete<EliminarExpedienteResponse>(`${this.api_uri_expediente}/${id}`)
+  }
+}
