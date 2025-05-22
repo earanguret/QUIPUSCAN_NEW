@@ -33,5 +33,9 @@ export interface InventarioDetalleResponse {
 
 export interface InventarioCrearResponse{
     id_inventario: number;
-    text: string;
+    message: string;
+}
+
+export interface InventarioModificarResponse{
+    message: string;
 }

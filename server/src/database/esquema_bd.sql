@@ -222,12 +222,14 @@ CREATE TABLE archivo.t_estado_expediente (
     c_aud_mac varchar(17),
     id_estado_expediente serial PRIMARY KEY,
     id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
-    estado_recepcionado char(1),
-    estado_preparado char(1),
-    estado_digitalizado char(1),
-    estado_indizado char(1),
-    estado_controlado char(1),
-    estado_fedatado char(1),
+    estado_recepcionado boolean,
+    estado_preparado boolean,
+    estado_digitalizado boolean,
+    estado_indizado boolean,
+    estado_controlado boolean,
+    estado_fedatado boolean,
+    estado_rechazado boolean,
+    estado_finalizado boolean,
     id_cd integer REFERENCES archivo.t_cd(id_cd),
     mensajes varchar
 );
@@ -399,3 +401,36 @@ INSERT INTO archivo.t_usuario(
 	'$2b$10$Okrv.qgAZhFJmgOBnOg0be6ZkEDwHsw4nIgw47OmEDJvm9PBZZwAq', 
 	true, 
 	0);
+
+
+-- funcion que actualiza automaticamente la cantidad de expedientes en la tabla de inventario
+CREATE OR REPLACE FUNCTION actualizar_cantidad_inventario()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN
+    UPDATE archivo.t_inventario
+    SET cantidad = cantidad + 1
+    WHERE id_inventario = NEW.id_inventario;
+
+  ELSIF TG_OP = 'DELETE' THEN
+    UPDATE archivo.t_inventario
+    SET cantidad = cantidad - 1
+    WHERE id_inventario = OLD.id_inventario;
+  END IF;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Trigger para inserciones
+CREATE TRIGGER trg_incrementar_cantidad
+AFTER INSERT ON archivo.t_expediente
+FOR EACH ROW
+EXECUTE FUNCTION actualizar_cantidad_inventario();
+
+-- Trigger para eliminaciones
+CREATE TRIGGER trg_decrementar_cantidad
+AFTER DELETE ON archivo.t_expediente
+FOR EACH ROW
+EXECUTE FUNCTION actualizar_cantidad_inventario();

@@ -7,17 +7,18 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
-import { EliminarExpedienteResponse, ExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { EliminarExpedienteResponse, ExpedienteResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { ExpedienteModel } from '../../../../domain/models/expediente.model';
 import { form_inventario_creacion_vf } from '../../../validator/fromValidator/expediente.validator';
 import { CredencialesService } from '../../../services/local/credenciales.service';
 import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto';
 import { FormsModule } from '@angular/forms';
+import { AlertaComponent } from '../../../shared/components/alerta/alerta.component';
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-recepcion-expedientes',
-  imports: [NavegatorComponent, SubnavegatorComponent, CommonModule, NgxPaginationModule, FormsModule],
+  imports: [NavegatorComponent, SubnavegatorComponent, CommonModule, NgxPaginationModule, FormsModule, AlertaComponent],
   templateUrl: './recepcion-expedientes.component.html',
   styleUrl: './recepcion-expedientes.component.css'
 })
@@ -26,8 +27,8 @@ export class RecepcionExpedientesComponent implements OnInit {
   isLoading: boolean = false;
   private myModal: any;
   mensajeError: string = '';
-  mostrarAlerta = false;
-  alertaVisible = false;
+  showCreateAlert = false;
+  modificarExpediente = false;
 
   data_inventario: InventarioResponse = {
     id_inventario: 0,
@@ -48,7 +49,7 @@ export class RecepcionExpedientesComponent implements OnInit {
     id_responsable: 0,
   }
 
-  ListExpedientes: any[] = [{ nro_expediente: 'exp1' }, { nro_expediente: 'exp2' }, { nro_expediente: 'exp3' }, { nro_expediente: 'exp4' }, { nro_expediente: 'exp1' }, { nro_expediente: 'exp2' }, { nro_expediente: 'exp3' }, { nro_expediente: 'exp4' }, { nro_expediente: 'exp1' }, { nro_expediente: 'exp2' }, { nro_expediente: 'exp3' }, { nro_expediente: 'exp4' }];
+  ListExpedientes: any[] = [];
   p: number = 1;
 
   constructor(
@@ -67,32 +68,24 @@ export class RecepcionExpedientesComponent implements OnInit {
   closeModal() {
     this.myModal.hide();
   }
-  openModal() {
+  openModalCreate() {
     this.limpiarDatosInventario();
+    this.modificarExpediente = false;
+    this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
+    this.myModal.show(); 
+  }
+
+  openModalEdit(data_expediente:ExpedienteModel) {
+
+    this.data_expediente = data_expediente;
+    this.modificarExpediente = true;
     this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
     this.myModal.show();
   }
 
-  mostrarAlertaExito() {
-    this.mostrarAlerta = true;
-  
-    // Activar la clase fade-in
-    setTimeout(() => {
-      this.alertaVisible = true;
-    }, 10);
-  
-    // Desactivar la clase fade-out antes de eliminar
-    setTimeout(() => {
-      this.alertaVisible = false;
-    }, 1900); // Quitar visibilidad
-  
-    setTimeout(() => {
-      this.mostrarAlerta = false;
-    }, 2200); // Eliminar del DOM un poco después
-  }
-
   limpiarDatosInventario() {
     this.mensajeError = '';
+    this.modificarExpediente = false;
     this.data_expediente = {
       id_expediente: 0,
       nro_expediente: '',
@@ -141,7 +134,7 @@ export class RecepcionExpedientesComponent implements OnInit {
           this.ListarExpedientes();
           this.limpiarDatosInventario();
           this.closeModal()
-          this.mostrarAlertaExito();
+          this.showCreateAlert = true;
         }
       })
   
@@ -160,6 +153,31 @@ export class RecepcionExpedientesComponent implements OnInit {
         this.ListarExpedientes();
       }
     })
+  }
+
+  ModificarExpediente() {
+    let data_expediente_temp: ExpedienteRequest = { ...this.data_expediente, app_user: this.credencialesService.credenciales.username };
+    this.expedienteService.ModificarExpediente(data_expediente_temp.id_expediente!,data_expediente_temp).subscribe({
+      next: (data:ModificarExpedienteResponse) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('modificacion de expediente completado');
+        this.ListarExpedientes();
+        this.closeModal();
+      }
+    })
+  }
+
+  EventAction(){
+    if(this.modificarExpediente){
+      this.ModificarExpediente();
+    } else {
+      this.RegistrarExpediente();
+    }
   }
 
   ListarExpedientes() {

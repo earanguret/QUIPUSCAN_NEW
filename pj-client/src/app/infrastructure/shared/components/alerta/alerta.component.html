@@ -1,0 +1,8 @@
+<div 
+  *ngIf="mostrar" 
+  [ngClass]="{'fade-alert': true, 'show': visible}" 
+  class="alert position-fixed end-0 me-3 shadow alert-{{ tipo }}" 
+  role="alert" 
+  style="top: 100px; z-index: 1050;">
+  {{ mensaje }}
+</div>

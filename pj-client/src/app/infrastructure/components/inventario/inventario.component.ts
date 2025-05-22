@@ -6,7 +6,7 @@ import { InventarioModel } from '../../../domain/models/Inventario.model';
 import { InventarioService } from '../../../infrastructure/services/remoto/inventario/inventario.service';
 import { InventarioRequest } from '../../../domain/dto/InventarioRequest.dto';
 import { CredencialesService } from '../../services/local/credenciales.service';
-import { InventarioCrearResponse, InventarioDetalleResponse } from '../../../domain/dto/InventarioResponse.dto';
+import { InventarioCrearResponse, InventarioDetalleResponse, InventarioModificarResponse } from '../../../domain/dto/InventarioResponse.dto';
 import { form_inventario_vf } from '../../validator/fromValidator/inventario.validator';
 
 declare var bootstrap: any;
@@ -20,7 +20,8 @@ declare var bootstrap: any;
 export class InventarioComponent implements OnInit {
   @Input() ruta!: string;
 
-  dataExpediente: any[] = [{nombre:'',estado:'',tipo_documento:'',codigo:''},{nombre:'',estado:'',tipo_documento:'',codigo:''},{nombre:'',estado:'',tipo_documento:'',codigo:''},{nombre:'',estado:'',tipo_documento:'',codigo:''}];
+  dataExpediente: any[] = [];
+  modificarInventario = false;
 
   private myModal: any;
 
@@ -50,11 +51,32 @@ export class InventarioComponent implements OnInit {
   closeModal() {
     this.myModal.hide();
   }
-  openModal() {
+  openModalCreate() {
     this.limpiarDatosInventario();
+    this.modificarInventario = false;
     this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
     this.myModal.show();
   }
+
+  openModalEdit(data_inventario:InventarioModel) {
+      this.data_inventario = {
+        id_inventario: data_inventario.id_inventario,
+        id_responsable: data_inventario.id_responsable,
+        especialidad: data_inventario.especialidad,
+        anio: data_inventario.anio,
+        cantidad: data_inventario.cantidad,
+        tipo_doc: data_inventario.tipo_doc,
+        serie_doc: data_inventario.serie_doc,
+        sede: data_inventario.sede,
+        codigo: data_inventario.codigo
+      }
+      console.log(this.data_inventario);
+  
+      this.modificarInventario = true;
+      this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
+      this.myModal.show();
+    }
+
 
   ListarInventarios(){
     this.inventarioService.ListarInventarios().subscribe({
@@ -69,6 +91,14 @@ export class InventarioComponent implements OnInit {
         console.log('listado de inventarios completado');
       }
     })
+  }
+
+  EventAction(){
+    if(this.modificarInventario){
+       this.ModificarInventario();
+    } else {
+       this.GuardarInventario();
+    }
   }
   
   GuardarInventario(){
@@ -100,6 +130,32 @@ export class InventarioComponent implements OnInit {
     })
   }
 
+  ModificarInventario(){
+    let erroresValidacion = form_inventario_vf(this.data_inventario);
+    if (erroresValidacion.length > 0) {
+      let errorMensaje = '';
+      erroresValidacion.forEach((error:any) => {
+        errorMensaje += `Error en el campo :"${error.campo}": ${error.mensaje} \n`;
+      });
+      return alert(errorMensaje);
+    }
+    this.data_inventario.id_responsable = this.credencialesService.credenciales.id_usuario;
+    let data_inventario_temp:InventarioRequest = {...this.data_inventario, app_user: this.credencialesService.credenciales.username};
+    
+    this.inventarioService.ModificarInventario(data_inventario_temp.id_inventario,data_inventario_temp).subscribe({
+      next: (data:InventarioModificarResponse) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('modificacion de inventario completado');
+        this.ListarInventarios();
+        this.closeModal();
+      }
+    })
+  }
 
 
   limpiarDatosInventario(){

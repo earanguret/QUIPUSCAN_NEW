@@ -202,3 +202,42 @@
     margin-right: 10px;
 }
 
+.bi-pencil-square {
+    opacity: 0.25;
+    transition: opacity 0.3s ease-in-out;
+    
+    top: 0px; 
+    right: -30px; 
+    z-index: 1; 
+    font-size: 1.5rem;
+
+}
+
+.bi-pencil-square:hover {
+    opacity: 1 !important;
+    top: 0px; 
+    right: -30px; 
+    z-index: 1; 
+    font-size: 1.5rem;
+}   
+
+
+.edit-icon {
+    opacity: 0;
+    top: 0px; 
+    right: -30px; 
+    z-index: 1; 
+    font-size: 1.5rem;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .card_panel:hover .edit-icon {
+  
+    top: 0px; 
+    right: -30px; 
+    z-index: 1; 
+    font-size: 1.5rem;
+    opacity: 0.25;
+  }
+

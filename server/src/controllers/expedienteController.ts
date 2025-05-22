@@ -81,6 +81,7 @@ class ExpedienteController {
                                 archivo.t_persona p ON u.id_persona = p.id_persona
                             WHERE 
                                 e.id_inventario=$1
+                            ORDER BY e.id_expediente
                                  `;
             const expedientes = await db.query(consulta, [id_inventario]);
             res.json(expedientes["rows"]);
@@ -103,6 +104,7 @@ class ExpedienteController {
                                 archivo.t_expediente e
                             WHERE 
                                 e.id_inventario=$1
+                            ORDER BY e.id_expediente
                                  `;
             const expedientes = await db.query(consulta, [id_inventario]);
             res.json(expedientes["rows"]);
@@ -239,6 +241,50 @@ class ExpedienteController {
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
+
+    public async ModificarExpediente(req: Request, res: Response) {
+        try {
+            const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            const { id } = req.params;
+            const {  nro_expediente, app_user } = req.body;
+            const consulta = `
+                            UPDATE archivo.t_expediente
+                            SET 
+                                f_aud=CURRENT_TIMESTAMP, 
+                                b_aud='U', 
+                                c_aud_uid='${key.user}', 
+                                c_aud_uidred=$1, 
+                                c_aud_pc=$2, 
+                                c_aud_ip=$3, 
+                                c_aud_mac=$4,
+
+                                nro_expediente=$5
+                            WHERE id_expediente=$6;
+                        `;
+            const valores = [
+                app_user,
+                null,
+                ipAddressClient,
+                null,
+                nro_expediente,
+                id,
+            ];
+
+            db.query(consulta, valores, (error) => {                
+                if (error) {
+                    console.error("Error al modificar expediente:", error);
+                } else {
+                    console.log("expediente modificado correctamente");
+                    res.status(200).json({ message: "expediente modificado correctamente" });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
+    
 }
 const expedienteController = new ExpedienteController();
 export default expedienteController;

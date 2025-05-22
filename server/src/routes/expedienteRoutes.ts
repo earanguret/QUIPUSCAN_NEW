@@ -17,6 +17,7 @@ class ExpedienteRoutes{
         this.router.get('/api/expediente/:id',expedienteController.ObtenerExpedienteDetalleXid)
         this.router.post('/api/expediente',expedienteController.CrearExpediente)
         this.router.delete('/api/expediente/:id',expedienteController.EliminarExpediente)
+        this.router.put('/api/expediente/:id',expedienteController.ModificarExpediente)
     }
 }
 

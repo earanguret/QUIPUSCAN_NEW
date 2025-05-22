@@ -15,3 +15,7 @@ export interface CrearExpedienteResponse {
 export interface EliminarExpedienteResponse {
     message: string;
 }
+
+export interface ModificarExpedienteResponse {
+    message: string;
+}

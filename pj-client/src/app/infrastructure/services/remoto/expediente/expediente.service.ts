@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { ExpedienteModel } from '../../../../domain/models/expediente.model';
 import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto';
 
@@ -18,6 +18,7 @@ export class ExpedienteService {
   // this.router.get('/api/expediente/:id',expedienteController.ObtenerExpedienteDetalleXid)
   // this.router.post('/api/expediente',expedienteController.CrearExpediente)
   //this.router.get('/api/expediente/lista/:id_inventario',expedienteController.ObtenerExpedientesDetalleById_inventario)
+  //this.router.put('/api/expediente/:id',expedienteController.ModificarExpediente)
 
   ListarExpedientes():Observable<ExpedienteResponse[]>{
     return this.http.get<ExpedienteResponse[]>(this.api_uri_expediente)
@@ -37,5 +38,10 @@ export class ExpedienteService {
 
   EliminarExpediente(id:number):Observable<EliminarExpedienteResponse>{
     return this.http.delete<EliminarExpedienteResponse>(`${this.api_uri_expediente}/${id}`)
+  }
+
+  ModificarExpediente(id:number,cuerpo_expediente:ExpedienteRequest):Observable<ModificarExpedienteResponse>{
+    cuerpo_expediente.nro_expediente=cuerpo_expediente.nro_expediente.trim().toUpperCase()
+    return this.http.put<ModificarExpedienteResponse>(`${this.api_uri_expediente}/${id}`,cuerpo_expediente)
   }
 }

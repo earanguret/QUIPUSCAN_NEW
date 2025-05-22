@@ -50,7 +50,7 @@
                    
                 </div>
                 <div class="text-end mt-4">
-                    <button class="btn btn-preparacion btn-sm opacity-75" (click)="openModal()" >+ nuevo registro</button>
+                    <button class="btn btn-preparacion btn-sm opacity-75" (click)="openModalCreate()" >+ nuevo registro</button>
                 </div>
             </div>
             <div class="col-lg-9">
@@ -100,7 +100,7 @@
                                         *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
-                                        <td><i class="bi bi-pencil"></i></td>
+                                        <td><i class="bi bi-pencil" (click)="openModalEdit(expediente)"></i></td>
                                         <td><i class="bi bi-trash" (click)="EliminarExpediente(expediente.id_expediente)"></i></td>
                                     </tr>
                                 </tbody>
@@ -149,7 +149,7 @@
                           {{mensajeError}}
                         </p>
                         <button type="button" class="cancelar-btn mx-4" (click)="closeModal()">Cancelar</button>
-                        <button type="button" class="guardar-btn" (click)="RegistrarExpediente()">Guardar</button>
+                        <button type="button" class="guardar-btn" (click)="EventAction()">{{modificarExpediente ? 'Modificar' : 'Guardar' }}</button>
                       </div>
                 </fieldset>
             </form>
@@ -158,7 +158,7 @@
     </div>
 </div>
 
-<div 
+<!-- <div 
   *ngIf="mostrarAlerta" 
   [ngClass]="{'fade-alert': true, 'show': alertaVisible}" 
   class="alert alert-success position-fixed end-0 me-3 shadow" 
@@ -166,4 +166,10 @@
   style="top: 100px; z-index: 1050;"
   >
   expediente creado correctamente
-</div>
+</div> -->
+
+<app-alerta *ngIf="showCreateAlert" 
+             [mensaje]="'Expediente creado correctamente'" 
+             [tipo]="'success'" 
+             [duracion]="3000">
+</app-alerta>

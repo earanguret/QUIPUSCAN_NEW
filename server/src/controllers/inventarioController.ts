@@ -166,7 +166,7 @@ class InventarioController {
               
               res.status(200).json({
                 id_inventario: idinventario,
-                text: "el inventario se creó correctamente",
+                message: "el inventario se creó correctamente",
               });
             }
           });
@@ -179,6 +179,59 @@ class InventarioController {
           res.status(500).json({ error: "Error interno del servidor" });
         }
       }
+
+      public async ModificarInventario(req: Request, res: Response): Promise<void> {
+        try {
+          const { id } = req.params;
+          const { anio, tipo_doc, serie_doc, especialidad, sede, codigo, app_user } = req.body;
+          const ipAddressClient =
+            req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+          const consulta = `
+                        UPDATE archivo.t_inventario
+                            SET 
+                                f_aud=CURRENT_TIMESTAMP, 
+                                b_aud='U', 
+                                c_aud_uid='${key.user}', 
+                                c_aud_uidred=$1, 
+                                c_aud_pc=$2, 
+                                c_aud_ip=$3, 
+                                c_aud_mac=$4,
+
+                                anio=$5, 
+                                tipo_doc=$6, 
+                                serie_doc=$7, 
+                                especialidad=$8, 
+                                sede=$9, 
+                                codigo=$10
+                            WHERE id_inventario=$11;
+                `;
+          const valores = [
+            app_user,
+            null,
+            ipAddressClient,
+            null,
+            anio,
+            tipo_doc,
+            serie_doc,
+            especialidad,
+            sede,
+            codigo,
+            id,
+          ];
+
+          db.query(consulta, valores, (error) => {
+            if (error) {
+              console.error("Error al modificar inventario:", error);
+            } else {
+              console.log("inventario modificado correctamente");
+              res.json({ message: "el inventario se modifico correctamente" });
+            }
+          });
+        } catch (error) {
+          console.error("Error al modificar inventario:", error);
+          res.status(500).json({ error: "Error interno del servidor" });
+        }
+      }     
 }
 
 const inventarioController = new InventarioController();

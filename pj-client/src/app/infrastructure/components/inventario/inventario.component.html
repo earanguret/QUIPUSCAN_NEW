@@ -38,16 +38,24 @@
             <div class="my-4 d-flex" style="max-width: 90%;">
                 <input type="text" class="form-control form-control-busqueda" name="buscar" placeholder="BUSCAR ">
                 <!-- <button class="buscar-btn">+ ADD</button> -->
-                <button class="btn btn-success opacity-75 mx-2" (click)="openModal()">+ ADD</button>
+                <button class="btn btn-success opacity-75 mx-2" (click)="openModalCreate()">+ ADD</button>
             </div>
 
             <div *ngIf="ListInventarioDetalle.length>0">
-                <div *ngFor="let item of ListInventarioDetalle" class="card_panel" (click)="ExpedientesSerieDocumental(item.id_inventario)">
-                    <div class="row p-4">
+                <div *ngFor="let item of ListInventarioDetalle" class="card_panel position-relative">
+                    <!-- <button class="btn btn-success opacity-75 position-absolute"
+                        style="top: 0px; right: -60px; z-index: 1;" (click)="openModalEdit(item)">
+                        Editar
+                    </button> -->
+                    <i class="bi bi-pencil-square  position-absolute edit-icon" title="modificar " (click)="openModalEdit(item)">
+                    </i>
+
+                    <div class="row p-4" (click)="ExpedientesSerieDocumental(item.id_inventario)">
                         <div class="col-lg-10 d-flex flex-column px-4 ">
-                            <p class="text-serie-doc m-0"><i class="bi bi-box-seam icon-box"></i>{{ item.serie_doc}} / <samp class="text-codigo">{{item.codigo}}</samp></p>
+                            <p class="text-serie-doc m-0"><i class="bi bi-box-seam icon-box"></i>{{ item.serie_doc}} /  <samp class="text-codigo">{{item.codigo}}</samp></p>
                             <div class=" m-1 mb-2 mx-4">
-                                <p class="text-content m-0">RESPONSABLE : {{item.nombre}} {{item.ap_paterno}} {{item.ap_materno}}</p>
+                                <p class="text-content m-0">RESPONSABLE : {{item.nombre}} {{item.ap_paterno}}
+                                    {{item.ap_materno}}</p>
                                 <p class="text-content m-0">SEDE: {{item.sede}}</p>
 
                             </div>
@@ -57,7 +65,7 @@
                                     <span> {{item.especialidad}} </span>
                                 </div>
                                 <div class="tag-title m-1">
-                                    <span> 2016 </span>
+                                    <span> {{item.anio}} </span>
                                 </div>
                                 <div class="tag-title m-1">
                                     <span> {{item.tipo_doc}} </span>
@@ -68,13 +76,16 @@
                         <div class="col-lg-2 ">
                             <div class="text-center d-flex flex-column justify-content-between align-items-end h-100">
                                 <div class="text-center px-4 d-flex flex-column align-items-end">
-                                    <span class="number-folio">{{item.cantidad}}</span>
-                                    <samp class="text-folio mx-1">EXP</samp>
+                                    <div class="d-flex flex-column">
+                                        <span class="number-folio ">{{item.cantidad}}</span>
+                                        <samp class="text-folio mx-1">EXP</samp>
+                                    </div>
                                 </div>
                                 <i class="bi bi-printer icon-printer mx-4" title="imprimir"></i>
                             </div>
 
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -83,17 +94,18 @@
 </div>
 
 <!-- modal inventario -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
     <div class="modal-dialog " role="document">
-        
+
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">nuevo inventario</h5>
-                
-    
+
+
             </div>
-            <form >
-                
+            <form>
+
                 <!-- DATOS DE INVENTARIO -->
                 <fieldset class="p-4">
                     <div class="form-group">
@@ -102,7 +114,7 @@
                             <option value="" disabled selected>ELIJE ESPECIALIDAD </option>
                             <option value="CIVIL">CIVIL</option>
                             <option value="PENAL">PENAL</option>
-                            <option value="LABORAL CONTENCIOSO ADMINISTRATIVO">LABORAL CONTENCIOSO ADMINISTRATIVO </option>
+                            <option value="LABORAL CONTENCIOSO ADMINISTRATIVO">LABORAL CONTENCIOSO ADMINISTRATIVO</option>
                             <option value="LABORAL NUEVA LEY">LABORAL NUEVA LEY</option>
                             <option value="FAMILIA CIVIL">FAMILIA CIVIL</option>
                             <option value="FAMILIA TUTELAR">FAMILIA TUTELAR</option>
@@ -110,12 +122,12 @@
                     </div>
                     <div class="form-group mt-3">
                         <label for="sede" class="form-label ">Sede:</label>
-                        <select id="sede" name="especialidad" class="form-select" [(ngModel)]="data_inventario.sede">
+                        <select id="sede" name="sede" class="form-select" [(ngModel)]="data_inventario.sede">
                             <option value="" disabled selected>SEDE </option>
                             <option value="CUSCO">CUSCO</option>
                             <option value="CALCA">CALCA</option>
-                            
-                           
+
+
                         </select>
                     </div>
                     <div class="form-group mt-3">
@@ -133,22 +145,24 @@
                     </div>
                     <div class="form-group mt-3">
                         <label for="serie_doc" class="form-label">Serie Documental:</label>
-                        <input type="text" class="form-control" name="serie_doc" [(ngModel)]="data_inventario.serie_doc">
+                        <input type="text" class="form-control" name="serie_doc"
+                            [(ngModel)]="data_inventario.serie_doc">
                     </div>
                     <div class="form-group mt-3">
                         <label for="codigo" class="form-label">Código:</label>
-                        <input type="text" class="form-control" name="codigo"   [(ngModel)]="data_inventario.codigo">
+                        <input type="text" class="form-control" name="codigo" [(ngModel)]="data_inventario.codigo">
                     </div>
 
-                    <div class="d-flex justify-content-end mt-3">
-                        <button type="button" class="cancelar-btn" (click)="closeModal()">SALIR</button>
-                        <button type="button" class="guardar-btn" (click)="GuardarInventario()">Guardar</button>
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="button" class="cancelar-btn mx-4" (click)="closeModal()">SALIR</button>
+                        <button type="button" class="guardar-btn" (click)="EventAction()">{{modificarInventario?
+                            'Modificar': 'Guardar'}}</button>
                     </div>
                 </fieldset>
 
-                
+
             </form>
-            
+
         </div>
     </div>
 </div>
