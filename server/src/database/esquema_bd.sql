@@ -192,6 +192,8 @@ CREATE TABLE archivo.t_cd (
     c_aud_pc varchar(30),
     c_aud_ip varchar(15),
     c_aud_mac varchar(17),
+
+    create_at timestamp,
     id_cd serial PRIMARY KEY,
     id_inventario integer REFERENCES archivo.t_inventario(id_inventario),
     nombre varchar,
@@ -220,6 +222,7 @@ CREATE TABLE archivo.t_estado_expediente (
     c_aud_pc varchar(30),
     c_aud_ip varchar(15),
     c_aud_mac varchar(17),
+    create_at timestamp,
     id_estado_expediente serial PRIMARY KEY,
     id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
     estado_recepcionado boolean,

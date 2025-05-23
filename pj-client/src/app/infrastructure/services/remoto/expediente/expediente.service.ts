@@ -44,4 +44,6 @@ export class ExpedienteService {
     cuerpo_expediente.nro_expediente=cuerpo_expediente.nro_expediente.trim().toUpperCase()
     return this.http.put<ModificarExpedienteResponse>(`${this.api_uri_expediente}/${id}`,cuerpo_expediente)
   }
+
+
 }

@@ -31,11 +31,11 @@
                   </div>
                 </div>
 
-                <div class="card shadow-sm border-0 bg-light  mt-4">
+                <!-- <div class="card shadow-sm border-0 bg-light  mt-4">
                     <div class="card-body">
-                      <!-- <h6 class="card-title text-uppercase text-secondary mb-3 ">
+                      <h6 class="card-title text-uppercase text-secondary mb-3 ">
                        Datos
-                      </h6> -->
+                      </h6>
                       <ul class="list-unstyled mb-0 small">
                         <li class="mb-2">
                           <i class="bi bi-card-list me-2 text-muted"></i> En preparacion : (78)
@@ -48,7 +48,7 @@
                       
                     </div>
                    
-                </div>
+                </div> -->
                 <div class="text-end mt-4">
                     <button class="btn btn-preparacion btn-sm opacity-75" (click)="openModalCreate()" >+ nuevo registro</button>
                 </div>
@@ -64,11 +64,11 @@
            
                 
                 
-                <div class="card rounded shadow border-2 ">
+                <div class="card rounded shadow border-2 " >
                     <div class="card-header py-3 d-flex justify-content-between align-items-center ">
                         <!-- <p class="subtitulo_menu">expedientes</p>
                         <button id="buton_agregar" type="button" class="btn btn-success mx-4" >AGREGAR</button> -->
-                        <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente" placeholder="Buscar expediente">
+                        <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente" placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
                                 
                     </div>
                     <div class="card-body px-5 bg-white rounded">
@@ -91,8 +91,8 @@
                                     <tr>
                                         <th scope="col">Nro</th>
                                         <th scope="col">EXPEDIENTE</th>
-                                        <th scope="col">MODIFICAR</th>
-                                        <th scope="col">ELIMINAR</th>
+                                        <th scope="col"></th>
+                                        <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -100,17 +100,17 @@
                                         *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
-                                        <td><i class="bi bi-pencil" (click)="openModalEdit(expediente)"></i></td>
-                                        <td><i class="bi bi-trash" (click)="EliminarExpediente(expediente.id_expediente)"></i></td>
+                                        <td><i *ngIf="expediente.estado_preparado==null" class="bi bi-pencil" (click)="openModalEdit(expediente)"></i></td>
+                                        <td><i *ngIf="expediente.estado_preparado==null"  class="bi bi-trash" (click)="EliminarExpediente(expediente.id_expediente)"></i></td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-between ">
-                                <div>
+                            <div class="d-flex justify-content-end ">
+                                <!-- <div>
                                     <button  class="btn btn-sm btn-secondary opacity-75" type="button" [disabled]="isLoading"  >
                                         <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ isLoading ? 'Enviando a preparación...' : 'ENVIAR A PREPARACIÓN' }}
                                     </button>
-                                </div>
+                                </div> -->
                                
                                 <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
                             </div>

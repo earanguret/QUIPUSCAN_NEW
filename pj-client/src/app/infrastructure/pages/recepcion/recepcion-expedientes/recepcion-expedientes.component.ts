@@ -7,13 +7,20 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
-import { EliminarExpedienteResponse, ExpedienteResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { ExpedienteModel } from '../../../../domain/models/expediente.model';
 import { form_inventario_creacion_vf } from '../../../validator/fromValidator/expediente.validator';
 import { CredencialesService } from '../../../services/local/credenciales.service';
 import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto';
 import { FormsModule } from '@angular/forms';
 import { AlertaComponent } from '../../../shared/components/alerta/alerta.component';
+import { EstadoService } from '../../../services/remoto/estado/estado.service';
+import { CrearEstadoResponse, EliminarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+import { EstadoRequest } from '../../../../domain/dto/EstadoRequest.dto';
+import { FlujogramaRequest } from '../../../../domain/dto/flujogramaRequest.dto';
+import { CrearFlujogramaResponse, EliminarFlujogramaResponse } from '../../../../domain/dto/FlujogramaResponse.dto';
+import { FlujogramaService } from '../../../services/remoto/flujograma/flujograma.service';
+import { switchMap } from 'rxjs';
 declare var bootstrap: any;
 
 @Component({
@@ -49,7 +56,9 @@ export class RecepcionExpedientesComponent implements OnInit {
     id_responsable: 0,
   }
 
-  ListExpedientes: any[] = [];
+
+  ListExpedientes: ExpedienteResponse[] = [];
+  ListExpedientesTemp: ExpedienteResponse[] = [];
   p: number = 1;
 
   constructor(
@@ -57,12 +66,14 @@ export class RecepcionExpedientesComponent implements OnInit {
     private inventarioService: InventarioService,
     private activatedRoute: ActivatedRoute,
     private expedienteService: ExpedienteService,
-    private credencialesService: CredencialesService
+    private credencialesService: CredencialesService,
+    private estadoService: EstadoService,
+    private flujogramaService: FlujogramaService
   ) { }
 
   ngOnInit(): void {
-    this.DatosInventario()
-    this.ListarExpedientes()
+    this.ObtenerDatosInventario()
+    this.ObtenerListaExpedientes()
   }
 
   closeModal() {
@@ -94,6 +105,7 @@ export class RecepcionExpedientesComponent implements OnInit {
     }
 
   }
+
   RegistrarExpediente() {
     const params = this.activatedRoute.snapshot.params;
     let erroresValidacion = form_inventario_creacion_vf(this.data_expediente);
@@ -112,10 +124,13 @@ export class RecepcionExpedientesComponent implements OnInit {
     let data_expediente_temp: ExpedienteRequest = { ...this.data_expediente, app_user: this.credencialesService.credenciales.username };
 
     console.log(data_expediente_temp);
+    let id_expediente = 0;
 
     this.expedienteService.CrearExpediente(data_expediente_temp).subscribe({
-      next: (data: ExpedienteResponse) => {
+      next: (data: CrearExpedienteResponse) => {
         console.log(data);
+        id_expediente = data.expediente.id_expediente;
+        
       },
       error: (error) => {
 
@@ -131,28 +146,39 @@ export class RecepcionExpedientesComponent implements OnInit {
       },
         complete: () => {
           console.log('creacion de expediente completado');
-          this.ListarExpedientes();
+          this.ObtenerListaExpedientes();
           this.limpiarDatosInventario();
           this.closeModal()
+          this.CrearEstadoExpediente(id_expediente);
+          this.crearFlujograma(id_expediente);
           this.showCreateAlert = true;
         }
       })
   
   }
 
-  EliminarExpediente(id:number) {
-    this.expedienteService.EliminarExpediente(id).subscribe({
-      next: (data:EliminarExpedienteResponse) => {
-        console.log(data);
+  EliminarExpediente(id: number) {
+    this.flujogramaService.EliminarFlujograma(id).pipe(
+      switchMap((data1: EliminarFlujogramaResponse) => {
+        console.log('Flujograma eliminado:', data1);
+        return this.estadoService.EliminarEstado(id);
+      }),
+      switchMap((data2: EliminarEstadoResponse) => {
+        console.log('Estado eliminado:', data2);
+        return this.expedienteService.EliminarExpediente(id);
+      })
+    ).subscribe({
+      next: (data3: EliminarExpedienteResponse) => {
+        console.log('Expediente eliminado:', data3);
       },
       error: (error) => {
-        console.log(error);
+        console.error('Error durante la eliminación:', error);
       },
       complete: () => {
-        console.log('eliminacion de expediente completado');
-        this.ListarExpedientes();
+        console.log('Eliminación completa');
+        this.ObtenerListaExpedientes();
       }
-    })
+    });
   }
 
   ModificarExpediente() {
@@ -166,10 +192,54 @@ export class RecepcionExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('modificacion de expediente completado');
-        this.ListarExpedientes();
+        this.ObtenerListaExpedientes();
         this.closeModal();
       }
     })
+  }
+
+  CrearEstadoExpediente(id_expediente:number){
+      
+    let data_estado:EstadoRequest = {
+      id_expediente: id_expediente,
+      app_user: this.credencialesService.credenciales.username
+    }
+    console.log(data_estado);
+    this.estadoService.CrearEstado(data_estado).subscribe({
+      next: (data:CrearEstadoResponse) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('creacion de estado expediente completado');
+    
+      }
+    })
+  }
+
+  crearFlujograma(id_expediente:number){
+    
+    let data_flujograma:FlujogramaRequest = {
+      id_expediente: id_expediente,
+      id_responsable: this.credencialesService.credenciales.id_usuario,
+      area: 'RECEPCION',
+      app_user: this.credencialesService.credenciales.username
+    }
+
+    this.flujogramaService.CrearFlujograma(data_flujograma).subscribe({
+      next: (data:CrearFlujogramaResponse) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('creacion de flujograma completado');
+      }
+    })
+   
   }
 
   EventAction(){
@@ -180,11 +250,12 @@ export class RecepcionExpedientesComponent implements OnInit {
     }
   }
 
-  ListarExpedientes() {
+  ObtenerListaExpedientes() {
     const params = this.activatedRoute.snapshot.params;
     this.expedienteService.ListarExpedientesXidInventario(params['id']).subscribe({
       next: (data: ExpedienteResponse[]) => {
         this.ListExpedientes = data;
+        this.ListExpedientesTemp = data;
         console.log(this.ListExpedientes);
       },
       error: (error) => {
@@ -196,7 +267,7 @@ export class RecepcionExpedientesComponent implements OnInit {
     })
   }
 
-  DatosInventario() {
+  ObtenerDatosInventario() {
     const params = this.activatedRoute.snapshot.params;
     this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
       next: (data: InventarioResponse) => {
@@ -212,4 +283,52 @@ export class RecepcionExpedientesComponent implements OnInit {
       }
     })
   }
+
+  buscarEnObjeto(event: any) {
+    this.p = 1
+    let objetosFiltrados = []
+    const textoBusqueda = event.target.value.toLowerCase();
+    objetosFiltrados = this.ListExpedientesTemp.filter((objeto:
+      {
+        nro_expediente: string;
+      }) => {
+      const nombre_expediente = objeto.nro_expediente.toLowerCase();
+      return nombre_expediente.includes(textoBusqueda);
+    });
+    this.ListExpedientes = objetosFiltrados
+  }
+
+  // EnviarExpedientesPreparacion() {
+  //   this.isLoading = true;
+  //     if (this.exp_count_pendientes > 0) {
+  //       this.ListExpedientes.forEach((expediente: any) => {
+  //         if (expediente.estado_preparado==null) {
+  //           this.estadoService.AprobarPreparacion(expediente.id_expediente, this.credencialesService.credenciales.username).subscribe({
+  //             next: (data:any) => {
+  //               console.log(data);
+  //             },
+  //             error: (error) => {
+  //               console.log(error);
+  //             },
+  //             complete: () => {
+  //               console.log('expediente preparado');
+  //               this.ObtenerListaExpedientes();
+  //             }
+  //           })
+  //         }
+  //       })
+  //       setTimeout(() => {
+  //         this.isLoading = false;
+  //         this.ObtenerListaExpedientes();
+  //       // mensaje : se enviaron los expedientes
+  //       }, 2000);
+
+  //     }
+  //     else {
+  //       this.isLoading = false;
+  //       // mensaje : no hay expedientes pendientes
+  //     }
+
+  // }
+
 }

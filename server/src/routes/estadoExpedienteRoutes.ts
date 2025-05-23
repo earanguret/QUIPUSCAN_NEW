@@ -12,7 +12,9 @@ class EstadoExpedienteRoutes{
         
     }
     config():void{
-        this.router.post('/api/estado_expediente/crear',estadoExpedienteController.CrearEstadoExpediente)
+        this.router.post('/api/estado_expediente',estadoExpedienteController.CrearEstadoExpediente)
+        this.router.put('/api/estado_expediente/aprobar/preparacion/:id_expediente',estadoExpedienteController.AprobarPreparacion)
+        this.router.delete('/api/estado_expediente/:id_expediente',estadoExpedienteController.EliminarEstadoExpediente)
 
     }
 }

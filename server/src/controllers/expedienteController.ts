@@ -99,9 +99,20 @@ class ExpedienteController {
                                 e.id_expediente,
                                 e.nro_expediente,
                                 e.id_inventario,
-                                e.id_responsable                           
+                                e.id_responsable,
+								 s.estado_preparado,
+								 s.estado_recepcionado,
+							    s.estado_preparado,
+							    s.estado_digitalizado,
+							    s.estado_indizado,
+							    s.estado_controlado,
+							    s.estado_fedatado,
+							    s.estado_rechazado,
+							    s.estado_finalizado
                             FROM
                                 archivo.t_expediente e
+							JOIN 
+								archivo.t_estado_expediente s on e.id_expediente = s.id_expediente
                             WHERE 
                                 e.id_inventario=$1
                             ORDER BY e.id_expediente

@@ -7,7 +7,7 @@ class EstadoExpedienteController {
     public async CrearEstadoExpediente(req: Request, res: Response) {
         try {
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-            const { id_expediente, estado_recepcionado, app_user } = req.body;
+            const { id_expediente, app_user } = req.body;
             const consulta = `
                 INSERT INTO archivo.t_estado_expediente(
                     f_aud,        -- fecha de la transaccion
@@ -22,7 +22,7 @@ class EstadoExpedienteController {
                     id_expediente, 
                     estado_recepcionado
                     )
-                VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, CURRENT_TIMESTAMP, $5, $6, $7);
+                VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, CURRENT_TIMESTAMP, $5, $6);
     `;
             const valores = [
                 app_user,
@@ -30,7 +30,7 @@ class EstadoExpedienteController {
                 ipAddressClient,
                 null,
                 id_expediente,
-                estado_recepcionado,
+                true,
             ];
 
             db.query(consulta, valores, (error, resultado) => {
@@ -38,7 +38,6 @@ class EstadoExpedienteController {
                     console.error("Error al insertar estado expediente:", error);
                     res.status(500).json({ error: "Error interno del servidor" });
                 } else {
-                    const idEstadoExpediente = resultado.rows[0]["id_estado_expediente"]; // ID se encuentra en la primera fila
                     console.log("Estado expediente creado correctamente");
                     res.status(200).json({ message: "Estado expediente creado correctamente" });
                 }
@@ -49,8 +48,66 @@ class EstadoExpedienteController {
         }
     }
 
-    public async AprobarPreparacion(req: Request, res: Response) {
+    public async EliminarEstadoExpediente(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const consulta = `
+                            DELETE FROM archivo.t_estado_expediente WHERE id_expediente=$1;
+                        `;
+            const valores = [id_expediente];
 
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Error al eliminar estado expediente:', error);
+                } else {
+                    console.log('estado expediente eliminado correctamente');
+                    res.status(200).json({ message: 'estado expediente eliminado correctamente' });
+                }
+            });
+        }
+        catch (error) {
+            console.error('Error interno en el servidor:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
+
+        }
+    }
+
+    public async AprobarPreparacion(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { user_app} = req.body;
+            
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
+
+                            estado_preparado=true
+	                    WHERE id_expediente=$5;
+                
+                `;
+            const valores = [user_app, null, ipAddressClient, null, id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Preparacion aprobada:', error);
+                } else {
+                    console.log('Preparacion aprobada correctamente');
+                    res.json({ text: 'Preparacion aprobada correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
 
     public async AprobarDigitalizacion(req: Request, res: Response) {
