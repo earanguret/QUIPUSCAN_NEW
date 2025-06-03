@@ -85,6 +85,8 @@ class FlujogramaController {
         }
 
     }
+
+
 }
 
 const flujogramaController = new FlujogramaController();

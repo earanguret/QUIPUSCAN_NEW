@@ -12,31 +12,6 @@
     max-width: 1680px;
   }
 
-/* menu listado de inventario */
-.menu-listado-inventario{
-    box-sizing: border-box;
-    /* background-color: #f1e55d5d; */
-    background-color: #ebdfb77c   !important;
-    padding: 5px;
-    border-radius: 16px;
-}
-
-.icon-title-container {
-    display: flex;
-    align-items: center;
- 
-  }
-
-.list-unstyled{
-    display: inline-block;
-    padding: 0 0 0 0px;
-    font-size: 0.85rem;
-    font-weight: 500;
-   
-    color: #434343a1;
-    
-}
-
 
 /* titulo reportes */
 .titulo_reporte{
@@ -46,24 +21,6 @@
 }
 
 
-/* iconos de expedientes */
-.bi-pencil {
-    cursor: pointer;
-    transition: color 0.3s ease; /* Para una transición suave */
-  }
-  
-  .bi-pencil:hover {
-    color: blue;
-  }
-
-  .bi-trash {
-    cursor: pointer;
-    transition: color 0.3s ease; /* Para una transición suave */
-  }
-  
-  .bi-trash:hover {
-    color: rgb(255, 0, 0);
-  }
 
   /* BOTON ENVIAR A PREPARACION */
   .btn-preparacion{

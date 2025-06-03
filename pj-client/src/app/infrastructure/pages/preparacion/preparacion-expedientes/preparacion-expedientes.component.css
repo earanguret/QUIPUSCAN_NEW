@@ -1,0 +1,64 @@
+.contenedor {
+    margin: 2% 4%;
+    max-width: 1680px;
+  }
+
+  .observation-tag{
+    background-color: #f6f6ee;
+    color: #8d8d88 ;
+    font-size: 0.9rem;
+    border: 2px solid #ecece5c9;
+  }
+
+  .observation-input{
+    font-size: 0.9rem;
+    color: #8d8d88 ;
+  }
+
+  /* iconos de observaciones */
+  /* .observation-icons{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    
+  } */
+
+
+  .observation-wrapper {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+  }
+  
+  .observation-icons {
+    position: absolute;
+    top: 0.25rem; /* ajusta según lo necesites */
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #9b9b1f85;
+  
+  }
+
+  .obs-icon {
+    font-size: 0.8rem;
+    font-weight: bold; /* hace el ícono más “grueso” si soportado */
+    text-shadow: 0 0 1px currentColor; /* efecto de grosor sin agrandar el espacio */
+    transition: transform 0.2s ease;
+  }
+  
+  .obs-icon:hover {
+    color: #8b8b1b;
+    transform: scale(1.1); /* ligeramente más grande al pasar el mouse */
+  }
+
+
+  /* subtitulo expediente */
+  .sub_titulo_expediente{
+    background-color: #f1f1f3;
+    color: #8d8d88 ;
+    border: 2px solid #ecece5c9;
+    border-bottom: 0px;
+  }

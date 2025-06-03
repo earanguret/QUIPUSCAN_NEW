@@ -1,72 +1,73 @@
-
-
-.panel{
+.panel {
 
     height: 100vh;
     /* overflow-y: hidden; */
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    
-    
- }
 
- /* Scroll personalizado para paneles de navegación */
+
+}
+
+/* Scroll personalizado para paneles de navegación */
 .panel::-webkit-scrollbar {
     width: 7px;
-  }
-  
-  .panel::-webkit-scrollbar-thumb {
+}
+
+.panel::-webkit-scrollbar-thumb {
     background-color: #b7bbb877;
     border-radius: 10px;
-  }
-  
-  .panel::-webkit-scrollbar-track {
+}
+
+.panel::-webkit-scrollbar-track {
     background: #e9ecef;
-  }
-
-
-
-.icon-custom {
-    
-    color:rgba(49, 49, 49, 0.452);/* Establece el color del texto en blanco */
-    cursor: pointer; /* Cambiar el cursor a una manito cuando el ratón está sobre el icono */
-    font-weight: bold; 
-    font-size: 50px;
-    
 }
 
 
 
-.titulo_menu{
-    
+.icon-custom {
+
+    color: rgba(49, 49, 49, 0.452);
+    /* Establece el color del texto en blanco */
+    cursor: pointer;
+    /* Cambiar el cursor a una manito cuando el ratón está sobre el icono */
+    font-weight: bold;
+    font-size: 50px;
+
+}
+
+
+
+.titulo_menu {
+
     font-size: 2.0rem;
     font-weight: 700;
     /* color: #26547ae0; */
     color: #1a3a55cb;
     margin: 0px;
- 
+
 }
 
-.subtitulo_menu{
+.subtitulo_menu {
 
     font-size: 1.2rem;
     font-weight: 500;
     color: #284761e7;
     margin: 0px;
-    
+
 }
 
-.hand_cursor{
-    cursor: pointer; /*  convierte el cursor en una mano */
-    
+.hand_cursor {
+    cursor: pointer;
+    /*  convierte el cursor en una mano */
+
 }
 
-.font-weight-bold{
+.font-weight-bold {
     font-weight: bold;
 }
 
-img{
+img {
     margin: 0px;
 }
 
@@ -74,23 +75,27 @@ img{
 
 
 /* modifica la posicion y alinacion de todos los lementos del encabezado de la pagina */
-.encabezado_pages{
+.encabezado_pages {
     display: flex;
-    justify-content: center; /* Centra los elementos horizontalmente */
-    align-items: center; /* Centra los elementos verticalmente */
-    text-align: center; /* Centra el texto del <p> */      
+    justify-content: start;
+    /* Centra los elementos horizontalmente */
+    align-items: center;
+    /* Centra los elementos verticalmente */
+    text-align: center;
+    /* Centra el texto del <p> */
+
 }
 
 /* boton volver */
-.btn-volver{
-    background-color:  #176091;
+.btn-volver {
+    background-color: #176091;
     border-radius: 5px;
-    border-color: #176091;   
+    border-color: #176091;
 }
 
 .icon-custom-encabezado {
-    
-    font-weight: bold; 
+
+    font-weight: bold;
     font-size: 3.5rem;
     color: #929FB1;
     margin-right: 10px;
@@ -98,56 +103,98 @@ img{
 }
 
 /* texto de correo */
-.text-correo{
+.text-correo {
     text-transform: lowercase !important;
     color: #3f91c7;
-   
+
 }
 
 /* texto de encabezado de formulario */
-.form-label{
-    
+.form-label {
+
     color: rgba(17, 55, 90, 0.662);
     font-weight: 700;
     letter-spacing: 0.4px;
-   
+
 }
 
-.form-control{
-    text-transform:uppercase;
+.form-control {
+    text-transform: uppercase;
 }
 
 
-/* iconos */
-i{
+.bi-pencil {
+    cursor: pointer;
+    transition: color 0.3s ease;
+    /* Para una transición suave */
+}
+
+.bi-pencil:hover {
+    color: blue;
+}
+
+.bi-trash {
+    cursor: pointer;
+    transition: color 0.3s ease;
+    /* Para una transición suave */
+}
+
+.bi-trash:hover {
+    color: rgb(255, 0, 0);
+}
+
+.bi-box-arrow-in-down{
     cursor: pointer;
 }
 
-.bi-trash3-fill{
-    color: rgba(167, 62, 62, 0.836);
-}
-.bi-trash3-fill:hover{
-    color: rgb(211, 11, 11);
-}
-
-.bi-pencil-fill {
-    color: #176091;
-    
-}
-.bi-pencil-fill:hover {
-    color: #408ec2;
-}
-
-
 /* para todos los iconos */
-.icon{
+.icon {
     cursor: pointer;
 }
 
 /* encabezado de modales */
-.modal-header{
+.modal-header {
     background-color: #176091 !important;
     padding: 15px;
     color: white;
     border-radius: 0px;
+    border-bottom: 0px;
+}
+
+
+/* boton de guardar y cancelar*/
+/*  */
+.guardar-btn{
+    background-color: #B9EACE;
+    color: #227243;
+    border: 1px solid #92DFB2;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600
+}
+.guardar-btn:hover{
+    background-color:  #86d993;
+    color: #227243;
+    border: 1px solid #92DFB2;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600
+
+}
+
+.cancelar-btn{
+   
+    background-color: #E1E7EB;
+    color: #6E7A89;
+    border: 1px solid #dde2e9;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600;
+    
+}
+.cancelar-btn:hover{
+   
+    background-color: #cdcecf;
+    color: #525355;
+    border: 1px solid #d6dadf;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600;
+    
 }

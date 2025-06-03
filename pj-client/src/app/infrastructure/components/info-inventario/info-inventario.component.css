@@ -1,0 +1,23 @@
+.menu-listado-inventario{
+    box-sizing: border-box;
+    /* background-color: #f1e55d5d; */
+    background-color: #ebdfb77c   !important;
+    padding: 5px;
+    border-radius: 16px;
+}
+
+.icon-title-container {
+    display: flex;
+    align-items: center;
+ 
+  }
+
+.list-unstyled{
+    display: inline-block;
+    padding: 0 0 0 0px;
+    font-size: 0.85rem;
+    font-weight: 500;
+   
+    color: #434343a1;
+    
+}

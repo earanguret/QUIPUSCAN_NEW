@@ -76,14 +76,29 @@ CREATE TABLE archivo.t_expediente (
     id_expediente serial PRIMARY KEY,
     id_inventario integer REFERENCES archivo.t_inventario(id_inventario),
     id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
-    nro_expediente varchar UNIQUE,
-    juzgado_origen varchar,
-    tipo_proceso varchar,
-    materia varchar,
-    demandante varchar,
-    demandado varchar,
-    fecha_inicial date,
-    fecha_final date
+    nro_expediente varchar UNIQUE
+   
+);
+
+-- Tabla: archivo.t_preparacion
+CREATE TABLE archivo.t_preparacion (
+    f_aud timestamp,
+    b_aud char(1),
+    c_aud_uid varchar(30),
+    c_aud_uidred varchar(30),
+    c_aud_pc varchar(30),
+    c_aud_ip varchar(15),
+    c_aud_mac varchar(17),
+    create_at timestamp,
+    id_preparacion serial PRIMARY KEY,
+    id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    fojas_total integer,
+    fojas_unacara integer,
+    fojas_doscaras integer,
+    observaciones varchar,
+    copias_originales boolean,
+    copias_simples boolean
 );
 
 -- Tabla: archivo.t_digitalizacion
@@ -123,7 +138,14 @@ CREATE TABLE archivo.t_indizacion (
     id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
     id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
     indizacion varchar,
-    observaciones varchar
+    observaciones varchar,
+    juzgado_origen varchar,
+    tipo_proceso varchar,
+    materia varchar,
+    demandante varchar,
+    demandado varchar,
+    fecha_inicial date,
+    fecha_final date
 );
 
 -- Tabla: archivo.t_control
@@ -163,25 +185,7 @@ CREATE TABLE archivo.t_fedatar (
     observaciones varchar
 );
 
--- Tabla: archivo.t_preparacion
-CREATE TABLE archivo.t_preparacion (
-    f_aud timestamp,
-    b_aud char(1),
-    c_aud_uid varchar(30),
-    c_aud_uidred varchar(30),
-    c_aud_pc varchar(30),
-    c_aud_ip varchar(15),
-    c_aud_mac varchar(17),
-    create_at timestamp,
-    id_preparacion serial PRIMARY KEY,
-    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
-    fojas_total integer,
-    fojas_unacara integer,
-    fojas_doscaras integer,
-    observaciones varchar,
-    copias_originales boolean,
-    copias_simples boolean
-);
+
 
 -- Tabla: archivo.t_cd
 CREATE TABLE archivo.t_cd (
@@ -225,14 +229,13 @@ CREATE TABLE archivo.t_estado_expediente (
     create_at timestamp,
     id_estado_expediente serial PRIMARY KEY,
     id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
-    estado_recepcionado boolean,
-    estado_preparado boolean,
-    estado_digitalizado boolean,
-    estado_indizado boolean,
-    estado_controlado boolean,
-    estado_fedatado boolean,
-    estado_rechazado boolean,
-    estado_finalizado boolean,
+    estado_recepcionado char(1),
+    estado_preparado char(1),
+    estado_digitalizado char(1),
+    estado_indizado char(1),
+    estado_controlado char(1),
+    estado_fedatado char(1),
+    estado_finalizado char(1),
     id_cd integer REFERENCES archivo.t_cd(id_cd),
     mensajes varchar
 );

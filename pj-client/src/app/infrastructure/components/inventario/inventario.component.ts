@@ -173,7 +173,7 @@ export class InventarioComponent implements OnInit {
   }
 
   ExpedientesSerieDocumental(id_inventario:number){
-    this.router.navigate(['principal/recepcion/serie-documental/expedientes/', id_inventario]);
+    this.router.navigate([this.ruta , id_inventario]);
   }
 
 }

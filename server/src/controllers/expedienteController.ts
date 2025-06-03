@@ -50,46 +50,7 @@ class ExpedienteController {
         }
     }
 
-    public async ObtenerExpedientesDetalleById_inventario(req: Request, res: Response): Promise<any> {
-        try {
-            const { id_inventario } = req.params;
-            const consulta = `
-                            SELECT
-                                e.id_expediente,
-                                e.nro_expediente,
-                                e.id_inventario,
-                                i.id_responsable,
-                                i.anio,
-                                i.cantidad,
-                                i.tipo_doc,
-                                i.serie_doc,
-                                i.especialidad,
-                                i.codigo,
-                                i.sede,
-                                i.create_at,
-                                u.username,
-                                p.nombre,
-                                p.ap_paterno,
-                                p.ap_materno
-                            FROM
-                                archivo.t_expediente e
-                            JOIN
-                                archivo.t_inventario i ON e.id_inventario = i.id_inventario
-                            JOIN
-                                archivo.t_usuario u ON i.id_responsable = u.id_usuario
-                            JOIN
-                                archivo.t_persona p ON u.id_persona = p.id_persona
-                            WHERE 
-                                e.id_inventario=$1
-                            ORDER BY e.id_expediente
-                                 `;
-            const expedientes = await db.query(consulta, [id_inventario]);
-            res.json(expedientes["rows"]);
-        } catch (error) {
-            console.error("Error al obtener expedientes:", error);
-            res.status(500).json({ error: "Error interno del servidor" });
-        }
-    }
+ 
 
     public async ObtenerExpedientesById_inventario(req: Request, res: Response): Promise<any> {
         try {
@@ -107,7 +68,6 @@ class ExpedienteController {
 							    s.estado_indizado,
 							    s.estado_controlado,
 							    s.estado_fedatado,
-							    s.estado_rechazado,
 							    s.estado_finalizado
                             FROM
                                 archivo.t_expediente e
@@ -118,7 +78,7 @@ class ExpedienteController {
                             ORDER BY e.id_expediente
                                  `;
             const expedientes = await db.query(consulta, [id_inventario]);
-            res.json(expedientes["rows"]);
+            res.status(200).json(expedientes["rows"]);
         } catch (error) {
             console.error("Error al obtener expedientes:", error);
             res.status(500).json({ error: "Error interno del servidor" });

@@ -1,164 +1,117 @@
 <div class="panel">
-    <app-navegator></app-navegator>
-    <app-subnavegator [ruta]="'principal/recepcion/list-serie-documental'" ></app-subnavegator>
+  <app-navegator></app-navegator>
+  <app-subnavegator [ruta]="'principal/recepcion/list-serie-documental'"></app-subnavegator>
 
-    <div class="contenedor">
-        <div class="row">
-            
-            <div class="col-lg-3">
-                <div class="card shadow-sm border-0 bg-light menu-listado-inventario">
-                  <div class="card-body">
-                    <h5 class="card-title text-uppercase text-secondary mb-3 titulo">
-                      <i class="bi bi-archive-fill me-2"></i>Inventario
-                    </h5>
-                    <ul class="list-unstyled mb-0 small">
-                      <li class="mb-2">
-                        <i class="bi bi-card-list me-2 text-muted"></i><strong>Cód:</strong> {{ data_inventario.codigo }}
-                      </li>
-                      <li class="mb-2">
-                        <i class="bi bi-calendar3 me-2 text-muted"></i><strong>Año:</strong> {{ data_inventario.anio }}
-                      </li>
-                      <li class="mb-2">
-                        <i class="bi bi-box-seam me-2 text-muted"></i><strong>Cant:</strong> {{ data_inventario.cantidad }}
-                      </li>
-                      <li class="mb-2">
-                        <i class="bi bi-journal-text me-2 text-muted"></i><strong>Espe:</strong> {{ data_inventario.especialidad }}
-                      </li>
-                      <li class="mb-0">
-                        <i class="bi bi-file-earmark-text me-2 text-muted"></i><strong>Tipo de Doc:</strong> {{ data_inventario.tipo_doc }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
 
-                <!-- <div class="card shadow-sm border-0 bg-light  mt-4">
-                    <div class="card-body">
-                      <h6 class="card-title text-uppercase text-secondary mb-3 ">
-                       Datos
-                      </h6>
-                      <ul class="list-unstyled mb-0 small">
-                        <li class="mb-2">
-                          <i class="bi bi-card-list me-2 text-muted"></i> En preparacion : (78)
-                        </li>
-                        <li class="mb-2">
-                          <i class="bi bi-calendar3 me-2 text-muted"></i> Pendientes :  (45)
-                        </li>
-                       
-                      </ul>
-                      
-                    </div>
-                   
-                </div> -->
-                <div class="text-end mt-4">
-                    <button class="btn btn-preparacion btn-sm opacity-75" (click)="openModalCreate()" >+ nuevo registro</button>
-                </div>
-            </div>
-            <div class="col-lg-9">
-       
-                    <div class="icon-title-container ">
-                        <i class="bi bi-card-list icon-custom"></i>
-                        <p class="titulo_menu px-4" >REGISTRO DE EXPEDIENTES</p>
-                        
-                    </div>
-                    <!-- <hr class="my-0 py-0"> -->
-           
-                
-                
-                <div class="card rounded shadow border-2 " >
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center ">
-                        <!-- <p class="subtitulo_menu">expedientes</p>
-                        <button id="buton_agregar" type="button" class="btn btn-success mx-4" >AGREGAR</button> -->
-                        <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente" placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
-                                
-                    </div>
-                    <div class="card-body px-5 bg-white rounded">
-                        <div class="mb-2 d-flex align-items-center">
-                            <!-- <button class="btn btn-secondary btn-sm ">preparación(78)</button>
-                            <button type="button" class="btn btn-outline-success btn-sm mx-2">pendientes(45)</button> -->
-                            <!-- <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente" placeholder="Buscar expediente">
-                            <button type="button" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-clockwise"></i></button> -->
-                            
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table text-center" id="excel-table">
-                                <colgroup>
-                                    <col style="width: 5%;">
-                                    <col style="width: 75%;">
-                                    <col style="width: 10%;">
-                                    <col style="width: 10%;">
-                                </colgroup>
-                                <thead class="table-success ">
-                                    <tr>
-                                        <th scope="col">Nro</th>
-                                        <th scope="col">EXPEDIENTE</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
-                                        <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
-                                        <td>{{expediente.nro_expediente}} </td>
-                                        <td><i *ngIf="expediente.estado_preparado==null" class="bi bi-pencil" (click)="openModalEdit(expediente)"></i></td>
-                                        <td><i *ngIf="expediente.estado_preparado==null"  class="bi bi-trash" (click)="EliminarExpediente(expediente.id_expediente)"></i></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="d-flex justify-content-end ">
-                                <!-- <div>
-                                    <button  class="btn btn-sm btn-secondary opacity-75" type="button" [disabled]="isLoading"  >
-                                        <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ isLoading ? 'Enviando a preparación...' : 'ENVIAR A PREPARACIÓN' }}
-                                    </button>
-                                </div> -->
-                               
-                                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div class="contenedor">
+    <div class="row">
+
+      <div class="col-lg-3">
+        <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
+        <div class="text-end mt-4">
+          <button class="btn btn-preparacion btn-sm opacity-75" (click)="openModalCreate()">+ nuevo registro</button>
         </div>
-    </div>
-</div>
+      </div>
+      <div class="col-lg-9">
 
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="encabezado_pages ">
+          <i class="bi bi-card-list icon-custom"></i>
+          <p class="titulo_menu px-4">REGISTRO DE EXPEDIENTES</p>
+
+        </div>
+        <!-- <hr class="my-0 py-0"> -->
+
+
+
+        <div class="card rounded shadow border-2 ">
+          <div class="card-header py-3 d-flex justify-content-between align-items-center ">
+            <!-- <p class="subtitulo_menu">expedientes</p>
+                          <button id="buton_agregar" type="button" class="btn btn-success mx-4" >AGREGAR</button> -->
+            <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente"
+              placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
+
+          </div>
+          <div class="card-body px-5 bg-white rounded">
+            <div class="mb-2 d-flex align-items-center">
+            </div>
+            <div class="table-responsive">
+              <table class="table text-center" id="excel-table">
+                <colgroup>
+                  <col style="width: 5%;">
+                  <col style="width: 75%;">
+                  <col style="width: 10%;">
+                  <col style="width: 10%;">
+                </colgroup>
+                <thead class="table-success ">
+                  <tr>
+                    <th scope="col">Nro</th>
+                    <th scope="col">EXPEDIENTE</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
+                    <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
+                    <td>{{expediente.nro_expediente}} </td>
+                    <td><i *ngIf="expediente.estado_preparado==null" class="bi bi-pencil"
+                        (click)="openModalEdit(expediente)"></i></td>
+                    <td><i *ngIf="expediente.estado_preparado==null" class="bi bi-trash"
+                        (click)="EliminarExpediente(expediente.id_expediente)"></i></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="d-flex justify-content-end ">
+                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
+                  nextLabel="Siguiente"></pagination-controls>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
     <div class="modal-dialog " role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">nuevo expediente</h5>     
-            </div>
-            <form >
-                <fieldset class="p-4">
-                  
-                   
-                    <div class="form-group ">
-                        <label for="expediente" class="form-label">Nro de expediente:</label>
-                        <input type="text" class="form-control" name="expediente" [(ngModel)]="data_expediente.nro_expediente" id="validationCustom01" required>
-                        <div class="valid-feedback">
-                            Looks good!
-                          </div>
-                    </div>
-                    
-                    
-
-                    <div class="d-flex justify-content-end mt-3 position-relative">
-                        <p 
-                          class="text-danger position-absolute start-0 px-1" 
-                          style="font-size: 0.8rem;">
-                          {{mensajeError}}
-                        </p>
-                        <button type="button" class="cancelar-btn mx-4" (click)="closeModal()">Cancelar</button>
-                        <button type="button" class="guardar-btn" (click)="EventAction()">{{modificarExpediente ? 'Modificar' : 'Guardar' }}</button>
-                      </div>
-                </fieldset>
-            </form>
-            
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">nuevo expediente</h5>
         </div>
-    </div>
-</div>
+        <form>
+          <fieldset class="p-4">
 
-<!-- <div 
+
+            <div class="form-group ">
+              <label for="expediente" class="form-label">Nro de expediente:</label>
+              <input type="text" class="form-control" name="expediente" [(ngModel)]="data_expediente.nro_expediente"
+                id="validationCustom01" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+
+
+
+            <div class="d-flex justify-content-end mt-3 position-relative">
+              <p class="text-danger position-absolute start-0 px-1" style="font-size: 0.8rem;">
+                {{mensajeError}}
+              </p>
+              <button type="button" class="cancelar-btn mx-4" (click)="closeModal()">Cancelar</button>
+              <button type="button" class="guardar-btn" (click)="EventAction()">{{modificarExpediente ? 'Modificar' :
+                'Guardar' }}</button>
+            </div>
+          </fieldset>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- <div 
   *ngIf="mostrarAlerta" 
   [ngClass]="{'fade-alert': true, 'show': alertaVisible}" 
   class="alert alert-success position-fixed end-0 me-3 shadow" 
@@ -168,8 +121,6 @@
   expediente creado correctamente
 </div> -->
 
-<app-alerta *ngIf="showCreateAlert" 
-             [mensaje]="'Expediente creado correctamente'" 
-             [tipo]="'success'" 
-             [duracion]="3000">
-</app-alerta>
+  <app-alerta *ngIf="showCreateAlert" [mensaje]="'Expediente creado correctamente'" [tipo]="'success'"
+    [duracion]="3000">
+  </app-alerta>

@@ -1,6 +1,186 @@
 <div class="panel">
     <app-navegator></app-navegator>
-    <app-subnavegator></app-subnavegator>
-    <h1>preparacion de expedientes</h1>
+    <app-subnavegator [ruta]="'/principal/preparacion/list-serie-documental'"></app-subnavegator>
+
+    <div class="contenedor">
+        <div class="row">
+            <div class="col-lg-3">
+                <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
+
+            </div>
+            <div class="col-lg-9">
+
+                <div class="encabezado_pages ">
+                    <i class="bi bi-card-list icon-custom"></i>
+                    <p class="titulo_menu px-4">PREPARACIÓN DE EXPEDIENTES</p>
+                </div>
+                <div class="card rounded shadow border-2 ">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center ">
+                        <!-- <p class="subtitulo_menu">expedientes</p>
+                                  <button id="buton_agregar" type="button" class="btn btn-success mx-4" >AGREGAR</button> -->
+                        <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente"
+                            placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
+
+                    </div>
+                    <div class="card-body px-5 bg-white rounded">
+                        <div class="mb-2 d-flex align-items-center">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table text-center" id="excel-table">
+                                <colgroup>
+                                    <col style="width: 5%;">
+                                    <col style="width: 75%;">
+                                    <col style="width: 20%;">
+
+                                </colgroup>
+                                <thead class="table-success ">
+                                    <tr>
+                                        <th scope="col">Nro</th>
+                                        <th scope="col">EXPEDIENTE</th>
+                                        <th scope="col"></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index" >
+                                        <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
+                                        <td>{{expediente.nro_expediente}} </td>
+                                        <td (click)="oberterNroExpediente(expediente.nro_expediente)">
+                                            <button *ngIf="expediente.estado_preparado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
+                                                 <!-- <i class="bi bi-box-arrow-in-down"></i>  -->
+                                                  <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                                 recepcionar</button>
+                                            <button *ngIf="expediente.estado_preparado=='A'" class="btn btn-light btn-sm" (click)="openModalPreparation(expediente.id_expediente)">
+                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                                preparar
+                                            </button>
+                                            <div>
+                                                <img *ngIf="expediente.estado_preparado=='T'"  src="/icon/check.png" alt="logo" title="Preparado correctamente" width="24px" height="24px">
+                                                <img *ngIf="expediente.estado_preparado=='T'"  src="/icon/expediente_eye.png" class="mx-3" alt="logo" title="ver información" width="24px" height="24px">
+                                                <img *ngIf="expediente.estado_preparado=='T' && expediente.estado_digitalizado==null"  src="/icon/lapiz.png"  alt="logo" title="ver información" width="24px" height="24px" (click)="obternerPreparacionByIdExpediente(expediente.id_expediente)">
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-end ">
+                                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
+                                    nextLabel="Siguiente"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Recepcion de expediente</h5>
+            </div>
+            <div class="modal-body">
+
+                <h5 class="text-center">¡IMPORTANTE!</h5>
+                <p>El expediente se encuentra en estado de recepción. Para poder continuar con el proceso de
+                    preparación,
+                    debe aprobar la recepcion del expediente.</p>
+                <div class="form-check text-start">
+                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked>
+                    <label class="form-check-label" for="checkChecked">
+                        Confirmo tener el documento fisico en mi poder
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma();closeModal();openModalPreparation(this.id_expediente_temp)">Aprobar</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModalpreparation" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog  " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">PREPARACIÓN DE EXPEDIENTE</h5>
+            </div>
+            <div class="sub_titulo_expediente d-flex justify-content-center">
+                <h5 style="font-size: 1.1rem;">{{nro_expediente_temp}}</h5>
+            </div>
+            <div class="contenedor">
+                <form>
+                    <!-- DATOS DE INVENTARIO -->
+                    <fieldset>
+
+                        <div class="form-group mt-3">
+                            <label for="fojas" class="form-label">Fojas fisicas: </label>
+                            <input type="text" class="form-control" name="fojas" [(ngModel)]="data_expediente_preparacion.fojas_total" appSoloNumeros >
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="fojas" class="form-label">1 cara:</label>
+                            <input type="text" class="form-control" name="unaCara" [(ngModel)]="data_expediente_preparacion.fojas_unacara" appSoloNumeros >
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="fojas" class="form-label">2 caras:</label>
+                            <input type="text" class="form-control" name="dosCaras" [(ngModel)]="data_expediente_preparacion.fojas_doscaras" appSoloNumeros >
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" value="" id="checkDefault" name="docOriginales" [(ngModel)]="data_expediente_preparacion.copias_originales">
+                            <label class="form-check-label" for="checkDefault">Doc. Originales </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="checkChecked" name="docCopias" [(ngModel)]="data_expediente_preparacion.copias_simples" >
+                            <label class="form-check-label" for="checkChecked">Copias</label>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="fojas" class="form-label">Observaciones: </label>
+                            <div *ngFor="let observacion of ListObservaciones; let i = index" class="  mb-2">
+                                <div class="observation-wrapper position-relative">
+                                    <input type="text" readonly class="form-control observation-tag" name="observacion" value="{{observacion}}">
+                                    <div class="observation-icons">
+                                        <i class="bi bi-chevron-down obs-icon" (click)="BajarObservacion(i)"></i>
+                                        <i class="bi bi-chevron-up obs-icon mx-1" (click)="SubirObservacion(i)"></i>
+                                        <i class="bi bi-x-square obs-icon"  (click)="EliminarObservacion(i)"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control mt-3 observation-input" name="observacion" id="observacion">
+                            <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2" (click)="AgregarObservacion()">+ Añadir observación</button>
+                        </div>
+                        <!-- <textarea id="observaciones" name="observaciones" placeholder="Observaciones" class="form-control" style="height: 208px;resize: none" rows="6"></textarea> -->
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" class="cancelar-btn mx-4" (click)="closeModal()">Cancelar</button>
+                            <button type="button" class="guardar-btn" (click)="EventAction()">{{modificarPreparacion?'Modificar': 'Guardar'}}</button>
+                        </div>
+                    </fieldset>
+
+
+                </form>
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
 
 </div>

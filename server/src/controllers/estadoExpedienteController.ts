@@ -30,7 +30,7 @@ class EstadoExpedienteController {
                 ipAddressClient,
                 null,
                 id_expediente,
-                true,
+                'T',
             ];
 
             db.query(consulta, valores, (error, resultado) => {
@@ -72,6 +72,43 @@ class EstadoExpedienteController {
         }
     }
 
+    public async AceptarPreparacion(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { user_app} = req.body;
+            
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
+
+                            estado_preparado=$5
+	                    WHERE id_expediente=$6;
+                
+                `;
+            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Preparacion aprobada:', error);
+                } else {
+                    console.log('Preparacion aprobada correctamente');
+                    res.json({ text: 'Preparacion aprobada correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
     public async AprobarPreparacion(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
@@ -90,11 +127,11 @@ class EstadoExpedienteController {
                             c_aud_ip=$3, 
                             c_aud_mac=$4,
 
-                            estado_preparado=true
-	                    WHERE id_expediente=$5;
+                            estado_preparado=$5
+	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, id_expediente];
+            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {

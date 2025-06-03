@@ -18,8 +18,11 @@ export class EstadoService {
     return this.http.post<CrearEstadoResponse>(`${this.api_uri_estado}`,cuerpo_estado)
   }
 
-  AprobarPreparacion(id:number, app_user:string):Observable<ModificarEstadoResponse>{
-    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/preparacion/${id}`, {app_user})
+  RecepcionarPreparacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aceptar/preparacion/${id_expediente}`, {app_user})
+  }
+  AprobarPreparacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/preparacion/${id_expediente}`, {app_user})
   }
 
   EliminarEstado(id:number):Observable<EliminarEstadoResponse>{

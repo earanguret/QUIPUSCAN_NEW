@@ -138,41 +138,7 @@
     color: #404b5ac0;
 }
 
-/*  */
-.guardar-btn{
-    background-color: #B9EACE;
-    color: #227243;
-    border: 1px solid #92DFB2;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600
-}
-.guardar-btn:hover{
-    background-color:  #86d993;
-    color: #227243;
-    border: 1px solid #92DFB2;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600
 
-}
-
-.cancelar-btn{
-   
-    background-color: #E1E7EB;
-    color: #6E7A89;
-    border: 1px solid #dde2e9;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600;
-    
-}
-.cancelar-btn:hover{
-   
-    background-color: #cdcecf;
-    color: #525355;
-    border: 1px solid #d6dadf;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600;
-    
-}
 
 
 /* icono de impresion */

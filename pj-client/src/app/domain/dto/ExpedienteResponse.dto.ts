@@ -4,14 +4,13 @@ export interface ExpedienteResponse {
     nro_expediente: string;
     id_inventario: number;
     id_responsable: number;
-    estado_recepcionado?: boolean;
-    estado_preparado?: boolean;
-    estado_digitalizado?: boolean;
-    estado_indizado?: boolean;
-    estado_controlado?: boolean;
-    estado_fedatado?: boolean;
-    estado_rechazado?: boolean;
-    estado_finalizado?: boolean;     
+    estado_recepcionado?: string;
+    estado_preparado?: string;
+    estado_digitalizado?: string;
+    estado_indizado?: string;
+    estado_controlado?: string;
+    estado_fedatado?: string;
+    estado_finalizado?: string;
 
 }
 

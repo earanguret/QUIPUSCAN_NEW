@@ -47,7 +47,7 @@ class InventarioController {
           const inventario = await db.query(consulta);
     
           if (inventario && inventario["rows"].length > 0) {
-            res.json(inventario["rows"]);
+            res.status(200).json(inventario["rows"]);
           } else {
             res.status(404).json({ text: "la lista de inventario no existe" });
           }

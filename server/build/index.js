@@ -12,6 +12,7 @@ const inventarioRoutes_1 = __importDefault(require("./routes/inventarioRoutes"))
 const expedienteRoutes_1 = __importDefault(require("./routes/expedienteRoutes"));
 const estadoExpedienteRoutes_1 = __importDefault(require("./routes/estadoExpedienteRoutes"));
 const flujogramaRoutes_1 = __importDefault(require("./routes/flujogramaRoutes"));
+const preparacionRoutes_1 = __importDefault(require("./routes/preparacionRoutes"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -34,6 +35,7 @@ class Server {
         this.app.use('/', expedienteRoutes_1.default);
         this.app.use('/', estadoExpedienteRoutes_1.default);
         this.app.use('/', flujogramaRoutes_1.default);
+        this.app.use('/', preparacionRoutes_1.default);
     }
     start() {
         const server = this.app.listen(this.app.get('port'), '0.0.0.0', () => {
