@@ -8,6 +8,8 @@ export interface PreparacionResponse {
     observaciones: string | null;
     copias_originales: boolean | null;
     copias_simples: boolean | null;
+    create_at: Date | null;
+    username?: string | null;
 }
 
 export interface CrearPreparacionResponse {

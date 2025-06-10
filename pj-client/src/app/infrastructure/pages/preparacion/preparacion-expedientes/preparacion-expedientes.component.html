@@ -46,7 +46,7 @@
                                         *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index" >
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
-                                        <td (click)="oberterNroExpediente(expediente.nro_expediente)">
+                                        <td (click)="obtenerNroExpediente(expediente.nro_expediente)">
                                             <button *ngIf="expediente.estado_preparado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
                                                  <!-- <i class="bi bi-box-arrow-in-down"></i>  -->
                                                   <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">

@@ -8,6 +8,8 @@ import expedienteRoutes from './routes/expedienteRoutes';
 import estadoExpedienteRoutes from './routes/estadoExpedienteRoutes';
 import flujogramaRoutes from './routes/flujogramaRoutes';
 import preparacionRoutes from './routes/preparacionRoutes';
+import digitalizacionRoutes from './routes/digitalizacionRoutes';
+import ftpServerRoutes from './routes/ftpServerRoutes';
 
 
 class Server{
@@ -35,6 +37,8 @@ class Server{
         this.app.use('/',estadoExpedienteRoutes);
         this.app.use('/',flujogramaRoutes);
         this.app.use('/',preparacionRoutes);
+        this.app.use('/',digitalizacionRoutes);
+        this.app.use('/',ftpServerRoutes);
         
     }
     start(): void {

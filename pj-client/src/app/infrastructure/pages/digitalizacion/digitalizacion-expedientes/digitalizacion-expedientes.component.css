@@ -1,0 +1,235 @@
+.contenedor {
+  margin: 2% 4%;
+  max-width: 1680px;
+}
+
+.modal-custom-width {
+  max-width: 85%;
+  /* Ajusta este valor según tus necesidades */
+}
+
+.sub_titulo_expediente {
+  background-color: #f1f1f3;
+  color: #8d8d88;
+  border: 2px solid #ecece5c9;
+  border-bottom: 0px;
+}
+
+.observation-tag {
+  background-color: #f6f6ee;
+  color: #8d8d88;
+  font-size: 0.9rem;
+  border: 2px solid #ecece5c9;
+}
+
+.observation-input {
+  font-size: 0.9rem;
+  color: #8d8d88;
+}
+
+
+
+
+
+
+.observation-wrapper {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: inherit;
+
+}
+
+.observation-icons {
+  position: absolute;
+  top: 0.25rem;
+  /* ajusta según lo necesites */
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #9b9b1f85;
+
+}
+
+.obs-icon {
+  font-size: 0.8rem;
+  font-weight: bold;
+  /* hace el ícono más “grueso” si soportado */
+  text-shadow: 0 0 1px currentColor;
+  /* efecto de grosor sin agrandar el espacio */
+  transition: transform 0.2s ease;
+}
+
+.obs-icon:hover {
+  color: #8b8b1b;
+  transform: scale(1.1);
+  /* ligeramente más grande al pasar el mouse */
+}
+
+
+/* scroll personalizado para observaciones */
+.observaciones-scroll::-webkit-scrollbar {
+  width: 6px;
+  /* Grosor del scroll */
+}
+
+.observaciones-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* Fondo del track */
+}
+
+.observaciones-scroll::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  /* Color del scroll */
+  border-radius: 10px;
+}
+
+.observaciones-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #b3b3b3;
+}
+
+/* boton notas */
+.doc-chat-popper {
+  position: fixed;
+  z-index: 9999;
+  bottom: 40px;
+  right: 170px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #176091;
+  color: #fff;
+}
+/* mensaje panel */
+.message-panel {
+    
+  position: fixed;
+  z-index: 9999;
+  bottom: 100px;
+  right: 130px;
+  width: 400px;
+  height: 700px;
+  border-radius: 2%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #D5DDE5;
+  border: 6px solid #c1c4c7;
+  box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.45) !important;  
+  overflow-y: auto;
+  flex: 1;
+
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none; 
+  font-size: 0.9rem;
+}
+/* Scroll personalizado para paneles de navegación */
+.message-panel::-webkit-scrollbar {
+  width: 7px;
+}
+
+.message-panel::-webkit-scrollbar-thumb {
+  background-color: #b7bbb877;
+  border-radius: 10px;
+}
+
+.message-panel::-webkit-scrollbar-track {
+  background: #e9ecef;
+}
+
+/* 🔽 Clase cuando está visible */
+.message-panel.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
+.message-panel.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-note {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-top: 1.2rem;
+
+}
+
+
+
+
+/* mensaje panel */
+.observaciones-preparacion-panel {
+    
+  position: fixed;
+  z-index: 9999;
+  bottom: 120px;
+  right: 1245px;
+  width: 510px;
+  height: 700px;
+  border-radius: 2%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #D5DDE5;
+  border: 6px solid #c1c4c7;
+  box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.45) !important;  
+  overflow-y: auto;
+  flex: 1;
+
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none; 
+  font-size: 0.9rem;
+}
+/* Scroll personalizado para paneles de navegación */
+.observaciones-preparacion-panel::-webkit-scrollbar {
+  width: 7px;
+}
+
+.observaciones-preparacion-panel::-webkit-scrollbar-thumb {
+  background-color: #b7bbb877;
+  border-radius: 10px;
+}
+
+.observaciones-preparacion-panel::-webkit-scrollbar-track {
+  background: #e9ecef;
+}
+
+/* 🔽 Clase cuando está visible */
+.observaciones-preparacion-panel.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
+.observaciones-preparacion-panel.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-obs {
+  background-color: #f8f9fac0;
+  border: 1px solid #e9ecef;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin-top: 0.8rem;
+ 
+
+  color: #176091c5;
+
+}

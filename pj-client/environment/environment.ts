@@ -10,4 +10,5 @@ export const environment = {
     idGoogleAnalitics: Util.v7,
     linkInterno: Util.v8,
     linkExterno: Util.v9
+    
 };

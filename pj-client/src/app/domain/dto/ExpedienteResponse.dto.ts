@@ -12,6 +12,7 @@ export interface ExpedienteResponse {
     estado_fedatado?: string;
     estado_finalizado?: string;
 
+
 }
 
 export interface CrearExpedienteResponse {

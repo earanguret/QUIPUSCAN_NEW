@@ -113,7 +113,7 @@ export class PreparacionExpedientesComponent implements OnInit {
 
   }
 
-  oberterNroExpediente(nro_expediente:string) {
+  obtenerNroExpediente(nro_expediente:string) {
     this.nro_expediente_temp = nro_expediente;
   }
 
@@ -180,7 +180,7 @@ export class PreparacionExpedientesComponent implements OnInit {
   }
 
   EstadoPreparacionTrabajado() {
-    this.estadoService.AprobarPreparacion(this.id_expediente_temp, this.credencialesService.credenciales.username).subscribe({
+    this.estadoService.TrabajadoPreparacion(this.id_expediente_temp, this.credencialesService.credenciales.username).subscribe({
       next: (data: ModificarEstadoResponse) => {
         console.log(data.message);
       },

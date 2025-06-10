@@ -14,6 +14,7 @@ export class EstadoService {
 
   api_uri_estado=`${environment.urlApi}/estado_expediente`;
 
+
   CrearEstado(cuerpo_estado:EstadoRequest):Observable<CrearEstadoResponse>{
     return this.http.post<CrearEstadoResponse>(`${this.api_uri_estado}`,cuerpo_estado)
   }
@@ -21,9 +22,18 @@ export class EstadoService {
   RecepcionarPreparacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
     return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aceptar/preparacion/${id_expediente}`, {app_user})
   }
-  AprobarPreparacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+  TrabajadoPreparacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
     return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/preparacion/${id_expediente}`, {app_user})
   }
+
+  RecepcionarDigitalizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aceptar/digitalizacion/${id_expediente}`, {app_user})
+  }
+  TrabajadoDigitalizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/digitalizacion/${id_expediente}`, {app_user})
+  }
+
+
 
   EliminarEstado(id:number):Observable<EliminarEstadoResponse>{
     return this.http.delete<EliminarEstadoResponse>(`${this.api_uri_estado}/${id}`)

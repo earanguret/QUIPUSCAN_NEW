@@ -51,18 +51,21 @@ class PreparacionController {
             const { id_expediente } = req.params;
             const consulta = `
                             SELECT
-                                id_preparacion,
-                                id_responsable,
-                                id_expediente,
-                                fojas_total,
-                                fojas_unacara,
-                                fojas_doscaras,
-                                observaciones,
-                                copias_originales,
-                                copias_simples
-                                
+                                p.id_preparacion,
+                                p.id_responsable,
+                                p.fojas_total,
+                                p.fojas_unacara,
+                                p.fojas_doscaras,
+                                p.observaciones,
+                                p.copias_originales,
+                                p.copias_simples,
+                                p.create_at,
+                                p.id_expediente,
+                                u.username
                             FROM
-                                archivo.t_preparacion
+                                archivo.t_preparacion p
+                            JOIN
+                                archivo.t_usuario u ON p.id_responsable = u.id_usuario
                             WHERE 
                                 id_expediente=$1
                                  `;
