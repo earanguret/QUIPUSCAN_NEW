@@ -18,12 +18,21 @@ import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { PreparacionResponse } from '../../../../domain/dto/PreparacionResponse.dto';
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
 import { DigitalizacionService } from '../../../services/remoto/digitalizacion/digitalizacion.service';
+import { PreparacionViewComponent } from '../../../components/preparacion-view/preparacion-view.component';
+import { DigitalizacionModel } from '../../../../domain/models/Digitalizacion.model';
+import { FtpService } from '../../../services/remoto/ftp/ftp.service';
+import { CrearDigitalizacionResponse, DigitalizacionDataResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
+import { DigitalizacionRequest } from '../../../../domain/dto/DigitalizacionRequest.dto';
+import { getFileHash } from '../../../functions/hashFuntions';
+import { FormsModule } from '@angular/forms';
+import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
+import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-digitalizacion-expedientes',
-  imports: [NavegatorComponent, SubnavegatorComponent, CommonModule, InfoInventarioComponent, NgxPaginationModule],
+  imports: [NavegatorComponent, SubnavegatorComponent, CommonModule,FormsModule, InfoInventarioComponent, NgxPaginationModule, PreparacionViewComponent],
   templateUrl: './digitalizacion-expedientes.component.html',
   styleUrl: './digitalizacion-expedientes.component.css'
 })
@@ -32,8 +41,13 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
   id_inventario: number = 0;
   p: number = 1;
+  file: File | null = null;
+
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
+
+  ListObservacionesPreparacion: string[] = [];
+  notasList: any[] = [];
 
   id_expediente_temp: number = 0;
   nro_expediente_temp: string = '';
@@ -41,11 +55,14 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   modificarDigitalizacion: boolean = false;
   pdfUrl: SafeResourceUrl | null = null;
 
-  ListObservaciones: string[] = [];
+  ListObservacionesDigitalizacion: string[] = [];
   documento: any = []
   peso_documento: number = 0
+
   mostrar_obs_preparacion: boolean = false;
   mostrar_mensajes_expediente: boolean = false;
+
+  codigo_inventario: string = '';
 
   data_preparacion_expediente: PreparacionResponse = {
     id_expediente: 0,
@@ -60,11 +77,21 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     username: null
   }
 
-  ListObservacionesPreparacion: string[] = [];
+  data_digitalizacion: DigitalizacionModel = {
+    id_digitalizacion: 0,
+    id_responsable: 0,
+    id_expediente: 0,
+    fojas_total: null,
+    ocr: false,
+    escala_gris: false,
+    color: false,
+    observaciones: '',
+    dir_ftp: '',
+    hash_doc: '',
+    peso_doc: null,
+  }
 
-  notasList: any[] = [
-   
-  ];
+  
 
   constructor(private router: Router, 
             private credencialesService: CredencialesService, 
@@ -74,81 +101,87 @@ export class DigitalizacionExpedientesComponent implements OnInit {
             private estadoService: EstadoService,
             private sanitizer: DomSanitizer,
             private preparacionService: PreparacionService,
-            private digitalizacionService: DigitalizacionService,) { }
+            private digitalizacionService: DigitalizacionService,
+            private ftpService: FtpService,
+            private inventarioService: InventarioService) { }
 
   ngOnInit(): void {
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
     this.ListarExpedientes()
+    this.ObternerCodigoInventario()
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
   }
 
   //#region EVENTO SELECCIONADOR DE DOCUMENTO +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  // onFileSelected(event: any) {
-  //   const selectedFile = event.target.files[0];
-  //   if (selectedFile) {
-  //     this.convertToBase64(selectedFile);
-  //     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(selectedFile));
-  //   }
-  // }
-  // CONVERTIR A BASE64 Y ALMACENAR EL CODIGO EN LA PROPIEDAD CERTIFICADO.DOCUMENTO
-  convertToBase64(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const base64String = reader.result as string;
-      // Almacena la cadena en base64 en la propiedad documento del objeto resolucion
-      this.documento = base64String.split(',')[1];
-      this.peso_documento = file.size;
-    };
-    reader.readAsDataURL(file);
-  }
-
   onFileSelected(event: any): void {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-      // Muestra el PDF (esto puedes dejarlo)
       this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(selectedFile));
-      
-      // Envía el archivo al backend
-      this.guardarPDF(selectedFile,'prueba_upload');
+      console.log(selectedFile)
+      this.file = selectedFile;
     }
   }
 
-  guardarPDF(file: File, folderPath: string) {
-    this.digitalizacionService.uploadPDF(file, folderPath).subscribe({
-      next: (data: any) => {
-        console.log(data);
+  guardarPDF(file: File, folderPath: string, nameFile: string) {
+    this.ftpService.uploadFile(file, folderPath, nameFile).subscribe({
+      next: (data: CrearDigitalizacionResponse) => {
+        console.log("Respuesta del servidor:", data);
       },
       error: (error) => {
-        console.log(error);
+        if (error.status === 503) {
+          console.error("No se pudo conectar al servidor FTP. Verifique la conexión.");
+          alert("Error de conexión al servidor FTP, comuniquese con el area de informática.");
+        } else if (error.status === 400) {
+          console.error("Solicitud inválida: faltan datos requeridos.");
+          alert("Error: Datos inválidos. Verifica el nombre del archivo y la carpeta.");
+        } else {
+          console.error("Error inesperado al subir el PDF:", error);
+          alert("Error inesperado al subir el archivo.");
+        }
       },
       complete: () => {
-        console.log('pdf subido correctamente');
+        console.log("PDF subido correctamente");
+        this.GuardarDatosDigitalizacion(folderPath);
       }
-    })
+    });
   }
   // #endregion ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   closeModal() {
     this.myModal.hide();
     this.LimpiarDatosDigitalizacion();
+    this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
 
   }
 
   openModalReception(id_expediente: number) {
-
-    this.modificarDigitalizacion = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('exampleModalReception'));
-    this.myModal.show();
     this.id_expediente_temp = id_expediente;
+    this.modificarDigitalizacion = false;
+    this.myModal = new bootstrap.Modal(document.getElementById('ModalReception'));
+    this.myModal.show();
+    
 
+  }
+
+  mostrarPreparacion = false;
+  openModalPreparacionView(id_expediente: number) {
+
+    this.mostrarPreparacion = false; // fuerza destrucción del componente si ya estaba
+    this.id_expediente_temp = id_expediente;
+  
+    // Espera un tick del ciclo de Angular para que *ngIf lo vuelva a renderizar
+    setTimeout(() => {
+      this.mostrarPreparacion = true;
+      const modal = new bootstrap.Modal(document.getElementById('ModalPreparationView')!);
+      modal.show();
+    });
   }
 
   openModalDigitalizacion(id_expediente: number) {
 
-    // this.myModal.hide();
     this.id_expediente_temp = id_expediente;
     this.mostrar_obs_preparacion = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('exampleModalDigitalizacion'));
+    this.myModal = new bootstrap.Modal(document.getElementById('ModalDigitalizacion'));
     this.myModal.show();
 
   }
@@ -174,17 +207,122 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         }
       });
   }
+  ObternerCodigoInventario() {
+    const params = this.activatedRoute.snapshot.params;
+    this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
+      next: (data: InventarioResponse) => {
+        this.codigo_inventario = data.codigo;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de inventarios completado');
+      }
+    })
+  }
   
   EventAction(){
     if(this.modificarDigitalizacion){
       
     } else { 
-     
+     this.guardarPDF(this.file!,this.codigo_inventario+'/EXPEDIENTES', this.nro_expediente_temp+'.pdf');
+     //this.GuardarDatosDigitalizacion();
     }
   }
 
   LimpiarDatosDigitalizacion() {
+    this.data_digitalizacion = {
+      id_digitalizacion: 0,
+      id_responsable: 0,
+      id_expediente: 0,
+      fojas_total: null,
+      ocr: false,
+      escala_gris: false,
+      color: false,
+      observaciones: '',
+      dir_ftp: '',
+      hash_doc: '',
+      peso_doc: null,
+    }
+    this.file = null;
+    this.ListObservacionesDigitalizacion = [];
+    this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
+    (document.getElementById('formFile') as HTMLInputElement).value = '';
 
+
+  }
+
+  async GuardarDatosDigitalizacion(folderPath: string) {
+    const hash = await getFileHash(this.file!);
+  
+    let data_digitalizacion_temp: DigitalizacionRequest = {
+      id_responsable: this.credencialesService.credenciales.id_usuario,
+      id_expediente: this.id_expediente_temp,
+      fojas_total: this.data_digitalizacion.fojas_total,
+      ocr: this.data_digitalizacion.ocr,
+      escala_gris: this.data_digitalizacion.escala_gris,
+      color: this.data_digitalizacion.color,
+      observaciones: this.ListObservacionesDigitalizacion.join('|'),
+      dir_ftp: folderPath,
+      hash_doc: hash,
+      peso_doc: this.file!.size,
+      app_user: this.credencialesService.credenciales.username
+    };
+  
+    console.log(data_digitalizacion_temp);
+    
+    this.digitalizacionService.CrearDigitalizacion(data_digitalizacion_temp).subscribe({
+      next: (data: CrearDigitalizacionResponse) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('creacion de digitalizacion completado');
+        this.EstadoDigitalizacionTrabajado()
+        
+        this.closeModal();
+      }
+    })
+  }
+
+  ObternerDigitalizacionByIdExpediente(id_expediente: number) {
+    const params = this.activatedRoute.snapshot.params;
+    this.digitalizacionService.ObtenerDigitalizacion(id_expediente).subscribe({
+      next: (data: DigitalizacionDataResponse) => {
+        this.data_digitalizacion = data;
+        this.ListObservacionesDigitalizacion = this.data_digitalizacion.observaciones?.split('|') ?? [];
+        this.openModalDigitalizacion(this.data_digitalizacion.id_expediente);
+        this.recuperarFile()
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de digitalizacion detalle completado');
+      }
+    })
+  }
+
+  recuperarFile() {
+    let fileName=this.nro_expediente_temp+'.pdf';
+    let folderPath=this.codigo_inventario+'/EXPEDIENTES';
+    this.ftpService.downloadFile(fileName,folderPath).subscribe({
+      next: (data: Blob) => {
+        console.log(data);
+        let temp = new Blob([data], { type: 'application/pdf' });
+
+        this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(temp));
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('recuperacion de archivo completada');
+      }
+    })
   }
 
   MostrarDatosPreparacion() {
@@ -192,7 +330,6 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     if (this.mostrar_obs_preparacion) {
       this.ObtenerPreparacionByIdExpediente(this.id_expediente_temp)
     }
-    
   }
 
   ObtenerPreparacionByIdExpediente(id_expediente: number) {
@@ -215,9 +352,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.nro_expediente_temp = nro_expediente;
   }
 
-  ObternerDigitalizacionByIdExpediente(id_expediente: number) {
 
-  }
 
   RecepcionFlujograma() {
     let data_flujograma: FlujogramaRequest = {
@@ -287,27 +422,27 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
   AgregarObservacion(){
     const valor = (document.getElementById('observacion') as HTMLInputElement).value;
-    this.ListObservaciones.push(valor);
+    this.ListObservacionesDigitalizacion.push(valor);
     (document.getElementById('observacion') as HTMLInputElement).value='';
   }
 
   EliminarObservacion(index: number) {
-    this.ListObservaciones.splice(index, 1);
+    this.ListObservacionesDigitalizacion.splice(index, 1);
   }
 
   SubirObservacion(index: number) {
     if (index > 0) {
-      const temp = this.ListObservaciones[index - 1];
-      this.ListObservaciones[index - 1] = this.ListObservaciones[index];
-      this.ListObservaciones[index] = temp;
+      const temp = this.ListObservacionesDigitalizacion[index - 1];
+      this.ListObservacionesDigitalizacion[index - 1] = this.ListObservacionesDigitalizacion[index];
+      this.ListObservacionesDigitalizacion[index] = temp;
     }
   }
   
   BajarObservacion(index: number) {
-    if (index < this.ListObservaciones.length - 1) {
-      const temp = this.ListObservaciones[index + 1];
-      this.ListObservaciones[index + 1] = this.ListObservaciones[index];
-      this.ListObservaciones[index] = temp;
+    if (index < this.ListObservacionesDigitalizacion.length - 1) {
+      const temp = this.ListObservacionesDigitalizacion[index + 1];
+      this.ListObservacionesDigitalizacion[index + 1] = this.ListObservacionesDigitalizacion[index];
+      this.ListObservacionesDigitalizacion[index] = temp;
     }
   }
 }

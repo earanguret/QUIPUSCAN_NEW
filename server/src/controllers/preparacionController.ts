@@ -81,6 +81,48 @@ class PreparacionController {
         }
     }
 
+    public async ObtenerPreparacionDataViewXidExpediente(req: Request, res: Response): Promise<void> {
+        try {
+            const { id_expediente } = req.params;
+            const consulta = `
+                            SELECT
+                                p.id_preparacion,
+                                p.id_responsable,
+                                p.fojas_total,
+                                p.fojas_unacara,
+                                p.fojas_doscaras,
+                                p.observaciones,
+                                p.copias_originales,
+                                p.copias_simples,
+                                p.create_at,
+                                p.id_expediente,
+                                CONCAT(pe.nombre, ' ', pe.ap_paterno, ' ', pe.ap_materno) AS responsable,
+								u.username,
+                                e.nro_expediente
+								
+                            FROM
+                                archivo.t_preparacion p
+                            JOIN
+                                archivo.t_usuario u ON p.id_responsable = u.id_usuario
+							JOIN 
+								archivo.t_persona pe ON u.id_persona = pe.id_persona
+                            JOIN
+                                archivo.t_expediente e ON p.id_expediente = e.id_expediente
+                            WHERE 
+                                p.id_expediente=$1
+                                 `;
+            const persona = await db.query(consulta, [id_expediente]);
+            if (persona && persona["rows"].length > 0) {
+                res.json(persona["rows"][0]);
+            } else {
+                res.status(404).json({ text: "La persona no existe" });
+            }
+        } catch (error) {
+            console.error("Error al obtener persona:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
     public async CrearPreparacion(req: Request, res: Response) {
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;

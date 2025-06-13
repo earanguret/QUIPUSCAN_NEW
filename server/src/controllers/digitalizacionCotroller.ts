@@ -23,7 +23,7 @@ class DigitalizacionCotroller {
     public async crearDigitalizacion(req: Request, res: Response) {
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const { id_responsable, id_expediente, fojas_total, ocr, escala_gris, color, app_user } = req.body;
+            const { id_responsable, id_expediente, fojas_total, ocr, escala_gris, color, observaciones, dir_ftp, hash_doc, peso_doc, app_user } = req.body;
             const consulta = `
                     INSERT INTO archivo.t_digitalizacion(
                             f_aud,        -- fecha de la transaccion
@@ -45,7 +45,7 @@ class DigitalizacionCotroller {
                             dir_ftp, 
                             hash_doc, 
                             peso_doc)    
-                        VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, CURRENT_TIMESTAMP, $5, $6,$7, $8, $9, $10, $11, $12)
+                        VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, CURRENT_TIMESTAMP, $5, $6,$7, $8, $9, $10, $11, $12, $13, $14)
                         RETURNING id_digitalizacion; -- Devolver el ID del expediente insertado
                 `;
             const valores = [
@@ -59,10 +59,10 @@ class DigitalizacionCotroller {
                 ocr,
                 escala_gris,
                 color,
-                null,
-                null,
-                null,
-                null,
+                observaciones,
+                dir_ftp,
+                hash_doc,
+                peso_doc,
             ];
 
             db.query(consulta, valores, (error, resultado) => {
@@ -74,8 +74,7 @@ class DigitalizacionCotroller {
                         res.status(500).json({ error: 'Error al insertar la persona' });
                     }
                 } else {
-
-                    console.log('datos de usuario en BD:',);
+                    console.log('Datos de digitalizacion creado correctamente:',);
                     res.status(200).json({ message: 'Datos de digitalizacion creado correctamente' });
                 }
             });
@@ -83,6 +82,40 @@ class DigitalizacionCotroller {
             console.error('Error al crear digitalizacion:', error);
             res.status(500).json({ error: 'Error interno del servidor' });
         }
+    }
+
+    public async obtenerDigitalizacionByIdExpediente(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_expediente } = req.params;
+            const consulta = `
+                            SELECT
+                                id_digitalizacion,
+                                id_responsable,
+                                id_expediente,
+                                fojas_total,
+                                ocr,
+                                escala_gris,
+                                color,
+                                observaciones,
+                                dir_ftp,
+                                hash_doc,
+                                peso_doc
+                            FROM
+                                archivo.t_digitalizacion d
+                            WHERE 
+                                id_expediente=$1
+                                 `;
+            const persona = await db.query(consulta, [id_expediente]);
+            if (persona && persona["rows"].length > 0) {
+                res.json(persona["rows"][0]);
+            } else {
+                res.status(404).json({ text: "Los datos de la digitalización no existen" });
+            }
+        } catch (error) {
+            console.error("Error al obtener digitalización:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+
     }
 
     public async obtenerDigitalizacionDetalle(req: Request, res: Response): Promise<any> {

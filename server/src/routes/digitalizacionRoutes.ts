@@ -13,7 +13,8 @@ class DigitalizacionRoutes{
     }
     config():void{
         this.router.get('/api/digitalizacion',digitalizacionController.listarDigitalizacion)
-        this.router.get('/api/digitalizacion/lista/:id_expediente',digitalizacionController.obtenerDigitalizacionDetalle)
+        this.router.get('/api/digitalizacion/:id_expediente',digitalizacionController.obtenerDigitalizacionByIdExpediente)
+        this.router.get('/api/digitalizacion/detalle/:id_expediente',digitalizacionController.obtenerDigitalizacionDetalle)
         this.router.post('/api/digitalizacion',digitalizacionController.crearDigitalizacion)
         
     }

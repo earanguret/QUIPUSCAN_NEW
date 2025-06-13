@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../../environment/environment';
+import { DigitalizacionRequest } from '../../../../domain/dto/DigitalizacionRequest.dto';
+import { CrearDigitalizacionResponse, DigitalizacionDataResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -11,25 +13,15 @@ export class DigitalizacionService {
   constructor(private http: HttpClient) { }
 
   api_uri_digitalizacion=`${environment.urlApi}/digitalizacion`;
+// this.router.get('/api/digitalizacion/:id_expediente',digitalizacionController.obtenerDigitalizacionByIdExpediente)
 
-  // CrearEstado(cuerpo_estado:EstadoRequest):Observable<CrearEstadoResponse>{
-  //     return this.http.post<CrearEstadoResponse>(`${this.api_uri_estado}`,cuerpo_estado)
-  //   }
-
-  uploadPDF(file: File, folderPath: string): Observable<any> {
-    
-    const headers = new HttpHeaders({
-      'file-name': file.name,
-      'folder-path': folderPath
-    });
-  
-    return this.http.post<any>(`${this.api_uri_digitalizacion}/upload`, file,  {
-      headers,
-      responseType: 'json',
-    });
-      
+  CrearDigitalizacion(cuerpo_digitalizacion:DigitalizacionRequest):Observable<CrearDigitalizacionResponse>{
+    return this.http.post<CrearDigitalizacionResponse>(`${this.api_uri_digitalizacion}`,cuerpo_digitalizacion)
   }
 
+  ObtenerDigitalizacion(id_expediente:number):Observable<DigitalizacionDataResponse>{
+    return this.http.get<DigitalizacionDataResponse>(`${this.api_uri_digitalizacion}/${id_expediente}`)
+  }
 
 
 }

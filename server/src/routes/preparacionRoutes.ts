@@ -17,6 +17,7 @@ class PreparacionRoutes{
         this.router.get('/api/preparacion/:id_expediente',preparacionController.ObtenerPreparacionXidExpediente)
         this.router.post('/api/preparacion',preparacionController.CrearPreparacion)
         this.router.put('/api/preparacion/:id_expediente',preparacionController.ModificarPreparacion)
+        this.router.get('/api/preparacion/dataview/:id_expediente',preparacionController.ObtenerPreparacionDataViewXidExpediente)
 
     }
 

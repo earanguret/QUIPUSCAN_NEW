@@ -43,8 +43,10 @@
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
                                         <td (click)="obtenerNroExpediente(expediente.nro_expediente)">
+                                            <img *ngIf="expediente.estado_digitalizado==null"  src="/icon/doc-previo.png" alt="logo" title="datos de preparación" width="24px" height="24px" class="mx-3" (click)="openModalPreparacionView(expediente.id_expediente)">
+
                                             <button *ngIf="expediente.estado_digitalizado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
-                                                 <!-- <i class="bi bi-box-arrow-in-down"></i>  -->
+                                             
                                                   <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
                                                  Recepcionar</button>
                                             <button *ngIf="expediente.estado_digitalizado=='A'" class="btn btn-light btn-sm" (click)="openModalDigitalizacion(expediente.id_expediente)">
@@ -76,7 +78,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="exampleModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<div class="modal fade" id="ModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
@@ -104,7 +106,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="exampleModalDigitalizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+<div class="modal fade" id="ModalDigitalizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
     <div class="modal-dialog   modal-custom-width" role="document" >
         <div class="modal-content" style="height: 94vh;">
             <div class="modal-header">
@@ -128,20 +130,20 @@
             
                                     <div class="form-group mt-3">
                                         <label for="fojas" class="form-label">Total de fojas digitalizadas:</label>
-                                        <input type="text" class="form-control" name="unaCara"  >
+                                        <input type="text" class="form-control" name="fojas" [(ngModel)]="data_digitalizacion.fojas_total"  >
                                     </div>
             
                                     
                                     <div class="form-check mt-3">
-                                        <input class="form-check-input" type="checkbox" value="" id="checkDefault" name="ocr">
+                                        <input class="form-check-input" type="checkbox"  id="checkDefault" name="ocr" [(ngModel)]="data_digitalizacion.ocr">
                                         <label class="form-check-label" for="checkDefault">OCR </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="checkChecked" name="escala_gris" >
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="escala_gris" [(ngModel)]="data_digitalizacion.escala_gris" >
                                         <label class="form-check-label" for="checkChecked">Escala de Grises</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="checkChecked" name="color" >
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="color" [(ngModel)]="data_digitalizacion.color" >
                                         <label class="form-check-label" for="checkChecked">Color</label>
                                     </div>
                                     <div class="form-group mt-3" >
@@ -149,7 +151,7 @@
                                       
                                         <!-- Contenedor con scroll si se llena -->
                                         <div style="max-height: 320px; overflow-y: auto; flex: 1; padding-right: 8px;" class="observaciones-scroll"   >
-                                          <div *ngFor="let observacion of ListObservaciones; let i = index" class="mb-2">
+                                          <div *ngFor="let observacion of ListObservacionesDigitalizacion; let i = index" class="mb-2">
                                             <div class="observation-wrapper position-relative">
                                               <input type="text" readonly class="form-control observation-tag" name="observacion" [value]="observacion">
                                               <div class="observation-icons">
@@ -221,13 +223,6 @@
                       </div>
                 </div>
             </div>
-            
-            
-            <!-- <div class="contenedor">
-                <form>
-                   
-                </form>
-            </div> -->
         </div>
     </div>
 
@@ -264,6 +259,23 @@
     <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
 </div>
 
+</div>
+
+<div class="modal fade" id="ModalPreparationView" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Datos preparación</h5>
+      </div>
+      <div class="modal-body p-0 m-0">
+        <app-preparacion-view
+          *ngIf="mostrarPreparacion"
+          [id_expediente]="id_expediente_temp">
+        </app-preparacion-view>
+      </div>
+    </div>
+  </div>
 </div>
 
 

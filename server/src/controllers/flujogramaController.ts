@@ -61,7 +61,7 @@ class FlujogramaController {
         }
     }
 
-    EliminarFlujograma(req: Request, res: Response) {
+    public async EliminarFlujograma(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
             const consulta = `

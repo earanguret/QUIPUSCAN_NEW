@@ -13,7 +13,8 @@ class FtpServerRoutes {
     config(): void {
         this.router.post('/api/ftp/upload', ftpServerController.uploadFile.bind(ftpServerController));
         this.router.post('/api/ftp/folder', ftpServerController.createFolder.bind(ftpServerController));
-        this.router.post('/api/ftp/download', ftpServerController.downloadFile.bind(ftpServerController));
+        // this.router.post('/api/ftp/download', ftpServerController.downloadFile.bind(ftpServerController));
+        this.router.get('/api/ftp/download', ftpServerController.downloadFile.bind(ftpServerController));
         this.router.post('/api/ftp/list', ftpServerController.listFiles.bind(ftpServerController));
         this.router.post('/api/ftp/delete', ftpServerController.deleteFile.bind(ftpServerController));
         this.router.post('/api/ftp/rename', ftpServerController.renameFile.bind(ftpServerController));

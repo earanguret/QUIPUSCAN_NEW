@@ -72,7 +72,7 @@ class EstadoExpedienteController {
         }
     }
 
-    public async AceptarPreparacion(req: Request, res: Response) {
+    public async PreparacionAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
             const { user_app} = req.body;
@@ -109,7 +109,7 @@ class EstadoExpedienteController {
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
-    public async AprobarPreparacion(req: Request, res: Response) {
+    public async PreparacionTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
             const { user_app} = req.body;
@@ -147,7 +147,7 @@ class EstadoExpedienteController {
         }
     }
 
-    public async AceptarDigitalizacion(req: Request, res: Response) {
+    public async DigitalizacionAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
             const { user_app} = req.body;
@@ -184,7 +184,7 @@ class EstadoExpedienteController {
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
-    public async AprobarDigitalizacion(req: Request, res: Response) {
+    public async DigitalizacionTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
             const { user_app} = req.body;
@@ -235,46 +235,23 @@ class EstadoExpedienteController {
     }
 
 
-    public async DesaprobarControlDigitalizacion(req: Request, res: Response) {
+    public async RechazarControlDigitalizacion(req: Request, res: Response) {
 
     }
 
-    public async DesaprobarControlIndizacion(req: Request, res: Response) {
+    public async RechazarControlIndizacion(req: Request, res: Response) {
 
     }
 
-    public async DesaprobarFedatarioDigitalizacion(req: Request, res: Response) {
+    public async RechazarFedatarioDigitalizacion(req: Request, res: Response) {
 
     }
 
-    public async DesaprobarFedatarioIndizacion(req: Request, res: Response) {
+    public async RechazarFedatarioIndizacion(req: Request, res: Response) {
 
     }
 
-    public async ActivarEstadoRechazado(req: Request, res: Response) {
-
-
-    }
-
-    public async DesactivarEstadoRechazado(req: Request, res: Response) {
-
-    }
-
-    public async AnularEstadoRechazado(req: Request, res: Response) {
-
-    }
-
-    public async ActivarEstadoFinalizado(req: Request, res: Response) {
-
-    }
-
-    public async AsociarDisco(req: Request, res: Response) {
-
-    }
-
-    public async ModificarMensaje(req: Request, res: Response) {
-
-    }
+  
         
 }
 

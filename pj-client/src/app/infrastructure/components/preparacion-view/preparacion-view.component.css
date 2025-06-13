@@ -1,0 +1,19 @@
+.contenedor {
+    margin: 2% 6%;
+    max-width: 1680px;
+  }
+
+  .observation-tag{
+    background-color: #f6f6ee;
+    color: #8d8d88 ;
+    font-size: 0.9rem;
+    border: 2px solid #ecece5c9;
+  }
+
+   /* subtitulo expediente */
+   .sub_titulo_expediente{
+    background-color: #f1f1f3;
+    color: #8d8d88 ;
+    border: 2px solid #ecece5c9;
+    border-bottom: 0px;
+  }

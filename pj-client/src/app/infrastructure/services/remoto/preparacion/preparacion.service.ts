@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { CrearPreparacionResponse, ModificarPreparacionResponse, PreparacionResponse } from '../../../../domain/dto/PreparacionResponse.dto';
+import { CrearPreparacionResponse, ModificarPreparacionResponse, PreparacionResponse, PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { PreparacionRequest } from '../../../../domain/dto/PreparacionRequest.dto';
 
 @Injectable({
@@ -24,6 +24,10 @@ export class PreparacionService {
 
   ObtenerPreparacionXidExpediente(id_expediente:number):Observable<PreparacionResponse>{
     return this.http.get<PreparacionResponse>(`${this.api_uri_preparacion}/${id_expediente}`)
+  }
+
+  ObtenerPreparacionDataViewXidExpediente(id_expediente:number):Observable<PreparacionResponseDataView>{
+    return this.http.get<PreparacionResponseDataView>(`${this.api_uri_preparacion}/dataview/${id_expediente}`)
   }
 
   ModificarPreparacion(id_expediente:number,cuerpo_preparacion:PreparacionRequest):Observable<ModificarPreparacionResponse>{

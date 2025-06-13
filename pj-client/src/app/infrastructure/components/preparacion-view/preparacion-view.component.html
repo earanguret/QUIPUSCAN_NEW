@@ -1,0 +1,50 @@
+<div class="sub_titulo_expediente d-flex justify-content-center">
+  
+        
+    
+    
+    <div class="contenedor ">
+        <h5 style="font-size: 1.1rem;">{{data_expediente_preparacion.nro_expediente}}</h5>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem; margin-bottom: 0.3rem;">RESPONSABLE: {{data_expediente_preparacion.responsable}}</p>
+        <p style="font-size: 0.9rem;margin-top: 0.3rem; margin-bottom: 0.3rem;">FECHA: {{data_expediente_preparacion.create_at | date:'dd/MM/yyyy'}}</p>
+    </div>
+</div>
+<div class="contenedor">
+    <form>
+        <!-- DATOS DE INVENTARIO -->
+        <fieldset>
+
+            <div class="form-group mt-3">
+                <label for="fojas" class="form-label">Fojas fisicas: </label>
+                <input readonly type="text" class="form-control" name="fojas" [(ngModel)]="data_expediente_preparacion.fojas_total"  >
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="fojas" class="form-label">1 cara:</label>
+                <input readonly type="text" class="form-control" name="unaCara" [(ngModel)]="data_expediente_preparacion.fojas_unacara"  >
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="fojas" class="form-label">2 caras:</label>
+                <input type="text" class="form-control" name="dosCaras" [(ngModel)]="data_expediente_preparacion.fojas_doscaras"  >
+            </div>
+
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" value="" id="checkDefault" name="docOriginales" [(ngModel)]="data_expediente_preparacion.copias_originales">
+                <label class="form-check-label" for="checkDefault">Doc. Originales </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="checkChecked" name="docCopias" [(ngModel)]="data_expediente_preparacion.copias_simples" >
+                <label class="form-check-label" for="checkChecked">Copias</label>
+            </div>
+            <div class="form-group mt-3">
+                <label for="fojas" class="form-label">Observaciones: </label>
+                <div *ngFor="let observacion of ListObservaciones; let i = index" class="  mb-2">
+                    <div class="observation-wrapper position-relative">
+                        <input type="text" readonly class="form-control observation-tag" name="observacion" value="{{observacion}}">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
