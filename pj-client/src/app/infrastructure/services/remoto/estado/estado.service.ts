@@ -40,6 +40,13 @@ export class EstadoService {
     return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/indizacion/${id_expediente}`, {app_user})
   }
 
+  RecepcionarControl(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aceptar/control/${id_expediente}`, {app_user})
+  }
+  TrabajadoControl(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/control/${id_expediente}`, {app_user})
+  }
+
 
 
   EliminarEstado(id:number):Observable<EliminarEstadoResponse>{

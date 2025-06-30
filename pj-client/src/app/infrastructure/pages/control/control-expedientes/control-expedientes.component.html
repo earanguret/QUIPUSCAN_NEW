@@ -1,6 +1,205 @@
 <div class="panel">
     <app-navegator></app-navegator>
-    <app-subnavegator></app-subnavegator>
-    <h1>control de expedientes</h1>
+    <app-subnavegator [ruta]="'/principal/controlcalidad/list-serie-documental'"></app-subnavegator>
+    <div class="contenedor">
+        <div class="row">
+            <div class="col-lg-3">
+                <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
+            </div>
+            <div class="col-lg-9">
+
+                <div class="encabezado_pages ">
+                    <i class="bi bi-card-list icon-custom"></i>
+                    <p class="titulo_menu px-4">CONTROL DE CALIDAD DE EXPEDIENTES</p>
+                </div>
+                <div class="card rounded shadow border-2 ">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center ">
+                        <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente"
+                            placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
+
+                    </div>
+                    <div class="card-body px-5 bg-white rounded">
+                        <div class="mb-2 d-flex align-items-center">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table text-center" id="excel-table">
+                                <colgroup>
+                                    <col style="width: 5%;">
+                                    <col style="width: 75%;">
+                                    <col style="width: 20%;">
+
+                                </colgroup>
+                                <thead class="table-success ">
+                                    <tr>
+                                        <th scope="col">Nro</th>
+                                        <th scope="col">EXPEDIENTE</th>
+                                        <th scope="col"></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"  >
+                                        <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
+                                        <td>{{expediente.nro_expediente}} </td>
+                                        <td (click)="obtenerNroExpediente(expediente.nro_expediente)">
+                                            <img *ngIf="expediente.estado_controlado==null"  src="/icon/doc-previo.png" alt="logo" title="datos de indización" width="24px" height="24px" class="mx-3" >
+
+                                            <button *ngIf="expediente.estado_controlado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
+                                                  <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                                 Recepcionar</button>
+                                            <button *ngIf="expediente.estado_controlado=='A'" class="btn btn-light btn-sm" (click)="openModalControl(expediente.id_expediente)" >
+                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px"  >
+                                                Controlar
+                                            </button>
+                                            <div>
+                                                <img *ngIf="expediente.estado_controlado=='T'"  src="/icon/check.png" alt="logo" title="Preparado correctamente" width="24px" height="24px">
+                                                <img *ngIf="expediente.estado_controlado=='T'"  src="/icon/expediente_eye.png" class="mx-3" alt="logo" title="ver información" width="24px" height="24px">
+                                                <img *ngIf="expediente.estado_controlado=='T' && expediente.estado_fedatado==null"  src="/icon/lapiz.png"  alt="logo" title="ver información" width="24px" height="24px" >
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-end ">
+                                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
+                                    nextLabel="Siguiente"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="ModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Recepcion de expediente</h5>
+            </div>
+            <div class="modal-body">
+
+                <h5 class="text-center">¡IMPORTANTE!</h5>
+                <p>El expediente se encuentra en estado de recepción. Para poder continuar con el proceso de
+                    preparación,
+                    debe aprobar la recepcion del expediente.</p>
+                <div class="form-check text-start">
+                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked>
+                    <label class="form-check-label" for="checkChecked">
+                        Confirmo tener el documento fisico en mi poder
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()">Aprobar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalIndizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog   modal-custom-width " role="document" >
+        <div class="modal-content" style="height: 94vh;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">CONTROL DE CALIDAD</h5>
+            </div>
+            <div class="modal-body m-0 p-0">
+                <div class="row">
+                    <div class="col col-lg-5 col-sm-12  " style="padding-right: 0px; margin-right:0px;"   >
+                        <div style="display: flex; flex-direction: column; height: 87vh;">
+
+                            <!-- Elemento superior (siempre en la parte de arriba) -->
+                            <div class="sub_titulo_expediente d-flex justify-content-center position-relative">
+                              <i class="bi bi-eye-fill position-absolute start-0 ms-2"
+                                 style="top: 50%; transform: translateY(-50%); cursor: pointer; padding-left: 15px;"
+                                 title="Ver información de digitalización"></i>
+                              <h5 style="font-size: 1.1rem;">{{nro_expediente_temp}}</h5>
+                            </div>
+                          
+                            <!-- Elemento central que ocupa el espacio restante -->
+                            <div class="contenedor-form-indizacion scroll-hidden" style="flex: 1;">
+                                <form style="flex: 1; display: flex; flex-direction: column;">
+                                  <fieldset style="flex: 1; display: flex; flex-direction: column;">
+                                    <label for="fojas" class="form-label mb-1">Validaciones: </label>
+                                        <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                    <div class="form-check mt-3">
+                                        <input class="form-check-input" type="checkbox"  id="checkDefault" name="ocr">
+                                        <label class="form-check-label" for="checkDefault">VERIFICACION DE OBSERVACIONES </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="escala_gris">
+                                        <label class="form-check-label" for="checkChecked">VERIFICACION DE DATOS</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="color" >
+                                        <label class="form-check-label" for="checkChecked">VERIFICACION DE NITIDEZ</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="color" >
+                                        <label class="form-check-label" for="checkChecked">PRUEBAS DE IMPRESION</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="color" >
+                                        <label class="form-check-label" for="checkChecked">COPIA FIEL DEL ORIGINAL</label>
+                                    </div>
+
+                                    <div class="form-group mt-3">
+                                        <label for="fojas" class="form-label mb-1">Observaciones: </label>
+                                        <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2">
+                                        <div *ngFor="let observacion of ListObservacionesIndizacion; let i = index" class="  mb-2">
+                                            <div class="observation-wrapper position-relative">
+                                                <input type="text" readonly class="form-control observation-tag" name="observacion" value="{{observacion}}">
+                                                <div class="observation-icons">
+                                                    <i class="bi bi-chevron-down obs-icon" (click)="BajarObservacion(i)"></i>
+                                                    <i class="bi bi-chevron-up obs-icon mx-1" (click)="SubirObservacion(i)"></i>
+                                                    <i class="bi bi-x-square obs-icon"  (click)="EliminarObservacion(i)"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control mt-3 observation-input" name="observacion" id="observacion">
+                                        <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2" (click)="AgregarObservacion()">+ Añadir observación</button>
+                                    </div>                      
+
+                                </fieldset>
+                              </form>
+                            </div>
+                          
+                            <!-- Elemento inferior (botones) fijo abajo -->
+                            <div class="d-flex justify-content-between" style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925;">
+                                <button type="button" class="rechazar-btn mx-2">Rechazar</button>
+                                <div >
+                                
+                                <button type="button" class="cancelar-btn mx-2" (click)="closeModal()">Cancelar</button>
+                                <button type="button" class="guardar-btn mx-2" (click)="EventAction()">
+                                  {{modificarControl ? 'Modificar' : 'Guardar'}}
+                                </button>
+                            </div>
+                              
+                            </div>
+                          
+                          </div>
+                      
+        
+                    </div>
+                    <div class="col col-lg-7 col-sm-12 p-0 m-0 " style="height: 89vh; ">
+                        <iframe 
+                          [src]="pdfUrl" 
+                          style="width: 99%; height: 98.2%; border: none; background-color: #f6f6ee; border-bottom-right-radius: 10px;" 
+                          type="application/pdf"
+                         >
+                        </iframe>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>

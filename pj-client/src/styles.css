@@ -199,6 +199,22 @@ img {
     
 }
 
+.rechazar-btn {
+    background-color: #F4B5B5; /* rojo claro */
+    color: #8B1E1E; /* rojo oscuro */
+    border: 1px solid #E89A9A; /* rojo medio */
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600;
+}
+
+.rechazar-btn:hover {
+    background-color: #E88A8A; /* rojo más intenso al pasar el mouse */
+    color: #8B1E1E;
+    border: 1px solid #E89A9A;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600;
+}
+
 .registrar-btn{
     background-color: #fcf0d3cc;
     color: #C28E0E;

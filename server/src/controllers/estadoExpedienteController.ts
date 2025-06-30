@@ -295,8 +295,77 @@ class EstadoExpedienteController {
         }
     }   
 
-    public async AprobarControl(req: Request, res: Response) {
+    public async ControlAceptada(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { user_app} = req.body;
+            
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
 
+                            estado_controlado=$5
+	                    WHERE id_expediente=$6;
+                
+                `;
+            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Control aprobado:', error);
+                } else {
+                    console.log('Expedinte de control de calidad aprobado correctamente');
+                    res.json({ text: 'Control de calidad  aceptado correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+    public async ControlTrabajado(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { user_app} = req.body;
+            
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,                            
+                            estado_controlado=$5
+	                    WHERE id_expediente=$6;
+                
+                `;        
+            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];            
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Control de calidad trabajado:', error);
+                } else {
+                    console.log('control de calidad trabajado correctamente');
+                    res.json({ text: 'control de calidad trabajado correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
 
     public async AprobarFedado(req: Request, res: Response) {

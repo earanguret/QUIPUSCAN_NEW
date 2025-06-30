@@ -4,6 +4,7 @@ import { NavegatorComponent } from '../../../shared/components/navegator/navegat
 import { SubnavegatorComponent } from '../../../shared/components/subnavegator/subnavegator.component';
 import { InventarioComponent } from '../../../components/inventario/inventario.component';
 
+
 @Component({
   selector: 'app-control-list-serie-doc',
   imports: [NavegatorComponent, SubnavegatorComponent, InventarioComponent],
