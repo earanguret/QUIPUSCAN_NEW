@@ -106,8 +106,8 @@
     </div>
 </div>
 
-<div class="modal fade" id="ModalDigitalizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
-    <div class="modal-dialog   modal-custom-width" role="document" >
+<div class="modal fade" id="ModalDigitalizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog   modal-custom-width " role="document" >
         <div class="modal-content" style="height: 94vh;">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">DIGITALIZACIÓN DE EXPEDIENTE</h5>
@@ -172,7 +172,7 @@
                                     <!-- <textarea id="observaciones" name="observaciones" placeholder="Observaciones" class="form-control" style="height: 208px;resize: none" rows="6"></textarea> -->
                                     <div class="d-flex justify-content-end  ">
                                         <button type="button" class="cancelar-btn mx-4" (click)="closeModal()">Cancelar</button>
-                                        <button type="button" class="guardar-btn" (click)="EventAction()" >Guardar</button>
+                                        <button type="button" class="guardar-btn" (click)="EventAction()" >{{modificarDigitalizacion?'Modificar':'Guardar'}}</button>
                                     </div>  
                                 </fieldset>
             

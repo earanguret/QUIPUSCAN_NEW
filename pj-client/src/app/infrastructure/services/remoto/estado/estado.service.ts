@@ -33,6 +33,13 @@ export class EstadoService {
     return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/digitalizacion/${id_expediente}`, {app_user})
   }
 
+  RecepcionarIndizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aceptar/indizacion/${id_expediente}`, {app_user})
+  }
+  TrabajadoIndizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/indizacion/${id_expediente}`, {app_user})
+  }
+
 
 
   EliminarEstado(id:number):Observable<EliminarEstadoResponse>{

@@ -10,6 +10,7 @@ import flujogramaRoutes from './routes/flujogramaRoutes';
 import preparacionRoutes from './routes/preparacionRoutes';
 import digitalizacionRoutes from './routes/digitalizacionRoutes';
 import ftpServerRoutes from './routes/ftpServerRoutes';
+import indizacionRoutes from './routes/indizacionRoutes';
 
 
 class Server{
@@ -39,6 +40,7 @@ class Server{
         this.app.use('/',preparacionRoutes);
         this.app.use('/',digitalizacionRoutes);
         this.app.use('/',ftpServerRoutes);
+        this.app.use('/',indizacionRoutes);
         
     }
     start(): void {

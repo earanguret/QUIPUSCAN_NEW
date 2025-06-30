@@ -137,7 +137,7 @@ CREATE TABLE archivo.t_indizacion (
     id_indizacion serial PRIMARY KEY,
     id_expediente integer UNIQUE REFERENCES archivo.t_expediente(id_expediente),
     id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
-    indizacion varchar,
+    indice varchar,
     observaciones varchar,
     juzgado_origen varchar,
     tipo_proceso varchar,

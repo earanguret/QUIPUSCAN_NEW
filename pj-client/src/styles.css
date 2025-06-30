@@ -198,3 +198,17 @@ img {
     font-weight: 600;
     
 }
+
+.registrar-btn{
+    background-color: #fcf0d3cc;
+    color: #C28E0E;
+    border: 1px solid #FAE5B3;
+    box-shadow: 1px 1px 3px 0
+}
+
+.registrar-btn:hover{
+    background-color: #faeac6;
+    color: #C28E0E;
+    border: 1px solid #f8e7be;
+    box-shadow: 1px 1px 3px 0
+}

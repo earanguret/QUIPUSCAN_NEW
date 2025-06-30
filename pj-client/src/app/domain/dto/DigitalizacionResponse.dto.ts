@@ -15,3 +15,7 @@ export interface DigitalizacionDataResponse {
 export interface CrearDigitalizacionResponse {
     message: string;
 }
+
+export interface ModificarDigitalizacionResponse {
+    message: string;
+}

@@ -21,18 +21,19 @@ import { DigitalizacionService } from '../../../services/remoto/digitalizacion/d
 import { PreparacionViewComponent } from '../../../components/preparacion-view/preparacion-view.component';
 import { DigitalizacionModel } from '../../../../domain/models/Digitalizacion.model';
 import { FtpService } from '../../../services/remoto/ftp/ftp.service';
-import { CrearDigitalizacionResponse, DigitalizacionDataResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
+import { CrearDigitalizacionResponse, DigitalizacionDataResponse, ModificarDigitalizacionResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { DigitalizacionRequest } from '../../../../domain/dto/DigitalizacionRequest.dto';
 import { getFileHash } from '../../../functions/hashFuntions';
 import { FormsModule } from '@angular/forms';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
+import { form_digitalizacion_creacion_vf, form_digitalizacion_modificar_vf } from '../../../validator/fromValidator/digitalizacion.validator';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-digitalizacion-expedientes',
-  imports: [NavegatorComponent, SubnavegatorComponent, CommonModule,FormsModule, InfoInventarioComponent, NgxPaginationModule, PreparacionViewComponent],
+  imports: [NavegatorComponent, SubnavegatorComponent, CommonModule, FormsModule, InfoInventarioComponent, NgxPaginationModule, PreparacionViewComponent],
   templateUrl: './digitalizacion-expedientes.component.html',
   styleUrl: './digitalizacion-expedientes.component.css'
 })
@@ -42,6 +43,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   id_inventario: number = 0;
   p: number = 1;
   file: File | null = null;
+  folderPath: string | null = null;
 
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
@@ -63,6 +65,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   mostrar_mensajes_expediente: boolean = false;
 
   codigo_inventario: string = '';
+  mostrarPreparacion = false;
 
   data_preparacion_expediente: PreparacionResponse = {
     id_expediente: 0,
@@ -73,7 +76,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     fojas_total: null,
     fojas_unacara: null,
     fojas_doscaras: null,
-    create_at : null,
+    create_at: null,
     username: null
   }
 
@@ -91,19 +94,19 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     peso_doc: null,
   }
 
-  
 
-  constructor(private router: Router, 
-            private credencialesService: CredencialesService, 
-            private flujogramaService: FlujogramaService, 
-            private activatedRoute: ActivatedRoute,
-            private expedienteService: ExpedienteService,
-            private estadoService: EstadoService,
-            private sanitizer: DomSanitizer,
-            private preparacionService: PreparacionService,
-            private digitalizacionService: DigitalizacionService,
-            private ftpService: FtpService,
-            private inventarioService: InventarioService) { }
+
+  constructor(private router: Router,
+    private credencialesService: CredencialesService,
+    private flujogramaService: FlujogramaService,
+    private activatedRoute: ActivatedRoute,
+    private expedienteService: ExpedienteService,
+    private estadoService: EstadoService,
+    private sanitizer: DomSanitizer,
+    private preparacionService: PreparacionService,
+    private digitalizacionService: DigitalizacionService,
+    private ftpService: FtpService,
+    private inventarioService: InventarioService) { }
 
   ngOnInit(): void {
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
@@ -122,8 +125,13 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     }
   }
 
-  guardarPDF(file: File, folderPath: string, nameFile: string) {
-    this.ftpService.uploadFile(file, folderPath, nameFile).subscribe({
+  guardarPDF(file: File, nameFile: string) {
+    if (!file) {
+      alert("El archivo no puede estar vacío");
+      return;
+    }
+
+    this.ftpService.uploadFile(file, this.folderPath!, nameFile).subscribe({
       next: (data: CrearDigitalizacionResponse) => {
         console.log("Respuesta del servidor:", data);
       },
@@ -141,7 +149,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log("PDF subido correctamente");
-        this.GuardarDatosDigitalizacion(folderPath);
+        this.GuardarDatosDigitalizacion();
       }
     });
   }
@@ -151,6 +159,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.myModal.hide();
     this.LimpiarDatosDigitalizacion();
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
+    this.LimpiarDatosDigitalizacion();
 
   }
 
@@ -159,16 +168,14 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.modificarDigitalizacion = false;
     this.myModal = new bootstrap.Modal(document.getElementById('ModalReception'));
     this.myModal.show();
-    
-
   }
 
-  mostrarPreparacion = false;
+  
   openModalPreparacionView(id_expediente: number) {
 
     this.mostrarPreparacion = false; // fuerza destrucción del componente si ya estaba
     this.id_expediente_temp = id_expediente;
-  
+
     // Espera un tick del ciclo de Angular para que *ngIf lo vuelva a renderizar
     setTimeout(() => {
       this.mostrarPreparacion = true;
@@ -207,11 +214,13 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         }
       });
   }
+
   ObternerCodigoInventario() {
     const params = this.activatedRoute.snapshot.params;
     this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
       next: (data: InventarioResponse) => {
         this.codigo_inventario = data.codigo;
+        this.folderPath = this.codigo_inventario + '/EXPEDIENTES';
       },
       error: (error) => {
         console.log(error);
@@ -221,13 +230,14 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       }
     })
   }
-  
-  EventAction(){
-    if(this.modificarDigitalizacion){
-      
-    } else { 
-     this.guardarPDF(this.file!,this.codigo_inventario+'/EXPEDIENTES', this.nro_expediente_temp+'.pdf');
-     //this.GuardarDatosDigitalizacion();
+
+  EventAction() {
+    if (this.modificarDigitalizacion) {
+      this.ModificarDigitalizacion();
+
+    } else {
+      this.guardarPDF(this.file!, this.nro_expediente_temp + '.pdf');
+      //this.GuardarDatosDigitalizacion();
     }
   }
 
@@ -249,13 +259,12 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.ListObservacionesDigitalizacion = [];
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
     (document.getElementById('formFile') as HTMLInputElement).value = '';
-
-
+    this.modificarDigitalizacion = false;
   }
 
-  async GuardarDatosDigitalizacion(folderPath: string) {
+  async GuardarDatosDigitalizacion() {
     const hash = await getFileHash(this.file!);
-  
+
     let data_digitalizacion_temp: DigitalizacionRequest = {
       id_responsable: this.credencialesService.credenciales.id_usuario,
       id_expediente: this.id_expediente_temp,
@@ -264,14 +273,23 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       escala_gris: this.data_digitalizacion.escala_gris,
       color: this.data_digitalizacion.color,
       observaciones: this.ListObservacionesDigitalizacion.join('|'),
-      dir_ftp: folderPath,
+      dir_ftp: this.folderPath,
       hash_doc: hash,
       peso_doc: this.file!.size,
       app_user: this.credencialesService.credenciales.username
     };
-  
-    console.log(data_digitalizacion_temp);
-    
+
+    const erroresValidacion = form_digitalizacion_creacion_vf(data_digitalizacion_temp);
+    if (erroresValidacion.length > 0) {
+      let errorMensaje = '';
+      erroresValidacion.forEach(error => {
+        errorMensaje += `Error en el campo :"${error.campo}": ${error.mensaje}`;
+      });
+      alert(errorMensaje)
+      console.log(errorMensaje)
+      return;
+    }
+
     this.digitalizacionService.CrearDigitalizacion(data_digitalizacion_temp).subscribe({
       next: (data: CrearDigitalizacionResponse) => {
         console.log(data);
@@ -282,10 +300,92 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       complete: () => {
         console.log('creacion de digitalizacion completado');
         this.EstadoDigitalizacionTrabajado()
-        
         this.closeModal();
       }
     })
+  }
+
+  async ModificarDigitalizacion() {
+    const usuario = this.credencialesService.credenciales;
+    const expediente = this.id_expediente_temp;
+    const observaciones = this.ListObservacionesDigitalizacion.join('|');
+    const isArchivoCargado = !!this.file;
+  
+    const hashActual = isArchivoCargado ? await getFileHash(this.file!) : this.data_digitalizacion.hash_doc;
+    const hashPrevio = this.data_digitalizacion.hash_doc;
+    const archivoModificado = hashActual !== hashPrevio;
+  
+    const dataDigitalizacion: DigitalizacionRequest = {
+      id_responsable: usuario.id_usuario,
+      id_expediente: expediente,
+      fojas_total: this.data_digitalizacion.fojas_total,
+      ocr: this.data_digitalizacion.ocr,
+      escala_gris: this.data_digitalizacion.escala_gris,
+      color: this.data_digitalizacion.color,
+      observaciones,
+      dir_ftp: this.folderPath,
+      hash_doc: hashActual,
+      peso_doc: isArchivoCargado ? this.file!.size : this.data_digitalizacion.peso_doc,
+      app_user: usuario.username
+    };
+
+
+  const erroresValidacion = form_digitalizacion_modificar_vf(dataDigitalizacion);
+    if (erroresValidacion.length > 0) {
+      let errorMensaje = '';
+      erroresValidacion.forEach(error => {
+        errorMensaje += `Error en el campo :"${error.campo}": ${error.mensaje}`;
+      });
+      alert(errorMensaje)
+      console.log(errorMensaje)
+      return;
+    }
+    // Función auxiliar para actualizar datos en backend
+    const actualizarDatos = () => {
+      this.digitalizacionService.ModificarDatosDigitalizacion(expediente, dataDigitalizacion).subscribe({
+        next: (data: ModificarDigitalizacionResponse) => {
+          console.log("✅ Datos actualizados:", data);
+        },
+        complete: () => {
+          console.log("✔️ Modificación de digitalización completada");
+          this.EstadoDigitalizacionTrabajado();
+          this.closeModal();
+        }
+      });
+    };
+  
+    // Si hay archivo cargado y fue modificado
+    if (isArchivoCargado && archivoModificado) {
+      this.ftpService.uploadFile(this.file!, this.folderPath!, this.nro_expediente_temp + '.pdf').subscribe({
+        next: (data: CrearDigitalizacionResponse) => {
+          console.log("📁 Archivo subido:", data);
+        },
+        error: (error) => {
+          if (error.status === 503) {
+            console.error("No se pudo conectar al servidor FTP.");
+            alert("Error de conexión al servidor FTP. Comuníquese con el área de informática.");
+          } else if (error.status === 400) {
+            console.error("Solicitud inválida. Verifique los datos enviados.");
+            alert("Datos inválidos. Verifica el nombre del archivo y la carpeta.");
+          } else {
+            console.error("Error inesperado al subir el archivo:", error);
+            alert("Ocurrió un error inesperado al subir el archivo.");
+          }
+        },
+        complete: () => {
+          console.log("Archivo subido correctamente.");
+          actualizarDatos();
+        }
+      });
+    } else {
+      // No hay archivo cargado o es el mismo que ya existía
+      if (!isArchivoCargado) {
+        console.warn("No se cargó ningún archivo nuevo.");
+      } else {
+        console.log("ℹEl archivo no ha cambiado. Solo se actualizarán los metadatos.");
+      }
+      actualizarDatos();
+    }
   }
 
   ObternerDigitalizacionByIdExpediente(id_expediente: number) {
@@ -293,8 +393,10 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.digitalizacionService.ObtenerDigitalizacion(id_expediente).subscribe({
       next: (data: DigitalizacionDataResponse) => {
         this.data_digitalizacion = data;
+        this.modificarDigitalizacion = true;
         this.ListObservacionesDigitalizacion = this.data_digitalizacion.observaciones?.split('|') ?? [];
         this.openModalDigitalizacion(this.data_digitalizacion.id_expediente);
+
         this.recuperarFile()
       },
       error: (error) => {
@@ -307,9 +409,9 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
   recuperarFile() {
-    let fileName=this.nro_expediente_temp+'.pdf';
-    let folderPath=this.codigo_inventario+'/EXPEDIENTES';
-    this.ftpService.downloadFile(fileName,folderPath).subscribe({
+    let fileName = this.nro_expediente_temp + '.pdf';
+    let folderPath = this.folderPath!;
+    this.ftpService.downloadFile(fileName, folderPath).subscribe({
       next: (data: Blob) => {
         console.log(data);
         let temp = new Blob([data], { type: 'application/pdf' });
@@ -326,7 +428,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
   MostrarDatosPreparacion() {
-    this.mostrar_obs_preparacion = !this.mostrar_obs_preparacion ;
+    this.mostrar_obs_preparacion = !this.mostrar_obs_preparacion;
     if (this.mostrar_obs_preparacion) {
       this.ObtenerPreparacionByIdExpediente(this.id_expediente_temp)
     }
@@ -420,10 +522,10 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
 
-  AgregarObservacion(){
+  AgregarObservacion() {
     const valor = (document.getElementById('observacion') as HTMLInputElement).value;
     this.ListObservacionesDigitalizacion.push(valor);
-    (document.getElementById('observacion') as HTMLInputElement).value='';
+    (document.getElementById('observacion') as HTMLInputElement).value = '';
   }
 
   EliminarObservacion(index: number) {
@@ -437,7 +539,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       this.ListObservacionesDigitalizacion[index] = temp;
     }
   }
-  
+
   BajarObservacion(index: number) {
     if (index < this.ListObservacionesDigitalizacion.length - 1) {
       const temp = this.ListObservacionesDigitalizacion[index + 1];

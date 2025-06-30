@@ -222,9 +222,78 @@ class EstadoExpedienteController {
         }
     }
 
-    public async AprobarIndizacion(req: Request, res: Response) {
+    public async IndizacionAceptada(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { user_app} = req.body;
+            
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
 
+                            estado_indizado=$5
+	                    WHERE id_expediente=$6;
+                
+                `;
+            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Indizacion aprobada:', error);
+                } else {
+                    console.log('Indizacion aprobada correctamente');
+                    res.json({ text: 'Indizacion aprobada correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
+    public async IndizacionTrabajado(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { user_app} = req.body;
+            
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,                            
+                            estado_indizado=$5
+	                    WHERE id_expediente=$6;
+                
+                `;        
+            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];            
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Indizacion aprobada:', error);
+                } else {
+                    console.log('Indizacion aprobada correctamente');
+                    res.json({ text: 'Indizacion aprobada correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }   
 
     public async AprobarControl(req: Request, res: Response) {
 
