@@ -1,3 +1,4 @@
+
 export interface DigitalizacionModel{
     id_digitalizacion?: number;
     id_expediente: number;

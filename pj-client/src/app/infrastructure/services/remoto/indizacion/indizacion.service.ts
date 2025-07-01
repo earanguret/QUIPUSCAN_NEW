@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
 import { IndizacionRequest } from '../../../../domain/dto/IndizacionRequest.dto';
-import { CrearIndizacionResponse, IndizacionDataDetalleResponse, IndizacionDataResponse, ModificarIndizacionResponse } from '../../../../domain/dto/IndizacionResponse.dto';
+import { CrearIndizacionResponse, IndizacionDataResponse, IndizacionResponseDataView, ModificarIndizacionResponse } from '../../../../domain/dto/IndizacionResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +19,12 @@ export class IndizacionService {
     return this.http.get<any>(this.api_uri_indizacion+`/search/${id_expediente}`)
   }
 
-  ObtenerIndizacionDetalleById_expediente(id_expediente:number):Observable<IndizacionDataDetalleResponse>{
-    return this.http.get<IndizacionDataDetalleResponse>(this.api_uri_indizacion+`/search/detail/${id_expediente}`)
+  // ObtenerIndizacionDetalleById_expediente(id_expediente:number):Observable<IndizacionDataDetalleResponse>{
+  //   return this.http.get<IndizacionDataDetalleResponse>(this.api_uri_indizacion+`/search/detail/${id_expediente}`)
+  // }
+
+  ObtenerIndizacionDataViewXidExpediente(id_expediente:number):Observable<IndizacionResponseDataView>{
+    return this.http.get<IndizacionResponseDataView>(this.api_uri_indizacion+`/dataview/${id_expediente}`)
   }
 
   ObtenerIndizacionById_expediente(id_expediente:number):Observable<IndizacionDataResponse>{

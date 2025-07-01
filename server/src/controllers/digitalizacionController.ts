@@ -3,7 +3,7 @@ import db from '../database/database';
 import { key } from '../database/key';
 
 
-class DigitalizacionCotroller {
+class DigitalizacionController {
 
     constructor() {
 
@@ -172,6 +172,49 @@ class DigitalizacionCotroller {
 
     }
 
+    // DataViewXidExpediente
+    public async obtenerDigitalizacionDataViewXidExpediente(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_expediente } = req.params;
+            const consulta = `
+                            SELECT
+                                d.id_digitalizacion,
+                                d.id_responsable,
+                                d.id_expediente,
+                                d.fojas_total,
+                                d.ocr,
+                                d.escala_gris,
+                                d.color,
+                                d.observaciones,
+                                d.dir_ftp,
+                                d.hash_doc,
+                                d.peso_doc,
+                                u.username,
+                                d.create_at,
+                                CONCAT(p.nombre, ' ', p.ap_paterno, ' ', p.ap_materno) AS responsable
+                            FROM
+                                archivo.t_digitalizacion d
+                            JOIN
+                                archivo.t_usuario u ON d.id_responsable = u.id_usuario
+                            JOIN
+                                archivo.t_persona p ON u.id_persona = p.id_persona
+                            WHERE 
+                                d.id_expediente=$1
+                            
+                                 `;
+            const persona = await db.query(consulta, [id_expediente]);
+            if (persona && persona["rows"].length > 0) {
+                res.json(persona["rows"][0]);
+            } else {
+                res.status(404).json({ text: "Los datos de la digitalización no existen" });
+            }
+        } catch (error) {
+            console.error("Error al obtener digitalización:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+
+    }
+
     public async obtenerDigitalizacionDetalle(req: Request, res: Response): Promise<any> {
         try {
             const { id_expediente } = req.params;
@@ -219,5 +262,5 @@ class DigitalizacionCotroller {
 
 }
 
-const digitalizacionCotroller = new DigitalizacionCotroller();
-export default digitalizacionCotroller;
+const digitalizacionController = new DigitalizacionController();
+export default digitalizacionController;

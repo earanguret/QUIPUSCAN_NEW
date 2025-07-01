@@ -2,9 +2,11 @@ import { Request, Response } from 'express';
 import db from '../database/database';
 import { key } from '../database/key';
 
-class IndizacionController  {
+class IndizacionController {
 
-    public async ObtenerIndizacionDetalleById_expediente(req: Request, res: Response): Promise<void> {
+
+
+    public async ObtenerIndizacionDataViewXidExpediente(req: Request, res: Response): Promise<any> {
         try {
             const { id_expediente } = req.params;
             const consulta = `
@@ -22,10 +24,9 @@ class IndizacionController  {
                                 i.demandado,
                                 i.fecha_inicial,
                                 i.fecha_final,
+                                i.create_at,
                                 u.username,
-                                p.nombre,
-                                p.ap_paterno,
-                                p.ap_materno
+                                CONCAT(p.nombre, ' ', p.ap_paterno, ' ', p.ap_materno) AS responsable
                             FROM
                                 archivo.t_indizacion i
                             JOIN
@@ -36,9 +37,9 @@ class IndizacionController  {
                                 archivo.t_expediente e ON i.id_expediente = e.id_expediente
                             WHERE 
                                 e.id_expediente=$1
-                                 `;
+                                    `;
             const indizacion = await db.query(consulta, [id_expediente]);
-    
+
             if (indizacion && indizacion["rows"].length > 0) {
                 res.json(indizacion["rows"][0]);
             } else {
@@ -48,6 +49,7 @@ class IndizacionController  {
             console.error("Error al obtener indizacion detalle:", error);
             res.status(500).json({ error: "Error interno del servidor" });
         }
+
     }
 
     public async ObtenerIndizacionById_expediente(req: Request, res: Response): Promise<void> {
@@ -76,7 +78,7 @@ class IndizacionController  {
                                 e.id_expediente=$1
                                  `;
             const indizacion = await db.query(consulta, [id_expediente]);
-    
+
             if (indizacion && indizacion["rows"].length > 0) {
                 res.json(indizacion["rows"][0]);
             } else {
@@ -104,7 +106,7 @@ class IndizacionController  {
                 fecha_final,
                 app_user,
             } = req.body;
-            
+
             const ipAddressClient =
                 req.headers["x-forwarded-for"] || req.socket.remoteAddress;
             const consulta = `
@@ -186,7 +188,7 @@ class IndizacionController  {
                 fecha_final,
                 app_user,
             } = req.body;
-            
+
             const ipAddressClient =
                 req.headers["x-forwarded-for"] || req.socket.remoteAddress;
             const consulta = `

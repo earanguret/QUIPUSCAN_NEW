@@ -16,6 +16,7 @@ const preparacionRoutes_1 = __importDefault(require("./routes/preparacionRoutes"
 const digitalizacionRoutes_1 = __importDefault(require("./routes/digitalizacionRoutes"));
 const ftpServerRoutes_1 = __importDefault(require("./routes/ftpServerRoutes"));
 const indizacionRoutes_1 = __importDefault(require("./routes/indizacionRoutes"));
+const controlRoutes_1 = __importDefault(require("./routes/controlRoutes"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -42,6 +43,7 @@ class Server {
         this.app.use('/', digitalizacionRoutes_1.default);
         this.app.use('/', ftpServerRoutes_1.default);
         this.app.use('/', indizacionRoutes_1.default);
+        this.app.use('/', controlRoutes_1.default);
     }
     start() {
         const server = this.app.listen(this.app.get('port'), '0.0.0.0', () => {
