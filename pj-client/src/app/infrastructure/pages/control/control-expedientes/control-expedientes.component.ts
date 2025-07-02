@@ -398,6 +398,7 @@ export class ControlExpedientesComponent implements OnInit {
       }
     })
   }
+  
   ListarExpedientes() {
     this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
       .pipe(

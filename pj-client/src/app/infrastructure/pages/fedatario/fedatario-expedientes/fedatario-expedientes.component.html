@@ -1,5 +1,399 @@
 <div class="panel">
     <app-navegator></app-navegator>
-    <app-subnavegator></app-subnavegator>
-    <h1>fedatario de expedientes</h1>
+    <app-subnavegator [ruta]="'/principal/fedatario/list-serie-documental'"></app-subnavegator>
+    <div class="contenedor">
+        <div class="row">
+            <div class="col-lg-3">
+                <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
+            </div>
+            <div class="col-lg-9">
+
+                <div class="encabezado_pages ">
+                    <i class="bi bi-card-list icon-custom"></i>
+                    <p class="titulo_menu px-4">FEDATARIO</p>
+                </div>
+                <div class="card rounded shadow border-2 ">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center ">
+                        <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente"
+                            placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
+
+                    </div>
+                    <div class="card-body px-5 bg-white rounded">
+                        <div class="mb-2 d-flex align-items-center">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table text-center" id="excel-table">
+                                <colgroup>
+                                    <col style="width: 5%;">
+                                    <col style="width: 75%;">
+                                    <col style="width: 20%;">
+
+                                </colgroup>
+                                <thead class="table-success ">
+                                    <tr>
+                                        <th scope="col">Nro</th>
+                                        <th scope="col">EXPEDIENTE</th>
+                                        <th scope="col"></th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"  >
+                                        <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
+                                        <td>{{expediente.nro_expediente}} </td>
+                                        <td (click)="obtenerNroExpediente(expediente.nro_expediente)">
+                                            <img *ngIf="expediente.estado_fedatado==null"  src="/icon/doc-previo.png" alt="logo" title="datos de indización" width="24px" height="24px" class="mx-3" >
+
+                                            <button *ngIf="expediente.estado_fedatado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
+                                                  <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                                 Recepcionar</button>
+                                            <button *ngIf="expediente.estado_fedatado=='A'" class="btn btn-light btn-sm" (click)="ModalFedatario(expediente.id_expediente, expediente.nro_expediente)" >
+                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px"  >
+                                                Inspeccionar
+                                            </button>
+                                            <div>
+                                                <img *ngIf="expediente.estado_fedatado=='T'"  src="/icon/check.png" alt="logo" title="Preparado correctamente" width="24px" height="24px">
+                                                <img *ngIf="expediente.estado_fedatado=='T'"  src="/icon/expediente_eye.png" class="mx-3" alt="logo" title="ver información" width="24px" height="24px">
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-end ">
+                                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
+                                    nextLabel="Siguiente"></pagination-controls>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>
+
+<div class="modal fade" id="ModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Recepcion de expediente</h5>
+            </div>
+            <div class="modal-body">
+
+                <h5 class="text-center">¡IMPORTANTE!</h5>
+                <p>El expediente se encuentra en estado de recepción. Para poder continuar con el proceso de
+                    preparación,
+                    debe aprobar la recepcion del expediente.</p>
+                <div class="form-check text-start">
+                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked>
+                    <label class="form-check-label" for="checkChecked">
+                        Confirmo tener el documento fisico en mi poder
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()">Aprobar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalFedatario" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog   modal-custom-width " role="document" >
+        <div class="modal-content" style="height: 94vh;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">CONTROL DE CALIDAD</h5>
+            </div>
+            <div class="modal-body m-0 p-0">
+                <div class="row">
+                    <div class="col col-lg-5 col-sm-12  " style="padding-right: 0px; margin-right:0px;"   >
+                        <div style="display: flex; flex-direction: column; height: 87vh;">
+
+                            <!-- Elemento superior (siempre en la parte de arriba) -->
+                            <div class="sub_titulo_expediente d-flex justify-content-center ">
+                              
+                              <h5 style="font-size: 1.1rem;">{{nro_expediente_temp}}</h5>
+                            </div>
+                          
+                            <!-- Elemento central que ocupa el espacio restante -->
+                            <div class="contenedor-form-indizacion scroll-hidden" style="flex: 1;">
+                                <form style="flex: 1; display: flex; flex-direction: column;">
+                                  <fieldset style="flex: 1; display: flex; flex-direction: column;">
+
+                                    <!--  -->
+                                    
+                                    <section class="section-area">
+                                        <h4 class="title-section">Data preparación</h4>
+                                        <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                        <div class="sub_title">
+                                            <p class="p-subtitle "> <strong >Responsable:</strong> {{ data_preparacion.responsable}}</p>
+                                            <p class="p-subtitle"><strong>Creación:</strong>  {{ data_preparacion.create_at | date:'dd/MM/yyyy'}}</p>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <label for="fojas" class="form-label">Fojas fisicas: </label>
+                                            <input type="text" class="form-control" name="fojas"  [(ngModel)]="data_preparacion.fojas_total" readonly >
+                                        </div>
+                
+                                        <div class="form-group mt-3">
+                                            <label for="fojas" class="form-label">1 cara:</label>
+                                            <input type="text" class="form-control" name="unaCara"  [(ngModel)]="data_preparacion.fojas_unacara" readonly >
+                                        </div>
+                
+                                        <div class="form-group mt-3">
+                                            <label for="fojas" class="form-label">2 caras:</label>
+                                            <input type="text" class="form-control" name="dosCaras" [(ngModel)]="data_preparacion.fojas_doscaras" readonly >
+                                        </div>
+                
+                                        <div class="form-check mt-3">
+                                            <input class="form-check-input" type="checkbox" value="" id="checkDefault" name="docOriginales"  [(ngModel)]="data_preparacion.copias_originales">
+                                            <label class="form-check-label" for="checkDefault">Doc. Originales </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="checkChecked" name="docCopias"  [(ngModel)]="data_preparacion.copias_simples" >
+                                            <label class="form-check-label" for="checkChecked">Copias</label>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <label for="fojas" class="form-label">Observaciones: </label>
+                                            <div *ngFor="let observacion of ListObservacionesPreparacion; let i = index" class="  mb-2">
+                                                <div class="observation-wrapper position-relative">
+                                                    <input type="text" readonly class="form-control observation-tag" name="observacion" value="{{observacion}}">
+                                                    
+                                                </div>
+                                            </div>
+                                      
+                                        </div>
+                                    </section>
+                                    <section class="section-area">
+                                        <h4 class="title-section">Data digitalización</h4>
+                                        <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                        <div class="sub_title">
+                                            <p class="p-subtitle "> <strong >Responsable:</strong> {{data_digitalizacion.responsable}}</p>
+                                            <p class="p-subtitle"><strong>Creación:</strong>  {{data_digitalizacion.create_at | date:'dd/MM/yyyy'}}</p>
+                                            
+                                        </div>
+                
+                                        <div class="form-group mt-3">
+                                            <label for="fojas" class="form-label">Total de fojas digitalizadas:</label>
+                                            <input type="text" class="form-control" name="fojas" [(ngModel)]="data_digitalizacion.fojas_total"  >
+                                        </div>
+                
+                                        
+                                        <div class="form-check mt-3">
+                                            <input class="form-check-input" type="checkbox"  id="checkDefault" name="ocr" [(ngModel)]="data_digitalizacion.ocr">
+                                            <label class="form-check-label" for="checkDefault">OCR </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  id="checkChecked" name="escala_gris" [(ngModel)]="data_digitalizacion.escala_gris"  >
+                                            <label class="form-check-label" for="checkChecked">Escala de Grises</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"  id="checkChecked" name="color" [(ngModel)]="data_digitalizacion.color"  >
+                                            <label class="form-check-label" for="checkChecked">Color</label>
+                                        </div>
+                                        <div class="form-group mt-3" >
+                                            <label for="fojas" class="form-label">Observaciones: </label>
+                                          
+                                            <!-- Contenedor con scroll si se llena -->
+                                            <div style="max-height: 320px; overflow-y: auto; flex: 1; padding-right: 8px;" class="observaciones-scroll"   >
+                                              <div *ngFor="let observacion of ListObservacionesDigitalizacion; let i = index" class="mb-2">
+                                                <div class="observation-wrapper position-relative">
+                                                  <input type="text" readonly class="form-control observation-tag" name="observacion" [value]="observacion">
+                                                  
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <section class="section-area">
+                                        <h4 class="title-section">Data indización</h4>
+                                        <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                        <div class="sub_title">
+                                            <p class="p-subtitle "> <strong >Responsable:</strong> {{data_indizacion.responsable}}</p>
+                                            <p class="p-subtitle"><strong>Creación:</strong>  {{data_indizacion.create_at | date:'dd/MM/yyyy'}}</p>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <label for="juzgado_origen" class="form-label">Juzgado de origen:</label>
+                                            <input type="text" class="form-control form-control-sm" name="juzgado_origen" [(ngModel)]="data_indizacion.juzgado_origen" readonly>
+                                        </div>
+    
+                                        <div class="form-group mt-3">
+                                            <label for="tipo_proceso" class="form-label">Tipo de proceso:</label>
+                                            <input type="text" class="form-control form-control-sm" name="tipo_proceso" [(ngModel)]="data_indizacion.tipo_proceso" readonly>
+                                        </div>
+    
+                                        <div class="form-group mt-3">
+                                            <label for="materia" class="form-label">Materia:</label>
+                                            <input type="text" class="form-control form-control-sm" name="materia"  [(ngModel)]="data_indizacion.materia" readonly>
+                                        </div>
+    
+                                        <div class="form-group mt-3">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <label for="fecha_inicio" class="form-label ">Fecha inicio:</label>
+                                                    <input id="fecha_inicio" type="date" class="form-control form-control-sm " name="fecha_resolucion" readonly >
+                                                </div>
+                                                <div class="col">
+                                                    <label for="fecha_final" class="form-label ">Fecha final:</label>
+                                                    <input id="fecha_final" type="date" class="form-control form-control-sm " name="fecha_resolucion" readonly >
+                                                </div>
+                                            </div>
+                                        </div>
+    
+                                        <div class="form-group mt-3">
+                                            <label for="demandante" class="form-label mb-1">Demandante(s):</label>
+                                            <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                            <div *ngFor="let item of ListDamandantes; let i = index" class="mb-2 ">
+                                                <div class="wrapper-tag position-relative">
+                                                  <div class="form-control tag d-flex justify-content-between align-items-center">
+                                                    <span>{{ item.demandante }}</span>
+                                                    <span >{{ item.id }}</span>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                          
+                                        </div>
+                                        
+                                        <div class="form-group mt-3 " >
+                                            <label for="demandados" class="form-label mb-1">Demandado(s): </label>  
+                                            <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                            <div *ngFor="let item of ListDamandados; let i = index" class="mb-2 ">
+                                                <div class="wrapper-tag position-relative">
+                                                  <div class="form-control tag d-flex justify-content-between align-items-center">
+                                                    <span>{{ item.demandado }}</span>
+                                                    <span >{{ item.id }}</span>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                                                          
+                                            
+                                        </div>
+    
+                                        <div class="form-group mt-3 " >
+                                            <label for="indice" class="form-label mb-1">Indice: </label>  
+                                            <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                            <div id="list-container">
+                                                <ol>
+                                                    <li *ngFor="let item of dataIndice; let i = index" class="mb-1">
+                                                        <span class="titulo_index">{{ item.descripcion }} </span>
+                                                        <span class="titulo_index">{{ '(Pg.'+ item.indice+' )' }} </span>
+                                                        
+                                                        <ol *ngIf="item.subItems && item.subItems.length > 0">
+                                                            <li *ngFor="let subItem of item.subItems; let j = index">
+                                                                <span class="subtitulo_index">{{ subItem.descripcion }} </span>
+                                                                <span class="subtitulo_index">{{ '(Pg.'+ subItem.indice+' )' }} </span>
+                                                               
+                                                                <ol *ngIf="subItem.subItems && subItem.subItems.length > 0">
+                                                                    <li *ngFor="let subSubItem of subItem.subItems; let k = index">
+                                                                        <span class="subsubtitulo_index">{{ subSubItem.descripcion }}
+                                                                        </span>
+                                                                        <span class="subsubtitulo_index">{{ '(Pg.'+ subSubItem.indice+'
+                                                                            )' }} </span>
+                                                                        
+                                                                    </li>
+                                                                </ol>
+                                                            </li>
+                                                        </ol>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                        
+                                        </div>
+    
+                                        <div class="form-group mt-3">
+                                            <label for="fojas" class="form-label mb-1">Observaciones: </label>
+                                            <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                            <div *ngFor="let observacion of ListObservacionesIndizacion; let i = index" class="  mb-2">
+                                                <div class="observation-wrapper position-relative">
+                                                    <input type="text" readonly class="form-control observation-tag" name="observacion" value="{{observacion}}">
+                                                   
+                                                </div>
+                                            </div>
+                              
+                                        </div>          
+                                    </section>
+
+                                    <!--  -->
+                                    <section>
+                                        <h4 class="title-section">Data Control de calidad</h4>
+                                        <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                        <div class="sub_title">
+                                            <p class="p-subtitle "> <strong >Responsable:</strong> {{data_indizacion.responsable}}</p>
+                                            <p class="p-subtitle"><strong>Creación:</strong>  {{data_indizacion.create_at | date:'dd/MM/yyyy'}}</p>
+                                        </div>
+                                        <label for="fojas" class="form-label mt-2">Validaciones: </label>
+                                        <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0"> -->
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="observaciones" [(ngModel)]="data_control.val_observaciones">
+                                        <label class="form-check-label" for="checkChecked">VERIFICACION DE OBSERVACIONES </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="datos" [(ngModel)]="data_control.val_datos">
+                                        <label class="form-check-label" for="checkChecked">VERIFICACION DE DATOS</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="nitidez" [(ngModel)]="data_control.val_nitidez">
+                                        <label class="form-check-label" for="checkChecked">VERIFICACION DE NITIDEZ</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="impresion" [(ngModel)]="data_control.val_pruebas_impresion">
+                                        <label class="form-check-label" for="checkChecked">PRUEBAS DE IMPRESION</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"  id="checkChecked" name="copia_fiel"  [(ngModel)]="data_control.val_copia_fiel">
+                                        <label class="form-check-label" for="checkChecked">COPIA FIEL DEL ORIGINAL</label>
+                                    </div>
+
+                                    <div class="form-group mt-3">
+                                        <label for="fojas" class="form-label mb-1">Observaciones: </label>
+                                        <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                        <div *ngFor="let observacion of ListObservacionesControl; let i = index" class="  mb-2">
+                                            <div class="observation-wrapper position-relative">
+                                                <input type="text" readonly class="form-control observation-tag" name="observacion" value="{{observacion}}">
+                                                
+                                            </div>
+                                        </div>
+                                       
+                                    </div> 
+                                    </section>
+                                                         
+
+                                </fieldset>
+                              </form>
+                            </div>
+                          
+                            <!-- Elemento inferior (botones) fijo abajo -->
+                            <div class="d-flex justify-content-between" style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925;">
+                                <button type="button" class="rechazar-btn mx-2">Rechazar</button>
+                                <div >
+                                
+                                <button type="button" class="cancelar-btn mx-2" (click)="closeModal()">Cancelar</button>
+                                <button type="button" class="guardar-btn mx-2" >Firmar</button>
+                            </div>
+                              
+                            </div>
+                          
+                          </div>
+                      
+        
+                    </div>
+                    <div class="col col-lg-7 col-sm-12 p-0 m-0 " style="height: 89vh; ">
+                        <iframe 
+                          [src]="pdfUrl" 
+                          style="width: 99%; height: 98.2%; border: none; background-color: #f6f6ee; border-bottom-right-radius: 10px;" 
+                          type="application/pdf"
+                         >
+                        </iframe>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

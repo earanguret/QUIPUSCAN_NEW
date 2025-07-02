@@ -21,6 +21,8 @@ class EstadoExpedienteRoutes{
         this.router.put('/api/estado_expediente/aprobar/indizacion/:id_expediente',estadoExpedienteController.IndizacionTrabajado)
         this.router.put('/api/estado_expediente/aceptar/control/:id_expediente',estadoExpedienteController.ControlAceptada) 
         this.router.put('/api/estado_expediente/aprobar/control/:id_expediente',estadoExpedienteController.ControlTrabajado)
+        this.router.put('/api/estado_expediente/aceptar/fedatario/:id_expediente',estadoExpedienteController.FedadoAceptado)
+        this.router.put('/api/estado_expediente/aprobar/fedatario/:id_expediente',estadoExpedienteController.FedadoTrabajado)
         this.router.delete('/api/estado_expediente/:id_expediente',estadoExpedienteController.EliminarEstadoExpediente)
 
     }

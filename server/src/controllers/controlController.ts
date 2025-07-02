@@ -22,9 +22,9 @@ class ControlController {
                         id_responsable, 
                         id_expediente, 
                         observaciones, 
-                        val_observaciones, 
                         val_datos, 
                         val_nitidez, 
+                        val_observaciones, 
                         val_pruebas_impresion, 
                         val_copia_fiel)
                         VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, CURRENT_TIMESTAMP,$5,$6,$7,$8,$9,$10,$11,$12);
@@ -79,10 +79,10 @@ class ControlController {
                         c_aud_ip=$3, 
                         c_aud_mac=$4,
  
-                        observaciones=$5,
-                        val_observaciones=$6,
-                        val_datos=$7,
-                        val_nitidez=$8,
+                        observaciones=$5,                      
+                        val_datos=$6,
+                        val_nitidez=$7,
+                        val_observaciones=$8,
                         val_pruebas_impresion=$9,
                         val_copia_fiel=$10
                     WHERE id_expediente=$11;
@@ -170,9 +170,9 @@ class ControlController {
                                 id_responsable,
                                 id_expediente,
                                 observaciones,
-                                val_observaciones,
                                 val_datos,
                                 val_nitidez,
+                                val_observaciones,
                                 val_pruebas_impresion,
                                 val_copia_fiel
                             FROM

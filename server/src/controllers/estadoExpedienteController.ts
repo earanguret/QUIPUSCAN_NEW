@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import  db  from '../database/database';
+import db from '../database/database';
 import { key } from '../database/key';
 
 class EstadoExpedienteController {
@@ -75,8 +75,8 @@ class EstadoExpedienteController {
     public async PreparacionAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app} = req.body;
-            
+            const { user_app } = req.body;
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -112,8 +112,8 @@ class EstadoExpedienteController {
     public async PreparacionTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app} = req.body;
-            
+            const { user_app } = req.body;
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -150,8 +150,8 @@ class EstadoExpedienteController {
     public async DigitalizacionAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app} = req.body;
-            
+            const { user_app } = req.body;
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -187,8 +187,8 @@ class EstadoExpedienteController {
     public async DigitalizacionTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app} = req.body;
-            
+            const { user_app } = req.body;
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -225,8 +225,8 @@ class EstadoExpedienteController {
     public async IndizacionAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app} = req.body;
-            
+            const { user_app } = req.body;
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -262,8 +262,8 @@ class EstadoExpedienteController {
     public async IndizacionTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app} = req.body;
-            
+            const { user_app } = req.body;
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -279,8 +279,8 @@ class EstadoExpedienteController {
                             estado_indizado=$5
 	                    WHERE id_expediente=$6;
                 
-                `;        
-            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];            
+                `;
+            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];
             db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error('Indizacion aprobada:', error);
@@ -293,13 +293,13 @@ class EstadoExpedienteController {
             console.error("Error interno en el servidor:", error);
             res.status(500).json({ error: "Error interno del servidor" });
         }
-    }   
+    }
 
     public async ControlAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app} = req.body;
-            
+            const { user_app } = req.body;
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -335,8 +335,8 @@ class EstadoExpedienteController {
     public async ControlTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app} = req.body;
-            
+            const { user_app } = req.body;
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -352,8 +352,8 @@ class EstadoExpedienteController {
                             estado_controlado=$5
 	                    WHERE id_expediente=$6;
                 
-                `;        
-            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];            
+                `;
+            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];
             db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error('Control de calidad trabajado:', error);
@@ -368,8 +368,77 @@ class EstadoExpedienteController {
         }
     }
 
-    public async AprobarFedado(req: Request, res: Response) {
+    public async FedadoAceptado(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { user_app } = req.body;
 
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
+
+                            estado_fedatado=$5
+	                    WHERE id_expediente=$6;
+                
+                `;
+            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Fedatado aceptado:', error);
+                } else {
+                    console.log('Fedatado aceptado correctamente');
+                    res.json({ text: 'Fedatado aceptado correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+    public async FedadoTrabajado(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { user_app } = req.body;
+            
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,                            
+                            estado_fedatado=$5
+	                    WHERE id_expediente=$6;
+                
+                `;        
+            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];            
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Fedatado aprobado:', error);
+                } else {
+                    console.log('Fedatado aprobado correctamente');
+                    res.json({ text: 'Fedatado aprobado correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
 
 
@@ -389,8 +458,8 @@ class EstadoExpedienteController {
 
     }
 
-  
-        
+
+
 }
 
 const estadoExpedienteController = new EstadoExpedienteController();

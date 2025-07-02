@@ -47,7 +47,12 @@ export class EstadoService {
     return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/control/${id_expediente}`, {app_user})
   }
 
-
+  RecepcionarFedado(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aceptar/fedatario/${id_expediente}`, {app_user})
+  }
+  TrabajadoFedado(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/aprobar/fedatario/${id_expediente}`, {app_user})
+  }
 
   EliminarEstado(id:number):Observable<EliminarEstadoResponse>{
     return this.http.delete<EliminarEstadoResponse>(`${this.api_uri_estado}/${id}`)

@@ -15,6 +15,7 @@ class ControlRoutes{
         this.router.post('/api/control',controlController.crearControlCalidad)
         this.router.put('/api/control/:id_expediente',controlController.ModificarControlCalidad)
         this.router.get('/api/control/:id_expediente',controlController.ObtenerDatosControl)
+        this.router.get('/api/control/dataview/:id_expediente',controlController.ObtenerControlDataViewXidExpediente)
     }
 }
 

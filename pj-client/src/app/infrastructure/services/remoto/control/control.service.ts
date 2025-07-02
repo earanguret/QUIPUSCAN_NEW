@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
 import { ControlRequest } from '../../../../domain/dto/ControlRequest.dto';
-import { ControlDataResponse, CrearControlResponse, ModificarControlResponse } from '../../../../domain/dto/ControlResponse.dto';
+import { ControlDataResponse, ControlResponseDataView, CrearControlResponse, ModificarControlResponse } from '../../../../domain/dto/ControlResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +24,10 @@ export class ControlService {
 
   ObtenerDatosControl(id_expediente:number):Observable<ControlDataResponse>{
     return this.http.get<ControlDataResponse>(`${this.api_uri_control}/${id_expediente}`)
+  }
+
+  ObtenerControlDataViewXidExpediente(id_expediente:number):Observable<ControlResponseDataView>{
+    return this.http.get<ControlResponseDataView>(`${this.api_uri_control}/dataview/${id_expediente}`)
   }
 
 
