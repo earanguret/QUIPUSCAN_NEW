@@ -42,6 +42,8 @@ export class FedatarioExpedientesComponent implements OnInit {
 
 
   private myModal: any;
+  show_message_panel: boolean = false;
+  show_sign_panel: boolean = false;
   id_inventario: number = 0;
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
@@ -375,6 +377,35 @@ export class FedatarioExpedientesComponent implements OnInit {
         this.ListarExpedientes();
       }
     })
+  }
+
+
+  mostarSignPanel() {
+    this.show_sign_panel = !this.show_sign_panel;
+  }
+
+
+
+  progreso_firma = 0;
+  firmaProgressStatus = false;
+  progress_bar_sign() {
+    this.firmaProgressStatus = true;
+  
+    const interval = setInterval(() => {
+      if (this.progreso_firma < 100) {
+        // Incremento aleatorio entre 3 y 10
+        const randomIncrement = Math.floor(Math.random() * 8) + 3;
+        this.progreso_firma = Math.min(this.progreso_firma + randomIncrement, 100);
+      } else {
+        clearInterval(interval);
+  
+        // Esperar 2 segundos antes de ocultar la barra
+        setTimeout(() => {
+          this.firmaProgressStatus = false;
+          this.progreso_firma = 0;
+        }, 2000);
+      }
+    }, 500);
   }
 
 }

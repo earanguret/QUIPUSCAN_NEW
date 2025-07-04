@@ -2,120 +2,128 @@
     margin: 2% 4%;
     max-width: 1680px;
     max-width: 1680px;
-  }
+}
 
-  .contenedor-form-indizacion{
+.contenedor-form-indizacion {
     margin: 0px 0px;
     padding: 0px 4%;
     max-width: 1680px;
-  }
+}
 
-  .modal-custom-width {
+.modal-custom-width {
     max-width: 90%;
     /* Ajusta este valor según tus necesidades */
-  }
+}
 
 
-  .sub_titulo_expediente {
+.sub_titulo_expediente {
     background-color: #f1f1f3;
     color: #8d8d88;
     border: 2px solid #ecece5c9;
     border-bottom: 0px;
-  }
+}
 
 
- 
 
-  
 
-  .tag{
+
+
+.tag {
     background-color: #e2e2df79;
     /* color: #8d8d88 ; */
-    color: #888a8d ;
+    color: #888a8d;
     font-size: 0.9rem;
     border: 2px solid #ecece5c9;
-  }
+}
 
-  .input-tag{
+.input-tag {
     font-size: 0.9rem;
-    color: #888c8d ;
-  }
+    color: #888c8d;
+}
 
-  .wrapper-tag {
+.wrapper-tag {
     display: inline-block;
     position: relative;
     width: 100%;
-  }
-  
-  .icons-tag {
+}
+
+.icons-tag {
     position: absolute;
-    top: 0.25rem; /* ajusta según lo necesites */
+    top: 0.25rem;
+    /* ajusta según lo necesites */
     right: 0.5rem;
     display: flex;
     align-items: center;
     cursor: pointer;
     font-size: 0.8rem;
     color: #9b9b1f85;
-  
-  }
 
-  .icon-tag {
+}
+
+.icon-tag {
     font-size: 0.8rem;
-    font-weight: bold; /* hace el ícono más “grueso” si soportado */
-    text-shadow: 0 0 1px currentColor; /* efecto de grosor sin agrandar el espacio */
+    font-weight: bold;
+    /* hace el ícono más “grueso” si soportado */
+    text-shadow: 0 0 1px currentColor;
+    /* efecto de grosor sin agrandar el espacio */
     transition: transform 0.2s ease;
-  }
-  
-  .icon-tag:hover {
+}
+
+.icon-tag:hover {
     color: #8b8b1b;
-    transform: scale(1.1); /* ligeramente más grande al pasar el mouse */
-  }
+    transform: scale(1.1);
+    /* ligeramente más grande al pasar el mouse */
+}
 
 
 
-  /* observaciones tags */
-  .observation-tag{
+/* observaciones tags */
+.observation-tag {
     background-color: #f6f6ee;
-    color: #8d8d88 ;
+    color: #8d8d88;
     font-size: 0.9rem;
     border: 2px solid #ecece5c9;
-  }
+}
 
-  .observation-input{
+.observation-input {
     font-size: 0.9rem;
-    color: #8d8d88 ;
-  }
+    color: #8d8d88;
+}
 
 
-  .observation-wrapper {
+.observation-wrapper {
     display: inline-block;
     position: relative;
     width: 100%;
-  }
-  
-  .observation-icons {
+}
+
+.observation-icons {
     position: absolute;
-    top: 0.25rem; /* ajusta según lo necesites */
+    top: 0.25rem;
+    /* ajusta según lo necesites */
     right: 0.5rem;
     display: flex;
     align-items: center;
     cursor: pointer;
     font-size: 0.8rem;
     color: #9b9b1f85;
-  
-  }
 
-  .obs-icon {
+}
+
+.obs-icon {
     font-size: 0.8rem;
-    font-weight: bold; /* hace el ícono más “grueso” si soportado */
-    text-shadow: 0 0 1px currentColor; /* efecto de grosor sin agrandar el espacio */
+    font-weight: bold;
+    /* hace el ícono más “grueso” si soportado */
+    text-shadow: 0 0 1px currentColor;
+    /* efecto de grosor sin agrandar el espacio */
     transition: transform 0.2s ease;
-  }
-  
-  .obs-icon:hover {
+}
+
+.obs-icon:hover {
     color: #8b8b1b;
-    transform: scale(1.1); /* ligeramente más grande al pasar el mouse */
-  }
+    transform: scale(1.1);
+    /* ligeramente más grande al pasar el mouse */
+}
 
 
 ol {
@@ -123,20 +131,20 @@ ol {
     font-size: 1rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-    color:  #404B5A;
+    color: #404B5A;
     text-transform: uppercase;
     padding-left: 8px;
-  }
-  
-  ol>li {
+}
+
+ol>li {
     display: block;
     counter-increment: item;
     /* margin-bottom: 10px; */
-    
-    
-  }
-  
-  ol>li::before {
+
+
+}
+
+ol>li::before {
     content: counters(item, ".") " ";
     font-weight: bold;
     color: #176091;
@@ -147,23 +155,23 @@ ol {
     font-weight: 400;
     text-align: center;
     display: inline-block;
-  }
-  
-  ol ol {
+}
+
+ol ol {
     font-size: 0.8rem;
     counter-reset: item;
     font-weight: 600;
     color: #383a3df2;
     text-transform: uppercase;
-  }
-  
-  ol ol>li {
+}
+
+ol ol>li {
     display: block;
     counter-increment: item;
-  
-  }
-  
-  ol ol>li::before {
+
+}
+
+ol ol>li::before {
     content: counters(item, ".") " ";
     font-weight: bold;
     color: #176091;
@@ -174,9 +182,9 @@ ol {
     font-weight: 400;
     text-align: center;
     display: inline-block;
-  }
-  
-  ol ol ol {
+}
+
+ol ol ol {
     counter-reset: subitem;
     font-weight: 400;
     color: #525963af;
@@ -184,14 +192,14 @@ ol {
     padding-left: 15px;
     margin: 0px !important;
     /* font-style: italic; */
-  }
-  
-  ol ol ol>li {
+}
+
+ol ol ol>li {
     display: block;
     counter-increment: subitem;
-  }
-  
-  ol ol ol>li::before {
+}
+
+ol ol ol>li::before {
     content: counters(item, ".") "." counters(subitem, ".") " ";
     font-weight: bold;
     color: #176091;
@@ -202,26 +210,26 @@ ol {
     font-weight: 400;
     text-align: center;
     display: inline-block;
-  }
-  
-  .action-button {
+}
+
+.action-button {
     margin-left: 10px;
     cursor: pointer;
-  }
-  
+}
 
-  /* Ocultar los botones por defecto */
-  #list-container .action-button {
+
+/* Ocultar los botones por defecto */
+#list-container .action-button {
     display: none;
-  }
-  
-  /* Mostrar los botones cuando el cursor está sobre el li */
-  #list-container li:hover>.action-button {
+}
+
+/* Mostrar los botones cuando el cursor está sobre el li */
+#list-container li:hover>.action-button {
     display: inline-block;
-  }
-  
-  /* Opcional: Añadir estilos adicionales para los botones */
-  #list-container .action-button {
+}
+
+/* Opcional: Añadir estilos adicionales para los botones */
+#list-container .action-button {
     margin-left: 10px;
     /* Espacio entre botones */
     padding: 0px 5px;
@@ -236,97 +244,103 @@ ol {
     /* Bordes redondeados */
     cursor: pointer;
     /* Manito al pasar sobre el botón */
-  }
-  
-  /* Cambiar el color del texto al pasar sobre el botón */
-  #list-container .action-button:hover {
+}
+
+/* Cambiar el color del texto al pasar sobre el botón */
+#list-container .action-button:hover {
     color: #2bb0c2;
-  }
-  
-  
-  
-  /* chat container */
-  .chat-container {
+}
+
+
+
+/* chat container */
+.chat-container {
     display: flex;
     flex-direction: column;
     gap: 15px;
     height: 100%;
     max-height: 80vh;
     overflow-y: auto;
-  }
-  
-  .message {
+}
+
+.message {
     padding: 10px;
     border-radius: 10px;
     max-width: 100%;
-  }
-  
-  .sent {
+}
+
+.sent {
     background-color: #f8f8f8;
     align-self: flex-start;
-  }
-  
-  .received {
+}
+
+.received {
     background-color: #b8b8bd42;
     align-self: flex-end;
-  }
-  
-  .message-time {
+}
+
+.message-time {
     font-size: 0.8rem;
     color: gray;
     display: block;
     margin-top: 5px;
     text-align: right;
-  }
-  
-  .position-relative {
+}
+
+.position-relative {
     position: relative;
-  }
-  
-  .popup-box {
+}
+
+.popup-box {
     position: absolute;
-    top: 100%; /* Colocar justo debajo del botón "responder" */
-    right: 0; /* Alinear el popup a la derecha */
+    top: 100%;
+    /* Colocar justo debajo del botón "responder" */
+    right: 0;
+    /* Alinear el popup a la derecha */
     z-index: 1000;
     width: 300px;
     background-color: white;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     padding: 10px;
-  }
-  
-  .bi-pencil-fill:hover{
+}
+
+.bi-pencil-fill:hover {
     cursor: pointer;
     color: #434343;
-  }
+}
 
 
-  /* scroll personalizado  */
-  .scroll-hidden {
-    overflow-y: scroll;          /* habilita el scroll */
-    scrollbar-width: none;       /* Firefox */
-    -ms-overflow-style: none;    /* IE/Edge */
-  }
-  
-  .scroll-hidden::-webkit-scrollbar {
-    display: none;               /* Chrome/Safari */
-  }
-  
+/* scroll personalizado  */
+.scroll-hidden {
+    overflow-y: scroll;
+    /* habilita el scroll */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+}
 
-  /* section */
-  .title-section {
+.scroll-hidden::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+}
+
+
+/* section */
+.title-section {
     font-size: 1.3rem;
     font-weight: 700;
     color: #133349b7;
     margin: 0px;
     text-transform: uppercase !important;
     margin-top: 3%;
-   
-  }
+
+}
 
 
-  /* sub title */
-  .sub_title {
+/* sub title */
+.sub_title {
     font-size: 0.9rem;
     font-weight: 400;
     color: #4f5152cc;
@@ -334,8 +348,131 @@ ol {
     margin-top: 5px;
     background-color: #e6e9eb5b;
     border-radius: 5px;
-  }
+}
 
-  .p-subtitle {
+.p-subtitle {
     margin: 0px 0px;
-  }
+}
+
+
+.message-panel {
+
+    position: fixed;
+    z-index: 9999;
+    bottom: 100px;
+    right: 90px;
+    width: 400px;
+    height: 700px;
+    border-radius: 2%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #D5DDE5;
+    border: 6px solid #c1c4c7;
+    box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.45) !important;
+    overflow-y: auto;
+    flex: 1;
+
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+    font-size: 0.9rem;
+}
+
+.doc-chat-popper {
+    position: fixed;
+    z-index: 9999;
+    bottom: 40px;
+    right: 115px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #176091;
+    color: #fff;
+}
+
+/* Scroll personalizado para paneles de navegación */
+.message-panel::-webkit-scrollbar {
+    width: 7px;
+}
+
+.message-panel::-webkit-scrollbar-thumb {
+    background-color: #b7bbb877;
+    border-radius: 10px;
+}
+
+.message-panel::-webkit-scrollbar-track {
+    background: #e9ecef;
+}
+
+/* 🔽 Clase cuando está visible */
+.message-panel.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
+.message-panel.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* para firmar */
+.sign-panel {
+    position: absolute;
+    bottom: 130%;
+    /* directamente arriba */
+    left: 70%;
+    transform: translateX(-85%);
+
+    
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #0C314C;
+    border: 3px solid #0C314C;
+    box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.212) !important;
+    overflow-y: auto;
+    flex: 1;
+
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    font-size: 0.9rem;
+}
+
+.sign-panel.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
+.sign-panel.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+.sign-panel-header{
+    background-color: #0C314C;
+    color: #fff;
+    
+}
+
+.sign-tag {
+    background-color: #0C4067;
+    color: #ffffffce;
+    font-size: 0.9rem;
+    border: 2px solid #0C4067;
+}
+
+
