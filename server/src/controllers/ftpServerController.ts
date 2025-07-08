@@ -82,7 +82,6 @@ class FtpServerController {
         }
     }
     
-
     public async downloadFile(req: Request, res: Response): Promise<any> {
         const fileName = req.query.fileName as string;
         const folderPath = req.query.folderPath as string;
@@ -95,14 +94,14 @@ class FtpServerController {
     
         try {
             await this.connect();
-    
             const fullPath = `${folderPath}/${fileName}`;
     
-            // Headers para descarga
-            res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
-            res.setHeader("Content-Type", "application/octet-stream");
+            // Headers para visualizar en navegador
+            res.setHeader("Content-Type", "application/pdf");
+            res.setHeader("Content-Disposition", `inline; filename="${fileName}"`);
+            res.setHeader("Accept-Ranges", "bytes");
     
-            // ✅ Descargar directamente al response
+            // Streaming desde FTP hacia el navegador
             await this.client.downloadTo(res, fullPath);
     
             console.log(`📤 Archivo enviado: ${fileName}`);
@@ -113,6 +112,36 @@ class FtpServerController {
             this.client.close();
         }
     }
+    // public async downloadFile(req: Request, res: Response): Promise<any> {
+    //     const fileName = req.query.fileName as string;
+    //     const folderPath = req.query.folderPath as string;
+    
+    //     if (!fileName || !folderPath) {
+    //         return res.status(400).json({
+    //             error: "Se requieren los parámetros 'fileName' y 'folderPath'"
+    //         });
+    //     }
+    
+    //     try {
+    //         await this.connect();
+    
+    //         const fullPath = `${folderPath}/${fileName}`;
+    
+    //         // Headers para descarga
+    //         res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    //         res.setHeader("Content-Type", "application/octet-stream");
+    
+    //         // ✅ Descargar directamente al response
+    //         await this.client.downloadTo(res, fullPath);
+    
+    //         console.log(`📤 Archivo enviado: ${fileName}`);
+    //     } catch (err: any) {
+    //         console.error("❌ Error al descargar el archivo:", err);
+    //         res.status(500).json({ error: "No se pudo descargar el archivo", details: err.message });
+    //     } finally {
+    //         this.client.close();
+    //     }
+    // }
     // public async downloadFile(req: Request, res: Response): Promise<any> {
     //     const { fileName, folderPath } = req.body;
     
