@@ -28,13 +28,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 import { ControlResponseDataView } from '../../../../domain/dto/ControlResponse.dto';
+import { FirmaDigitalEncontradaResponse, FirmaDigitalResponse } from '../../../../domain/dto/FirmaDigitalResponse.dto';
+import { FirmaDigitalService } from '../../../services/remoto/firmaDigital/firma-digital.service';
 
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-fedatario-expedientes',
-  imports: [NavegatorComponent, SubnavegatorComponent,InfoInventarioComponent, NgxPaginationModule, CommonModule, FormsModule ],
+  imports: [NavegatorComponent, SubnavegatorComponent, InfoInventarioComponent, NgxPaginationModule, CommonModule, FormsModule],
   templateUrl: './fedatario-expedientes.component.html',
   styleUrl: './fedatario-expedientes.component.css'
 })
@@ -47,14 +49,24 @@ export class FedatarioExpedientesComponent implements OnInit {
   id_inventario: number = 0;
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
+  certificado: string | null = null;
+  titulo_certificado: string | null = null;
+  mensaje_certificado: string | null = null;
+  mensaje_firmado: string | null = null;
+  msg_firmado: boolean = false;
 
   nro_expediente_temp: string = '';
   id_expediente_temp: number = 0;
   modificarControl: boolean = false;
   codigo_inventario: string = '';
   pdfUrl: SafeResourceUrl | null = null;
-  folderPath: string | null = null;
+  folderPathDocument: string | null = null;
+  folderPathPortada: string | null = null;
+  folderPathFirma: string | null = null;
   p: number = 1;
+  progreso_firma = 0;
+  firmaProgressStatus = false;
+  buttonFirma = true;
 
   data_preparacion: PreparacionResponseDataView = {
     id_preparacion: 0,
@@ -107,7 +119,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     username: null,
   }
 
-  data_control : ControlResponseDataView = {
+  data_control: ControlResponseDataView = {
     id_control: 0,
     id_responsable: 0,
     id_expediente: 0,
@@ -143,12 +155,14 @@ export class FedatarioExpedientesComponent implements OnInit {
     private digitalizacionService: DigitalizacionService,
     private indizacionService: IndizacionService,
     private controlService: ControlService,
+    private firmaDigitalService: FirmaDigitalService,
   ) { }
 
   ngOnInit(): void {
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
     this.ListarExpedientes();
     this.ObternerCodigoInventario()
+    this.encontrarCertificado()
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
   }
 
@@ -187,7 +201,7 @@ export class FedatarioExpedientesComponent implements OnInit {
 
   recuperarFile(nro_expediente_temp: string) {
     let fileName = nro_expediente_temp + '.pdf';
-    let folderPath = this.folderPath!;
+    let folderPath = this.folderPathDocument!;
     console.log(folderPath);
     console.log(fileName);
     this.ftpService.downloadFile(fileName, folderPath).subscribe({
@@ -280,7 +294,10 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
       next: (data: InventarioResponse) => {
         this.codigo_inventario = data.codigo;
-        this.folderPath = this.codigo_inventario + '/EXPEDIENTES';
+        this.folderPathDocument = `${this.codigo_inventario}/EXPEDIENTES` ;
+        this.folderPathPortada = `${this.codigo_inventario}/PORTADAS` ;
+        this.folderPathFirma = `/${this.codigo_inventario}/FIRMADOS`;
+        
       },
       error: (error) => {
         console.log(error);
@@ -314,40 +331,40 @@ export class FedatarioExpedientesComponent implements OnInit {
   }
 
   buscarEnObjeto(event: any) {
-      this.p = 1
-      let objetosFiltrados = []
-      const textoBusqueda = event.target.value.toLowerCase();
-      objetosFiltrados = this.ListExpedientesTemp.filter((objeto:
-        {
-          nro_expediente: string;
-        }) => {
-        const nombre_expediente = objeto.nro_expediente.toLowerCase();
-        return nombre_expediente.includes(textoBusqueda);
-      });
-      this.ListExpedientes = objetosFiltrados
+    this.p = 1
+    let objetosFiltrados = []
+    const textoBusqueda = event.target.value.toLowerCase();
+    objetosFiltrados = this.ListExpedientesTemp.filter((objeto:
+      {
+        nro_expediente: string;
+      }) => {
+      const nombre_expediente = objeto.nro_expediente.toLowerCase();
+      return nombre_expediente.includes(textoBusqueda);
+    });
+    this.ListExpedientes = objetosFiltrados
+  }
+
+  RecepcionFlujograma() {
+    let data_flujograma: FlujogramaRequest = {
+      id_expediente: this.id_expediente_temp,
+      id_responsable: this.credencialesService.credenciales.id_usuario,
+      app_user: this.credencialesService.credenciales.username,
+      area: 'FEDATARIO'
     }
-  
-    RecepcionFlujograma() {
-      let data_flujograma: FlujogramaRequest = {
-        id_expediente: this.id_expediente_temp,
-        id_responsable: this.credencialesService.credenciales.id_usuario,
-        app_user: this.credencialesService.credenciales.username,
-        area: 'FEDATARIO'
+    this.flujogramaService.CrearFlujograma(data_flujograma).subscribe({
+      next: (data: CrearFlujogramaResponse) => {
+        console.log(data.message);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('flujograma creado correctamente');
+        this.closeModal();
+        this.EstadoFedatarioAceptado()
       }
-      this.flujogramaService.CrearFlujograma(data_flujograma).subscribe({
-        next: (data: CrearFlujogramaResponse) => {
-          console.log(data.message);
-        },
-        error: (error) => {
-          console.log(error);
-        },
-        complete: () => {
-          console.log('flujograma creado correctamente');
-          this.closeModal();
-          this.EstadoFedatarioAceptado()
-        }
-      })
-    }
+    })
+  }
 
   EstadoFedatarioAceptado() {
     this.estadoService.RecepcionarFedado(this.id_expediente_temp, this.credencialesService.credenciales.username).subscribe({
@@ -384,13 +401,16 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.show_sign_panel = !this.show_sign_panel;
   }
 
-
-
-  progreso_firma = 0;
-  firmaProgressStatus = false;
   progress_bar_sign() {
+   let password = (document.getElementById('password_certificado') as HTMLInputElement).value;
+    if (password.trim() === '') {
+      alert("La contraseña no puede estar vacía")
+      return;
+    }
+
     this.firmaProgressStatus = true;
-  
+    this.buttonFirma = false;
+
     const interval = setInterval(() => {
       if (this.progreso_firma < 100) {
         // Incremento aleatorio entre 3 y 10
@@ -398,14 +418,79 @@ export class FedatarioExpedientesComponent implements OnInit {
         this.progreso_firma = Math.min(this.progreso_firma + randomIncrement, 100);
       } else {
         clearInterval(interval);
-  
+
         // Esperar 2 segundos antes de ocultar la barra
         setTimeout(() => {
-          this.firmaProgressStatus = false;
+         this.firmaProgressStatus = false; 
           this.progreso_firma = 0;
+          this.msg_firmado = true;
+          this.mensaje_firmado = '¡Firma exitosa!';
         }, 2000);
       }
     }, 500);
   }
 
+  firmarDocumento() {
+    
+
+    const dataFirma = {
+      nombrePdf: `${this.nro_expediente_temp}.pdf`,
+      nombreCertificado: `${this.credencialesService.credenciales.username}.pfx`,
+      password: (document.getElementById('password_certificado') as HTMLInputElement).value,
+      ubicacion: "Cusco, Perú",
+      cargo: "Fedatario-QUIPUSCAN",
+      carpetaOrigen: `${this.folderPathPortada}`,
+      carpetaFirmados: `${this.folderPathFirma}`,
+      carpetaCertificados: "/CERTIFICADOS"
+    }
+  console.log(dataFirma)
+
+    this.firmaDigitalService.FirmarDocumento(dataFirma).subscribe({
+      next: (data: FirmaDigitalResponse) => {
+        console.log(data);
+        this.EstadoFedatarioTrabajado();
+        this.progress_bar_sign()
+       
+      },
+      error: (error) => {
+        console.log(error);
+        alert('no es posible firmar el documento comuniquese con el area de informatica');
+        this.buttonFirma = true;
+      },
+      complete: () => {
+        console.log('firmado correctamente');
+         
+      }
+    })
+  }
+
+
+  encontrarCertificado() {
+    const usuario = this.credencialesService.credenciales.username;
+    this.firmaDigitalService.EncontrarFirmaDigital(usuario).subscribe({
+      next: (data: FirmaDigitalEncontradaResponse) => {
+        console.log(data);
+        if (data.existe) {
+          this.certificado = data.certificado;
+          this.titulo_certificado = data.mensaje;
+        }
+      },
+      error: (error) => {
+        console.error("❌ Error al consultar firma digital:", error);
+  
+        if (error.status === 0) {
+          this.titulo_certificado = 'No se pudo conectar con el servidor. Verifique su red.';
+        } else if (error.status === 404) {
+          this.titulo_certificado = 'No existe certificado asociado';
+        } else if (error.status === 500) {
+          this.titulo_certificado = 'Ocurrió un error en el servidor al buscar el certificado.';
+        } else {
+          this.titulo_certificado = error?.error?.mensaje || 'Ocurrió un error inesperado.';
+        }
+      },
+      complete: () => {
+        console.log('✅ Búsqueda de firma digital finalizada');
+      }
+    });
+  }
 }

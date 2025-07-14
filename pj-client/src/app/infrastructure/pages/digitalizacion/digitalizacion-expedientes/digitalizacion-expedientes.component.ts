@@ -15,7 +15,7 @@ import { map } from 'rxjs/operators';
 import { EstadoService } from '../../../services/remoto/estado/estado.service';
 import { ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
-import { PreparacionResponse } from '../../../../domain/dto/PreparacionResponse.dto';
+import { PreparacionResponse, PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
 import { DigitalizacionService } from '../../../services/remoto/digitalizacion/digitalizacion.service';
 import { PreparacionViewComponent } from '../../../components/preparacion-view/preparacion-view.component';
@@ -28,6 +28,7 @@ import { FormsModule } from '@angular/forms';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 import { form_digitalizacion_creacion_vf, form_digitalizacion_modificar_vf } from '../../../validator/fromValidator/digitalizacion.validator';
+import { PDFDocument } from 'pdf-lib';
 
 declare var bootstrap: any;
 
@@ -43,7 +44,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   id_inventario: number = 0;
   p: number = 1;
   file: File | null = null;
-  folderPath: string | null = null;
+  folderPathDocument: string | null = null;
+  folderPathPortada: string | null = null;
 
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
@@ -67,17 +69,21 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   codigo_inventario: string = '';
   mostrarPreparacion = false;
 
-  data_preparacion_expediente: PreparacionResponse = {
-    id_expediente: 0,
-    id_responsable: 0,
-    observaciones: '',
-    copias_originales: false,
-    copias_simples: false,
-    fojas_total: null,
-    fojas_unacara: null,
-    fojas_doscaras: null,
-    create_at: null,
-    username: null
+
+  data_preparacion: PreparacionResponseDataView = {
+      id_preparacion: 0,
+      id_responsable: 0,
+      id_expediente: 0,
+      fojas_total: null,
+      fojas_unacara: null,
+      fojas_doscaras: null,
+      observaciones: '',
+      copias_originales: false,
+      copias_simples: false,
+      create_at: null,
+      responsable: null,
+      username: null,
+      nro_expediente: null,
   }
 
   data_digitalizacion: DigitalizacionModel = {
@@ -125,34 +131,94 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     }
   }
 
-  guardarPDF(file: File, nameFile: string) {
+  async guardarPDF(file: File, nameFile: string) {
     if (!file) {
       alert("El archivo no puede estar vacío");
       return;
     }
-
-    this.ftpService.uploadFile(file, this.folderPath!, nameFile).subscribe({
-      next: (data: CrearDigitalizacionResponse) => {
-        console.log("Respuesta del servidor:", data);
-      },
-      error: (error) => {
-        if (error.status === 503) {
-          console.error("No se pudo conectar al servidor FTP. Verifique la conexión.");
-          alert("Error de conexión al servidor FTP, comuniquese con el area de informática.");
-        } else if (error.status === 400) {
-          console.error("Solicitud inválida: faltan datos requeridos.");
-          alert("Error: Datos inválidos. Verifica el nombre del archivo y la carpeta.");
-        } else {
-          console.error("Error inesperado al subir el PDF:", error);
-          alert("Error inesperado al subir el archivo.");
+  
+    try {
+      // Leer el archivo como ArrayBuffer
+      const arrayBuffer = await file.arrayBuffer();
+  
+      // Cargar el PDF original
+      const originalPdf = await PDFDocument.load(arrayBuffer);
+  
+      // Crear un nuevo PDF y copiar la primera página
+      const newPdf = await PDFDocument.create();
+      const [firstPage] = await newPdf.copyPages(originalPdf, [0]);
+      newPdf.addPage(firstPage);
+  
+      // Serializar el nuevo PDF a bytes
+      const pdfBytes = await newPdf.save();
+  
+      // Crear nuevo archivo con la primera página
+      const firstPageFile = new File([pdfBytes], `primera_${nameFile}`, { type: 'application/pdf' });
+  
+      // Subir portada primero
+      this.ftpService.uploadFile(firstPageFile, this.folderPathPortada!, nameFile).subscribe({
+        next: (data: CrearDigitalizacionResponse) => {
+          console.log("Respuesta portada:", data);
+        },
+        error: (error) => {
+          console.error("Error al subir la portada:", error);
+          alert("Error al subir la portada. Detalle: " + (error?.message || ''));
+        },
+        complete: () => {
+          console.log("Portada subida correctamente");
+  
+          // Ahora subir el documento completo
+          this.ftpService.uploadFile(file, this.folderPathDocument!, nameFile).subscribe({
+            next: (data: CrearDigitalizacionResponse) => {
+              console.log("Respuesta documento:", data);
+            },
+            error: (error) => {
+              console.error("Error al subir el documento:", error);
+              alert("Error al subir el documento. Detalle: " + (error?.message || ''));
+            },
+            complete: () => {
+              console.log("Documento completo subido correctamente");
+              this.GuardarDatosDigitalizacion();
+            }
+          });
         }
-      },
-      complete: () => {
-        console.log("PDF subido correctamente");
-        this.GuardarDatosDigitalizacion();
-      }
-    });
+      });
+  
+    } catch (error) {
+      console.error("Error al procesar el PDF:", error);
+      alert("Ocurrió un error al extraer la primera hoja del PDF.");
+    }
   }
+  
+
+  // guardarPDF(file: File, nameFile: string) {
+  //   if (!file) {
+  //     alert("El archivo no puede estar vacío");
+  //     return;
+  //   }
+
+  //   this.ftpService.uploadFile(file, this.folderPath!, nameFile).subscribe({
+  //     next: (data: CrearDigitalizacionResponse) => {
+  //       console.log("Respuesta del servidor:", data);
+  //     },
+  //     error: (error) => {
+  //       if (error.status === 503) {
+  //         console.error("No se pudo conectar al servidor FTP. Verifique la conexión.");
+  //         alert("Error de conexión al servidor FTP, comuniquese con el area de informática.");
+  //       } else if (error.status === 400) {
+  //         console.error("Solicitud inválida: faltan datos requeridos.");
+  //         alert("Error: Datos inválidos. Verifica el nombre del archivo y la carpeta.");
+  //       } else {
+  //         console.error("Error inesperado al subir el PDF:", error);
+  //         alert("Error inesperado al subir el archivo.");
+  //       }
+  //     },
+  //     complete: () => {
+  //       console.log("PDF subido correctamente");
+  //       this.GuardarDatosDigitalizacion();
+  //     }
+  //   });
+  // }
   // #endregion ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   closeModal() {
@@ -171,7 +237,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
   
-  openModalPreparacionView(id_expediente: number) {
+  openModalPreparacionPreView(id_expediente: number) {
 
     this.mostrarPreparacion = false; // fuerza destrucción del componente si ya estaba
     this.id_expediente_temp = id_expediente;
@@ -189,6 +255,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.id_expediente_temp = id_expediente;
     this.mostrar_obs_preparacion = false;
     this.myModal = new bootstrap.Modal(document.getElementById('ModalDigitalizacion'));
+    this.recuperarDataPreparacion(id_expediente)
     this.myModal.show();
 
   }
@@ -220,7 +287,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
       next: (data: InventarioResponse) => {
         this.codigo_inventario = data.codigo;
-        this.folderPath = this.codigo_inventario + '/EXPEDIENTES';
+        this.folderPathDocument = this.codigo_inventario + '/EXPEDIENTES';
+        this.folderPathPortada = this.codigo_inventario + '/PORTADAS';
       },
       error: (error) => {
         console.log(error);
@@ -250,7 +318,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       ocr: false,
       escala_gris: false,
       color: false,
-      observaciones: '',
+      observaciones: null,
       dir_ftp: '',
       hash_doc: '',
       peso_doc: null,
@@ -272,8 +340,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       ocr: this.data_digitalizacion.ocr,
       escala_gris: this.data_digitalizacion.escala_gris,
       color: this.data_digitalizacion.color,
-      observaciones: this.ListObservacionesDigitalizacion.join('|'),
-      dir_ftp: this.folderPath,
+      observaciones: this.ListObservacionesDigitalizacion.length? this.ListObservacionesDigitalizacion.join('|'): null,
+      dir_ftp: this.folderPathDocument,
       hash_doc: hash,
       peso_doc: this.file!.size,
       app_user: this.credencialesService.credenciales.username
@@ -308,7 +376,6 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   async ModificarDigitalizacion() {
     const usuario = this.credencialesService.credenciales;
     const expediente = this.id_expediente_temp;
-    const observaciones = this.ListObservacionesDigitalizacion.join('|');
     const isArchivoCargado = !!this.file;
   
     const hashActual = isArchivoCargado ? await getFileHash(this.file!) : this.data_digitalizacion.hash_doc;
@@ -322,8 +389,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       ocr: this.data_digitalizacion.ocr,
       escala_gris: this.data_digitalizacion.escala_gris,
       color: this.data_digitalizacion.color,
-      observaciones,
-      dir_ftp: this.folderPath,
+      observaciones: this.ListObservacionesDigitalizacion.length? this.ListObservacionesDigitalizacion.join('|'): null,
+      dir_ftp: this.folderPathDocument,
       hash_doc: hashActual,
       peso_doc: isArchivoCargado ? this.file!.size : this.data_digitalizacion.peso_doc,
       app_user: usuario.username
@@ -356,7 +423,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   
     // Si hay archivo cargado y fue modificado
     if (isArchivoCargado && archivoModificado) {
-      this.ftpService.uploadFile(this.file!, this.folderPath!, this.nro_expediente_temp + '.pdf').subscribe({
+      this.ftpService.uploadFile(this.file!, this.folderPathDocument!, this.nro_expediente_temp + '.pdf').subscribe({
         next: (data: CrearDigitalizacionResponse) => {
           console.log("📁 Archivo subido:", data);
         },
@@ -394,7 +461,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       next: (data: DigitalizacionDataResponse) => {
         this.data_digitalizacion = data;
         this.modificarDigitalizacion = true;
-        this.ListObservacionesDigitalizacion = this.data_digitalizacion.observaciones?.split('|') ?? [];
+        this.ListObservacionesDigitalizacion = this.data_digitalizacion?.observaciones? this.data_digitalizacion.observaciones.split('|') : [];
         this.openModalDigitalizacion(this.data_digitalizacion.id_expediente);
 
         this.recuperarFile()
@@ -410,7 +477,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
   recuperarFile() {
     let fileName = this.nro_expediente_temp + '.pdf';
-    let folderPath = this.folderPath!;
+    let folderPath = this.folderPathDocument!;
     this.ftpService.downloadFile(fileName, folderPath).subscribe({
       next: (data: Blob) => {
         console.log(data);
@@ -427,19 +494,35 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     })
   }
 
-  MostrarDatosPreparacion() {
-    this.mostrar_obs_preparacion = !this.mostrar_obs_preparacion;
-    if (this.mostrar_obs_preparacion) {
-      this.ObtenerPreparacionByIdExpediente(this.id_expediente_temp)
-    }
-  }
+  // MostrarDatosPreparacion() {
+  //   this.mostrar_obs_preparacion = !this.mostrar_obs_preparacion;
+  //   if (this.mostrar_obs_preparacion) {
+  //     this.ObtenerPreparacionByIdExpediente(this.id_expediente_temp)
+  //   }
+  // }
 
-  ObtenerPreparacionByIdExpediente(id_expediente: number) {
-    this.preparacionService.ObtenerPreparacionXidExpediente(id_expediente).subscribe({
-      next: (data: PreparacionResponse) => {
-        this.data_preparacion_expediente = data;
-        this.ListObservacionesPreparacion = this.data_preparacion_expediente.observaciones?.split('|') ?? [];
-        console.log(this.data_preparacion_expediente);
+  // ObtenerPreparacionByIdExpediente(id_expediente: number) {
+  //   this.preparacionService.ObtenerPreparacionXidExpediente(id_expediente).subscribe({
+  //     next: (data: PreparacionResponse) => {
+  //       this.data_preparacion_expediente = data;
+  //       this.ListObservacionesPreparacion = this.data_preparacion_expediente.observaciones?.split('|') ?? [];
+  //       console.log(this.data_preparacion_expediente);
+  //     },
+  //     error: (error) => {
+  //       console.log(error);
+  //     },
+  //     complete: () => {
+  //       console.log('listado de preparacion detalle completado');
+  //     }
+  //   })
+  // }
+
+  recuperarDataPreparacion(id_expediente: number) {
+    this.preparacionService.ObtenerPreparacionDataViewXidExpediente(id_expediente).subscribe({
+      next: (data: PreparacionResponseDataView) => {
+        this.data_preparacion = data;
+        this.ListObservacionesPreparacion = data.observaciones?.split('|') ?? [];
+
       },
       error: (error) => {
         console.log(error);

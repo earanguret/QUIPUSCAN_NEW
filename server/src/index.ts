@@ -12,6 +12,7 @@ import digitalizacionRoutes from './routes/digitalizacionRoutes';
 import ftpServerRoutes from './routes/ftpServerRoutes';
 import indizacionRoutes from './routes/indizacionRoutes';
 import controlRoutes from './routes/controlRoutes';
+import firmaDigitalRoutes from './routes/firmaDigitalRoutes';
 
 
 class Server{
@@ -43,6 +44,7 @@ class Server{
         this.app.use('/',ftpServerRoutes);
         this.app.use('/',indizacionRoutes);
         this.app.use('/',controlRoutes);
+        this.app.use('/',firmaDigitalRoutes);
         
     }
     start(): void {

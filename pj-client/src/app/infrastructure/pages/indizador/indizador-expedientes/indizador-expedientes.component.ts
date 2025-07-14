@@ -24,7 +24,11 @@ import { IndizacionModel } from '../../../../domain/models/Indizacion.model';
 import { FormsModule } from '@angular/forms';
 import { IndizacionService } from '../../../services/remoto/indizacion/indizacion.service';
 import { CrearIndizacionResponse, IndizacionDataResponse, ModificarIndizacionResponse } from '../../../../domain/dto/IndizacionResponse.dto';
-import {FechaConFormato, formatDateToInput} from '../../../functions/formateDate';
+import { FechaConFormato, formatDateToInput } from '../../../functions/formateDate';
+import { PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
+import { DigitalizacionResponseDataView } from '../../../../domain/dto/DigitalizacionResponse.dto';
+import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
+import { DigitalizacionService } from '../../../services/remoto/digitalizacion/digitalizacion.service';
 
 
 declare var bootstrap: any;
@@ -37,9 +41,10 @@ declare var bootstrap: any;
   styleUrl: './indizador-expedientes.component.css'
 })
 export class IndizadorExpedientesComponent implements OnInit {
-  private myModal: any;
+  private myModalReception: any;
   private myModalIndizacion: any;
-  private myModalSubindizacion: any;
+  private myModalIndice: any;
+  private myModalSubIndice: any;
   id_inventario: number = 0;
   p: number = 1;
   modificarIndizacion: boolean = false;
@@ -52,6 +57,8 @@ export class IndizadorExpedientesComponent implements OnInit {
   ListDamandantes: any[] = []
   ListDamandados: any[] = []
   ListObservaciones: string[] = [];
+  ListObservacionesPreparacion: string[] = [];
+  ListObservacionesDigitalizacion: string[] = [];
 
   nro_expediente_temp: string = '';
   id_expediente_temp: number = 0;
@@ -65,6 +72,41 @@ export class IndizadorExpedientesComponent implements OnInit {
 
   pdfUrl: SafeResourceUrl | null = null;
 
+  data_preparacion: PreparacionResponseDataView = {
+    id_preparacion: 0,
+    id_responsable: 0,
+    id_expediente: 0,
+    fojas_total: null,
+    fojas_unacara: null,
+    fojas_doscaras: null,
+    observaciones: '',
+    copias_originales: false,
+    copias_simples: false,
+    create_at: null,
+    responsable: null,
+    username: null,
+    nro_expediente: null,
+  }
+
+  data_digitalizacion: DigitalizacionResponseDataView = {
+    id_digitalizacion: 0,
+    id_responsable: 0,
+    id_expediente: 0,
+    fojas_total: null,
+    ocr: false,
+    escala_gris: false,
+    color: false,
+    observaciones: '',
+    dir_ftp: null,
+    hash_doc: null,
+    peso_doc: null,
+    create_at: null,
+    responsable: null,
+    username: null,
+  }
+
+
+
   dataIndizacion: IndizacionModel = {
     id_responsable: 0,
     id_expediente: 0,
@@ -75,8 +117,8 @@ export class IndizadorExpedientesComponent implements OnInit {
     materia: '',
     demandante: '',
     demandado: '',
-    fecha_inicial: new Date(),
-    fecha_final: new Date(),
+    fecha_inicial: null,
+    fecha_final: null,
   }
 
   constructor(private router: Router,
@@ -88,6 +130,8 @@ export class IndizadorExpedientesComponent implements OnInit {
     private estadoService: EstadoService,
     private ftpService: FtpService,
     private inventarioService: InventarioService,
+    private preparacionService: PreparacionService,
+    private digitalizacionService: DigitalizacionService,
     private indizacionService: IndizacionService) { }
 
   ngOnInit(): void {
@@ -97,40 +141,77 @@ export class IndizadorExpedientesComponent implements OnInit {
     this.ObternerCodigoInventario()
   }
 
-  closeModal() {
-    this.myModal.hide();
-    //this.LimpiarDatosDigitalizacion();
+  closeModalReception() {
+    this.myModalReception.hide();
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
-    //this.LimpiarDatosDigitalizacion();
-
   }
 
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
     //this.modificarDigitalizacion = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('ModalReception'));
-    this.myModal.show();
+    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
+    this.myModalReception.show();
   }
 
   openModalIndizacion(id_expediente: number, nro_expediente: string, modificar_indizacion: boolean) {
-     
+
     this.recuperarFile(nro_expediente)
     this.id_expediente_temp = id_expediente;
-    if (modificar_indizacion===true) {
+    this.recuperarDataPreparacion(id_expediente)
+    this.recuperarDataDigitalizacion(id_expediente)
+    if (modificar_indizacion === true) {
       this.modificarIndizacion = true;
       this.ObtenerIndizacionById_expediente(id_expediente)
-      this.myModal = new bootstrap.Modal(document.getElementById('ModalIndizacion'));
-      this.myModal.show();
-      
+      this.myModalIndizacion = new bootstrap.Modal(document.getElementById('ModalIndizacion'));
+      this.myModalIndizacion.show();
+
     }
-    if (modificar_indizacion===false)  {
-      this.LimpiarIndizacion()
+    if (modificar_indizacion === false) {
+      this.LimpiarIndizacion();
       this.modificarIndizacion = false;
-      this.myModal = new bootstrap.Modal(document.getElementById('ModalIndizacion'));
-      this.myModal.show();
-     
+      this.myModalIndizacion = new bootstrap.Modal(document.getElementById('ModalIndizacion'));
+      this.myModalIndizacion.show();
     }
   }
+
+  closeModalIndizacion() {
+    this.myModalIndizacion.hide();
+  }
+
+  recuperarDataPreparacion(id_expediente: number) {
+    this.preparacionService.ObtenerPreparacionDataViewXidExpediente(id_expediente).subscribe({
+      next: (data: PreparacionResponseDataView) => {
+        this.data_preparacion = data;
+        this.ListObservacionesPreparacion = data.observaciones?.split('|') ?? [];
+
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de preparacion detalle completado');
+      }
+    })
+  }
+
+  recuperarDataDigitalizacion(id_expediente: number) {
+    this.digitalizacionService.ObtenerDigitalizacionDataViewXidExpediente(id_expediente).subscribe({
+      next: (data: DigitalizacionResponseDataView) => {
+        this.data_digitalizacion = data;
+        this.ListObservacionesDigitalizacion = data.observaciones?.split('|') ?? [];
+        console.log(this.data_digitalizacion);
+
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de digitalizacion detalle completado');
+      }
+    })
+  }
+
+
 
   LimpiarIndizacion() {
     this.dataIndizacion = {
@@ -146,7 +227,7 @@ export class IndizadorExpedientesComponent implements OnInit {
       fecha_inicial: new Date(),
       fecha_final: new Date(),
     }
-   
+
     this.dataIndice = []
     this.ListDamandados = []
     this.ListDamandantes = []
@@ -247,6 +328,8 @@ export class IndizadorExpedientesComponent implements OnInit {
       complete: () => {
         console.log('flujograma creado correctamente');
         this.EstadoIndizacionAceptado()
+        this.closeModalReception();
+        this.openModalIndizacion(this.id_expediente_temp, this.nro_expediente_temp, false);
       }
     })
   }
@@ -283,7 +366,7 @@ export class IndizadorExpedientesComponent implements OnInit {
 
   EventAction() {
     if (this.modificarIndizacion) {
-       this.ModificarDatosIndizacion();
+      this.ModificarDatosIndizacion();
 
     } else {
       this.GuardarDatosIndizacion()
@@ -295,18 +378,18 @@ export class IndizadorExpedientesComponent implements OnInit {
   ObtenerIndizacionById_expediente(id_expediente: number) {
     this.indizacionService.ObtenerIndizacionById_expediente(id_expediente).subscribe({
       next: (data: IndizacionDataResponse) => {
-        console.log('data indizacion recuperada:',data);
+        console.log('data indizacion recuperada:', data);
         this.dataIndizacion.juzgado_origen = data.juzgado_origen!;
         this.dataIndizacion.tipo_proceso = data.tipo_proceso!;
         this.dataIndizacion.materia = data.materia!;
-        this.ListDamandantes = JSON.parse(data.demandante?data.demandante:'[]');
-        this.ListDamandados = JSON.parse(data.demandado?data.demandado:'[]');
+        this.ListDamandantes = JSON.parse(data.demandante ? data.demandante : '[]');
+        this.ListDamandados = JSON.parse(data.demandado ? data.demandado : '[]');
         (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
         (document.getElementById('fecha_final') as HTMLInputElement).value = FechaConFormato(data.fecha_final!);
         this.ListObservaciones = data.observaciones?.split('|') ?? [];
-       
-        
-       this.dataIndice = JSON.parse(data.indice?data.indice:'[]')
+
+
+        this.dataIndice = JSON.parse(data.indice ? data.indice : '[]')
       },
       error: (error) => {
         console.log(error);
@@ -316,6 +399,7 @@ export class IndizadorExpedientesComponent implements OnInit {
       }
     })
   }
+  
   GuardarDatosIndizacion() {
     const dataIndizacion_temp: IndizacionRequest = {
       id_responsable: this.credencialesService.credenciales.id_usuario,
@@ -327,8 +411,8 @@ export class IndizadorExpedientesComponent implements OnInit {
       materia: this.dataIndizacion.materia.trim(),
       demandante: JSON.stringify(this.ListDamandantes),
       demandado: JSON.stringify(this.ListDamandados),
-      fecha_inicial: new Date(this.dataIndizacion.fecha_inicial!),
-      fecha_final: new Date(this.dataIndizacion.fecha_final!),
+      fecha_inicial: this.dataIndizacion.fecha_inicial!? new Date(this.dataIndizacion.fecha_inicial):null,
+      fecha_final: this.dataIndizacion.fecha_final!? new Date(this.dataIndizacion.fecha_final):null,
       app_user: this.credencialesService.credenciales.username
     }
     const erroresValidacion = form_indizacion_creacion_vf(dataIndizacion_temp);
@@ -354,7 +438,7 @@ export class IndizadorExpedientesComponent implements OnInit {
         complete: () => {
           console.log('creacion de indizacion completado');
           this.EstadoIndizacionTrabajado()
-          this.closeModal();
+          this.closeModalIndizacion();
         }
       })
     }
@@ -371,8 +455,8 @@ export class IndizadorExpedientesComponent implements OnInit {
       materia: this.dataIndizacion.materia.trim(),
       demandante: JSON.stringify(this.ListDamandantes),
       demandado: JSON.stringify(this.ListDamandados),
-      fecha_inicial: new Date(this.dataIndizacion.fecha_inicial!),
-      fecha_final: new Date(this.dataIndizacion.fecha_final!),
+      fecha_inicial: this.dataIndizacion.fecha_inicial!? new Date(this.dataIndizacion.fecha_inicial):null,
+      fecha_final: this.dataIndizacion.fecha_final!? new Date(this.dataIndizacion.fecha_final):null,
       app_user: this.credencialesService.credenciales.username
     }
 
@@ -389,7 +473,7 @@ export class IndizadorExpedientesComponent implements OnInit {
     else {
       //alert('listos para guardar')
       console.log(dataIndizacion_temp)
-      this.indizacionService.ModificarIndizacion(dataIndizacion_temp.id_expediente,dataIndizacion_temp).subscribe({
+      this.indizacionService.ModificarIndizacion(dataIndizacion_temp.id_expediente, dataIndizacion_temp).subscribe({
         next: (data: ModificarIndizacionResponse) => {
           console.log(data.message);
         },
@@ -399,7 +483,7 @@ export class IndizadorExpedientesComponent implements OnInit {
         complete: () => {
           console.log('creacion de indizacion completado');
           this.EstadoIndizacionTrabajado()
-          this.closeModal();
+          this.closeModalIndizacion();
         }
       })
     }
@@ -493,55 +577,66 @@ export class IndizadorExpedientesComponent implements OnInit {
   }
 
   //MANEJADOR DE ITEMS DE INDIZACION
-  addItem() {
-    //this.limpiarCamposIndizacion();
-    this.myModalIndizacion = new bootstrap.Modal(document.getElementById('Modal_Indizador_primero'));
-    this.myModalIndizacion.show();
+  limpiarCamposIndice() {
+    (<HTMLInputElement>document.getElementById('indizacion_descripcion')).value='';
+    (<HTMLInputElement>document.getElementById('indizacion_indice')).value='';
+    (<HTMLInputElement>document.getElementById('indizacion_fojas')).value='';
+    (<HTMLInputElement>document.getElementById('fecha_indice')).value='';
+    (<HTMLInputElement>document.getElementById('indizacion_textarea')).value='';
   }
-
-  cerrarModalIndizacion() { this.myModalIndizacion.hide() }
-
-  cerrarModalSubIndizacion() { this.myModalSubindizacion.hide() }
-
-  registrarItem() {
-    let datosIndex: any = {};
-    datosIndex.descripcion = (<HTMLInputElement>document.getElementById('indizacion_descripcion')).value;
-    datosIndex.indice = (<HTMLInputElement>document.getElementById('indizacion_indice')).value;
-    datosIndex.fojas = (<HTMLInputElement>document.getElementById('indizacion_fojas')).value;
-    datosIndex.fecha = (<HTMLInputElement>document.getElementById('fecha_indice')).value;
-    // datosIndex.check_original = (<HTMLInputElement>document.getElementById('indizacion_checkbox_original')).checked;
-    // datosIndex.check_copia = (<HTMLInputElement>document.getElementById('indizacion_checkbox_copia')).checked;
-    // datosIndex.check_color = (<HTMLInputElement>document.getElementById('indizacion_checkbox_color')).checked;
-    // datosIndex.check_escalagris = (<HTMLInputElement>document.getElementById('indizacion_checkbox_escalagris')).checked;
-    datosIndex.check_textarea = (<HTMLInputElement>document.getElementById('indizacion_textarea')).value;
-    datosIndex.subItems = []
-
-    this.dataIndice.push(datosIndex)
-    this.myModalIndizacion.hide()
+  limpiarCamposSubIndice() {
+    (<HTMLInputElement>document.getElementById('indizacion_descripcion_2')).value='';
+    (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value='';
+    (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value='';
+    (<HTMLInputElement>document.getElementById('fecha_indice_2')).value='';
+    (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value='';
+  }
+  addItem() {
+    this.limpiarCamposIndice();
+    
+    this.myModalIndice = new bootstrap.Modal(document.getElementById('Modal_Indizador_primero'));
+    this.myModalIndice.show();
   }
   addSubItem(items: any[], index: number) {
-    //this.limpiarCamposIndizacion()
-    //this.modificarIndizacion = false
+    this.limpiarCamposSubIndice()
     this.itemTemp = items
     this.index_indizacion = index
-    this.myModalSubindizacion = new bootstrap.Modal(document.getElementById('Modal_Indizador_segundo'));
-    this.myModalSubindizacion.show();
+    this.myModalSubIndice = new bootstrap.Modal(document.getElementById('Modal_Indizador_segundo'));
+    this.myModalSubIndice.show();
 
     const botonRegistrar = document.getElementById('boton_agregar_subitem');
     if (botonRegistrar) {
       botonRegistrar.onclick = () => this.registrarSubItem(items, index);
     }
   }
+
+  closeModalIndice() {
+    this.myModalIndice.hide();
+  }
+  closeModalSubIndice() {
+    this.myModalSubIndice.hide();
+  }
+
+  registrarItem() {
+  
+    let datosIndex: any = {};
+    datosIndex.descripcion = (<HTMLInputElement>document.getElementById('indizacion_descripcion')).value;
+    datosIndex.indice = (<HTMLInputElement>document.getElementById('indizacion_indice')).value;
+    datosIndex.fojas = (<HTMLInputElement>document.getElementById('indizacion_fojas')).value;
+    datosIndex.fecha = (<HTMLInputElement>document.getElementById('fecha_indice')).value;
+    datosIndex.check_textarea = (<HTMLInputElement>document.getElementById('indizacion_textarea')).value;
+    datosIndex.subItems = []
+
+    this.dataIndice.push(datosIndex)
+    this.myModalIndice.hide()
+  }
+ 
   registrarSubItem(items: any[], index: number) {
     let datosIndex: any = {};
     datosIndex.descripcion = (<HTMLInputElement>document.getElementById('indizacion_descripcion_2')).value;
     datosIndex.indice = (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value;
     datosIndex.fojas = (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value;
     datosIndex.fecha = (<HTMLInputElement>document.getElementById('fecha_indice_2')).value;
-    // datosIndex.check_original = (<HTMLInputElement>document.getElementById('indizacion_checkbox_original_2')).checked;
-    // datosIndex.check_copia = (<HTMLInputElement>document.getElementById('indizacion_checkbox_copia_2')).checked;
-    // datosIndex.check_color = (<HTMLInputElement>document.getElementById('indizacion_checkbox_color_2')).checked;
-    // datosIndex.check_escalagris = (<HTMLInputElement>document.getElementById('indizacion_checkbox_escalagris_2')).checked;
     datosIndex.check_textarea = (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value;
     // datosIndex.subItems=[]
     if (datosIndex) {
@@ -550,24 +645,18 @@ export class IndizadorExpedientesComponent implements OnInit {
       }
       items[index].subItems.push(datosIndex);
     }
-    this.myModalSubindizacion.hide()
+    this.myModalSubIndice.hide()
   }
   editItem(items: any[], index: number) {
 
-    //this.limpiarCamposIndizacion()
-    //this.modificar_indizacion = true
     this.itemTemp = items
     this.index_indizacion = index
-    this.myModalSubindizacion = new bootstrap.Modal(document.getElementById('Modal_Indizador_segundo'));
-    this.myModalSubindizacion.show();
+    this.myModalSubIndice = new bootstrap.Modal(document.getElementById('Modal_Indizador_segundo'));
+    this.myModalSubIndice.show();
     (<HTMLInputElement>document.getElementById('indizacion_descripcion_2')).value = items[index].descripcion;
     (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value = items[index].indice;
     (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value = items[index].fojas;
     (<HTMLInputElement>document.getElementById('fecha_indice_2')).value = items[index].fecha;
-    // (<HTMLInputElement>document.getElementById('indizacion_checkbox_original_2')).checked = items[index].check_original;
-    // (<HTMLInputElement>document.getElementById('indizacion_checkbox_copia_2')).checked = items[index].check_copia;
-    // (<HTMLInputElement>document.getElementById('indizacion_checkbox_color_2')).checked = items[index].check_color;
-    // (<HTMLInputElement>document.getElementById('indizacion_checkbox_escalagris_2')).checked = items[index].check_escalagris;
     (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value = items[index].check_textarea;
     const botonRegistrar = document.getElementById('boton_agregar_subitem');
     if (botonRegistrar) {
@@ -584,7 +673,7 @@ export class IndizadorExpedientesComponent implements OnInit {
     // items[index].check_color = (<HTMLInputElement>document.getElementById('indizacion_checkbox_color_2')).checked;
     // items[index].check_escalagris = (<HTMLInputElement>document.getElementById('indizacion_checkbox_escalagris_2')).checked;
     items[index].check_textarea = (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value;
-    this.myModalSubindizacion.hide()
+    this.myModalSubIndice.hide()
   }
   deleteItem(items: any[], index: number) {
     items.splice(index, 1);

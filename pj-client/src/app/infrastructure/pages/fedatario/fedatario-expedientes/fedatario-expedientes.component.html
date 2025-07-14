@@ -129,17 +129,13 @@
 
                             <!-- Elemento superior (siempre en la parte de arriba) -->
                             <div class="sub_titulo_expediente d-flex justify-content-center ">
-
                                 <h5 style="font-size: 1.1rem;">{{nro_expediente_temp}}</h5>
                             </div>
-
                             <!-- Elemento central que ocupa el espacio restante -->
-                            <div class="contenedor-form-indizacion scroll-hidden" style="flex: 1;">
+                            <div class="contenedor-form scroll-hidden" style="flex: 1;">
                                 <form style="flex: 1; display: flex; flex-direction: column;">
                                     <fieldset style="flex: 1; display: flex; flex-direction: column;">
-
                                         <!--  -->
-
                                         <section class="section-area">
                                             <h4 class="title-section">Data preparación</h4>
                                             <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
@@ -379,7 +375,6 @@
 
                                             </div>
                                         </section>
-
                                         <!--  -->
                                         <section>
                                             <h4 class="title-section">Data Control de calidad</h4>
@@ -437,8 +432,6 @@
 
                                             </div>
                                         </section>
-
-
                                     </fieldset>
                                 </form>
                             </div>
@@ -458,23 +451,22 @@
                                     <div [ngClass]="{ 'visible': show_sign_panel, 'hidden': !show_sign_panel }"
                                         class="sign-panel shadow-lg" style="width: 400px; height: 220px;">
                                         <div class="sign-panel-header px-3" style="width: 100%;">
-                                            <p class="m-1 p-1 mb-0 pb-0">Certificado Asociado</p>
+                                            <p class="m-1 p-1 mb-0 pb-0">{{titulo_certificado}}</p>
                                             <div class="form-control sign-tag">
                                                 <img src="/icon/certificado.png" alt="logo" title="Recepcion"
                                                     width="20px" height="18px">
-                                                <label for="" class=" mx-2"> nombre del certificado</label>
+                                                <label for="" class=" mx-2"> {{certificado}}</label>
                                             </div>
 
                                             <div class="d-flex mt-3">
                                                 <p class="m-1 p-1 mb-0 pb-0 px-2">Password</p>
-                                                <input type="password" class="form-control form-control-sm sign-tag "
-                                                    name="observacion" value="prueba">
+                                                <input type="password" class="form-control form-control-sm sign-tag " name="observacion" id="password_certificado">
                                             </div>
 
-                                            <div class="text-end mt-2" *ngIf="!firmaProgressStatus">
+                                            <div class="text-end mt-2" *ngIf="buttonFirma">
                                                 <!-- <button *ngIf="!firmaProgressStatus" type="button" class="guardar-btn mx-2"
                                                 (click)="progress_bar_sign()">Firmar</button> -->
-                                                <button type="button" class="btn btn-secondary btn-sm" (click)="progress_bar_sign()" >Firmar</button>
+                                                <button type="button" class="btn btn-secondary btn-sm" (click)="firmarDocumento()" >Firmar</button>
                                             </div>
 
                                             
@@ -491,13 +483,15 @@
                                                      aria-valuemax="100" 
                                                      style="width: 100%; height: 8px;">  <!-- ← altura ajustada aquí -->
                                               
-                                                  <div class="progress-bar progress-bar-striped progress-bar-animated opacity-75"
-                                                       [style.width.%]="progreso_firma" >
+                                                  <div class="progress-bar progress-bar-striped progress-bar-animated opacity-75" [style.width.%]="progreso_firma" >
                                                   </div>
+
                                               
                                                 </div>
                                               </div>
-
+                                              <div *ngIf="msg_firmado" class="alert alert-success alert-dismissible fade show mt-3" role="alert" style="margin-bottom: 0px; padding: 12px 8px; ">
+                                                {{mensaje_firmado}}
+                                              </div>
 
                                             <!-- <input type="text" readonly class="form-control sign-tag" name="observacion" value="prueba"> -->
                                         </div>

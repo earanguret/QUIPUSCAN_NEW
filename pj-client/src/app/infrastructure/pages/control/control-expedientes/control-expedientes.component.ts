@@ -40,7 +40,8 @@ declare var bootstrap: any;
   styleUrl: './control-expedientes.component.css'
 })
 export class ControlExpedientesComponent implements OnInit {
-  private myModal: any;
+  private myModalReception: any;
+  private myModalControl: any;
   id_inventario: number = 0;
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
@@ -149,19 +150,18 @@ export class ControlExpedientesComponent implements OnInit {
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
     this.modificarControl = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('ModalReception'));
-    this.myModal.show();
+    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
+    this.myModalReception.show();
   }
 
-  closeModal() {
-    this.myModal.hide();
-
+  closeModalReception() {
+    this.myModalReception.hide();
+  
   }
+
   openModalControl(id_expediente: number, nro_expediente: string, modificar_control: boolean) {
 
     this.id_expediente_temp = id_expediente;
-    this.myModal = new bootstrap.Modal(document.getElementById('ModalIndizacion'));
-    this.myModal.show();
     this.recuperarFile(nro_expediente);
     this.recuperarDataPreparacion(id_expediente);
     this.recuperarDataDigitalizacion(id_expediente);
@@ -170,19 +170,22 @@ export class ControlExpedientesComponent implements OnInit {
     if (modificar_control===true) {
       this.modificarControl = true;
       this.RecuperarDatosControl(id_expediente)
-      this.myModal = new bootstrap.Modal(document.getElementById('ModalControl'));
-      this.myModal.show();
+      this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
+      this.myModalControl.show();
      
     }
     if (modificar_control===false)  {
       this.LimpiarControl()
       this.modificarControl = false;
-      this.myModal = new bootstrap.Modal(document.getElementById('ModalControl'));
-      this.myModal.show();
-     
+      this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
+      this.myModalControl.show();
     }
-
   }
+
+  closeModalControl() { 
+    this.myModalControl.hide();
+  }
+
   LimpiarControl() {
     this.data_control = {
       id_expediente: 0,
@@ -351,7 +354,7 @@ export class ControlExpedientesComponent implements OnInit {
       complete: () => {
         console.log('Aprobacion de control completado');
         this.EstadoControlTrabajado()
-        this.closeModal();
+        this.closeModalControl();
       }
     })
   }
@@ -379,7 +382,7 @@ export class ControlExpedientesComponent implements OnInit {
       complete: () => {
         console.log('modificacion de control completado');
         this.EstadoControlTrabajado()
-        this.closeModal();
+        this.closeModalControl();
       }
     })
   }
@@ -452,6 +455,8 @@ export class ControlExpedientesComponent implements OnInit {
       complete: () => {
         console.log('flujograma creado correctamente');
         this.EstadoIndizacionAceptado()
+        this.closeModalReception();
+        this.openModalControl(this.id_expediente_temp, this.nro_expediente_temp, false);
       }
     })
   }

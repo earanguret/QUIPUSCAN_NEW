@@ -20,6 +20,7 @@ import { PreparacionService } from '../../../services/remoto/preparacion/prepara
 import { PreparacionModel } from '../../../../domain/models/Preparacion.model';
 import { PreparacionRequest } from '../../../../domain/dto/PreparacionRequest.dto';
 import { CrearPreparacionResponse, ModificarPreparacionResponse, PreparacionResponse } from '../../../../domain/dto/PreparacionResponse.dto';
+import { form_preparacion_vf } from '../../../validator/fromValidator/preparacion.validator';
 
 declare var bootstrap: any;
 
@@ -50,7 +51,7 @@ export class PreparacionExpedientesComponent implements OnInit {
     fojas_total: null,
     fojas_unacara: null,
     fojas_doscaras: null,
-    observaciones: '',
+    observaciones: null,
     copias_originales: false,
     copias_simples: false
   }
@@ -196,17 +197,31 @@ export class PreparacionExpedientesComponent implements OnInit {
 
 
   CrearPreparacion() {
+
+    const erroresValidacion = form_preparacion_vf(this.data_expediente_preparacion);
+        if (erroresValidacion.length > 0) {
+          let errorMensaje = '';
+          erroresValidacion.forEach(error => {
+            errorMensaje += `Error en el campo :"${error.campo}": ${error.mensaje}`;
+          });
+          alert(errorMensaje)
+          console.log(errorMensaje)
+          return;
+        }
+
     let data_preparacion_request: PreparacionRequest = {
       id_responsable: this.credencialesService.credenciales.id_usuario,
       id_expediente: this.id_expediente_temp,
       fojas_total: this.data_expediente_preparacion.fojas_total,
       fojas_unacara: this.data_expediente_preparacion.fojas_unacara,
       fojas_doscaras: this.data_expediente_preparacion.fojas_doscaras,
-      observaciones:  this.ListObservaciones.join('|'),
+      observaciones: this.ListObservaciones.length? this.ListObservaciones.join('|'): null,
       copias_originales: this.data_expediente_preparacion.copias_originales,
       copias_simples: this.data_expediente_preparacion.copias_simples,
       app_user: this.credencialesService.credenciales.username
     }
+
+
 
     this.preparacionService.CrearPreparacion(data_preparacion_request).subscribe({
       next: (data: CrearPreparacionResponse) => {
@@ -231,7 +246,7 @@ export class PreparacionExpedientesComponent implements OnInit {
         console.log(data);
         this.data_expediente_preparacion = data;
         this.modificarPreparacion = true;
-        this.ListObservaciones = this.data_expediente_preparacion.observaciones?.split('|') ?? [];
+        this.ListObservaciones = this.data_expediente_preparacion?.observaciones? this.data_expediente_preparacion.observaciones.split('|') : [];
         this.openModalPreparation(id_expediente);
       },
       error: (error) => {
@@ -244,13 +259,24 @@ export class PreparacionExpedientesComponent implements OnInit {
   }
 
   ModificarPreparacion() {
+    const erroresValidacion = form_preparacion_vf(this.data_expediente_preparacion);
+    if (erroresValidacion.length > 0) {
+      let errorMensaje = '';
+      erroresValidacion.forEach(error => {
+        errorMensaje += `Error en el campo :"${error.campo}": ${error.mensaje}`;
+      });
+      alert(errorMensaje)
+      console.log(errorMensaje)
+      return;
+    }
+
     let data_expediente_preparacion_request: PreparacionRequest = {
       id_responsable: this.credencialesService.credenciales.id_usuario,
       id_expediente: this.id_expediente_temp,
       fojas_total: this.data_expediente_preparacion.fojas_total,
       fojas_unacara: this.data_expediente_preparacion.fojas_unacara,
       fojas_doscaras: this.data_expediente_preparacion.fojas_doscaras,
-      observaciones:  this.ListObservaciones.join('|'),
+      observaciones: this.ListObservaciones.length? this.ListObservaciones.join('|'): null,
       copias_originales: this.data_expediente_preparacion.copias_originales,
       copias_simples: this.data_expediente_preparacion.copias_simples,
       app_user: this.credencialesService.credenciales.username

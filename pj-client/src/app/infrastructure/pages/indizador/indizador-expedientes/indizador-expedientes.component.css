@@ -6,7 +6,7 @@
 
   .contenedor-form-indizacion{
     margin: 0px 0px;
-    padding: 0px 4%;
+    padding: 0px 4% 4% 4%;
     max-width: 1680px;
   }
 
@@ -24,6 +24,45 @@
   }
 
 
+  /* scroll personalizado  */
+.scroll-hidden {
+  overflow-y: scroll;
+  /* habilita el scroll */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
+}
+
+/* sub title */
+.sub_title {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #4f5152cc;
+  margin: 0px;
+  margin-top: 5px;
+  background-color: #e6e9eb5b;
+  border-radius: 5px;
+}
+
+.p-subtitle {
+  margin: 0px 0px;
+}
+
+.title-section {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #133349b7;
+  margin: 0px;
+  text-transform: uppercase !important;
+  margin-top: 3%;
+
+}
  
 
   
