@@ -187,8 +187,8 @@ CREATE TABLE archivo.t_fedatar (
 
 
 
--- Tabla: archivo.t_cd
-CREATE TABLE archivo.t_cd (
+-- Tabla: archivo.t_disco
+CREATE TABLE archivo.t_disco (
     f_aud timestamp,
     b_aud char(1),
     c_aud_uid varchar(30),
@@ -198,10 +198,11 @@ CREATE TABLE archivo.t_cd (
     c_aud_mac varchar(17),
 
     create_at timestamp,
-    id_cd serial PRIMARY KEY,
+    id_disco serial PRIMARY KEY,
     id_inventario integer REFERENCES archivo.t_inventario(id_inventario),
+    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
     nombre varchar,
-    capacidad integer,
+    capacidad_GB integer,
     peso_ocupado integer,
     dir_ftp_acta_apertura varchar,
     dir_ftp_acta_cierre varchar,
@@ -236,7 +237,7 @@ CREATE TABLE archivo.t_estado_expediente (
     estado_controlado char(1),
     estado_fedatado char(1),
     estado_finalizado char(1),
-    id_cd integer REFERENCES archivo.t_cd(id_cd),
+    id_disco integer REFERENCES archivo.t_cd(id_disco),
     mensajes varchar
 );
 

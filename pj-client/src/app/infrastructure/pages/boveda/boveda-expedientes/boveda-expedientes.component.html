@@ -1,5 +1,107 @@
-<div class="container">
+<div class="panel">
     <app-navegator></app-navegator>
-    <app-subnavegator></app-subnavegator>
-    <h1>boveda</h1>
+    <app-subnavegator [ruta]="'/principal/boveda/list-serie-documental'"></app-subnavegator>
+    <div class="contenedor">
+        <div class="row">
+            <div class="col-lg-3">
+                <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
+            </div>
+            <div class="col-lg-9">
+
+                <div class="encabezado_pages ">
+                    <i class="bi bi-disc icon-custom"></i>
+                    <p class="titulo_menu px-4">DISCOS</p>
+                    <!-- <img src="/icon/cd.jpg" class="card-img-top" alt="..." style="width: 210px; height: 200px;"> -->
+                </div>
+                <div *ngFor="let disco of discos, let i = index" class="mb-4">
+                    <div class="card rounded shadow border-2">
+                        <div class="card-header  d-flex justify-content-between align-items-center">
+                            <h4>Volumen {{ disco.volumen }}</h4> <!-- Mostrar el volumen dinámicamente -->
+                            <h4>nombre: {{ disco.nombre }}</h4> <!-- Mostrar el volumen dinámicamente -->
+                            <h6>25 GB</h6> <!-- Mostrar el espacio dinámicamente -->
+                        </div>
+
+                        <div class="card-body px-3 bg-white rounded">
+                            <div class="d-flex justify-content-between w-100">
+                                <div class="card" style="width: 15rem;">
+                                    <img src="icon/cd.jpg" class="card-img-top" alt="...">
+                                    <!-- Mostrar imagen dinámica -->
+                                    <!-- <div class="card-body">
+                                        <label  *ngIf="disco.estado_cerrado==null" for="">{{calcularPorcentajeUso().toFixed(2)}}%</label>
+                                        <label *ngIf="disco.estado_cerrado==true" for="">{{disco.peso_ocupado.toFixed(2)}}%</label>
+                                        <div class="progress progress-sm mr-2">
+                                            <div *ngIf="disco.estado_cerrado==null"  class="progress-bar bg-info" role="progressbar"
+                                                [style.width]="calcularPorcentajeUso() + '%'"
+                                                [attr.aria-valuenow]="calcularPorcentajeUso()" 
+                                                aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                            <div *ngIf="disco.estado_cerrado==true"  class="progress-bar bg-info" role="progressbar"
+                                                [style.width]="disco.peso_ocupado + '%'"
+                                                [attr.aria-valuenow]="disco.peso_ocupado" 
+                                                aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                </div>
+
+                                <div class="d-flex justify-content-between mx-4 w-100">
+                                    <div>
+                                        <div class="d-flex align-items-center">
+                                            <!-- <button *ngIf="disco.peso_tarjeta_apertura==null"   class="btn btn-danger btn-sm" (click)="openModalRegistrarTarjetaApertura(disco)"> Registrar Doc</button> -->
+                                            <h5 >
+                                                <i class="bi bi-file-earmark-pdf-fill"></i> 
+                                            </h5>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <!-- <button *ngIf="disco.peso_acta_apertura==null" [disabled]="disco.peso_tarjeta_apertura == null" class="btn btn-danger btn-sm" (click)="openModalRegistrarActaApertura(disco)"> Registrar Doc</button> -->
+                                            <h5>
+                                                <i class="bi bi-file-earmark-pdf-fill" [style]=' disco.peso_acta_apertura!=null? "color: brown; font-size: 2rem;": "color: gray; font-size: 2rem;"'></i> 
+                                            </h5>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <!-- <button *ngIf="disco.peso_acta_cierre==null" [disabled]="disco.peso_acta_apertura==null" class="btn btn-danger btn-sm" (click)="openModalRegistrarActaCierre(disco)"> Registrar Doc</button> -->
+                                            <h5 >
+                                                <i class="bi bi-file-earmark-pdf-fill"></i> 3.- Acta de cierre
+                                              
+                                            </h5>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <!-- <button *ngIf="disco.peso_tarjeta_cierre==null" [disabled]="disco.peso_acta_cierre==null" class="btn btn-danger btn-sm" (click)="openModalRegistrarTarjetaCierre(disco)"> Registrar Doc</button> -->
+                                            <h5>
+                                                <i class="bi bi-file-earmark-pdf-fill"></i> 4.- Tarjeta de calibración de cierre
+                                           
+                                            </h5>
+                                        </div>
+                                        <h5 class="my-4" [style]=""><a   class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" >Ver Documentos</a></h5>
+
+                                        <!-- <button type="button" class="btn btn-primary mt-2 mx-4"  (click)="mostarDatosDigitalizados()"> <i class="bi bi-eye"></i> ver microforma </button> -->
+                                    </div>
+                                    <!-- <div class="d-flex flex-column align-self-start">
+                                        <button *ngIf="disco.peso_tarjeta_cierre!=null" [disabled]="isLoading[i]"
+                                        [class]='disco.estado_cerrado==true?"btn btn-info" :"btn btn-success" ' 
+                                        (click)="disco.estado_cerrado==true?RecuperarDiscoDetalle(disco,i):AsociarExpedientesCD(disco,i) ">
+                                        <span
+                                            *ngIf="isLoading[i]"
+                                            class="spinner-border spinner-border-sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                            ></span>
+                                        {{disco.estado_cerrado==true? isLoading[i] ? 'PREPARANDO EXPEDIENTES...' : 'DESCARGAR MICROFORMAS': 'GENERAR DISCO'}}
+                                        </button>
+                                        <div class="d-flex justify-content-end m-2">
+                                            <span> Total de imágenes: {{this.contarFojas(disco)}} </span>
+                                        </div>
+                                        
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success"  >Agregar Disco</button>
+
+            </div>
+        </div>
+
+    </div>
 </div>
