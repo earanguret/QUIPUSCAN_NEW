@@ -13,7 +13,7 @@
                     <p class="titulo_menu px-4">DISCOS</p>
                     <!-- <img src="/icon/cd.jpg" class="card-img-top" alt="..." style="width: 210px; height: 200px;"> -->
                 </div>
-                <div *ngFor="let disco of discos, let i = index" class="mb-4">
+                <div *ngFor="let disco of list_data_discos, let i = index" class="mb-4">
                     <div class="card rounded shadow border-2">
                         <div class="card-header  d-flex justify-content-between align-items-center">
                             <h4>Volumen {{ disco.volumen }}</h4> <!-- Mostrar el volumen dinámicamente -->
@@ -26,10 +26,10 @@
                                 <div class="card" style="width: 15rem;">
                                     <img src="icon/cd.jpg" class="card-img-top" alt="...">
                                     <!-- Mostrar imagen dinámica -->
-                                    <!-- <div class="card-body">
-                                        <label  *ngIf="disco.estado_cerrado==null" for="">{{calcularPorcentajeUso().toFixed(2)}}%</label>
-                                        <label *ngIf="disco.estado_cerrado==true" for="">{{disco.peso_ocupado.toFixed(2)}}%</label>
-                                        <div class="progress progress-sm mr-2">
+                                    <div class="card-body">
+                                        <!-- <label  *ngIf="disco.estado_cerrado==null" for="">{{calcularPorcentajeUso().toFixed(2)}}%</label>
+                                        <label *ngIf="disco.estado_cerrado==true" for="">{{disco.peso_ocupado.toFixed(2)}}%</label> -->
+                                        <!-- <div class="progress progress-sm mr-2">
                                             <div *ngIf="disco.estado_cerrado==null"  class="progress-bar bg-info" role="progressbar"
                                                 [style.width]="calcularPorcentajeUso() + '%'"
                                                 [attr.aria-valuenow]="calcularPorcentajeUso()" 
@@ -40,68 +40,219 @@
                                                 [attr.aria-valuenow]="disco.peso_ocupado" 
                                                 aria-valuemin="0" aria-valuemax="100">
                                             </div>
-                                        </div>
-                                    </div> -->
+                                        </div> -->
+                                    </div>
                                 </div>
 
                                 <div class="d-flex justify-content-between mx-4 w-100">
                                     <div>
                                         <div class="d-flex align-items-center">
-                                            <!-- <button *ngIf="disco.peso_tarjeta_apertura==null"   class="btn btn-danger btn-sm" (click)="openModalRegistrarTarjetaApertura(disco)"> Registrar Doc</button> -->
-                                            <h5 >
-                                                <i class="bi bi-file-earmark-pdf-fill"></i> 
-                                            </h5>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <!-- <button *ngIf="disco.peso_acta_apertura==null" [disabled]="disco.peso_tarjeta_apertura == null" class="btn btn-danger btn-sm" (click)="openModalRegistrarActaApertura(disco)"> Registrar Doc</button> -->
+                                            <button class="btn btn-danger btn-sm"
+                                                (click)="openModalRegistrarTarjetaApertura(disco)"> Registrar
+                                                Doc</button>
                                             <h5>
-                                                <i class="bi bi-file-earmark-pdf-fill" [style]=' disco.peso_acta_apertura!=null? "color: brown; font-size: 2rem;": "color: gray; font-size: 2rem;"'></i> 
+                                                <i class="bi bi-file-earmark-pdf-fill"
+                                                    [style]=' disco.peso_tarjeta_apertura!=null? "color: brown; font-size: 2rem;": "color: gray; font-size: 2rem;"'></i>
+                                                1.- Tarjeta de calibración de apertura
+                                                ({{disco.fecha_tarjeta_apertura | date: 'dd/MM/yyyy'}})
                                             </h5>
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            <!-- <button *ngIf="disco.peso_acta_cierre==null" [disabled]="disco.peso_acta_apertura==null" class="btn btn-danger btn-sm" (click)="openModalRegistrarActaCierre(disco)"> Registrar Doc</button> -->
-                                            <h5 >
-                                                <i class="bi bi-file-earmark-pdf-fill"></i> 3.- Acta de cierre
-                                              
-                                            </h5>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <!-- <button *ngIf="disco.peso_tarjeta_cierre==null" [disabled]="disco.peso_acta_cierre==null" class="btn btn-danger btn-sm" (click)="openModalRegistrarTarjetaCierre(disco)"> Registrar Doc</button> -->
+                                            <button class="btn btn-danger btn-sm"
+                                                (click)="openModalRegistrarActaApertura(disco)"> Registrar Doc</button>
                                             <h5>
-                                                <i class="bi bi-file-earmark-pdf-fill"></i> 4.- Tarjeta de calibración de cierre
-                                           
+                                                <i class="bi bi-file-earmark-pdf-fill"
+                                                    [style]=' disco.peso_acta_apertura!=null? "color: brown; font-size: 2rem;": "color: gray; font-size: 2rem;"'></i>
+                                                2.- Acta de apertura
+                                                ({{disco.fecha_acta_apertura | date: 'dd/MM/yyyy'}})
                                             </h5>
                                         </div>
-                                        <h5 class="my-4" [style]=""><a   class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" >Ver Documentos</a></h5>
+                                        <div class="d-flex align-items-center">
+                                            <button class="btn btn-danger btn-sm"
+                                                (click)="openModalRegistrarActaCierre(disco)"> Registrar Doc</button>
+                                            <h5>
+                                                <i class="bi bi-file-earmark-pdf-fill"
+                                                    [style]=' disco.peso_acta_cierre!=null? "color: brown; font-size: 2rem;": "color: gray; font-size: 2rem;"'></i>
+                                                3.- Acta de cierre
+                                                ({{disco.fecha_acta_cierre | date: 'dd/MM/yyyy'}})
+                                            </h5>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <button class="btn btn-danger btn-sm"
+                                                (click)="openModalRegistrarTarjetaCierre(disco)"> Registrar Doc</button>
+
+                                            <h5>
+                                                <i class="bi bi-file-earmark-pdf-fill"
+                                                    [style]=' disco.peso_tarjeta_cierre!=null? "color: brown; font-size: 2rem;": "color: gray; font-size: 2rem;"'></i>
+                                                4.- Tarjeta de calibración de cierre
+                                                ({{disco.fecha_tarjeta_cierre | date: 'dd/MM/yyyy'}})
+                                            </h5>
+                                        </div>
+                                        <h5 class="my-4" [style]=""><a
+                                                class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Ver
+                                                Documentos</a></h5>
 
                                         <!-- <button type="button" class="btn btn-primary mt-2 mx-4"  (click)="mostarDatosDigitalizados()"> <i class="bi bi-eye"></i> ver microforma </button> -->
                                     </div>
-                                    <!-- <div class="d-flex flex-column align-self-start">
-                                        <button *ngIf="disco.peso_tarjeta_cierre!=null" [disabled]="isLoading[i]"
-                                        [class]='disco.estado_cerrado==true?"btn btn-info" :"btn btn-success" ' 
-                                        (click)="disco.estado_cerrado==true?RecuperarDiscoDetalle(disco,i):AsociarExpedientesCD(disco,i) ">
-                                        <span
-                                            *ngIf="isLoading[i]"
-                                            class="spinner-border spinner-border-sm"
-                                            role="status"
-                                            aria-hidden="true"
-                                            ></span>
-                                        {{disco.estado_cerrado==true? isLoading[i] ? 'PREPARANDO EXPEDIENTES...' : 'DESCARGAR MICROFORMAS': 'GENERAR DISCO'}}
-                                        </button>
+                                    <div class="d-flex flex-column align-self-start">
+                                        <button *ngIf="disco.estado_cerrado==null" (click)="CerrarDisco(disco)" class="btn btn-success">  CERRAR DISCO </button>
+                                        <button *ngIf="disco.estado_cerrado" (click)="CerrarDisco(disco)" class="btn btn-info">  DESCARGAR MICHOFORMA </button>
+                                        <!-- <button *ngIf="disco.peso_tarjeta_cierre!=null" [disabled]="isLoading[i]"
+                                            [class]='disco.estado_cerrado==true?"btn btn-info" :"btn btn-success" '
+                                            (click)="disco.estado_cerrado==true?RecuperarDiscoDetalle(disco,i):AsociarExpedientesCD(disco,i) ">
+                                            <span *ngIf="isLoading[i]" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            {{disco.estado_cerrado==true? isLoading[i] ? 'PREPARANDO EXPEDIENTES...' : 'DESCARGAR MICROFORMAS': 'CERRAR DISCO'}}
+                                        </button> -->
                                         <div class="d-flex justify-content-end m-2">
-                                            <span> Total de imágenes: {{this.contarFojas(disco)}} </span>
+                                            <span> Total de imágenes: 45 </span>
                                         </div>
-                                        
-                                    </div> -->
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-success"  >Agregar Disco</button>
-
+                <button type="button" class="btn btn-success" (click)="openModalCrearDisco()">Agregar Disco</button>
             </div>
         </div>
+    </div>
+</div>
 
+
+
+<div class="modal fade" id="ModalCrearDisco" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Creación de Disco</h5>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center">
+                    <img src="/icon/cd.jpg" class="m-3" alt="..." style="width: 130px; height: 120px;">
+
+                    <div class="d-flex flex-column justify-content-center my-3">
+                        <label class="form-label">Nombre disco:
+                            {{`${this.data_inventario.codigo}V${this.list_data_discos.length + 1}`}}</label>
+                        <label class="form-label">Capacidad: 25GB</label>
+                        <label class="form-label">Volumen: {{`${this.list_data_discos.length + 1}`}}</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-center gap-2 ">
+                    <button type="button" class="cancelar-btn mt-3" (click)="closeModalCrearDisco()">Cancelar</button>
+                    <button type="button" class="guardar-btn px-4 mt-3" (click)="crearDisco()">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal registrar tarjeta de calibracion de apertura-->
+<div class="modal fade modal-lg" id="exampleModaltarjetaApertura" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom-width" role="document">
+        <div class="modal-content" style="position: relative;">
+            <div class="modal-header">
+                <div class="custom-width text-center">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Tarjeta de calibración de apertura</h5>
+                </div>
+            </div>
+            <div class="modal-body text-start">
+                <div class="mb-3 d-flex">
+                    <input class="form-control form-control-sm" type="file" id="formFileTarjetaApertura"
+                        (change)="onFileSelectedTarjetaApertura($event)" accept=".pdf">
+                    <button type="button" class="guardar-btn mx-2"
+                        (click)="guardarPDFTarjetaCalibracionApertura()">Guardar</button>
+                </div>
+                <div style="margin: 10px;">
+                    <iframe [src]="pdfUrlTarjetaApertura" type="application/pdf" width="100%"
+                        style="height: 77vh;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal registrar tarjeta de calibracion de cierre-->
+<div class="modal fade modal-lg" id="exampleModaltarjetaCierre" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom-width" role="document">
+        <div class="modal-content" style="position: relative;">
+            <div class="modal-header">
+                <div class="custom-width text-center">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Tarjeta de calibración de cierre</h5>
+                </div>
+            </div>
+            <div class="modal-body text-start">
+
+                <div class="mb-3 d-flex">
+                    <input class="form-control form-control-sm" type="file" id="formFileTarjetaCierre"
+                        (change)="onFileSelectedTarjetaCierre($event)" accept=".pdf">
+                    <button type="button" class="guardar-btn mx-2"
+                        (click)="guardarPDFTarjetaCalibracionCierre()">Guardar</button>
+                </div>
+                <div style="margin: 10px;">
+                    <iframe [src]="pdfUrlTarjetaCierre" type="application/pdf" width="100%"
+                        style="height: 77vh;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal registrar acta de apertura-->
+<div class="modal fade modal-lg" id="exampleModalActaApertura" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom-width" role="document">
+        <div class="modal-content" style="position: relative;">
+            <div class="modal-header">
+                <div class="custom-width text-center">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Acta de apertura</h5>
+                </div>
+            </div>
+            <div class="modal-body text-start">
+
+                <div class="mb-3 d-flex">
+                    <input class="form-control form-control-sm mx-2" type="file" id="formFileActaApertura"
+                        (change)="onFileSelectedActaApertura($event)" accept=".pdf">
+                    <button type="button" class="guardar-btn mx-2" (click)="guardarPDFActaApertura()">Guardar</button>
+                </div>
+                <div style="margin: 10px;">
+                    <iframe [src]="pdfUrlActaApertura" type="application/pdf" width="100%"
+                        style="height: 77vh;"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal registrar acta de cierre-->
+<div class="modal fade modal-lg" id="exampleModalActaCierre" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom-width" role="document">
+        <div class="modal-content" style="position: relative;">
+
+
+            <div class="modal-header">
+                <div class="custom-width text-center">
+                    <h4 class="text-white mx-4">Registro de acta de cierre</h4>
+                </div>
+            </div>
+            <div class="modal-body text-start">
+                <div class="mb-3 d-flex">
+                    <input class="form-control form-control-sm" type="file" id="formFileActaCierre"
+                        (change)="onFileSelectedActaCierre($event)" accept=".pdf">
+                    <button type="button" class="guardar-btn mx-2" (click)="guardarPDFActaCierre()">Guardar</button>
+                </div>
+                <div style="margin: 10px;">
+                    <iframe [src]="pdfUrlActaCierre" type="application/pdf" width="100%" style="height: 77vh;"></iframe>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>

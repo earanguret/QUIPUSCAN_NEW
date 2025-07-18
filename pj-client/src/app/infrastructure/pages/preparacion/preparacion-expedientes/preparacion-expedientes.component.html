@@ -46,7 +46,7 @@
                                         *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index" >
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
-                                        <td (click)="obtenerNroExpediente(expediente.nro_expediente)">
+                                        <td (click)="ObtenerExpedienteDataViewXid(expediente)">
                                             <button *ngIf="expediente.estado_preparado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
                                                  <!-- <i class="bi bi-box-arrow-in-down"></i>  -->
                                                   <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
@@ -118,7 +118,10 @@
                 <h5 class="modal-title" id="exampleModalLongTitle">PREPARACIÓN DE EXPEDIENTE</h5>
             </div>
             <div class="sub_titulo_expediente d-flex justify-content-center">
-                <h5 style="font-size: 1.1rem;">{{nro_expediente_temp}}</h5>
+                <h5 style="font-size: 1.1rem;">{{data_preparacion_header.nro_expediente}}</h5>
+                <h5 style="font-size: 1.1rem;">{{data_preparacion_header.responsable}}</h5>
+                <h5 style="font-size: 1.1rem;">{{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</h5>
+                <h5 style="font-size: 1.1rem;">{{data_preparacion_header.cod_paquete}}</h5>
             </div>
             <div class="contenedor">
                 <form>

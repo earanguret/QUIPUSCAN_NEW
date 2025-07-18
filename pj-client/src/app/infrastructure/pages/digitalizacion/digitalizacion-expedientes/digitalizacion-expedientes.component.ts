@@ -15,7 +15,7 @@ import { map } from 'rxjs/operators';
 import { EstadoService } from '../../../services/remoto/estado/estado.service';
 import { ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
-import { PreparacionResponse, PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
+import { PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
 import { DigitalizacionService } from '../../../services/remoto/digitalizacion/digitalizacion.service';
 import { PreparacionViewComponent } from '../../../components/preparacion-view/preparacion-view.component';

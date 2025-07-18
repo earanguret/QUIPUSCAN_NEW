@@ -7,5 +7,8 @@ export function form_inventario_creacion_vf(dataExpediente: ExpedienteModel): Er
     if (!dataExpediente.nro_expediente) {
       errorValidacion.push({ campo: 'nro_expediente', mensaje: 'Campo requerido' });
     }
+    if (!dataExpediente.cod_paquete) {
+      errorValidacion.push({ campo: 'cod_paquete', mensaje: 'Campo requerido' });
+    }
     return errorValidacion;
   }

@@ -3,7 +3,7 @@ import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DiscoRequest } from '../../../../domain/dto/DiscoRequest.dto';
-import { DiscoCrearResponse } from '../../../../domain/dto/DiscoResponse.dto';
+import { DiscoCrearResponse, DiscoListaResponse, ModificarDiscoResponse } from '../../../../domain/dto/DiscoResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -14,27 +14,34 @@ export class DiscoService {
 
   api_uri_disco=`${environment.urlApi}/disco`;
 
-  ListarDiscosByInventario():Observable<any>{
-    return this.http.get<any>(`${this.api_uri_disco}/lista`)
+  //this.router.get('/api/disco/lista/:id_inventario', discoController.listarDiscosByInventario.bind(discoController));
+
+
+  ListarDiscosByInventario(id_inventario:number):Observable<DiscoListaResponse[]>{
+    return this.http.get<DiscoListaResponse[]>(`${this.api_uri_disco}/lista/${id_inventario}`)
   }
 
   CrearDisco(cuerpo_disco:DiscoRequest):Observable<DiscoCrearResponse>{
     return this.http.post<DiscoCrearResponse>(`${this.api_uri_disco}/create`,cuerpo_disco)
   }
 
-  // AgregarDireccionFTPActaApertura(id_disco:number,direccion:string):Observable<any>{
-  //   return this.http.post<any>(`${this.api_uri_disco}/agregar/acta-apertura/${id_disco}`,{direccion})
-  // }
+  AgregarDataDiscoActaApertura(id_disco:number,data_disco: DiscoRequest):Observable<ModificarDiscoResponse>{
+    return this.http.post<ModificarDiscoResponse>(`${this.api_uri_disco}/agregar/acta-apertura/${id_disco}`,data_disco)
+  }
 
-  // AgregarDireccionFTPActaCierre(id_disco:number,direccion:string):Observable<any>{
-  //   return this.http.post<any>(`${this.api_uri_disco}/agregar/acta-cierre/${id_disco}`,{direccion})
-  // }
+  AgregarDataDiscoActaCierre(id_disco:number,data_disco: DiscoRequest):Observable<ModificarDiscoResponse>{
+    return this.http.post<ModificarDiscoResponse>(`${this.api_uri_disco}/agregar/acta-cierre/${id_disco}`,data_disco)
+  }
 
-  // AgregarDireccionFTPTarjetaApertura(id_disco:number,direccion:string):Observable<any>{
-  //   return this.http.post<any>(`${this.api_uri_disco}/agregar/tarjeta-apertura/${id_disco}`,{direccion})
-  // }
+  AgregarDataDiscoTarjetaApertura(id_disco:number,data_disco: DiscoRequest):Observable<ModificarDiscoResponse>{
+    return this.http.post<ModificarDiscoResponse>(`${this.api_uri_disco}/agregar/tarjeta-apertura/${id_disco}`,data_disco)
+  }
 
-  // AgregarDireccionFTPTarjetaCierre(id_disco:number,direccion:string):Observable<any>{
-  //   return this.http.post<any>(`${this.api_uri_disco}/agregar/tarjeta-cierre/${id_disco}`,{direccion})
-  // }
+  AgregarDataDiscoTarjetaCierre(id_disco:number,data_disco: DiscoRequest):Observable<ModificarDiscoResponse>{
+    return this.http.post<ModificarDiscoResponse>(`${this.api_uri_disco}/agregar/tarjeta-cierre/${id_disco}`,data_disco)
+  }
+
+  CerrarDisco(id_disco:number,data_disco: DiscoRequest):Observable<ModificarDiscoResponse>{
+    return this.http.post<ModificarDiscoResponse>(`${this.api_uri_disco}/cerrar/${id_disco}`,data_disco)
+  }
 }

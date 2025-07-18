@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse, ExpedienteResponseDataView, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { ExpedienteModel } from '../../../../domain/models/expediente.model';
 import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto';
 
@@ -12,13 +12,10 @@ import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto'
 })
 export class ExpedienteService {
 
+  //  this.router.get('/api/expediente/:id',expedienteController.ObtenerExpedienteDetalleXid)
+
   api_uri_expediente=`${environment.urlApi}/expediente`;
   constructor(private http: HttpClient) { }
-  // this.router.get('/api/expediente',expedienteController.listarExpedientes)
-  // this.router.get('/api/expediente/:id',expedienteController.ObtenerExpedienteDetalleXid)
-  // this.router.post('/api/expediente',expedienteController.CrearExpediente)
-  //this.router.get('/api/expediente/lista/:id_inventario',expedienteController.ObtenerExpedientesDetalleById_inventario)
-  //this.router.put('/api/expediente/:id',expedienteController.ModificarExpediente)
 
   ListarExpedientes():Observable<ExpedienteResponse[]>{
     return this.http.get<ExpedienteResponse[]>(this.api_uri_expediente)
@@ -27,8 +24,8 @@ export class ExpedienteService {
     return this.http.get<ExpedienteResponse[]>(`${this.api_uri_expediente}/lista/${id_inventario}`)
   }
 
-  ObtenerExpedienteDetalleXid(id:number):Observable<any>{
-    return this.http.get<any>(`${this.api_uri_expediente}/${id}`)
+  ObtenerExpedienteDataViewXid(id:number):Observable<ExpedienteResponseDataView>{
+    return this.http.get<ExpedienteResponseDataView>(`${this.api_uri_expediente}/dataview/${id}`)
   }
 
   CrearExpediente(cuerpo_expediente:ExpedienteRequest):Observable<CrearExpedienteResponse>{

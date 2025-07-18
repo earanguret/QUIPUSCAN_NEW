@@ -58,6 +58,7 @@ export class RecepcionExpedientesComponent implements OnInit {
     nro_expediente: '',
     id_inventario: 0,
     id_responsable: 0,
+    cod_paquete: '',
   }
 
 
@@ -96,12 +97,19 @@ export class RecepcionExpedientesComponent implements OnInit {
     this.myModal.show();
   }
 
-  openModalEdit(data_expediente: ExpedienteModel) {
+  openModalEdit(data_expediente: any) {
 
-    this.data_expediente = data_expediente;
+    this.data_expediente ={
+      id_expediente: data_expediente.id_expediente,
+      nro_expediente: data_expediente.nro_expediente,
+      id_inventario: data_expediente.id_inventario,
+      id_responsable: data_expediente.id_responsable,
+      cod_paquete: data_expediente.cod_paquete,
+    }
     this.modificarExpediente = true;
     this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
     this.myModal.show();
+    console.log(data_expediente)
   }
 
   limpiarDatosInventario() {
@@ -112,6 +120,7 @@ export class RecepcionExpedientesComponent implements OnInit {
       nro_expediente: '',
       id_inventario: 0,
       id_responsable: 0,
+      cod_paquete: '',
     }
 
   }

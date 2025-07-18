@@ -11,46 +11,7 @@ class ExpedienteController {
             console.error('Error al obtener expedientes:', error);
             res.status(500).json({ error: 'Error interno del servidor'});
         }
-    }
-    public async listarExpedientesDetalle(req: Request, res: Response): Promise<any> {
-        try {
-            const consulta = `
-                            SELECT
-                                e.id_expediente,
-                                e.nro_expediente,
-                                e.id_inventario,
-                                i.id_responsable,
-                                i.anio,
-                                i.cantidad,
-                                i.tipo_doc,
-                                i.serie_doc,
-                                i.especialidad,
-                                i.codigo,
-                                i.sede,
-                                i.create_at,
-                                u.username,
-                                p.nombre,
-                                p.ap_paterno,
-                                p.ap_materno
-                            FROM
-                                archivo.t_expediente e
-                            JOIN
-                                archivo.t_inventario i ON e.id_inventario = i.id_inventario
-                            JOIN
-                                archivo.t_usuario u ON i.id_responsable = u.id_usuario
-                            JOIN
-                                archivo.t_persona p ON u.id_persona = p.id_persona
-                            ORDER BY e.nro_expediente DESC 
-                                `;
-            const expedientes = await db.query(consulta);
-            res.json(expedientes["rows"]);
-        } catch (error) {
-            console.error("Error al obtener expedientes:", error);
-            res.status(500).json({ error: "Error interno del servidor" });
-        }
-    }
-
- 
+    } 
 
     public async ObtenerExpedientesById_inventario(req: Request, res: Response): Promise<any> {
         try {
@@ -61,8 +22,9 @@ class ExpedienteController {
                                 e.nro_expediente,
                                 e.id_inventario,
                                 e.id_responsable,
-								 s.estado_preparado,
-								 s.estado_recepcionado,
+                                e.cod_paquete,
+								s.estado_preparado,
+								s.estado_recepcionado,
 							    s.estado_preparado,
 							    s.estado_digitalizado,
 							    s.estado_indizado,
@@ -85,7 +47,7 @@ class ExpedienteController {
         }
     }
 
-    public async ObtenerExpedienteDetalleXid(req: Request, res: Response): Promise<void> {
+    public async ObtenerExpedienteDataViewXid(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
             const consulta = `
@@ -93,21 +55,11 @@ class ExpedienteController {
                                 e.id_expediente,
                                 e.nro_expediente,
                                 e.id_inventario,
-                                i.id_responsable,
-                                i.anio,
-                                i.cantidad,
-                                i.tipo_doc,
-                                i.serie_doc,
-                                i.especialidad,
-                                i.codigo,
-                                i.sede,
-                                i.create_at,
+                                e.id_responsable,
+                                e.cod_paquete,
+                                e.create_at,
                                 u.username,
-                                u.perfil,
-                                u.estado,
-                                p.nombre,
-                                p.ap_paterno,
-                                p.ap_materno
+                                CONCAT(p.nombre, ' ', p.ap_paterno, ' ', p.ap_materno) AS responsable
                             FROM
                                 archivo.t_expediente e
                             JOIN
@@ -134,7 +86,7 @@ class ExpedienteController {
     public async CrearExpediente(req: Request, res: Response) {
         try {
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-            const { nro_expediente, id_inventario, id_responsable, app_user } = req.body;
+            const { nro_expediente, id_inventario, id_responsable, cod_paquete, app_user } = req.body;
             const consulta = `
                     INSERT INTO archivo.t_expediente(
                             f_aud,        -- fecha de la transaccion
@@ -148,10 +100,12 @@ class ExpedienteController {
                             create_at,
                             nro_expediente, 
                             id_inventario, 
-                            id_responsable
+                            id_responsable,
+                            cod_paquete
+
                            )    
-                        VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, CURRENT_TIMESTAMP, $5, $6, $7)
-                        RETURNING id_expediente, nro_expediente, id_inventario, id_responsable; -- Devolver el ID del expediente insertado
+                        VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, CURRENT_TIMESTAMP, $5, $6, $7, $8)
+                        RETURNING id_expediente, nro_expediente, id_inventario, id_responsable, cod_paquete; -- Devolver el ID del expediente insertado
                 `;
             const valores = [
                 app_user,
@@ -161,6 +115,7 @@ class ExpedienteController {
                 nro_expediente,
                 id_inventario,
                 id_responsable,
+                cod_paquete
             ];
 
             db.query(consulta, valores, (error, resultado) => {
@@ -180,7 +135,8 @@ class ExpedienteController {
                           id_expediente,
                           nro_expediente,
                           id_inventario,
-                          id_responsable
+                          id_responsable,
+                          cod_paquete
                         }
                       });
                 }
@@ -217,7 +173,7 @@ class ExpedienteController {
         try {
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
             const { id } = req.params;
-            const {  nro_expediente, app_user } = req.body;
+            const {  nro_expediente,cod_paquete,app_user } = req.body;
             const consulta = `
                             UPDATE archivo.t_expediente
                             SET 
@@ -229,8 +185,9 @@ class ExpedienteController {
                                 c_aud_ip=$3, 
                                 c_aud_mac=$4,
 
-                                nro_expediente=$5
-                            WHERE id_expediente=$6;
+                                nro_expediente=$5,
+                                cod_paquete=$6
+                            WHERE id_expediente=$7;
                         `;
             const valores = [
                 app_user,
@@ -238,6 +195,7 @@ class ExpedienteController {
                 ipAddressClient,
                 null,
                 nro_expediente,
+                cod_paquete,
                 id,
             ];
 

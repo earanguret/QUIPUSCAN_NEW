@@ -76,7 +76,8 @@ CREATE TABLE archivo.t_expediente (
     id_expediente serial PRIMARY KEY,
     id_inventario integer REFERENCES archivo.t_inventario(id_inventario),
     id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
-    nro_expediente varchar UNIQUE
+    nro_expediente varchar UNIQUE,
+    cod_paquete varchar(10)
    
 );
 
@@ -200,8 +201,9 @@ CREATE TABLE archivo.t_disco (
     create_at timestamp,
     id_disco serial PRIMARY KEY,
     id_inventario integer REFERENCES archivo.t_inventario(id_inventario),
-    id_responsable integer REFERENCES archivo.t_usuario(id_usuario),
+    id_responsable_crear integer REFERENCES archivo.t_usuario(id_usuario),
     nombre varchar,
+    volumen integer,
     capacidad_GB integer,
     peso_ocupado integer,
     dir_ftp_acta_apertura varchar,
@@ -215,7 +217,13 @@ CREATE TABLE archivo.t_disco (
     fecha_acta_apertura timestamp,
     fecha_acta_cierre timestamp,
     fecha_tarjeta_apertura timestamp,
-    fecha_tarjeta_cierre timestamp
+    fecha_tarjeta_cierre timestamp,
+    id_responsable_tca integer REFERENCES archivo.t_usuario(id_usuario),
+    id_responsable_tcc integer REFERENCES archivo.t_usuario(id_usuario),
+    id_responsable_aa integer REFERENCES archivo.t_usuario(id_usuario),
+    id_responsable_ac integer REFERENCES archivo.t_usuario(id_usuario),
+    estado_cerrado boolean,
+    id_responsable_cierre integer REFERENCES archivo.t_usuario(id_usuario)
 );
 
 -- Tabla: archivo.t_estado_expediente
@@ -237,7 +245,7 @@ CREATE TABLE archivo.t_estado_expediente (
     estado_controlado char(1),
     estado_fedatado char(1),
     estado_finalizado char(1),
-    id_disco integer REFERENCES archivo.t_cd(id_disco),
+    id_disco integer REFERENCES archivo.t_disco(id_disco),
     mensajes varchar
 );
 

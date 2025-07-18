@@ -3,8 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NavegatorComponent } from '../../../shared/components/navegator/navegator.component';
 import { SubnavegatorComponent } from '../../../shared/components/subnavegator/subnavegator.component';
 import { InfoInventarioComponent } from '../../../components/info-inventario/info-inventario.component';
-import { ExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
-import { ExpedienteModel } from '../../../../domain/models/expediente.model';
+import { ExpedienteResponse, ExpedienteResponseDataView } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -43,6 +42,17 @@ export class PreparacionExpedientesComponent implements OnInit {
 
   id_expediente_temp: number = 0;
   nro_expediente_temp: string = '';
+
+  data_preparacion_header: ExpedienteResponseDataView = {
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    responsable: null,
+    create_at: null,
+    username: null,
+  }
  
   data_expediente_preparacion: PreparacionModel ={
     id_preparacion: 0,
@@ -114,8 +124,19 @@ export class PreparacionExpedientesComponent implements OnInit {
 
   }
 
-  obtenerNroExpediente(nro_expediente:string) {
-    this.nro_expediente_temp = nro_expediente;
+  ObtenerExpedienteDataViewXid(expediente:any) {
+    console.log('expediente recuperado:',expediente)
+    this.expedienteService.ObtenerExpedienteDataViewXid(expediente.id_expediente).subscribe({
+      next: (data: ExpedienteResponseDataView) => {
+        this.data_preparacion_header = data;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de preparacion detalle completado');
+      }
+    })
   }
 
 

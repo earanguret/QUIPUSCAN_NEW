@@ -3,4 +3,5 @@ export interface ExpedienteModel{
     nro_expediente: string;
     id_inventario: number;
     id_responsable: number;
+    cod_paquete: string;
 }

@@ -87,8 +87,15 @@
 
             <div class="form-group ">
               <label for="expediente" class="form-label">Nro de expediente:</label>
-              <input type="text" class="form-control" name="expediente" [(ngModel)]="data_expediente.nro_expediente"
-                id="validationCustom01" required>
+              <input type="text" class="form-control" name="expediente" [(ngModel)]="data_expediente.nro_expediente" id="validationCustom01" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+
+            <div class="form-group mt-3">
+              <label for="expediente" class="form-label">Cod de paquete:</label>
+              <input type="text" class="form-control" name="cod_paquete" [(ngModel)]="data_expediente.cod_paquete" id="validationCustom02" required>
               <div class="valid-feedback">
                 Looks good!
               </div>
