@@ -117,11 +117,14 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">PREPARACIÓN DE EXPEDIENTE</h5>
             </div>
-            <div class="sub_titulo_expediente d-flex justify-content-center">
-                <h5 style="font-size: 1.1rem;">{{data_preparacion_header.nro_expediente}}</h5>
-                <h5 style="font-size: 1.1rem;">{{data_preparacion_header.responsable}}</h5>
-                <h5 style="font-size: 1.1rem;">{{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</h5>
-                <h5 style="font-size: 1.1rem;">{{data_preparacion_header.cod_paquete}}</h5>
+
+            <div class="sub_titulo_expediente  ">
+                <section class="contenedor">
+                    <h5 style="font-size: 1.1rem;">{{data_preparacion_header.nro_expediente}}</h5>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span style="color: #666666c7; font-weight: 600;">Recepcionado por:</span> {{data_preparacion_header.responsable}}</p>
+                    <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>  {{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</p>
+                    <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>  {{data_preparacion_header.cod_paquete}}</P>
+                </section>
             </div>
             <div class="contenedor">
                 <form>

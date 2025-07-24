@@ -9,6 +9,7 @@ export interface PreparacionResponseDataView {
     copias_originales: boolean | null;
     copias_simples: boolean | null;
     create_at: Date | null;
+    cod_paquete: string | null;
     responsable: string | null;
     nro_expediente: string | null;
     username: string | null;

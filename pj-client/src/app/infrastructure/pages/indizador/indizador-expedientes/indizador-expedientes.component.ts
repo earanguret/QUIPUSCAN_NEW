@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavegatorComponent } from '../../../shared/components/navegator/navegator.component';
 import { SubnavegatorComponent } from '../../../shared/components/subnavegator/subnavegator.component';
-import { ExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { ExpedienteResponse, ExpedienteResponseDataView } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { InfoInventarioComponent } from '../../../components/info-inventario/info-inventario.component';
 import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
@@ -72,6 +72,17 @@ export class IndizadorExpedientesComponent implements OnInit {
 
   pdfUrl: SafeResourceUrl | null = null;
 
+  data_preparacion_header: ExpedienteResponseDataView = {
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    responsable: null,
+    create_at: null,
+    username: null,
+  }
+
   data_preparacion: PreparacionResponseDataView = {
     id_preparacion: 0,
     id_responsable: 0,
@@ -82,6 +93,7 @@ export class IndizadorExpedientesComponent implements OnInit {
     observaciones: '',
     copias_originales: false,
     copias_simples: false,
+    cod_paquete: null,
     create_at: null,
     responsable: null,
     username: null,
@@ -157,6 +169,7 @@ export class IndizadorExpedientesComponent implements OnInit {
 
     this.recuperarFile(nro_expediente)
     this.id_expediente_temp = id_expediente;
+    this.ObtenerExpedienteDataViewXid(id_expediente)
     this.recuperarDataPreparacion(id_expediente)
     this.recuperarDataDigitalizacion(id_expediente)
     if (modificar_indizacion === true) {
@@ -177,6 +190,20 @@ export class IndizadorExpedientesComponent implements OnInit {
   closeModalIndizacion() {
     this.myModalIndizacion.hide();
   }
+
+  ObtenerExpedienteDataViewXid(id_expediente: number) {
+      this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
+        next: (data: ExpedienteResponseDataView) => {
+          this.data_preparacion_header = data;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          console.log('listado de preparacion detalle completado');
+        }
+      })
+    }
 
   recuperarDataPreparacion(id_expediente: number) {
     this.preparacionService.ObtenerPreparacionDataViewXidExpediente(id_expediente).subscribe({

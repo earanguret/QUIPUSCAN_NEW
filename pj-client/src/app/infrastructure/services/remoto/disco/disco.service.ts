@@ -44,4 +44,5 @@ export class DiscoService {
   CerrarDisco(id_disco:number,data_disco: DiscoRequest):Observable<ModificarDiscoResponse>{
     return this.http.post<ModificarDiscoResponse>(`${this.api_uri_disco}/cerrar/${id_disco}`,data_disco)
   }
+
 }

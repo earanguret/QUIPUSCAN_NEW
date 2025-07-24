@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse, ExpedienteResponseDataView, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse, ExpedienteResponseDataView, ExpedienteSinDiscoResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { ExpedienteModel } from '../../../../domain/models/expediente.model';
 import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto';
 
@@ -42,5 +42,8 @@ export class ExpedienteService {
     return this.http.put<ModificarExpedienteResponse>(`${this.api_uri_expediente}/${id}`,cuerpo_expediente)
   }
 
+  ObtenerExpedientesById_inventario_sinDisco(id_inventario:number):Observable<ExpedienteSinDiscoResponse[]>{
+    return this.http.get<ExpedienteSinDiscoResponse[]>(`${this.api_uri_expediente}/pendientesDisco/${id_inventario}`)
+  }
 
 }

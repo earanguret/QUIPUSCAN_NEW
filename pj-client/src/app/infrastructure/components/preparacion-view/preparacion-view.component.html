@@ -1,19 +1,15 @@
-<div class="sub_titulo_expediente d-flex justify-content-center">
-  
-        
-    
-    
-    <div class="contenedor ">
+<div class="sub_titulo_expediente d-flex justify-content-start">
+    <section class="contenedor">
         <h5 style="font-size: 1.1rem;">{{data_expediente_preparacion.nro_expediente}}</h5>
-        <p style="font-size: 0.9rem; margin-top: 0.5rem; margin-bottom: 0.3rem;">RESPONSABLE: {{data_expediente_preparacion.responsable}}</p>
-        <p style="font-size: 0.9rem;margin-top: 0.3rem; margin-bottom: 0.3rem;">FECHA: {{data_expediente_preparacion.create_at | date:'dd/MM/yyyy'}}</p>
-    </div>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span style="color: #666666c7; font-weight: 600;">Recepcionado por:</span> {{data_expediente_preparacion.responsable}}</p>
+        <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>  {{data_expediente_preparacion.create_at | date:'dd/MM/yyyy'}}</p>
+        <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>  {{data_expediente_preparacion.cod_paquete}}</P>
+    </section>
 </div>
 <div class="contenedor">
     <form>
         <!-- DATOS DE INVENTARIO -->
         <fieldset>
-
             <div class="form-group mt-3">
                 <label for="fojas" class="form-label">Fojas fisicas: </label>
                 <input readonly type="text" class="form-control" name="fojas" [(ngModel)]="data_expediente_preparacion.fojas_total"  >

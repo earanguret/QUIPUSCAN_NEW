@@ -30,6 +30,7 @@ export class PreparacionViewComponent implements OnInit {
       observaciones: '',
       copias_originales: false,
       copias_simples: false,
+      cod_paquete: null,
       create_at: null,
       responsable: null,
       username: null,

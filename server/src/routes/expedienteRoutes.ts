@@ -18,6 +18,7 @@ class ExpedienteRoutes{
         this.router.post('/api/expediente',expedienteController.CrearExpediente)
         this.router.delete('/api/expediente/:id',expedienteController.EliminarExpediente)
         this.router.put('/api/expediente/:id',expedienteController.ModificarExpediente)
+        this.router.get('/api/expediente/pendientesDisco/:id_inventario',expedienteController.ObtenerExpedientesById_inventario_sinDisco)
     }
 }
 

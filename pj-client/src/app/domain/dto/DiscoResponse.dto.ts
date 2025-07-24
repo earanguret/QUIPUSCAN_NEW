@@ -26,6 +26,8 @@ export interface DiscoListaResponse {
     id_responsable_cierre: number | null;
 }
 
+
+
 export interface DiscoCrearResponse {
     message: string;
 }

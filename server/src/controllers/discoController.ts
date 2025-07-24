@@ -15,7 +15,7 @@ class DiscoController {
                     d.nombre,
                     d.volumen,
                     d.capacidad_gb,
-                    d.peso_ocupado,
+                    d.espacio_ocupado,
                     d.dir_ftp_acta_apertura,
                     d.dir_ftp_acta_cierre,
                     d.dir_ftp_tarjeta_apertura,
@@ -345,6 +345,9 @@ class DiscoController {
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
+
+    
+
 }
 
 const discoController = new DiscoController();  

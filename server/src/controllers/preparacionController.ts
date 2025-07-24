@@ -98,8 +98,8 @@ class PreparacionController {
                                 p.id_expediente,
                                 CONCAT(pe.nombre, ' ', pe.ap_paterno, ' ', pe.ap_materno) AS responsable,
 								u.username,
-                                e.nro_expediente
-								
+                                e.nro_expediente,
+                                e.cod_paquete	
                             FROM
                                 archivo.t_preparacion p
                             JOIN

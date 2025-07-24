@@ -4,7 +4,7 @@ import { NavegatorComponent } from '../../../shared/components/navegator/navegat
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { SubnavegatorComponent } from '../../../shared/components/subnavegator/subnavegator.component';
 import { InfoInventarioComponent } from '../../../components/info-inventario/info-inventario.component';
-import { ExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { ExpedienteResponse, ExpedienteResponseDataView } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { map } from 'rxjs';
@@ -45,7 +45,7 @@ export class ControlExpedientesComponent implements OnInit {
   id_inventario: number = 0;
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
-  
+
   nro_expediente_temp: string = '';
   id_expediente_temp: number = 0;
   modificarControl: boolean = false;
@@ -53,6 +53,17 @@ export class ControlExpedientesComponent implements OnInit {
   pdfUrl: SafeResourceUrl | null = null;
   folderPath: string | null = null;
   p: number = 1;
+
+  data_preparacion_header: ExpedienteResponseDataView = {
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    responsable: null,
+    create_at: null,
+    username: null,
+  }
 
   data_preparacion: PreparacionResponseDataView = {
     id_preparacion: 0,
@@ -64,6 +75,7 @@ export class ControlExpedientesComponent implements OnInit {
     observaciones: '',
     copias_originales: false,
     copias_simples: false,
+    cod_paquete: null,
     create_at: null,
     responsable: null,
     username: null,
@@ -104,7 +116,7 @@ export class ControlExpedientesComponent implements OnInit {
     responsable: null,
     username: null,
   }
-  
+
   ListObservacionesPreparacion: string[] = [];
   ListObservacionesDigitalizacion: string[] = [];
   ListObservacionesIndizacion: string[] = [];
@@ -156,25 +168,26 @@ export class ControlExpedientesComponent implements OnInit {
 
   closeModalReception() {
     this.myModalReception.hide();
-  
+
   }
 
   openModalControl(id_expediente: number, nro_expediente: string, modificar_control: boolean) {
 
     this.id_expediente_temp = id_expediente;
     this.recuperarFile(nro_expediente);
+    this.ObtenerExpedienteDataViewXid(id_expediente)
     this.recuperarDataPreparacion(id_expediente);
     this.recuperarDataDigitalizacion(id_expediente);
     this.recuperarDataIndizacion(id_expediente);
 
-    if (modificar_control===true) {
+    if (modificar_control === true) {
       this.modificarControl = true;
       this.RecuperarDatosControl(id_expediente)
       this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
       this.myModalControl.show();
-     
+
     }
-    if (modificar_control===false)  {
+    if (modificar_control === false) {
       this.LimpiarControl()
       this.modificarControl = false;
       this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
@@ -182,7 +195,7 @@ export class ControlExpedientesComponent implements OnInit {
     }
   }
 
-  closeModalControl() { 
+  closeModalControl() {
     this.myModalControl.hide();
   }
 
@@ -199,6 +212,20 @@ export class ControlExpedientesComponent implements OnInit {
     }
 
     this.ListObservacionesControl = [];
+  }
+
+  ObtenerExpedienteDataViewXid(id_expediente: number) {
+    this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
+      next: (data: ExpedienteResponseDataView) => {
+        this.data_preparacion_header = data;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de preparacion detalle completado');
+      }
+    })
   }
 
   obtenerNroExpediente(nro_expediente: string) {
@@ -229,57 +256,57 @@ export class ControlExpedientesComponent implements OnInit {
 
   recuperarDataPreparacion(id_expediente: number) {
     this.preparacionService.ObtenerPreparacionDataViewXidExpediente(id_expediente).subscribe({
-            next: (data: PreparacionResponseDataView) => {
-              this.data_preparacion = data;
-              this.ListObservacionesPreparacion = data.observaciones?.split('|') ?? [];
-              
-            },
-            error: (error) => {
-              console.log(error);
-            },
-            complete: () => {
-              console.log('listado de preparacion detalle completado');
-            }
-          })    
+      next: (data: PreparacionResponseDataView) => {
+        this.data_preparacion = data;
+        this.ListObservacionesPreparacion = data.observaciones?.split('|') ?? [];
+
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de preparacion detalle completado');
+      }
+    })
   }
 
   recuperarDataDigitalizacion(id_expediente: number) {
     this.digitalizacionService.ObtenerDigitalizacionDataViewXidExpediente(id_expediente).subscribe({
-            next: (data: DigitalizacionResponseDataView) => {
-              this.data_digitalizacion = data;
-              this.ListObservacionesDigitalizacion = data.observaciones?.split('|') ?? [];
-              console.log(this.data_digitalizacion);
-              
-            },
-            error: (error) => {
-              console.log(error);
-            },
-            complete: () => {
-              console.log('listado de digitalizacion detalle completado');
-            }
-          })  
+      next: (data: DigitalizacionResponseDataView) => {
+        this.data_digitalizacion = data;
+        this.ListObservacionesDigitalizacion = data.observaciones?.split('|') ?? [];
+        console.log(this.data_digitalizacion);
+
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de digitalizacion detalle completado');
+      }
+    })
   }
 
   recuperarDataIndizacion(id_expediente: number) {
     this.indizacionService.ObtenerIndizacionDataViewXidExpediente(id_expediente).subscribe({
-            next: (data: IndizacionResponseDataView) => {
-              this.data_indizacion = data;
-              this.ListObservacionesIndizacion = data.observaciones?.split('|') ?? [];
-              this.ListDamandantes = JSON.parse(data.demandante?data.demandante:'[]');
-              this.ListDamandados = JSON.parse(data.demandado?data.demandado:'[]');
-              (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
-              (document.getElementById('fecha_final') as HTMLInputElement).value = FechaConFormato(data.fecha_final!);
-              console.log(this.data_indizacion);
-              this.dataIndice = JSON.parse(data.indice?data.indice:'[]')
-              
-            },
-            error: (error) => {
-              console.log(error);
-            },
-            complete: () => {
-              console.log('listado de indizacion detalle completado');
-            }
-          })  
+      next: (data: IndizacionResponseDataView) => {
+        this.data_indizacion = data;
+        this.ListObservacionesIndizacion = data.observaciones?.split('|') ?? [];
+        this.ListDamandantes = JSON.parse(data.demandante ? data.demandante : '[]');
+        this.ListDamandados = JSON.parse(data.demandado ? data.demandado : '[]');
+        (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
+        (document.getElementById('fecha_final') as HTMLInputElement).value = FechaConFormato(data.fecha_final!);
+        console.log(this.data_indizacion);
+        this.dataIndice = JSON.parse(data.indice ? data.indice : '[]')
+
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de indizacion detalle completado');
+      }
+    })
   }
 
   RecuperarDatosControl(id_expediente: number) {
@@ -307,27 +334,27 @@ export class ControlExpedientesComponent implements OnInit {
   }
 
   ObternerCodigoInventario() {
-      const params = this.activatedRoute.snapshot.params;
-      this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
-        next: (data: InventarioResponse) => {
-          this.codigo_inventario = data.codigo;
-          this.folderPath = this.codigo_inventario + '/EXPEDIENTES';
-        },
-        error: (error) => {
-          console.log(error);
-        },
-        complete: () => {
-          console.log('listado de inventarios completado');
-        }
-      })
-    }
+    const params = this.activatedRoute.snapshot.params;
+    this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
+      next: (data: InventarioResponse) => {
+        this.codigo_inventario = data.codigo;
+        this.folderPath = this.codigo_inventario + '/EXPEDIENTES';
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de inventarios completado');
+      }
+    })
+  }
 
   EventAction() {
     if (this.modificarControl) {
-     this.ModificarControl()
+      this.ModificarControl()
 
     } else {
-     this.GuardarControl()
+      this.GuardarControl()
     }
   }
 
@@ -372,7 +399,7 @@ export class ControlExpedientesComponent implements OnInit {
       app_user: this.credencialesService.credenciales.username
     }
 
-    this.controlService.ModificarControl(this.id_expediente_temp,data_control_request).subscribe({
+    this.controlService.ModificarControl(this.id_expediente_temp, data_control_request).subscribe({
       next: (data: ModificarControlResponse) => {
         console.log(data.message);
       },
@@ -401,7 +428,7 @@ export class ControlExpedientesComponent implements OnInit {
       }
     })
   }
-  
+
   ListarExpedientes() {
     this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
       .pipe(
@@ -423,7 +450,7 @@ export class ControlExpedientesComponent implements OnInit {
         }
       });
   }
- 
+
   buscarEnObjeto(event: any) {
     this.p = 1
     let objetosFiltrados = []

@@ -25,6 +25,14 @@ export interface ExpedienteResponseDataView {
     username: string | null;
 }
 
+export interface ExpedienteSinDiscoResponse {
+    id_expediente: number;
+    nro_expediente: string;
+    id_inventario: number;
+    estado_fedatado: string;
+    peso_doc: number;
+}
+
 export interface CrearExpedienteResponse {
     expediente: ExpedienteModel;
     message: string;

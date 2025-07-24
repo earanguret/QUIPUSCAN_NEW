@@ -14,9 +14,10 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DiscoModel } from '../../../../domain/models/Disco.model';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
-import { PDFDocument } from 'pdf-lib';
 import { FtpService } from '../../../services/remoto/ftp/ftp.service';
 import { CrearDigitalizacionResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
+import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
+import { ExpedienteSinDiscoResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
 
 declare var bootstrap: any;
 
@@ -43,7 +44,9 @@ export class BovedaExpedientesComponent implements OnInit {
 
   list_data_discos:  DiscoListaResponse[] = [];
   isLoading: boolean[] = [];
+  ListExpedientesPendentesDisco: ExpedienteSinDiscoResponse[] = [];
 
+  porcentajeExpedientes: number = 0;
 
   data_inventario: InventarioModel = {
     id_inventario: 0,
@@ -92,6 +95,7 @@ export class BovedaExpedientesComponent implements OnInit {
     private credencialesService: CredencialesService,
     private inventarioService: InventarioService,
     private sanitizer: DomSanitizer,
+    private expedienteService: ExpedienteService,
     private ftpService:FtpService) { }
 
   ngOnInit(): void {
@@ -202,13 +206,37 @@ export class BovedaExpedientesComponent implements OnInit {
     })
   }
 
+  listarExpedientesPendentesDisco(id_inventario: number) {
+    this.expedienteService.ObtenerExpedientesById_inventario_sinDisco(id_inventario).subscribe({
+      next: (data: ExpedienteSinDiscoResponse[]) => {
+        this.ListExpedientesPendentesDisco = data;
+         this.porcentajeExpedientes = this.calcularPorcentajeAcumlado(data);
+        console.log(this.ListExpedientesPendentesDisco);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de expedientes pendientes disco completado');
+      }
+    })
+  }
+
+  private calcularPorcentajeAcumlado(expedientes: ExpedienteSinDiscoResponse[]): number {
+    const pesoTotalBytes = expedientes.reduce((total, exp) => total + (exp.peso_doc || 0), 0);
+    const totalPermitido = 23 * 1024 * 1024 * 1024; // 25 GB en bytes
+  
+    const porcentaje = (pesoTotalBytes / totalPermitido) * 100;
+    return parseFloat(porcentaje.toFixed(2)); // redondeado a 2 decimales
+  }
+
   ObternerDatosInventario() {
     const params = this.activatedRoute.snapshot.params;
     this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
       next: (data: InventarioResponse) => {
         this.data_inventario = data;
-        this.listarDiscosByInventario(this.data_inventario.id_inventario)
-       
+        this.listarDiscosByInventario(data.id_inventario)
+        this.listarExpedientesPendentesDisco(data.id_inventario)
       },
       error: (error) => {
         console.log(error);
@@ -330,6 +358,7 @@ export class BovedaExpedientesComponent implements OnInit {
         },
         complete: () => {
           console.log('modificacion de disco tarjeta apertura completada');
+          this.listarDiscosByInventario(this.data_inventario.id_inventario)
           this.closeModalRegistrarTarjetaApertura();
         }
       })
@@ -358,6 +387,7 @@ export class BovedaExpedientesComponent implements OnInit {
           },
           complete: () => {
             console.log('modificacion de disco tarjeta cierre completada');
+            this.listarDiscosByInventario(this.data_inventario.id_inventario)
             this.closeModalRegistrarTarjetaCierre();
           }
         })  
@@ -385,6 +415,7 @@ export class BovedaExpedientesComponent implements OnInit {
         },
         complete: () => {
           console.log('modificacion de disco acta apertura completada');
+          this.listarDiscosByInventario(this.data_inventario.id_inventario)
           this.closeModalRegistrarActaApertura();
         }
       })
@@ -413,6 +444,7 @@ export class BovedaExpedientesComponent implements OnInit {
         },
         complete: () => {
           console.log('modificacion de disco acta cierre completada');
+          this.listarDiscosByInventario(this.data_inventario.id_inventario)
           this.closeModalRegistrarActaCierre();
         }
       })
@@ -437,10 +469,15 @@ export class BovedaExpedientesComponent implements OnInit {
         },
         complete: () => {
           console.log('modificacion de disco acta cierre completada');
+          this.listarDiscosByInventario(this.data_inventario.id_inventario)
           this.closeModalRegistrarActaCierre();
         }
       })
+
+      
    }
+
+   
 
   
 

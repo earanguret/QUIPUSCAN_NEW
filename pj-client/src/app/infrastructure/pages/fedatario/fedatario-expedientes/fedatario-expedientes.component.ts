@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavegatorComponent } from '../../../shared/components/navegator/navegator.component';
 import { SubnavegatorComponent } from '../../../shared/components/subnavegator/subnavegator.component';
-import { ExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { ExpedienteResponse, ExpedienteResponseDataView } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { DigitalizacionResponseDataView } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { IndizacionResponseDataView } from '../../../../domain/dto/IndizacionResponse.dto';
@@ -68,6 +68,17 @@ export class FedatarioExpedientesComponent implements OnInit {
   firmaProgressStatus = false;
   buttonFirma = true;
 
+  data_preparacion_header: ExpedienteResponseDataView = {
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    responsable: null,
+    create_at: null,
+    username: null,
+  }
+
   data_preparacion: PreparacionResponseDataView = {
     id_preparacion: 0,
     id_responsable: 0,
@@ -78,6 +89,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     observaciones: '',
     copias_originales: false,
     copias_simples: false,
+    cod_paquete: null,
     create_at: null,
     responsable: null,
     username: null,
@@ -182,6 +194,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.id_expediente_temp = id_expediente;
     this.myModal = new bootstrap.Modal(document.getElementById('ModalFedatario'));
     this.myModal.show();
+    this.ObtenerExpedienteDataViewXid(id_expediente);
     this.recuperarFile(nro_expediente);
     this.recuperarDataPreparacion(id_expediente);
     this.recuperarDataDigitalizacion(id_expediente);
@@ -196,6 +209,20 @@ export class FedatarioExpedientesComponent implements OnInit {
   obtenerNroExpediente(nro_expediente: string) {
     this.nro_expediente_temp = nro_expediente;
   }
+
+  ObtenerExpedienteDataViewXid(id_expediente: number) {
+      this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
+        next: (data: ExpedienteResponseDataView) => {
+          this.data_preparacion_header = data;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          console.log('listado de preparacion detalle completado');
+        }
+      })
+    }
 
 
 

@@ -65,7 +65,7 @@ class ExpedienteController {
                             JOIN
                                 archivo.t_inventario i ON e.id_inventario = i.id_inventario
                             JOIN
-                                archivo.t_usuario u ON i.id_responsable = u.id_usuario
+                                archivo.t_usuario u ON e.id_responsable = u.id_usuario
                             JOIN
                                 archivo.t_persona p ON u.id_persona = p.id_persona
                             WHERE 
@@ -209,6 +209,39 @@ class ExpedienteController {
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
+    public async ObtenerExpedientesById_inventario_sinDisco(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_inventario } = req.params;
+            const consulta = `
+                            SELECT
+                                e.id_expediente,
+                                e.nro_expediente,
+                                e.id_inventario,
+                                s.estado_fedatado,
+                                d.peso_doc
+                            FROM
+                                archivo.t_expediente e
+                            JOIN 
+                                archivo.t_estado_expediente s ON e.id_expediente = s.id_expediente
+                            JOIN
+                                archivo.t_inventario i ON e.id_inventario = i.id_inventario
+                            JOIN 
+                                archivo.t_digitalizacion d ON e.id_expediente = d.id_expediente 
+                            WHERE 
+                                e.id_inventario = $1
+                                AND s.id_disco IS NULL
+                                AND s.estado_fedatado = 'T'
+                            ORDER BY 
+                                e.id_expediente;
+                                 `;
+            const expedientes = await db.query(consulta, [id_inventario]);
+            res.status(200).json(expedientes["rows"]);
+        } catch (error) {
+            console.error("Error al obtener expedientes:", error);
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
