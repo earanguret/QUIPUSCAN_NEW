@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "archiver": "^7.0.1",
     "basic-ftp": "^5.0.5",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -22,6 +23,7 @@
     "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@types/archiver": "^6.0.3",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",

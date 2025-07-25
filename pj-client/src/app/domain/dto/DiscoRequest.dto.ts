@@ -4,7 +4,7 @@ export interface DiscoRequest {
     nombre?: string | null;
     volumen?: number | null;
     capacidad_gb?: number | null;
-    peso_ocupado?: number | null;
+    espacio_ocupado?: number | null;
     dir_ftp_acta_apertura?: string | null;
     dir_ftp_acta_cierre?: string | null;
     dir_ftp_tarjeta_apertura?: string | null;

@@ -18,6 +18,8 @@ class DiscoRoutes {
         this.router.post('/api/disco/agregar/tarjeta-apertura/:id_disco', discoController.agregarDataDiscoTarjetaApertura.bind(discoController));
         this.router.post('/api/disco/agregar/tarjeta-cierre/:id_disco', discoController.agregarDataDiscoTarjetaCierre.bind(discoController));
         this.router.post('/api/disco/cerrar/:id_disco', discoController.cerrarDisco.bind(discoController));
+        this.router.get('/api/disco/descargar-zip/:id_disco', discoController.descargarDiscoZip.bind(discoController));
+        
     }
 }
 

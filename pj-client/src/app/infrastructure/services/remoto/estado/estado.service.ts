@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { EstadoRequest } from '../../../../domain/dto/EstadoRequest.dto';
-import { CrearEstadoResponse, EliminarEstadoResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+import { EstadoAsociarExpedientesADiscoRequest, EstadoRequest } from '../../../../domain/dto/EstadoRequest.dto';
+import { AsociarExpedientesADiscoResponse, CrearEstadoResponse, EliminarEstadoResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -56,5 +56,9 @@ export class EstadoService {
 
   EliminarEstado(id:number):Observable<EliminarEstadoResponse>{
     return this.http.delete<EliminarEstadoResponse>(`${this.api_uri_estado}/${id}`)
+  }
+
+  AsociarExpedientesADisco(cuerpo:EstadoAsociarExpedientesADiscoRequest):Observable<AsociarExpedientesADiscoResponse>{
+    return this.http.put<AsociarExpedientesADiscoResponse>(`${this.api_uri_estado}/asociar/disco/`,cuerpo )
   }
 }

@@ -24,3 +24,7 @@ export interface ModificarEstadoResponse {
 export interface EliminarEstadoResponse {
     message: string;
 }
+
+export interface AsociarExpedientesADiscoResponse {
+    message: string;
+}

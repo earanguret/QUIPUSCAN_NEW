@@ -1,3 +1,4 @@
+import { ExpedienteSinDiscoResponse } from "./ExpedienteResponse.dto";
 export interface EstadoRequest{
     id_expediente: number;
     estado_recepcionado?: boolean;
@@ -10,4 +11,10 @@ export interface EstadoRequest{
     estado_finalizado?: boolean;
     id_cd?: number;
     app_user: string;
+}
+
+export interface EstadoAsociarExpedientesADiscoRequest{
+    id_disco: number;      
+    app_user: string;
+    lista_expedientes: ExpedienteSinDiscoResponse[];
 }

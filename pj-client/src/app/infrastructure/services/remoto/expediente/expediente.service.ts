@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
 import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteResponse, ExpedienteResponseDataView, ExpedienteSinDiscoResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
-import { ExpedienteModel } from '../../../../domain/models/expediente.model';
 import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto';
 
 

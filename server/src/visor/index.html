@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuipuScan VISOR</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="bootstrap-icons.min.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-sm navbar-dark shadow border-0">
+    <div class="container-fluid">
+      <label class="logo_text mx-md-4">QuipuScan</label>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <label class="user_text mx-md-3 mt-2">Visor de Microformas</label>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Datos generales -->
+  <div class="row pb-3">
+    <div class="col-lg-11 mx-auto">
+      <div class="card rounded shadow border-2">
+        <div class="card-header py-3">
+          <h3>Datos Generales</h3>
+        </div>
+        <div class="card-body text-start">
+          <div class="row">
+            <div class="col-md-4">
+              <p><strong>ESPECIALIDAD:</strong> <span id="especialidad"></span></p>
+              <p><strong>AÑO:</strong> <span id="anio"></span></p>
+              <p><strong>SEDE:</strong> <span id="sede"></span></p>
+            </div>
+            <div class="col-md-4">
+              <p><strong>CANTIDAD DE ARCHIVOS EN EL BLURAY:</strong> <span id="nro_expedientes"></span></p>
+              <p><strong>TIPO DOC:</strong> <span id="tipoDoc"></span></p>
+              <p><strong>TOTAL DE IMAGENES:</strong> <span id="nro_fojas"></span></p>
+            </div>
+            <div class="col-md-4">
+              <p><strong>SERIE DOCUMENTAL:</strong> <span id="serieDoc"></span></p>
+              <!-- <p><strong>LOTE:</strong> <span id="lote"></span></p> -->
+              <p><strong>VOLUMEN:</strong> <span id="volumen"></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Mensaje de error -->
+    <div id="error-message" style="display: none; color: red; text-align: center;">
+      No se pudo cargar el archivo de datos. Por favor, verifica que el archivo <code>metadata.json</code> exista y sea accesible.
+    </div>
+    <!-- agregar y busqueda -->
+    <div class="row pb-5">
+      <div class="col-lg-11 mx-auto">
+        <div class="card rounded shadow border-2">
+          <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <label for="buscar">Buscar:</label>
+            <input id="buscar" type="text" class="form-control mx-4" name="buscar" placeholder="Escribe lo que desees buscar, lo buscará en cualquier columna, ten en cuentra las tildes" oninput="buscarEnObjeto(event)">
+          </div>
+          <div class="card-body px-4 bg-white rounded">
+            <div class="table-responsive px-4">
+              <div class="form-group">
+                <div class="row">
+                  <table class="table text-center table-hover">
+                    <thead class="thead-light bg-secondary text-white table-success">
+                      <tr>
+                        <th scope="col">N° DE EXPEDIENTE</th>
+                        <th scope="col">FECHA DE INICIO</th>
+                        <th scope="col">FECHA DE FIN</th>
+                        <th scope="col">JUZGADO DE ORIGEN</th>
+                        <th scope="col">PDF</th>
+                      </tr>
+                    </thead>
+                    <tbody id="inventarios">
+                      <!-- Aquí se insertarán las filas de inventarios mediante JavaScript -->
+                    </tbody>
+                  </table>
+                  <div id="no-results" style="display: none; text-align: center; color: red;">
+                    No se encontraron coincidencias.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <script type="text/javascript" src="ADJUNTOS/metadata.json"></script>
+  <script src="jquery-3.6.0.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -19,6 +19,7 @@ import { InventarioService } from '../../../services/remoto/inventario/inventari
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
 import { DigitalizacionService } from '../../../services/remoto/digitalizacion/digitalizacion.service';
 import { IndizacionService } from '../../../services/remoto/indizacion/indizacion.service';
+import { FedatarioService } from '../../../services/remoto/fedatario/fedatario.service';
 import { ControlService } from '../../../services/remoto/control/control.service';
 import { FlujogramaRequest } from '../../../../domain/dto/FlujogramaRequest.dto';
 import { CrearFlujogramaResponse } from '../../../../domain/dto/FlujogramaResponse.dto';
@@ -30,6 +31,7 @@ import { ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.d
 import { ControlResponseDataView } from '../../../../domain/dto/ControlResponse.dto';
 import { FirmaDigitalEncontradaResponse, FirmaDigitalResponse } from '../../../../domain/dto/FirmaDigitalResponse.dto';
 import { FirmaDigitalService } from '../../../services/remoto/firmaDigital/firma-digital.service';
+import { CrearFedatarioResponse } from '../../../../domain/dto/FedatarioResponse.dto';
 
 
 declare var bootstrap: any;
@@ -167,6 +169,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     private digitalizacionService: DigitalizacionService,
     private indizacionService: IndizacionService,
     private controlService: ControlService,
+    private fedatarioService: FedatarioService,
     private firmaDigitalService: FirmaDigitalService,
   ) { }
 
@@ -200,11 +203,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.recuperarDataDigitalizacion(id_expediente);
     this.recuperarDataIndizacion(id_expediente);
     this.RecuperarDatosControl(id_expediente);
-
-
-
   }
-
 
   obtenerNroExpediente(nro_expediente: string) {
     this.nro_expediente_temp = nro_expediente;
@@ -223,8 +222,6 @@ export class FedatarioExpedientesComponent implements OnInit {
         }
       })
     }
-
-
 
   recuperarFile(nro_expediente_temp: string) {
     let fileName = nro_expediente_temp + '.pdf';
@@ -419,10 +416,32 @@ export class FedatarioExpedientesComponent implements OnInit {
       complete: () => {
         console.log('estado fedatario aceptado correctamente');
         this.ListarExpedientes();
+        this.crearFedatario();
       }
     })
   }
 
+  crearFedatario() {
+    const data_fedatario = {
+      id_responsable: this.credencialesService.credenciales.id_usuario,
+      id_expediente: this.id_expediente_temp,
+      app_user: this.credencialesService.credenciales.username,
+    }
+    console.log(data_fedatario)
+    this.fedatarioService.crearFedatario(data_fedatario).subscribe({
+      next: (data: CrearFedatarioResponse) => {
+        console.log(data.message);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('fedatario creado correctamente');
+        this.EstadoFedatarioTrabajado()
+        this.closeModal();
+      }
+    })
+  }
 
   mostarSignPanel() {
     this.show_sign_panel = !this.show_sign_panel;
@@ -490,7 +509,6 @@ export class FedatarioExpedientesComponent implements OnInit {
       }
     })
   }
-
 
   encontrarCertificado() {
     const usuario = this.credencialesService.credenciales.username;

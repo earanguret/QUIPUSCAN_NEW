@@ -1,4 +1,9 @@
 import { Response, Request } from "express";
+import { Client } from "basic-ftp";
+import archiver from "archiver";
+import { Writable } from 'stream';
+import * as fs from 'fs';
+import * as path from 'path';
 import db from '../database/database';
 import { key } from '../database/key';
 
@@ -51,7 +56,7 @@ class DiscoController {
     public async crearDisco(req: Request, res: Response): Promise<any> {
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const { id_inventario,id_responsable_crear, nombre, capacidad_gb, volumen, app_user } = req.body;
+            const { id_inventario, id_responsable_crear, nombre, capacidad_gb, volumen, app_user } = req.body;
             const consulta = `
                 INSERT INTO archivo.t_disco(
                     f_aud,        -- fecha de la transaccion
@@ -71,7 +76,7 @@ class DiscoController {
                     )   
                 VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4,CURRENT_TIMESTAMP, $5, $6, $7, $8, $9)
                 `;
-                     
+
             const valores = [
                 app_user,
                 null,
@@ -137,8 +142,8 @@ class DiscoController {
                 fecha_acta_apertura,
                 id_responsable_aa,
                 id_disco
-               
-            ];  
+
+            ];
             db.query(consulta, valores, (error, resultado) => {
                 if (error) {
                     console.error("Error al registrar acta de apertura", error);
@@ -182,13 +187,13 @@ class DiscoController {
                 ipAddressClient,
                 null,
 
-                dir_ftp_acta_cierre, 
-                peso_acta_cierre, 
+                dir_ftp_acta_cierre,
+                peso_acta_cierre,
                 fecha_acta_cierre,
                 id_responsable_ac,
                 id_disco
-               
-            ];  
+
+            ];
             db.query(consulta, valores, (error, resultado) => {
                 if (error) {
                     console.error("Error al registrar acta de cierre", error);
@@ -232,13 +237,13 @@ class DiscoController {
                 ipAddressClient,
                 null,
 
-                dir_ftp_tarjeta_apertura, 
-                peso_tarjeta_apertura, 
+                dir_ftp_tarjeta_apertura,
+                peso_tarjeta_apertura,
                 fecha_tarjeta_apertura,
                 id_responsable_tca,
                 id_disco
-               
-            ];                      
+
+            ];
             db.query(consulta, valores, (error, resultado) => {
                 if (error) {
                     console.error("Error al registrar tarjeta de apertura", error);
@@ -281,13 +286,13 @@ class DiscoController {
                 ipAddressClient,
                 null,
 
-                dir_ftp_tarjeta_cierre, 
-                peso_tarjeta_cierre, 
+                dir_ftp_tarjeta_cierre,
+                peso_tarjeta_cierre,
                 fecha_tarjeta_cierre,
                 id_responsable_tcc,
                 id_disco
-               
-            ];                      
+
+            ];
             db.query(consulta, valores, (error, resultado) => {
                 if (error) {
                     console.error("Error al registrar tarjeta de cierre", error);
@@ -305,7 +310,7 @@ class DiscoController {
     public async cerrarDisco(req: Request, res: Response): Promise<any> {
         try {
             const { id_disco } = req.params;
-            const {  id_responsable_cierre, user_app } = req.body;
+            const { id_responsable_cierre, espacio_ocupado, user_app } = req.body;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             const consulta = `
                 UPDATE archivo.t_disco
@@ -319,9 +324,10 @@ class DiscoController {
                     c_aud_mac=$4,
 
                     estado_cerrado=true,
-                    id_responsable_cierre=$5
+                    id_responsable_cierre=$5,
+                    espacio_ocupado=$6
 
-                    WHERE id_disco=$6;
+                    WHERE id_disco=$7;
                          `;
             const valores = [
                 user_app,
@@ -329,6 +335,7 @@ class DiscoController {
                 ipAddressClient,
                 null,
                 id_responsable_cierre,
+                espacio_ocupado,
                 id_disco
             ];
 
@@ -346,9 +353,188 @@ class DiscoController {
         }
     }
 
-    
 
+    public async descargarDiscoZip(req: Request, res: Response): Promise<any> {
+        const { id_disco } = req.params;
+
+        const ftpClient = new Client();
+        await ftpClient.access({
+            host: process.env.FTP_HOST || "172.17.70.118",
+            user: process.env.FTP_USER || "user1",
+            password: process.env.FTP_PASS || "123",
+            secure: true,
+            secureOptions: { rejectUnauthorized: false }
+        });
+
+
+        
+
+        try {
+            // Configura el ZIP como respuesta HTTP
+            res.setHeader("Content-Type", "application/zip");
+            res.setHeader("Content-Disposition", `attachment; filename=disco_${id_disco}.zip`);
+
+            const archive = archiver("zip", { zlib: { level: 9 } });
+            archive.pipe(res);
+
+            const downloadAndAppend = async (
+                remotePath: string,
+                zipPath: string
+            ): Promise<void> => {
+                try {
+                    const chunks: Buffer[] = [];
+                    const writable = new Writable({
+                        write(chunk, _encoding, callback) {
+                            chunks.push(chunk);
+                            callback();
+                        }
+                    });
+        
+                    await ftpClient.downloadTo(writable, remotePath);
+                    const buffer = Buffer.concat(chunks);
+                    archive.append(buffer, { name: zipPath });
+                } catch (err: any) {
+                    console.warn(`❌ No se pudo descargar ${remotePath}, se omite.`, err.message);
+                }
+            };
+
+
+            // 1. Agregar el entorno de ejecucion JavaScript (datos de la carpeta visor)
+            const projectRoot = path.resolve(__dirname, '../'); // Sube dos niveles desde build/controllers
+            const filesToLoad = [
+                'visor/bootstrap-icons.min.css',
+                'visor/bootstrap.min.css',
+                'visor/index.html',
+                'visor/jquery-3.6.0.min.js',
+                'visor/script.js',
+                'visor/styles.css',
+                'visor/visor.bat'
+            ];
+
+            for (const relativePath of filesToLoad) {
+                const fullPath = path.join(projectRoot, relativePath); // ✅ desde la raíz real
+                const fileName = path.basename(relativePath);
+                const zipPath = `VISOR/${fileName}`; // ZIP interno
+
+                if (fs.existsSync(fullPath)) {
+                    archive.file(fullPath, { name: zipPath });
+                } else {
+                    console.warn(`⚠️ Archivo no encontrado y omitido: ${fullPath}`);
+                }
+            }
+            
+            // 2. Obtener los datos del disco desde la base de datos 
+            const data_disco = await db.query(
+                `select 
+                        d.*,
+                        i.especialidad,
+                        i.anio,
+                        i.sede,
+                        i.tipo_doc,
+                        i.serie_doc
+                    from 
+                        archivo.t_disco d
+                    join 
+                        archivo.t_inventario i on d.id_inventario = i.id_inventario
+                    where 
+                        d.id_disco = $1`,
+                [id_disco]
+            );
+
+            if (!data_disco.rows.length) {
+                return res.status(404).json({ error: "No se encontro disco" });
+            }
+
+            console.log(data_disco.rows[0].dir_ftp_acta_apertura)
+
+            // archive.file(`${data_disco.rows[0].dir_ftp_acta_apertura}/`, { name: `VISOR/DOCUMENTOS/.bat` });
+
+
+            // 3. Obtener los expedientes asociados al disco desde la base de datos
+            const resultado = await db.query(
+                `SELECT e.id_expediente, e.nro_expediente, d.dir_ftp
+             FROM archivo.t_expediente e
+             JOIN archivo.t_estado_expediente es ON e.id_expediente = es.id_expediente
+             JOIN archivo.t_digitalizacion d ON e.id_expediente = d.id_expediente
+             WHERE es.id_disco = $1`,
+                [id_disco]
+            );
+            const expedientes = resultado.rows;
+
+            if (!expedientes.length) {
+                return res.status(404).json({ error: "No se encontraron expedientes" });
+            }
+        
+            // Agrega los archivos al ZIP desde el FTP
+            for (const exp of expedientes) {
+                const remotePath = `${exp.dir_ftp}/${exp.nro_expediente}.pdf`;
+                try {
+                    const chunks: Buffer[] = [];
+
+                    const writable = new Writable({
+                        write(chunk, _encoding, callback) {
+                            chunks.push(chunk);
+                            callback(); // ✔️ importante
+                        }
+                    });
+
+                    await ftpClient.downloadTo(writable, remotePath);
+                    const buffer = Buffer.concat(chunks);
+                    archive.append(buffer, { name: `VISOR/ADJUNTOS/MICROFORMAS/${exp.nro_expediente}.pdf` });
+                } catch (err: any) {
+                    console.warn(`❌ No se pudo descargar ${remotePath}, se omite.`, err.message);
+                }
+            }
+
+            const documentos = [
+                { name: 'TCA.pdf', zipName: 'TCA.pdf' },
+                { name: 'TCC.pdf', zipName: 'TCC.pdf' },
+                { name: 'AA.pdf', zipName: 'AA.pdf' },
+                { name: 'AC.pdf', zipName: 'AC.pdf' }  // Aquí puede estar el error: revisa si AC.pdf realmente está en el FTP o si es AA.pdf duplicado
+            ];
+    
+            for (const doc of documentos) {
+                const remotePath = `${data_disco.rows[0].dir_ftp_acta_apertura}/${doc.name}`;
+                const zipPath = `VISOR/ADJUNTOS/DOCUMENTOS/${doc.zipName}`;
+                await downloadAndAppend(remotePath, zipPath);
+            }
+
+            // Agregar archivo JSON
+            const inventario = {
+                especialidad: data_disco.rows[0].especialidad,
+                anio: data_disco.rows[0].anio,
+                sede: data_disco.rows[0].sede,
+                tipoDoc: data_disco.rows[0].tipo_doc,
+                serieDoc: data_disco.rows[0].serie_doc,
+                volumen: data_disco.rows[0].volumen,
+                fecha_acta_apertura:data_disco.rows[0].fecha_acta_apertura,
+                fecha_acta_cierre:data_disco.rows[0].fecha_acta_cierre,
+                fecha_tarjeta_apertura:data_disco.rows[0].fecha_tarjeta_apertura,
+                fecha_tarjeta_cierre:data_disco.rows[0].fecha_tarjeta_cierre,
+                total_fojas:data_disco.rows[0].capacidad_gb, //corregir dato
+                cantidad_expedientes:expedientes.length
+              };
+
+              const expedientesJSON = await db.query(``)
+                
+
+              archive.append(
+                JSON.stringify({datosGenerales: inventario,
+                    expedientes: expedientesJSON.rows}, null, 2), // null, 2 para formato legible
+                { name: 'VISOR/ADJUNTOS/metadata.json' }
+            );
+    
+            // Finaliza el archivo ZIP
+            archive.finalize();
+        } catch (error) {
+            console.error("Error generando ZIP:", error);
+            res.status(500).json({ error: "Error generando el ZIP" });
+        } finally {
+            ftpClient.close();
+        }
+    }
+  
 }
 
-const discoController = new DiscoController();  
+const discoController = new DiscoController();
 export default discoController;

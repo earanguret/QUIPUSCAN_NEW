@@ -29,6 +29,7 @@ class EstadoExpedienteController {
                 null,
                 ipAddressClient,
                 null,
+
                 id_expediente,
                 'T',
             ];
@@ -457,6 +458,55 @@ class EstadoExpedienteController {
     public async RechazarFedatarioIndizacion(req: Request, res: Response) {
 
     }
+
+    public async AsociarExpedientesADisco(req: Request, res: Response) {
+        try {
+          const { lista_expedientes, id_disco, app_user } = req.body;
+          const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+      
+          // Extraer solo los ID de expediente
+          const idsExpedientes = lista_expedientes.map((e: any) => e.id_expediente);
+      
+          const consulta = `
+            UPDATE archivo.t_estado_expediente
+            SET 
+              f_aud = CURRENT_TIMESTAMP,
+              b_aud = 'U',
+              c_aud_uid = '${key.user}',
+              c_aud_uidred = $1,
+              c_aud_pc = $2,
+              c_aud_ip = $3,
+              c_aud_mac = $4,
+
+              id_disco = $5
+            WHERE id_expediente = ANY($6);
+          `;
+      
+          const valores = [
+            app_user,
+            null,
+            ipAddressClient,
+            null,
+            id_disco,         
+            idsExpedientes    
+          ];
+      
+          db.query(consulta, valores, (error) => {
+            if (error) {
+              console.error('Error al asociar expedientes:', error);
+              res.status(500).json({ error: 'Error al asociar expedientes' });
+            } else {
+              console.log('Expedientes asociados correctamente');
+              res.json({ text: 'Expedientes asociados correctamente' });
+            }
+          });
+      
+        } catch (error) {
+          console.error("Error interno en el servidor:", error);
+          res.status(500).json({ error: "Error interno del servidor" });
+        }
+      }
+      
 
 
 

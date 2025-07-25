@@ -1,0 +1,114 @@
+@import 'bootstrap-icons.min.css';
+
+.custom-modal-transition {
+  transition: opacity 0.3s ease;
+}
+
+.icon-custom {
+  font-weight: bold;
+  font-size: 3.5rem;
+  color: #929FB1;
+}
+
+.presentacion_company {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.titulo_empresa {
+  margin: 0;
+  padding: 5px 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #404B5A;
+}
+
+.subtitulo_empresa, .subtitulo_inventario {
+  font-weight: 400;
+}
+
+.subtitulo_inventario {
+  margin: 0;
+  padding: 5px 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #404B5A;
+}
+
+thead {
+  color: aliceblue;
+  position: sticky;
+  top: 0;
+}
+
+thead th {
+  text-align: center;
+}
+
+.btn-volver {
+  background-color: #176091;
+  border-radius: 5px;
+  border-color: #176091;
+}
+
+.fondo-volver {
+  background-color: #73bced2c;
+}
+
+.icon-custom-detalle {
+  color: rgba(31, 30, 30, 0.701);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.icon-custom-detalle:hover {
+  color: #1e55ed;
+}
+
+.table-barra:hover {
+  cursor: pointer;
+}
+
+.contenedor {
+  padding: 20px;
+}
+
+th, td {
+  font-size: 1rem;
+  margin-top: 0.4rem;
+}
+
+th {
+  font-weight: 700;
+  color: #2a5f42;
+}
+
+td {
+  font-weight: 400;
+  color: #434343;
+}
+.navbar{
+  background-color: #176091;
+  padding: 0%;
+  margin: 0px;
+}
+
+.logo_text, .user_text{
+  font-weight: bold; /* Hace el texto más grueso */
+  color:rgba(255, 255, 255, 0.699);/* Establece el color del texto en blanco */   
+  font-size: 22px;
+}
+
+.icon-custom {
+  
+  color:rgba(255, 255, 255, 0.699);/* Establece el color del texto en blanco */
+  cursor: pointer; /* Cambiar el cursor a una manito cuando el ratón está sobre el icono */
+  font-weight: bold; 
+  font-size: 22px;
+}
+
+.icon-custom:hover {
+  color:white
+}

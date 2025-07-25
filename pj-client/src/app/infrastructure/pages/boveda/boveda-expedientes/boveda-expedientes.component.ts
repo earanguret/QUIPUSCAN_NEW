@@ -18,6 +18,10 @@ import { FtpService } from '../../../services/remoto/ftp/ftp.service';
 import { CrearDigitalizacionResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
 import { ExpedienteSinDiscoResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { EstadoService } from '../../../services/remoto/estado/estado.service';
+import { EstadoAsociarExpedientesADiscoRequest } from '../../../../domain/dto/EstadoRequest.dto';
+import { AsociarExpedientesADiscoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+
 
 declare var bootstrap: any;
 
@@ -43,7 +47,7 @@ export class BovedaExpedientesComponent implements OnInit {
   file: File | null = null;
 
   list_data_discos:  DiscoListaResponse[] = [];
-  isLoading: boolean[] = [];
+  isLoadingCerrarDisco: boolean[] = [];
   ListExpedientesPendentesDisco: ExpedienteSinDiscoResponse[] = [];
 
   porcentajeExpedientes: number = 0;
@@ -67,7 +71,7 @@ export class BovedaExpedientesComponent implements OnInit {
     nombre: '',
     volumen: 0,
     capacidad_gb: 0,
-    peso_ocupado: 0,
+    espacio_ocupado: 0,
     dir_ftp_acta_apertura: '',
     dir_ftp_acta_cierre: '',
     dir_ftp_tarjeta_apertura: '',
@@ -96,6 +100,7 @@ export class BovedaExpedientesComponent implements OnInit {
     private inventarioService: InventarioService,
     private sanitizer: DomSanitizer,
     private expedienteService: ExpedienteService,
+    private estadoService: EstadoService,
     private ftpService:FtpService) { }
 
   ngOnInit(): void {
@@ -202,6 +207,8 @@ export class BovedaExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('listado de discos completado');
+        this.listarExpedientesPendentesDisco(id_inventario)
+
       }
     })
   }
@@ -211,6 +218,7 @@ export class BovedaExpedientesComponent implements OnInit {
       next: (data: ExpedienteSinDiscoResponse[]) => {
         this.ListExpedientesPendentesDisco = data;
          this.porcentajeExpedientes = this.calcularPorcentajeAcumlado(data);
+        // this.porcentajeExpedientes = 120;
         console.log(this.ListExpedientesPendentesDisco);
       },
       error: (error) => {
@@ -236,7 +244,7 @@ export class BovedaExpedientesComponent implements OnInit {
       next: (data: InventarioResponse) => {
         this.data_inventario = data;
         this.listarDiscosByInventario(data.id_inventario)
-        this.listarExpedientesPendentesDisco(data.id_inventario)
+        // this.listarExpedientesPendentesDisco(data.id_inventario)
       },
       error: (error) => {
         console.log(error);
@@ -451,34 +459,93 @@ export class BovedaExpedientesComponent implements OnInit {
     
    }
 
+  //  CerrarDisco(disco:any) {
+  //   const data_disco_aux: DiscoRequest = {
+  //     id_responsable_cierre: this.credencialesService.credenciales.id_usuario,
+  //     app_user: this.credencialesService.credenciales.username,
+  //     espacio_ocupado: disco.espacio_ocupado
+  //   }
+
+  //   console.log(data_disco_aux)
+
+  //   // this.discoService.CerrarDisco(disco.id_disco!,data_disco_aux).subscribe(
+  //   //   {
+  //   //     next: (data: ModificarDiscoResponse) => {
+  //   //       console.log(data.message);
+  //   //     },
+  //   //     error: (error) => {
+  //   //       console.log(error);
+  //   //     },
+  //   //     complete: () => {
+  //   //       console.log('modificacion de disco acta cierre completada');
+  //   //       this.AsociarExpedientesCD(this.ListExpedientesPendentesDisco,disco.id_disco)
+  //   //     }
+  //   //   })  
+  //  }
+
    CerrarDisco(disco:any) {
-    const data_disco_aux: DiscoRequest = {
-      id_responsable_cierre: this.credencialesService.credenciales.id_usuario,
+    const limiteBytes = 23 * 1024 * 1024 * 1024; // 23 GB en bytes
+    let acumulado = 0;
+    const listaFinal: ExpedienteSinDiscoResponse[] = [];
+  
+    for (const exp of this.ListExpedientesPendentesDisco) {
+      const peso = exp.peso_doc || 0;
+  
+      if (acumulado + peso > limiteBytes) {
+        break; // no agregamos más, se superaría el límite
+      }
+  
+      listaFinal.push(exp);
+      acumulado += peso;
+    }
+  
+    console.log('Expedientes seleccionados:', listaFinal);
+    console.log('Peso total:', acumulado, 'bytes');
+    console.log('Peso en GB:', (acumulado / 1024 / 1024 / 1024).toFixed(2), 'GB');
+
+    const cuero_expedientes: EstadoAsociarExpedientesADiscoRequest = {
+      lista_expedientes: listaFinal,
+      id_disco: disco.id_disco,
       app_user: this.credencialesService.credenciales.username
     }
 
-    console.log(data_disco_aux)
+    
 
-    this.discoService.CerrarDisco(disco.id_disco!,data_disco_aux).subscribe(
-      {
-        next: (data: ModificarDiscoResponse) => {
-          console.log(data.message);
-        },
-        error: (error) => {
-          console.log(error);
-        },
-        complete: () => {
-          console.log('modificacion de disco acta cierre completada');
-          this.listarDiscosByInventario(this.data_inventario.id_inventario)
-          this.closeModalRegistrarActaCierre();
+    this.estadoService.AsociarExpedientesADisco(cuero_expedientes).subscribe({
+      next: (data: AsociarExpedientesADiscoResponse) => {
+        console.log(data.message);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('expedientes asociados correctamente');
+        const data_disco_aux: DiscoRequest = {
+          id_responsable_cierre: this.credencialesService.credenciales.id_usuario,
+          app_user: this.credencialesService.credenciales.username,
+          espacio_ocupado: this.calcularPorcentajeAcumlado(listaFinal)
         }
-      })
 
-      
-   }
+            this.discoService.CerrarDisco(disco.id_disco!,data_disco_aux).subscribe(
+          {
+            next: (data: ModificarDiscoResponse) => {
+              console.log(data.message);
+            },
+            error: (error) => {
+              console.log(error);
+            },
+            complete: () => {
+              console.log('modificacion de disco acta cierre completada');
+              this.listarDiscosByInventario(this.data_inventario.id_inventario)
+            }
+          })  
+      }
+    })
 
-   
-
+  }
+  
+ 
+  
   
 
 }

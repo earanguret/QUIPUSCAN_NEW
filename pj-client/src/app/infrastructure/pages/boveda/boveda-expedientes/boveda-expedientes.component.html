@@ -28,16 +28,23 @@
                                     <!-- Mostrar imagen dinámica -->
                                     <div class="card-body">
                                         <label  *ngIf="disco.estado_cerrado==null" for="">{{porcentajeExpedientes.toFixed(2)}}%</label>
-                                        <!-- <label *ngIf="disco.estado_cerrado==true" for="">{{disco.peso_ocupado.toFixed(2)}}%</label> -->
+                                        <label *ngIf="disco.estado_cerrado==true" for="">{{disco.espacio_ocupado}}%</label>
                                         <div class="progress progress-sm mr-2">
-                                            <div *ngIf="disco.estado_cerrado==null"  class="progress-bar bg-info" role="progressbar"
+                                            <div *ngIf="disco.estado_cerrado == null"
+                                                class="progress-bar"
+                                                role="progressbar"
                                                 [style.width]="porcentajeExpedientes + '%'"
-                                                [attr.aria-valuenow]="porcentajeExpedientes" 
-                                                aria-valuemin="0" aria-valuemax="100">
+                                                [attr.aria-valuenow]="porcentajeExpedientes"
+                                                aria-valuemin="0" aria-valuemax="100"
+                                                [ngClass]="{
+                                                    'bg-info': porcentajeExpedientes < 90,
+                                                    'bg-warning': porcentajeExpedientes >= 90 && porcentajeExpedientes < 95,
+                                                    'bg-danger': porcentajeExpedientes >= 95
+                                                  }">
                                             </div>
                                             <div *ngIf="disco.estado_cerrado==true"  class="progress-bar bg-info" role="progressbar"
-                                                [style.width]="disco.peso_ocupado + '%'"
-                                                [attr.aria-valuenow]="disco.peso_ocupado" 
+                                                [style.width]="disco.espacio_ocupado + '%'"
+                                                [attr.aria-valuenow]="disco.espacio_ocupado" 
                                                 aria-valuemin="0" aria-valuemax="100">
                                             </div>
                                         </div>
@@ -86,8 +93,8 @@
                                        
                                     </div>
                                     <div class="d-flex flex-column align-self-start">
-                                        <button *ngIf="disco.estado_cerrado==null && disco.peso_tarjeta_cierre!=null" (click)="CerrarDisco(disco)" class="btn btn-success" [disabled]="disco.peso_tarjeta_apertura==null?true:false">  CERRAR DISCO </button>
-                                        <button *ngIf="disco.estado_cerrado" (click)="CerrarDisco(disco)" class="btn btn-info">  DESCARGAR MICHOFORMA </button>
+                                        <button *ngIf="disco.estado_cerrado==null && disco.peso_tarjeta_cierre!=null" (click)="CerrarDisco(disco)" class="btn btn-success" [disabled]="disco.peso_tarjeta_apertura==null?true:false"> CERRAR DISCO </button>
+                                        <button *ngIf="disco.estado_cerrado"  class="btn btn-info" >  DESCARGAR MICHOFORMA </button>
                                         <!-- <button *ngIf="disco.peso_tarjeta_cierre!=null" [disabled]="isLoading[i]"
                                             [class]='disco.estado_cerrado==true?"btn btn-info" :"btn btn-success" '
                                             (click)="disco.estado_cerrado==true?RecuperarDiscoDetalle(disco,i):AsociarExpedientesCD(disco,i) ">
