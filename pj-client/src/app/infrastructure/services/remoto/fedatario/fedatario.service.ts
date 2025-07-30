@@ -9,12 +9,12 @@ import { CrearFedatarioResponse } from '../../../../domain/dto/FedatarioResponse
   providedIn: 'root'
 })
 export class FedatarioService {
-  api_uri_fedatario=`${environment.urlApi}/api/fedatario`;
+  api_uri_fedatario=`${environment.urlApi}/fedatario`;
 
   constructor(private http: HttpClient) { }
 
   crearFedatario(fedatario: FedatarioRequest):Observable<CrearFedatarioResponse>{
-    return this.http.post<CrearFedatarioResponse>(`${this.api_uri_fedatario}/api/fedatario`,fedatario);
+    return this.http.post<CrearFedatarioResponse>(`${this.api_uri_fedatario}`,fedatario);
   }
 
 }

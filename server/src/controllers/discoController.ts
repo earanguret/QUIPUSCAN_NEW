@@ -452,11 +452,36 @@ class DiscoController {
 
             // 3. Obtener los expedientes asociados al disco desde la base de datos
             const resultado = await db.query(
-                `SELECT e.id_expediente, e.nro_expediente, d.dir_ftp
-             FROM archivo.t_expediente e
-             JOIN archivo.t_estado_expediente es ON e.id_expediente = es.id_expediente
-             JOIN archivo.t_digitalizacion d ON e.id_expediente = d.id_expediente
-             WHERE es.id_disco = $1`,
+                `SELECT 
+                    e.id_expediente, 
+                    e.nro_expediente, 
+                    d.dir_ftp,
+                    i.fecha_inicial,
+                    i.fecha_final,
+                    es.id_disco,
+                    i.juzgado_origen,
+                    p.create_at as fecha_preparacion,
+                    d.create_at as fecha_digitalizacion,
+                    i.create_at as fecha_indizacion,
+                    cc.create_at as fecha_control,
+                    f.create_at as fecha_fedatario,
+                    d.peso_doc
+                FROM 
+                    archivo.t_expediente e
+                JOIN 
+                    archivo.t_estado_expediente es ON e.id_expediente = es.id_expediente
+                JOIN 
+                    archivo.t_preparacion p ON e.id_expediente = p.id_expediente
+                JOIN
+                    archivo.t_digitalizacion d ON e.id_expediente = d.id_expediente
+                JOIN
+                    archivo.t_indizacion i ON e.id_expediente = i.id_expediente
+                JOIN
+                    archivo.t_control cc ON e.id_expediente = cc.id_expediente
+                JOIN
+                    archivo.t_fedatar f ON e.id_expediente = f.id_expediente
+                WHERE 
+                    es.id_disco = $1`,
                 [id_disco]
             );
             const expedientes = resultado.rows;
@@ -515,12 +540,12 @@ class DiscoController {
                 cantidad_expedientes:expedientes.length
               };
 
-              const expedientesJSON = await db.query(``)
+              
                 
 
               archive.append(
                 JSON.stringify({datosGenerales: inventario,
-                    expedientes: expedientesJSON.rows}, null, 2), // null, 2 para formato legible
+                    expedientes: expedientes}, null, 2), // null, 2 para formato legible
                 { name: 'VISOR/ADJUNTOS/metadata.json' }
             );
     

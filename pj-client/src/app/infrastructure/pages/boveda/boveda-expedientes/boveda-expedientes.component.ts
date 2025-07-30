@@ -544,7 +544,27 @@ export class BovedaExpedientesComponent implements OnInit {
 
   }
   
- 
+  cargandoZip = false;
+  descargarMicroformas(disco: DiscoListaResponse) {
+    this.cargandoZip = true;
+  
+    this.discoService.GenerarDiscoMicroformas(disco.id_disco!).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `DISCO_${disco.nombre}.zip`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error descargando el ZIP:', err);
+      },
+      complete: () => {
+        this.cargandoZip = false;  // 🔚 Detiene el spinner
+      }
+    });
+  }
   
   
 

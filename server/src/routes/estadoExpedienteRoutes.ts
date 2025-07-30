@@ -25,6 +25,7 @@ class EstadoExpedienteRoutes{
         this.router.put('/api/estado_expediente/aprobar/fedatario/:id_expediente',estadoExpedienteController.FedadoTrabajado)
         this.router.delete('/api/estado_expediente/:id_expediente',estadoExpedienteController.EliminarEstadoExpediente)
         this.router.put('/api/estado_expediente/asociar/disco',estadoExpedienteController.AsociarExpedientesADisco)
+        this.router.put('/api/estado_expediente/rechazar/controlDigitalizacion/:id_expediente',estadoExpedienteController.RechazarControlDigitalizacion)
 
     }
 }

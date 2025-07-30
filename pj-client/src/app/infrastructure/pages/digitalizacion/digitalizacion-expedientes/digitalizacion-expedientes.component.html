@@ -43,21 +43,28 @@
                                         *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"  >
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
-                                        <td (click)="obtenerNroExpediente(expediente.nro_expediente)">
+                                        <td (click)="obtenerExpedienteTem(expediente)">
                                             <img *ngIf="expediente.estado_digitalizado==null"  src="/icon/doc-previo.png" alt="logo" title="datos de preparación" width="24px" height="24px" class="mx-3" (click)="openModalPreparacionPreView(expediente.id_expediente)">
-
                                             <button *ngIf="expediente.estado_digitalizado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
-                                             
                                                   <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
-                                                 Recepcionar</button>
-                                            <button *ngIf="expediente.estado_digitalizado=='A'" class="btn btn-light btn-sm" (click)="openModalDigitalizacion(expediente.id_expediente)">
+                                                 Recepcionar
+                                            </button>
+                                            <button *ngIf="expediente.estado_digitalizado=='R'" class="btn btn-danger btn-sm" (click)="openModalReception(expediente.id_expediente)">
+                                                <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                               Recepcionar
+                                          </button>
+                                            <button *ngIf="expediente.estado_digitalizado=='A' && expediente.estado_indizado==null" class="btn btn-light btn-sm" (click)="openModalDigitalizacion(expediente.id_expediente,false)">
                                                 <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px">
                                                 Digitalizar
+                                            </button>
+                                            <button *ngIf="expediente.estado_digitalizado=='A' && expediente.estado_indizado=='R'" class="btn btn-light btn-sm" (click)="openModalDigitalizacion(expediente.id_expediente,true)">
+                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                                Corregir
                                             </button>
                                             <div>
                                                 <img *ngIf="expediente.estado_digitalizado=='T'"  src="/icon/check.png" alt="logo" title="Preparado correctamente" width="24px" height="24px">
                                                 <img *ngIf="expediente.estado_digitalizado=='T'"  src="/icon/expediente_eye.png" class="mx-3" alt="logo" title="ver información" width="24px" height="24px">
-                                                <img *ngIf="expediente.estado_digitalizado=='T' && expediente.estado_indizado==null"  src="/icon/lapiz.png"  alt="logo" title="ver información" width="24px" height="24px" (click)="ObternerDigitalizacionByIdExpediente(expediente.id_expediente)">
+                                                <img *ngIf="expediente.estado_digitalizado=='T' && expediente.estado_indizado==null"  src="/icon/lapiz.png"  alt="logo" title="ver información" width="24px" height="24px" (click)="openModalDigitalizacion(expediente.id_expediente,true)">
                                             </div>
 
                                         </td>
@@ -101,7 +108,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma();closeModal();openModalDigitalizacion(this.id_expediente_temp)">Aprobar</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()">Aprobar</button>
             </div>
         </div>
     </div>
@@ -240,7 +247,7 @@
 
                             <!-- Elemento inferior (botones) fijo abajo -->
                             <div class="d-flex justify-content-end" style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
-                                <button type="button" class="cancelar-btn mx-4" (click)="closeModal()">Cancelar</button>
+                                <button type="button" class="cancelar-btn mx-4" (click)="closeModalDigitalizacion()">Cancelar</button>
                                 <button type="button" class="guardar-btn" (click)="EventAction()" >{{modificarDigitalizacion?'Modificar':'Guardar'}}</button>
                             </div>
 

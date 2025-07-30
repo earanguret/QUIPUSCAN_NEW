@@ -35,3 +35,5 @@ export interface DiscoCrearResponse {
 export interface ModificarDiscoResponse {
     message: string;
 }
+
+

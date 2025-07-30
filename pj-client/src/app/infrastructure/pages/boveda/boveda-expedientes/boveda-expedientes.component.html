@@ -94,13 +94,10 @@
                                     </div>
                                     <div class="d-flex flex-column align-self-start">
                                         <button *ngIf="disco.estado_cerrado==null && disco.peso_tarjeta_cierre!=null" (click)="CerrarDisco(disco)" class="btn btn-success" [disabled]="disco.peso_tarjeta_apertura==null?true:false"> CERRAR DISCO </button>
-                                        <button *ngIf="disco.estado_cerrado"  class="btn btn-info" >  DESCARGAR MICHOFORMA </button>
-                                        <!-- <button *ngIf="disco.peso_tarjeta_cierre!=null" [disabled]="isLoading[i]"
-                                            [class]='disco.estado_cerrado==true?"btn btn-info" :"btn btn-success" '
-                                            (click)="disco.estado_cerrado==true?RecuperarDiscoDetalle(disco,i):AsociarExpedientesCD(disco,i) ">
-                                            <span *ngIf="isLoading[i]" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                            {{disco.estado_cerrado==true? isLoading[i] ? 'PREPARANDO EXPEDIENTES...' : 'DESCARGAR MICROFORMAS': 'CERRAR DISCO'}}
-                                        </button> -->
+                                        <button *ngIf="disco.estado_cerrado" (click)="descargarMicroformas(disco)" [disabled]="cargandoZip" class="btn btn-info">
+                                            DESCARGAR MICHOFORMA
+                                            <span *ngIf="cargandoZip" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                          </button>
                                         <div class="d-flex justify-content-end m-2">
                                             <span> Total de imágenes: 45 </span>
                                         </div>

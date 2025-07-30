@@ -34,7 +34,7 @@ async function mostrarInventarios() {
 
   const tbody = document.getElementById('inventarios');
   inventariosData.forEach((item, index) => {
-    const pdfRoute = `ADJUNTOS/MICROFORMAS/${item.nombre_expediente}.pdf`;
+    const pdfRoute = `ADJUNTOS/MICROFORMAS/${item.nro_expediente}.pdf`;
     const row = document.createElement('tr');
     
     // Convertir las fechas a formato legible
@@ -52,7 +52,7 @@ async function mostrarInventarios() {
   
     // Generar la fila de la tabla con los datos formateados
     row.innerHTML = `
-      <td>${item.nombre_expediente}</td>
+      <td>${item.nro_expediente}</td>
       <td>${fechaInicial}</td>
       <td>${fechaFinal}</td>
       <td>${item.juzgado_origen}</td>

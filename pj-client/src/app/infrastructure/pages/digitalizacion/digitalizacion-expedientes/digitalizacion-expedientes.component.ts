@@ -39,7 +39,8 @@ declare var bootstrap: any;
   styleUrl: './digitalizacion-expedientes.component.css'
 })
 export class DigitalizacionExpedientesComponent implements OnInit {
-  private myModal: any;
+  private myModalReception: any;
+  private myModalDigitalizacion: any;
 
   id_inventario: number = 0;
   p: number = 1;
@@ -54,7 +55,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   notasList: any[] = [];
 
   id_expediente_temp: number = 0;
-  nro_expediente_temp: string = '';
+  
 
   modificarDigitalizacion: boolean = false;
   pdfUrl: SafeResourceUrl | null = null;
@@ -68,6 +69,22 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
   codigo_inventario: string = '';
   mostrarPreparacion = false;
+
+  data_expediente_temp: ExpedienteResponse={
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    estado_recepcionado: '',
+    estado_preparado: '',
+    estado_digitalizado: '', 
+    estado_indizado:  '',
+    estado_controlado:   '',
+    estado_fedatado:   '',
+    estado_finalizado:   '',
+   
+  } 
 
   data_preparacion_header: ExpedienteResponseDataView = {
       id_expediente: 0,
@@ -201,53 +218,9 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     }
   }
   
-
-  // guardarPDF(file: File, nameFile: string) {
-  //   if (!file) {
-  //     alert("El archivo no puede estar vacío");
-  //     return;
-  //   }
-
-  //   this.ftpService.uploadFile(file, this.folderPath!, nameFile).subscribe({
-  //     next: (data: CrearDigitalizacionResponse) => {
-  //       console.log("Respuesta del servidor:", data);
-  //     },
-  //     error: (error) => {
-  //       if (error.status === 503) {
-  //         console.error("No se pudo conectar al servidor FTP. Verifique la conexión.");
-  //         alert("Error de conexión al servidor FTP, comuniquese con el area de informática.");
-  //       } else if (error.status === 400) {
-  //         console.error("Solicitud inválida: faltan datos requeridos.");
-  //         alert("Error: Datos inválidos. Verifica el nombre del archivo y la carpeta.");
-  //       } else {
-  //         console.error("Error inesperado al subir el PDF:", error);
-  //         alert("Error inesperado al subir el archivo.");
-  //       }
-  //     },
-  //     complete: () => {
-  //       console.log("PDF subido correctamente");
-  //       this.GuardarDatosDigitalizacion();
-  //     }
-  //   });
-  // }
   // #endregion ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  closeModal() {
-    this.myModal.hide();
-    this.LimpiarDatosDigitalizacion();
-    this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
-    this.LimpiarDatosDigitalizacion();
 
-  }
-
-  openModalReception(id_expediente: number) {
-    this.id_expediente_temp = id_expediente;
-    this.modificarDigitalizacion = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('ModalReception'));
-    this.myModal.show();
-  }
-
-  
   openModalPreparacionPreView(id_expediente: number) {
 
     this.mostrarPreparacion = false; // fuerza destrucción del componente si ya estaba
@@ -261,15 +234,52 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     });
   }
 
-  openModalDigitalizacion(id_expediente: number) {
+  openModalReception(id_expediente: number) {
+    this.id_expediente_temp = id_expediente;
+    this.modificarDigitalizacion = false;
+    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
+    this.myModalReception.show();
+  }
 
+  closeModalReception() {
+  if (this.myModalReception) {
+    this.myModalReception.hide();
+  }
+  this.LimpiarDatosDigitalizacion();
+  this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
+}
+
+
+  openModalDigitalizacion(id_expediente: number, modificar_digitalizacion: boolean) {
     this.id_expediente_temp = id_expediente;
     this.mostrar_obs_preparacion = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('ModalDigitalizacion'));
-    this.recuperarDataPreparacion(id_expediente)
-    this.ObtenerExpedienteDataViewXid(id_expediente)
-    this.myModal.show();
+  
+    this.recuperarDataPreparacion(id_expediente);
+    this.ObtenerExpedienteDataViewXid(id_expediente);
+  
+    this.modificarDigitalizacion = modificar_digitalizacion;
+  
+    if (modificar_digitalizacion) {
+      this.ObternerDigitalizacionByIdExpediente(id_expediente);
+    } else {
+      this.LimpiarDatosDigitalizacion();
+    }
+  
+    this.myModalDigitalizacion = new bootstrap.Modal(document.getElementById('ModalDigitalizacion'));
+    this.myModalDigitalizacion.show();
+  
+    this.closeModalReception();
+  }
+  
 
+  closeModalDigitalizacion() {
+    // Quitar el foco de cualquier elemento dentro del modal
+    (document.activeElement as HTMLElement)?.blur();
+  
+    // Cerrar el modal si está definido
+    if (this.myModalDigitalizacion) {
+      this.myModalDigitalizacion.hide();
+    }
   }
 
   ObtenerExpedienteDataViewXid(id_expediente: number) {
@@ -330,7 +340,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       this.ModificarDigitalizacion();
 
     } else {
-      this.guardarPDF(this.file!, this.nro_expediente_temp + '.pdf');
+      this.guardarPDF(this.file!, this.data_expediente_temp.nro_expediente + '.pdf');
       //this.GuardarDatosDigitalizacion();
     }
   }
@@ -394,7 +404,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       complete: () => {
         console.log('creacion de digitalizacion completado');
         this.EstadoDigitalizacionTrabajado()
-        this.closeModal();
+        this.closeModalDigitalizacion();
       }
     })
   }
@@ -442,14 +452,14 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         complete: () => {
           console.log("✔️ Modificación de digitalización completada");
           this.EstadoDigitalizacionTrabajado();
-          this.closeModal();
+          this.closeModalDigitalizacion();
         }
       });
     };
   
     // Si hay archivo cargado y fue modificado
     if (isArchivoCargado && archivoModificado) {
-      this.ftpService.uploadFile(this.file!, this.folderPathDocument!, this.nro_expediente_temp + '.pdf').subscribe({
+      this.ftpService.uploadFile(this.file!, this.folderPathDocument!, this.data_expediente_temp.nro_expediente + '.pdf').subscribe({
         next: (data: CrearDigitalizacionResponse) => {
           console.log("📁 Archivo subido:", data);
         },
@@ -482,14 +492,12 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
   ObternerDigitalizacionByIdExpediente(id_expediente: number) {
-    const params = this.activatedRoute.snapshot.params;
+   
     this.digitalizacionService.ObtenerDigitalizacion(id_expediente).subscribe({
       next: (data: DigitalizacionDataResponse) => {
         this.data_digitalizacion = data;
         this.modificarDigitalizacion = true;
         this.ListObservacionesDigitalizacion = this.data_digitalizacion?.observaciones? this.data_digitalizacion.observaciones.split('|') : [];
-        this.openModalDigitalizacion(this.data_digitalizacion.id_expediente);
-
         this.recuperarFile()
       },
       error: (error) => {
@@ -502,7 +510,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
   recuperarFile() {
-    let fileName = this.nro_expediente_temp + '.pdf';
+    let fileName = this.data_expediente_temp.nro_expediente + '.pdf';
     let folderPath = this.folderPathDocument!;
     this.ftpService.downloadFile(fileName, folderPath).subscribe({
       next: (data: Blob) => {
@@ -520,28 +528,6 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     })
   }
 
-  // MostrarDatosPreparacion() {
-  //   this.mostrar_obs_preparacion = !this.mostrar_obs_preparacion;
-  //   if (this.mostrar_obs_preparacion) {
-  //     this.ObtenerPreparacionByIdExpediente(this.id_expediente_temp)
-  //   }
-  // }
-
-  // ObtenerPreparacionByIdExpediente(id_expediente: number) {
-  //   this.preparacionService.ObtenerPreparacionXidExpediente(id_expediente).subscribe({
-  //     next: (data: PreparacionResponse) => {
-  //       this.data_preparacion_expediente = data;
-  //       this.ListObservacionesPreparacion = this.data_preparacion_expediente.observaciones?.split('|') ?? [];
-  //       console.log(this.data_preparacion_expediente);
-  //     },
-  //     error: (error) => {
-  //       console.log(error);
-  //     },
-  //     complete: () => {
-  //       console.log('listado de preparacion detalle completado');
-  //     }
-  //   })
-  // }
 
   recuperarDataPreparacion(id_expediente: number) {
     this.preparacionService.ObtenerPreparacionDataViewXidExpediente(id_expediente).subscribe({
@@ -559,31 +545,36 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     })
   }
 
-  obtenerNroExpediente(nro_expediente: string) {
-    this.nro_expediente_temp = nro_expediente;
+  obtenerExpedienteTem(expediente_temp: ExpedienteResponse) {
+    this.data_expediente_temp = expediente_temp;
+    console.log(this.data_expediente_temp)
   }
 
 
 
   RecepcionFlujograma() {
-    let data_flujograma: FlujogramaRequest = {
+    const data_flujograma: FlujogramaRequest = {
       id_expediente: this.id_expediente_temp,
       id_responsable: this.credencialesService.credenciales.id_usuario,
       app_user: this.credencialesService.credenciales.username,
       area: 'DIGITALIZACION'
-    }
+    };
+  
     this.flujogramaService.CrearFlujograma(data_flujograma).subscribe({
       next: (data: CrearFlujogramaResponse) => {
         console.log(data.message);
       },
       error: (error) => {
-        console.log(error);
+        console.error('Error al crear flujograma:', error);
       },
       complete: () => {
         console.log('flujograma creado correctamente');
-        this.EstadoDigitalizacionAceptado()
+  
+        const esRecepcionado = this.data_expediente_temp.estado_digitalizado === 'R';
+        this.openModalDigitalizacion(this.id_expediente_temp, esRecepcionado);
+        this.EstadoDigitalizacionAceptado();
       }
-    })
+    });
   }
 
   EstadoDigitalizacionAceptado() {

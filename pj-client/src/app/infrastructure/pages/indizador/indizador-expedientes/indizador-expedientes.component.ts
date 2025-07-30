@@ -396,10 +396,9 @@ export class IndizadorExpedientesComponent implements OnInit {
       this.ModificarDatosIndizacion();
 
     } else {
-      this.GuardarDatosIndizacion()
+      this.GuardarDatosIndizacion();
     }
   }
-
 
 
   ObtenerIndizacionById_expediente(id_expediente: number) {

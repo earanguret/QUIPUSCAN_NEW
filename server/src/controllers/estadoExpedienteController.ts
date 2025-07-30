@@ -76,7 +76,7 @@ class EstadoExpedienteController {
     public async PreparacionAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -95,7 +95,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'A', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -113,7 +113,7 @@ class EstadoExpedienteController {
     public async PreparacionTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -132,7 +132,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'T', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -151,7 +151,7 @@ class EstadoExpedienteController {
     public async DigitalizacionAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -170,7 +170,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'A', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -188,7 +188,7 @@ class EstadoExpedienteController {
     public async DigitalizacionTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -207,7 +207,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'T', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -263,7 +263,7 @@ class EstadoExpedienteController {
     public async IndizacionTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -281,7 +281,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'T', id_expediente];
             db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error('Indizacion aprobada:', error);
@@ -299,7 +299,7 @@ class EstadoExpedienteController {
     public async ControlAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -318,7 +318,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'A', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -336,7 +336,7 @@ class EstadoExpedienteController {
     public async ControlTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -354,7 +354,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'T', id_expediente];
             db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error('Control de calidad trabajado:', error);
@@ -372,7 +372,7 @@ class EstadoExpedienteController {
     public async FedadoAceptado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -391,7 +391,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'A', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -409,7 +409,7 @@ class EstadoExpedienteController {
     public async FedadoTrabajado(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
             
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -427,7 +427,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;        
-            const valores = [user_app, null, ipAddressClient, null, 'T', id_expediente];            
+            const valores = [app_user, null, ipAddressClient, null, 'T', id_expediente];            
             db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error('Fedatado aprobado:', error);
@@ -444,7 +444,44 @@ class EstadoExpedienteController {
 
 
     public async RechazarControlDigitalizacion(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { app_user } = req.body;
 
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
+
+                            estado_digitalizado=$5,
+                            estado_indizado=$6,
+                            estado_controlado=$7
+
+	                    WHERE id_expediente=$8;
+                
+                `;
+            const valores = [app_user, null, ipAddressClient, null, 'R','R','R', id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Rechazo de control a digitalizacion:', error);
+                } else {
+                    console.log('Rechazo de control a digitalizacion exitosa');
+                    res.json({ text: 'Rechazo de control a digitalizacion exitosa' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
 
     public async RechazarControlIndizacion(req: Request, res: Response) {

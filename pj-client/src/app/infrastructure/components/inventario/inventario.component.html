@@ -147,9 +147,9 @@
                         <input type="text" class="form-control" name="serie_doc"
                             [(ngModel)]="data_inventario.serie_doc">
                     </div>
-                    <div class="form-group mt-3">
+                    <div class="form-group mt-3" >
                         <label for="codigo" class="form-label">Código:</label>
-                        <input type="text" class="form-control" name="codigo" [(ngModel)]="data_inventario.codigo">
+                        <input type="text" class="form-control" name="codigo" [(ngModel)]="data_inventario.codigo" [disabled]="modificarInventario">
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">
