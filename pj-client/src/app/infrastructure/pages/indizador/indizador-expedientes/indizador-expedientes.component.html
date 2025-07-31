@@ -42,41 +42,35 @@
                                         *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
-                                        <td (click)="obtenerNroExpediente(expediente.nro_expediente)">
-                                            <img *ngIf="expediente.estado_indizado==null" src="/icon/doc-previo.png"
-                                                alt="logo" title="datos de digitalización" width="24px" height="24px"
-                                                class="mx-3">
-
-                                            <button *ngIf="expediente.estado_indizado==null"
-                                                class="btn btn-secondary btn-sm"
-                                                (click)="openModalReception(expediente.id_expediente)">
-                                                <img src="/icon/download_doc.png" alt="logo" title="Recepcion"
-                                                    width="16px" height="16px"> Recepcionar</button>
-                                            <button *ngIf="expediente.estado_indizado=='A'" class="btn btn-light btn-sm"
-                                                (click)="openModalIndizacion(expediente.id_expediente, expediente.nro_expediente, false)">
+                                        <td (click)="obtenerExpedienteTemp(expediente)">
+                                            <img *ngIf="expediente.estado_indizado==null" src="/icon/doc-previo.png" alt="logo" title="datos de digitalización" width="24px" height="24px" class="mx-3">
+                                            <button *ngIf="expediente.estado_indizado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
+                                                <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                                Recepcionar
+                                            </button>
+                                            <button *ngIf="expediente.estado_indizado=='R'" class="btn btn-danger btn-sm" (click)="openModalReception(expediente.id_expediente)">
+                                                <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                               Recepcionar
+                                            </button>
+                                            <button *ngIf="expediente.estado_indizado=='A' && expediente.estado_controlado==null"  class="btn btn-light btn-sm" (click)="openModalIndizacion(expediente.id_expediente, expediente.nro_expediente, false)">
                                                 <img src="/icon/doc_aceptado.png" alt="logo" width="16px" height="16px">
-                                                Indizar</button>
+                                                Indizar
+                                            </button>
+                                            <button *ngIf="expediente.estado_indizado=='A' && expediente.estado_controlado=='R'" class="btn btn-light btn-sm" (click)="openModalIndizacion(expediente.id_expediente,expediente.nro_expediente,true)">
+                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                                Corregir
+                                            </button>
                                             <div>
-                                                <img *ngIf="expediente.estado_indizado=='T'" src="/icon/check.png"
-                                                    alt="logo" title="Preparado correctamente" width="24px"
-                                                    height="24px">
-                                                <img *ngIf="expediente.estado_indizado=='T'"
-                                                    src="/icon/expediente_eye.png" class="mx-3" alt="logo"
-                                                    title="ver información" width="24px" height="24px">
-                                                <img *ngIf="expediente.estado_indizado=='T' && expediente.estado_fedatado==null"
-                                                    src="/icon/lapiz.png" alt="logo" title="ver información"
-                                                    width="24px" height="24px"
-                                                    (click)="openModalIndizacion(expediente.id_expediente, expediente.nro_expediente, true)">
+                                                <img *ngIf="expediente.estado_indizado=='T'" src="/icon/check.png" alt="logo" title="Preparado correctamente" width="24px" height="24px">
+                                                <img *ngIf="expediente.estado_indizado=='T'" src="/icon/expediente_eye.png" class="mx-3" alt="logo" title="ver información" width="24px" height="24px">
+                                                <img *ngIf="expediente.estado_indizado=='T' && expediente.estado_controlado==null" src="/icon/lapiz.png" alt="logo" title="ver información" width="24px" height="24px" (click)="openModalIndizacion(expediente.id_expediente, expediente.nro_expediente, true)">
                                             </div>
-
                                         </td>
-
                                     </tr>
                                 </tbody>
                             </table>
                             <div class="d-flex justify-content-end ">
-                                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior"
-                                    nextLabel="Siguiente"></pagination-controls>
+                                <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
                             </div>
                         </div>
                     </div>
@@ -131,9 +125,15 @@
                             <div class="sub_titulo_expediente  ">
                                 <section class="contenedor">
                                     <h5 style="font-size: 1.1rem;">{{data_preparacion_header.nro_expediente}}</h5>
-                                    <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span style="color: #666666c7; font-weight: 600;">Recepcionado por:</span> {{data_preparacion_header.responsable}}</p>
-                                    <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>  {{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</p>
-                                    <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>  {{data_preparacion_header.cod_paquete}}</P>
+                                    <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span
+                                            style="color: #666666c7; font-weight: 600;">Recepcionado por:</span>
+                                        {{data_preparacion_header.responsable}}</p>
+                                    <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span
+                                            style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>
+                                        {{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</p>
+                                    <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span
+                                            style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>
+                                        {{data_preparacion_header.cod_paquete}}</P>
                                 </section>
                             </div>
 

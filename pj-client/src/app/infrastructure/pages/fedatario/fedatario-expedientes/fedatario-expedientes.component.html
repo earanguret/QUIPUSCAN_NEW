@@ -42,7 +42,7 @@
                                         *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
-                                        <td (click)="obtenerNroExpediente(expediente.nro_expediente)">
+                                        <td (click)="obtenerExpedienteTemp(expediente)">
                                             <img *ngIf="expediente.estado_fedatado==null" src="/icon/doc-previo.png"
                                                 alt="logo" title="datos de indización" width="24px" height="24px"
                                                 class="mx-3">
@@ -52,9 +52,17 @@
                                                 (click)="openModalReception(expediente.id_expediente)">
                                                 <img src="/icon/download_doc.png" alt="logo" title="Recepcion"
                                                     width="16px" height="16px">
-                                                Recepcionar</button>
+                                                Recepcionar
+                                            </button>
+                                            <button *ngIf="expediente.estado_fedatado=='R'"
+                                                class="btn btn-danger btn-sm"
+                                                (click)="openModalReception(expediente.id_expediente)">
+                                                <img src="/icon/download_doc.png" alt="logo" title="Recepcion"
+                                                    width="16px" height="16px">
+                                                Recepcionar
+                                            </button>
                                             <button *ngIf="expediente.estado_fedatado=='A'" class="btn btn-light btn-sm"
-                                                (click)="ModalFedatario(expediente.id_expediente, expediente.nro_expediente)">
+                                                (click)="openModalFedatario(expediente.id_expediente, expediente.nro_expediente)">
                                                 <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion"
                                                     width="16px" height="16px">
                                                 Inspeccionar
@@ -131,9 +139,15 @@
                             <div class="sub_titulo_expediente  ">
                                 <section class="contenedor">
                                     <h5 style="font-size: 1.1rem;">{{data_preparacion_header.nro_expediente}}</h5>
-                                    <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span style="color: #666666c7; font-weight: 600;">Recepcionado por:</span> {{data_preparacion_header.responsable}}</p>
-                                    <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>  {{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</p>
-                                    <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>  {{data_preparacion_header.cod_paquete}}</P>
+                                    <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span
+                                            style="color: #666666c7; font-weight: 600;">Recepcionado por:</span>
+                                        {{data_preparacion_header.responsable}}</p>
+                                    <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span
+                                            style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>
+                                        {{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</p>
+                                    <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span
+                                            style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>
+                                        {{data_preparacion_header.cod_paquete}}</P>
                                 </section>
                             </div>
                             <!-- Elemento central que ocupa el espacio restante -->
@@ -465,38 +479,41 @@
 
                                             <div class="d-flex mt-3">
                                                 <p class="m-1 p-1 mb-0 pb-0 px-2">Password</p>
-                                                <input type="password" class="form-control form-control-sm sign-tag " name="observacion" id="password_certificado">
+                                                <input type="password" class="form-control form-control-sm sign-tag "
+                                                    name="observacion" id="password_certificado">
                                             </div>
 
                                             <div class="text-end mt-2" *ngIf="buttonFirma">
                                                 <!-- <button *ngIf="!firmaProgressStatus" type="button" class="guardar-btn mx-2"
                                                 (click)="progress_bar_sign()">Firmar</button> -->
-                                                <button type="button" class="btn btn-secondary btn-sm" (click)="firmarDocumento()" >Firmar</button>
+                                                <button type="button" class="btn btn-secondary btn-sm"
+                                                    (click)="firmarDocumento()">Firmar</button>
                                             </div>
 
-                                            
 
 
-                                            <div *ngIf="firmaProgressStatus" class="d-flex flex-column align-items-center mx-3">
+
+                                            <div *ngIf="firmaProgressStatus"
+                                                class="d-flex flex-column align-items-center mx-3">
                                                 <img src="/gif/acuerdo_clean.gif" alt="Firma" width="50" height="50">
-                                              
-                                                <div class="progress" 
-                                                     role="progressbar" 
-                                                     aria-label="Example 4px high" 
-                                                     [attr.aria-valuenow]="progreso_firma" 
-                                                     aria-valuemin="0" 
-                                                     aria-valuemax="100" 
-                                                     style="width: 100%; height: 8px;">  <!-- ← altura ajustada aquí -->
-                                              
-                                                  <div class="progress-bar progress-bar-striped progress-bar-animated opacity-75" [style.width.%]="progreso_firma" >
-                                                  </div>
 
-                                              
+                                                <div class="progress" role="progressbar" aria-label="Example 4px high"
+                                                    [attr.aria-valuenow]="progreso_firma" aria-valuemin="0"
+                                                    aria-valuemax="100" style="width: 100%; height: 8px;">
+                                                    <!-- ← altura ajustada aquí -->
+
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated opacity-75"
+                                                        [style.width.%]="progreso_firma">
+                                                    </div>
+
+
                                                 </div>
-                                              </div>
-                                              <div *ngIf="msg_firmado" class="alert alert-success alert-dismissible fade show mt-3" role="alert" style="margin-bottom: 0px; padding: 12px 8px; ">
+                                            </div>
+                                            <div *ngIf="msg_firmado"
+                                                class="alert alert-success alert-dismissible fade show mt-3"
+                                                role="alert" style="margin-bottom: 0px; padding: 12px 8px; ">
                                                 {{mensaje_firmado}}
-                                              </div>
+                                            </div>
 
                                             <!-- <input type="text" readonly class="form-control sign-tag" name="observacion" value="prueba"> -->
                                         </div>

@@ -8,6 +8,6 @@ export interface IndizacionModel {
     materia: string,
     demandante: string,
     demandado: string,
-    fecha_inicial: Date | null,
-    fecha_final: Date | null,
+    fecha_inicial: Date | string | null,
+    fecha_final: Date |  string | null,
 }

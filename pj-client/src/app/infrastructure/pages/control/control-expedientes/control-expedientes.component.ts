@@ -54,6 +54,21 @@ export class ControlExpedientesComponent implements OnInit {
   folderPath: string | null = null;
   p: number = 1;
 
+  data_expediente_temp: ExpedienteResponse={
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    estado_recepcionado: '',
+    estado_preparado: '',
+    estado_digitalizado: '', 
+    estado_indizado:  '',
+    estado_controlado:   '',
+    estado_fedatado:   '',
+    estado_finalizado:   '',
+  } 
+
   data_preparacion_header: ExpedienteResponseDataView = {
     id_expediente: 0,
     nro_expediente: '',
@@ -228,8 +243,9 @@ export class ControlExpedientesComponent implements OnInit {
     })
   }
 
-  obtenerNroExpediente(nro_expediente: string) {
-    this.nro_expediente_temp = nro_expediente;
+  obtenerExpedienteTem(expediente_temp: ExpedienteResponse) {
+    this.data_expediente_temp = expediente_temp;
+    console.log(this.data_expediente_temp)
   }
 
 
@@ -483,7 +499,10 @@ export class ControlExpedientesComponent implements OnInit {
         console.log('flujograma creado correctamente');
         this.EstadoIndizacionAceptado()
         this.closeModalReception();
-        this.openModalControl(this.id_expediente_temp, this.nro_expediente_temp, false);
+
+        const esRecepcionado = this.data_expediente_temp.estado_fedatado === 'R';
+
+        this.openModalControl(this.data_expediente_temp.id_expediente, this.data_expediente_temp.nro_expediente, esRecepcionado);
       }
     })
   }

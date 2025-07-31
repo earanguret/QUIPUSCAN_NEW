@@ -83,7 +83,6 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     estado_controlado:   '',
     estado_fedatado:   '',
     estado_finalizado:   '',
-   
   } 
 
   data_preparacion_header: ExpedienteResponseDataView = {

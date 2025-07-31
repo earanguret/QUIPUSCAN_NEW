@@ -52,7 +52,7 @@
                                             <button *ngIf="expediente.estado_digitalizado=='R'" class="btn btn-danger btn-sm" (click)="openModalReception(expediente.id_expediente)">
                                                 <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
                                                Recepcionar
-                                          </button>
+                                            </button>
                                             <button *ngIf="expediente.estado_digitalizado=='A' && expediente.estado_indizado==null" class="btn btn-light btn-sm" (click)="openModalDigitalizacion(expediente.id_expediente,false)">
                                                 <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px">
                                                 Digitalizar

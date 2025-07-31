@@ -485,15 +485,125 @@ class EstadoExpedienteController {
     }
 
     public async RechazarControlIndizacion(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { app_user } = req.body;
 
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
+
+    
+                            estado_indizado=$5,
+                            estado_controlado=$6
+
+	                    WHERE id_expediente=$7;
+                
+                `;
+            const valores = [app_user, null, ipAddressClient, null, 'R','R', id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Rechazo de control a indizacion:', error);
+                } else {
+                    console.log('Rechazo de control a indizacion exitosa');
+                    res.json({ text: 'Rechazo de control a indizacion exitosa' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
 
     public async RechazarFedatarioDigitalizacion(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { app_user } = req.body;
 
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
+
+                            estado_digitalizado=$5,
+                            estado_indizado=$6,
+                            estado_controlado=$7,
+                            estado_fedatado=$8
+
+	                    WHERE id_expediente=$9;
+                `;
+            const valores = [app_user, null, ipAddressClient, null, 'R','R','R','R', id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Rechazo de Fedatario a digitalizacion:', error);
+                } else {
+                    console.log('Rechazo de Fedatario a digitalizacion exitosa');
+                    res.json({ text: 'Rechazo de Fedatario a digitalizacion exitosa' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
 
     public async RechazarFedatarioIndizacion(req: Request, res: Response) {
+        try {
+            const { id_expediente } = req.params;
+            const { app_user } = req.body;
 
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            console.log(ipAddressClient);
+            const consulta = `
+                     UPDATE archivo.t_estado_expediente
+	                    SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
+
+                            estado_indizado=$5,
+                            estado_controlado=$6,
+                            estado_fedatado=$7
+
+	                    WHERE id_expediente=$8;
+                `;
+            const valores = [app_user, null, ipAddressClient, null, 'R','R','R', id_expediente];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Rechazo de Fedatario a digitalizacion:', error);
+                } else {
+                    console.log('Rechazo de Fedatario a digitalizacion exitosa');
+                    res.json({ text: 'Rechazo de Fedatario a digitalizacion exitosa' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
     }
 
     public async AsociarExpedientesADisco(req: Request, res: Response) {

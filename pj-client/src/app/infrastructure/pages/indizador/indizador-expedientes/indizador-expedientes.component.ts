@@ -72,6 +72,21 @@ export class IndizadorExpedientesComponent implements OnInit {
 
   pdfUrl: SafeResourceUrl | null = null;
 
+  data_expediente_temp: ExpedienteResponse={
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    estado_recepcionado: '',
+    estado_preparado: '',
+    estado_digitalizado: '', 
+    estado_indizado:  '',
+    estado_controlado:   '',
+    estado_fedatado:   '',
+    estado_finalizado:   '',
+  } 
+
   data_preparacion_header: ExpedienteResponseDataView = {
     id_expediente: 0,
     nro_expediente: '',
@@ -129,7 +144,7 @@ export class IndizadorExpedientesComponent implements OnInit {
     materia: '',
     demandante: '',
     demandado: '',
-    fecha_inicial: null,
+    fecha_inicial: '',
     fecha_final: null,
   }
 
@@ -160,7 +175,7 @@ export class IndizadorExpedientesComponent implements OnInit {
 
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
-    //this.modificarDigitalizacion = false;
+    this.modificarIndizacion = false;
     this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
     this.myModalReception.show();
   }
@@ -334,8 +349,8 @@ export class IndizadorExpedientesComponent implements OnInit {
     this.ListExpedientes = objetosFiltrados
   }
 
-  obtenerNroExpediente(nro_expediente: string) {
-    this.nro_expediente_temp = nro_expediente;
+  obtenerExpedienteTemp(expediente: ExpedienteResponse) {
+    this.data_expediente_temp = expediente;
   }
 
   RecepcionFlujograma() {
@@ -353,10 +368,12 @@ export class IndizadorExpedientesComponent implements OnInit {
         console.log(error);
       },
       complete: () => {
-        console.log('flujograma creado correctamente');
-        this.EstadoIndizacionAceptado()
+        this.EstadoIndizacionAceptado();
+
+        const esRecepcionado = this.data_expediente_temp.estado_indizado == 'R';
+        this.openModalIndizacion(this.data_expediente_temp.id_expediente, this.data_expediente_temp.nro_expediente, esRecepcionado);
+        
         this.closeModalReception();
-        this.openModalIndizacion(this.id_expediente_temp, this.nro_expediente_temp, false);
       }
     })
   }
@@ -410,11 +427,12 @@ export class IndizadorExpedientesComponent implements OnInit {
         this.dataIndizacion.materia = data.materia!;
         this.ListDamandantes = JSON.parse(data.demandante ? data.demandante : '[]');
         this.ListDamandados = JSON.parse(data.demandado ? data.demandado : '[]');
-        (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
-        (document.getElementById('fecha_final') as HTMLInputElement).value = FechaConFormato(data.fecha_final!);
+        this.dataIndizacion.fecha_inicial = FechaConFormato(data.fecha_inicial!);;
+        this.dataIndizacion.fecha_final = FechaConFormato(data.fecha_final!);
+        // (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
+        // (document.getElementById('fecha_final') as HTMLInputElement).value = FechaConFormato(data.fecha_final!);
+        
         this.ListObservaciones = data.observaciones?.split('|') ?? [];
-
-
         this.dataIndice = JSON.parse(data.indice ? data.indice : '[]')
       },
       error: (error) => {
@@ -485,7 +503,7 @@ export class IndizadorExpedientesComponent implements OnInit {
       fecha_final: this.dataIndizacion.fecha_final!? new Date(this.dataIndizacion.fecha_final):null,
       app_user: this.credencialesService.credenciales.username
     }
-
+    console.log(dataIndizacion_temp)
     const erroresValidacion = form_indizacion_modificar_vf(dataIndizacion_temp);
     if (erroresValidacion.length > 0) {
       let errorMensaje = '';
@@ -498,7 +516,7 @@ export class IndizadorExpedientesComponent implements OnInit {
     }
     else {
       //alert('listos para guardar')
-      console.log(dataIndizacion_temp)
+      
       this.indizacionService.ModificarIndizacion(dataIndizacion_temp.id_expediente, dataIndizacion_temp).subscribe({
         next: (data: ModificarIndizacionResponse) => {
           console.log(data.message);

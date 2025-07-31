@@ -70,6 +70,21 @@ export class FedatarioExpedientesComponent implements OnInit {
   firmaProgressStatus = false;
   buttonFirma = true;
 
+  data_expediente_temp: ExpedienteResponse={
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    estado_recepcionado: '',
+    estado_preparado: '',
+    estado_digitalizado: '', 
+    estado_indizado:  '',
+    estado_controlado:   '',
+    estado_fedatado:   '',
+    estado_finalizado:   '',
+  } 
+
   data_preparacion_header: ExpedienteResponseDataView = {
     id_expediente: 0,
     nro_expediente: '',
@@ -192,7 +207,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.myModal.hide();
 
   }
-  ModalFedatario(id_expediente: number, nro_expediente: string) {
+  openModalFedatario(id_expediente: number, nro_expediente: string) {
 
     this.id_expediente_temp = id_expediente;
     this.myModal = new bootstrap.Modal(document.getElementById('ModalFedatario'));
@@ -205,8 +220,8 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.RecuperarDatosControl(id_expediente);
   }
 
-  obtenerNroExpediente(nro_expediente: string) {
-    this.nro_expediente_temp = nro_expediente;
+  obtenerExpedienteTemp(expediente: ExpedienteResponse) {
+    this.data_expediente_temp = expediente;
   }
 
   ObtenerExpedienteDataViewXid(id_expediente: number) {
@@ -386,6 +401,8 @@ export class FedatarioExpedientesComponent implements OnInit {
         console.log('flujograma creado correctamente');
         this.closeModal();
         this.EstadoFedatarioAceptado()
+        this.openModalFedatario(this.data_expediente_temp.id_expediente, this.data_expediente_temp.nro_expediente);
+        
       }
     })
   }
@@ -416,7 +433,6 @@ export class FedatarioExpedientesComponent implements OnInit {
       complete: () => {
         console.log('estado fedatario aceptado correctamente');
         this.ListarExpedientes();
-        this.crearFedatario();
       }
     })
   }
@@ -436,8 +452,7 @@ export class FedatarioExpedientesComponent implements OnInit {
         console.log(error);
       },
       complete: () => {
-        console.log('fedatario creado correctamente');
-        this.EstadoFedatarioTrabajado()
+        console.log('fedatario creado correctamente');  
         this.closeModal();
       }
     })
@@ -477,10 +492,8 @@ export class FedatarioExpedientesComponent implements OnInit {
   }
 
   firmarDocumento() {
-    
-
     const dataFirma = {
-      nombrePdf: `${this.nro_expediente_temp}.pdf`,
+      nombrePdf: `${this.data_expediente_temp.nro_expediente}.pdf`,
       nombreCertificado: `${this.credencialesService.credenciales.username}.pfx`,
       password: (document.getElementById('password_certificado') as HTMLInputElement).value,
       ubicacion: "Cusco, Perú",
@@ -495,6 +508,7 @@ export class FedatarioExpedientesComponent implements OnInit {
       next: (data: FirmaDigitalResponse) => {
         console.log(data);
         this.EstadoFedatarioTrabajado();
+        this.crearFedatario()
         this.progress_bar_sign()
        
       },
