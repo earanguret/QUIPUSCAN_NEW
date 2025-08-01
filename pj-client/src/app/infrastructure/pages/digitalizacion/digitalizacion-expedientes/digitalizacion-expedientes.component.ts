@@ -29,6 +29,7 @@ import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dt
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 import { form_digitalizacion_creacion_vf, form_digitalizacion_modificar_vf } from '../../../validator/fromValidator/digitalizacion.validator';
 import { PDFDocument } from 'pdf-lib';
+import { Mensaje } from '../../../../domain/models/Mensaje.model';
 
 declare var bootstrap: any;
 
@@ -39,6 +40,88 @@ declare var bootstrap: any;
   styleUrl: './digitalizacion-expedientes.component.css'
 })
 export class DigitalizacionExpedientesComponent implements OnInit {
+  
+  mensajes: Mensaje[] = [
+    {
+      area_remitente: 'CONTROL',
+      responsable: 'MCORREO',
+      destino: 'DIGITALIZACION',
+      fecha: '2020-05-01',
+      mensaje: 'CAMBIAR LA PAGINA 27',
+      respuestas: [
+        {
+          area: 'CONTROL',
+          responsable: 'MLORENZO',
+          fecha: '2020-05-02',
+          respuesta: 'SE ATENDIO LO SOLICITADO'
+        },
+        {
+          area: 'INDIZACION',
+          responsable: 'LCLIMA',
+          fecha: '2020-05-04',
+          respuesta: 'SE ATENDIO LO SOLICITADO'
+        }
+      ]
+    },
+
+    {
+      area_remitente: 'FEDAARIO',
+      responsable: 'EARANGURE',
+      destino: 'INDIZACION',
+      fecha: '2020-05-01',
+      mensaje: 'CAMBIAR LA PAGINA 27',
+      respuestas: [
+        {
+          area: 'CONTROL',
+          responsable: 'MLORENZO',
+          fecha: '2020-05-02',
+          respuesta: 'SE ATENDIO LO SOLICITADO'
+        },
+        {
+          area: 'INDIZACION',
+          responsable: 'LCLIMA',
+          fecha: '2020-05-04',
+          respuesta: 'SE ATENDIO LO SOLICITADO'
+        }
+      ]
+    },
+    {
+      area_remitente: 'FEDAARIO',
+      responsable: 'EARANGURE',
+      destino: 'INDIZACION',
+      fecha: '2020-05-01',
+      mensaje: 'CAMBIAR LA PAGINA 27',
+      respuestas: [
+        {
+          area: 'CONTROL',
+          responsable: 'MLORENZO',
+          fecha: '2020-05-02',
+          respuesta: 'SE ATENDIO LO SOLICITADO'
+        },
+        {
+          area: 'INDIZACION',
+          responsable: 'LCLIMA',
+          fecha: '2020-05-04',
+          respuesta: 'SE ATENDIO LO SOLICITADO'
+        }
+      ]
+    }
+  ];
+
+  mostrarPopupIndex: number | null = null; // Índice del mensaje con popup abierto
+  nuevaRespuesta: string = '';
+
+  togglePopup(index: number) {
+    this.mostrarPopupIndex = this.mostrarPopupIndex === index ? null : index;
+    console.log(this.mostrarPopupIndex)
+  }
+
+  cerrarPopup() {
+    this.mostrarPopupIndex = null;
+    this.nuevaRespuesta = ''
+  }
+  
+  
   private myModalReception: any;
   private myModalDigitalizacion: any;
 

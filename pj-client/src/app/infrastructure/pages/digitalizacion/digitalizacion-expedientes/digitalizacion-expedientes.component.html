@@ -1,4 +1,3 @@
-
 <div class="panel">
     <app-navegator></app-navegator>
     <app-subnavegator [ruta]="'/principal/digitalizacion/list-serie-documental'"></app-subnavegator>
@@ -40,31 +39,55 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"  >
+                                        *ngFor="let expediente of ListExpedientes | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
                                         <td (click)="obtenerExpedienteTem(expediente)">
-                                            <img *ngIf="expediente.estado_digitalizado==null"  src="/icon/doc-previo.png" alt="logo" title="datos de preparación" width="24px" height="24px" class="mx-3" (click)="openModalPreparacionPreView(expediente.id_expediente)">
-                                            <button *ngIf="expediente.estado_digitalizado==null" class="btn btn-secondary btn-sm" (click)="openModalReception(expediente.id_expediente)">
-                                                  <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
-                                                 Recepcionar
+                                            <img *ngIf="expediente.estado_digitalizado==null" src="/icon/doc-previo.png"
+                                                alt="logo" title="datos de preparación" width="24px" height="24px"
+                                                class="mx-3"
+                                                (click)="openModalPreparacionPreView(expediente.id_expediente)">
+                                            <button *ngIf="expediente.estado_digitalizado==null"
+                                                class="btn btn-secondary btn-sm"
+                                                (click)="openModalReception(expediente.id_expediente)">
+                                                <img src="/icon/download_doc.png" alt="logo" title="Recepcion"
+                                                    width="16px" height="16px">
+                                                Recepcionar
                                             </button>
-                                            <button *ngIf="expediente.estado_digitalizado=='R'" class="btn btn-danger btn-sm" (click)="openModalReception(expediente.id_expediente)">
-                                                <img src="/icon/download_doc.png" alt="logo" title="Recepcion" width="16px" height="16px">
-                                               Recepcionar
+                                            <button *ngIf="expediente.estado_digitalizado=='R'"
+                                                class="btn btn-danger btn-sm"
+                                                (click)="openModalReception(expediente.id_expediente)">
+                                                <img src="/icon/download_doc.png" alt="logo" title="Recepcion"
+                                                    width="16px" height="16px">
+                                                Recepcionar
                                             </button>
-                                            <button *ngIf="expediente.estado_digitalizado=='A' && expediente.estado_indizado==null" class="btn btn-light btn-sm" (click)="openModalDigitalizacion(expediente.id_expediente,false)">
-                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                            <button
+                                                *ngIf="expediente.estado_digitalizado=='A' && expediente.estado_indizado==null"
+                                                class="btn btn-light btn-sm"
+                                                (click)="openModalDigitalizacion(expediente.id_expediente,false)">
+                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion"
+                                                    width="16px" height="16px">
                                                 Digitalizar
                                             </button>
-                                            <button *ngIf="expediente.estado_digitalizado=='A' && expediente.estado_indizado=='R'" class="btn btn-light btn-sm" (click)="openModalDigitalizacion(expediente.id_expediente,true)">
-                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion" width="16px" height="16px">
+                                            <button
+                                                *ngIf="expediente.estado_digitalizado=='A' && expediente.estado_indizado=='R'"
+                                                class="btn btn-light btn-sm"
+                                                (click)="openModalDigitalizacion(expediente.id_expediente,true)">
+                                                <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion"
+                                                    width="16px" height="16px">
                                                 Corregir
                                             </button>
                                             <div>
-                                                <img *ngIf="expediente.estado_digitalizado=='T'"  src="/icon/check.png" alt="logo" title="Preparado correctamente" width="24px" height="24px">
-                                                <img *ngIf="expediente.estado_digitalizado=='T'"  src="/icon/expediente_eye.png" class="mx-3" alt="logo" title="ver información" width="24px" height="24px">
-                                                <img *ngIf="expediente.estado_digitalizado=='T' && expediente.estado_indizado==null"  src="/icon/lapiz.png"  alt="logo" title="ver información" width="24px" height="24px" (click)="openModalDigitalizacion(expediente.id_expediente,true)">
+                                                <img *ngIf="expediente.estado_digitalizado=='T'" src="/icon/check.png"
+                                                    alt="logo" title="Preparado correctamente" width="24px"
+                                                    height="24px">
+                                                <img *ngIf="expediente.estado_digitalizado=='T'"
+                                                    src="/icon/expediente_eye.png" class="mx-3" alt="logo"
+                                                    title="ver información" width="24px" height="24px">
+                                                <img *ngIf="expediente.estado_digitalizado=='T' && expediente.estado_indizado==null"
+                                                    src="/icon/lapiz.png" alt="logo" title="ver información"
+                                                    width="24px" height="24px"
+                                                    (click)="openModalDigitalizacion(expediente.id_expediente,true)">
                                             </div>
 
                                         </td>
@@ -114,8 +137,9 @@
     </div>
 </div>
 
-<div class="modal fade" id="ModalDigitalizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog   modal-custom-width " role="document" >
+<div class="modal fade" id="ModalDigitalizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog   modal-custom-width " role="document">
         <div class="modal-content" style="height: 94vh;">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">DIGITALIZACIÓN DE EXPEDIENTE</h5>
@@ -129,9 +153,15 @@
                             <div class="sub_titulo_expediente  ">
                                 <section class="contenedor">
                                     <h5 style="font-size: 1.1rem;">{{data_preparacion_header.nro_expediente}}</h5>
-                                    <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span style="color: #666666c7; font-weight: 600;">Recepcionado por:</span> {{data_preparacion_header.responsable}}</p>
-                                    <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>  {{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</p>
-                                    <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>  {{data_preparacion_header.cod_paquete}}</P>
+                                    <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span
+                                            style="color: #666666c7; font-weight: 600;">Recepcionado por:</span>
+                                        {{data_preparacion_header.responsable}}</p>
+                                    <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span
+                                            style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>
+                                        {{data_preparacion_header.create_at | date:'dd/MM/yyyy'}}</p>
+                                    <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span
+                                            style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>
+                                        {{data_preparacion_header.cod_paquete}}</P>
                                 </section>
                             </div>
                             <!-- Elemento central que ocupa el espacio restante -->
@@ -198,124 +228,158 @@
                                             <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
                                             <div class="form-group mt-3">
                                                 <label for="fojas" class="form-label">Archivo digitalizado: </label>
-                                                <input class="form-control form-control-sm" type="file" id="formFile" (change)="onFileSelected($event)" accept=".pdf" >
+                                                <input class="form-control form-control-sm" type="file" id="formFile"
+                                                    (change)="onFileSelected($event)" accept=".pdf">
                                             </div>
-                    
+
                                             <div class="form-group mt-3">
-                                                <label for="fojas" class="form-label">Total de fojas digitalizadas:</label>
-                                                <input type="text" class="form-control" name="fojas_total_digitalizacion" [(ngModel)]="data_digitalizacion.fojas_total"  >
+                                                <label for="fojas" class="form-label">Total de fojas
+                                                    digitalizadas:</label>
+                                                <input type="text" class="form-control"
+                                                    name="fojas_total_digitalizacion"
+                                                    [(ngModel)]="data_digitalizacion.fojas_total">
                                             </div>
-                    
-                                            
+
+
                                             <div class="form-check mt-3">
-                                                <input class="form-check-input" type="checkbox"  id="checkDefault" name="ocr" [(ngModel)]="data_digitalizacion.ocr">
+                                                <input class="form-check-input" type="checkbox" id="checkDefault"
+                                                    name="ocr" [(ngModel)]="data_digitalizacion.ocr">
                                                 <label class="form-check-label" for="checkDefault">OCR </label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox"  id="checkChecked" name="escala_gris" [(ngModel)]="data_digitalizacion.escala_gris" >
-                                                <label class="form-check-label" for="checkChecked">Escala de Grises</label>
+                                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                                    name="escala_gris" [(ngModel)]="data_digitalizacion.escala_gris">
+                                                <label class="form-check-label" for="checkChecked">Escala de
+                                                    Grises</label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox"  id="checkChecked" name="color" [(ngModel)]="data_digitalizacion.color" >
+                                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                                    name="color" [(ngModel)]="data_digitalizacion.color">
                                                 <label class="form-check-label" for="checkChecked">Color</label>
                                             </div>
-                                            <div class="form-group mt-3" >
+                                            <div class="form-group mt-3">
                                                 <label for="fojas" class="form-label">Observaciones: </label>
-                                              
-                                                <div style="max-height: 320px; overflow-y: auto; flex: 1; padding-right: 8px;" class="observaciones-scroll"   >
-                                                  <div *ngFor="let observacion of ListObservacionesDigitalizacion; let i = index" class="mb-2">
-                                                    <div class="observation-wrapper position-relative">
-                                                      <input type="text" readonly class="form-control observation-tag" name="observacion" [value]="observacion">
-                                                      <div class="observation-icons">
-                                                        <i class="bi bi-chevron-down obs-icon" (click)="BajarObservacion(i)"></i>
-                                                        <i class="bi bi-chevron-up obs-icon mx-1" (click)="SubirObservacion(i)"></i>
-                                                        <i class="bi bi-x-square obs-icon" (click)="EliminarObservacion(i)"></i>
-                                                      </div>
+
+                                                <div style="max-height: 320px; overflow-y: auto; flex: 1; padding-right: 8px;"
+                                                    class="observaciones-scroll">
+                                                    <div *ngFor="let observacion of ListObservacionesDigitalizacion; let i = index"
+                                                        class="mb-2">
+                                                        <div class="observation-wrapper position-relative">
+                                                            <input type="text" readonly
+                                                                class="form-control observation-tag" name="observacion"
+                                                                [value]="observacion">
+                                                            <div class="observation-icons">
+                                                                <i class="bi bi-chevron-down obs-icon"
+                                                                    (click)="BajarObservacion(i)"></i>
+                                                                <i class="bi bi-chevron-up obs-icon mx-1"
+                                                                    (click)="SubirObservacion(i)"></i>
+                                                                <i class="bi bi-x-square obs-icon"
+                                                                    (click)="EliminarObservacion(i)"></i>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                  </div>
                                                 </div>
-                                              
-                                                  
-                                                <input type="text" class="form-control mt-3 observation-input" name="observacion" id="observacion">
-                                                <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2" (click)="AgregarObservacion()" >+ Añadir observación</button>
+
+
+                                                <input type="text" class="form-control mt-3 observation-input"
+                                                    name="observacion" id="observacion">
+                                                <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2"
+                                                    (click)="AgregarObservacion()">+ Añadir observación</button>
                                             </div>
-                                           
+
                                         </section>
                                     </fieldset>
                                 </form>
                             </div>
 
                             <!-- Elemento inferior (botones) fijo abajo -->
-                            <div class="d-flex justify-content-end" style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
-                                <button type="button" class="cancelar-btn mx-4" (click)="closeModalDigitalizacion()">Cancelar</button>
-                                <button type="button" class="guardar-btn" (click)="EventAction()" >{{modificarDigitalizacion?'Modificar':'Guardar'}}</button>
+                            <div class="d-flex justify-content-end"
+                                style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
+                                <button type="button" class="cancelar-btn mx-4"
+                                    (click)="closeModalDigitalizacion()">Cancelar</button>
+                                <button type="button" class="guardar-btn"
+                                    (click)="EventAction()">{{modificarDigitalizacion?'Modificar':'Guardar'}}</button>
                             </div>
 
                         </div>
                     </div>
                     <div class="col col-lg-8 col-sm-12 p-0 m-0 " style="height: 89vh; ">
-                        <iframe 
-                          [src]="pdfUrl" 
-                          style="width: 99%; height: 98.2%; border: none; background-color: #f6f6ee; border-bottom-right-radius: 10px;" 
-                          type="application/pdf"
-                         >
+                        <iframe [src]="pdfUrl"
+                            style="width: 99%; height: 98.2%; border: none; background-color: #f6f6ee; border-bottom-right-radius: 10px;"
+                            type="application/pdf">
                         </iframe>
-                      </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- mensajeria notas -->
-<div [ngClass]="{ 'visible': mostrar_mensajes_expediente, 'hidden': !mostrar_mensajes_expediente }" class="message-panel shadow-lg">
-    <div *ngFor="let item of notasList; let i = index" style="width: 88%;">
-        <div class="card-note">
-            <div class="d-flex justify-content-between align-items-center my-0">
-                <h5 class="mt-0">usuario</h5>
-                <p class="text-muted mb-1">15/02/2025</p>
+    <div [ngClass]="{ 'visible': mostrar_mensajes_expediente, 'hidden': !mostrar_mensajes_expediente }"
+        class="message-panel shadow-lg">
+        <div *ngFor="let item of mensajes; let i = index" style="width: 88%;">
+            <div class="card-note">
+                <div class="card-header-message">
+                    <div class="d-flex justify-content-between align-items-center my-0">
+                        <p class="text-muted mb-1">DE: {{item.area_remitente}} / <span>{{item.responsable}}</span></p>
+                        <p class="text-muted mb-1">15/02/2025</p>
+                    </div>
+                    <p class="text-muted mb-0">PARA: {{item.destino}}</p>
+                </div>
+
+                <p class="text-muted mt-2">{{item.mensaje}}</p>
+                <div *ngFor="let respuesta of item.respuestas" class="box-respuesta">
+                    <div class="d-flex justify-content-between align-items-center my-0">
+                        <p class="text-muted mb-1">{{respuesta.area}} / <span>{{respuesta.responsable}}</span></p>
+                        <p class="text-muted mb-1">{{respuesta.fecha}}</p>
+                    </div>
+                    <p>{{respuesta.respuesta}}</p>
+
+                </div>
+                <div class="d-flex justify-content-end">
+                    <p (click)="togglePopup(i)" style="color: green; cursor: pointer;">responder</p>
+                </div>
+                <div class="position-relative">
+                    <div *ngIf="mostrarPopupIndex === i" class="popup-box">
+                        <div class="card">
+                            <div class="card-body">
+                                <input type="text" [(ngModel)]="nuevaRespuesta" class="form-control"
+                                    placeholder="Escribe tu respuesta">
+                                <div class="mt-3 d-flex justify-content-end">
+                                    <button  class="btn btn-primary btn-sm">Guardar</button>
+                                    <button (click)="cerrarPopup()" class="btn btn-secondary btn-sm ms-2">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
             </div>
-            <p>este es un contenido</p>
-            <div class="d-flex justify-content-end m-0">
-                <i class="bi bi-x-circle m-0"  ></i>
+        </div>
+    </div>
+
+
+    <!-- Boton de notas -->
+    <div class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
+        (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
+        <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
+        <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
+    </div>
+
+</div>
+
+<div class="modal fade" id="ModalPreparationView" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Datos preparación</h5>
             </div>
-            
-        </div>
-
-    </div>
-
-    <div class="mb-3" style="width: 88%;">
-        <label class="form-label mb-1 mt-3">Nota:</label>
-        <textarea class="form-control" id="text_area_nota" rows="4"></textarea>
-        <div class="d-flex justify-content-end mt-2">
-            <button class="btn btn-success btn-sm" >+ Add</button>
+            <div class="modal-body p-0 m-0">
+                <app-preparacion-view *ngIf="mostrarPreparacion" [id_expediente]="id_expediente_temp">
+                </app-preparacion-view>
+            </div>
         </div>
     </div>
-    
 </div>
-
-<!-- Boton de notas -->
-<div class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992" (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
-    <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
-    <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
-</div>
-
-</div>
-
-<div class="modal fade" id="ModalPreparationView" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Datos preparación</h5>
-      </div>
-      <div class="modal-body p-0 m-0">
-        <app-preparacion-view
-          *ngIf="mostrarPreparacion"
-          [id_expediente]="id_expediente_temp">
-        </app-preparacion-view>
-      </div>
-    </div>
-  </div>
-</div>
-
-

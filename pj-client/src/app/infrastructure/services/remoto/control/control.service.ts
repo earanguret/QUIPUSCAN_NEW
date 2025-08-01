@@ -29,6 +29,7 @@ export class ControlService {
   ObtenerControlDataViewXidExpediente(id_expediente:number):Observable<ControlResponseDataView>{
     return this.http.get<ControlResponseDataView>(`${this.api_uri_control}/dataview/${id_expediente}`)
   }
+  
 
 
 }

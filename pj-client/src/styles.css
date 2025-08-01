@@ -228,3 +228,115 @@ img {
     border: 1px solid #f8e7be;
     box-shadow: 1px 1px 3px 0
 }
+
+
+
+/* mensajeria notas */
+/* mensaje panel */
+.message-panel {
+    
+    position: fixed;
+    z-index: 9999;
+    bottom: 100px;
+    right: 130px;
+    width: 400px;
+    height: 780px;
+    border-radius: 2%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #D5DDE5;
+    border: 6px solid #c1c4c7;
+    box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.45) !important;  
+    overflow-y: auto;
+    flex: 1;
+  
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none; 
+    font-size: 0.9rem;
+  }
+  /* Scroll personalizado para paneles de navegación */
+  .message-panel::-webkit-scrollbar {
+    width: 7px;
+  }
+  
+  .message-panel::-webkit-scrollbar-thumb {
+    background-color: #b7bbb877;
+    border-radius: 10px;
+  }
+  
+  .message-panel::-webkit-scrollbar-track {
+    background: #e9ecef;
+  }
+  
+  /* 🔽 Clase cuando está visible */
+  .message-panel.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  /* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
+  .message-panel.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .card-note {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    margin-top: 1.2rem;
+  
+  }
+  
+  .card-header-message{
+    background-color: #3ad67842;
+    padding: 0.5rem;
+  }
+  
+  .popup-box {
+    position: absolute;
+    top: 100%; /* Colocar justo debajo del botón "responder" */
+    right: 0; /* Alinear el popup a la derecha */
+    z-index: 1000;
+    width: 300px;
+    background-color: white;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+  }
+  
+  .bi-pencil-fill:hover{
+    cursor: pointer;
+    color: #434343;
+  }
+  
+  .box-respuesta{
+    background-color: #b8b8bd42;
+    align-self: flex-end;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+
+  /* boton notas */
+.doc-chat-popper {
+    position: fixed;
+    z-index: 9999;
+    bottom: 40px;
+    right: 170px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #176091;
+    color: #fff;
+  }

@@ -61,4 +61,20 @@ export class EstadoService {
   AsociarExpedientesADisco(cuerpo:EstadoAsociarExpedientesADiscoRequest):Observable<AsociarExpedientesADiscoResponse>{
     return this.http.put<AsociarExpedientesADiscoResponse>(`${this.api_uri_estado}/asociar/disco/`,cuerpo )
   }
+
+  RechazarControlDigitalizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/rechazar/controlDigitalizacion/${id_expediente}`, {app_user})
+  }
+
+  RechazarControlIndizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/rechazar/controlIndizacion/${id_expediente}`, {app_user})
+  }
+
+  RechazarFedatarioDigitalizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/rechazar/fedatarioDigitalizacion/${id_expediente}`, {app_user})
+  }
+
+  RechazarFedatarioIndizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
+    return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/rechazar/fedatarioIndizacion/${id_expediente}`, {app_user})
+  }
 }

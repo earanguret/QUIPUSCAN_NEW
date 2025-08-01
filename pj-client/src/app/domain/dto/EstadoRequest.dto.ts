@@ -1,5 +1,5 @@
 import { ExpedienteSinDiscoResponse } from "./ExpedienteResponse.dto";
-export interface EstadoRequest{
+export interface EstadoRequest {
     id_expediente: number;
     estado_recepcionado?: boolean;
     estado_preparado?: boolean;
@@ -13,8 +13,9 @@ export interface EstadoRequest{
     app_user: string;
 }
 
-export interface EstadoAsociarExpedientesADiscoRequest{
-    id_disco: number;      
+export interface EstadoAsociarExpedientesADiscoRequest {
+    id_disco: number;
     app_user: string;
     lista_expedientes: ExpedienteSinDiscoResponse[];
 }
+

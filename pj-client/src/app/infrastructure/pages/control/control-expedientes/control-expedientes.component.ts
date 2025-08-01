@@ -42,6 +42,7 @@ declare var bootstrap: any;
 export class ControlExpedientesComponent implements OnInit {
   private myModalReception: any;
   private myModalControl: any;
+  private myModalDesaprobar: any;
   id_inventario: number = 0;
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
@@ -212,6 +213,16 @@ export class ControlExpedientesComponent implements OnInit {
 
   closeModalControl() {
     this.myModalControl.hide();
+  }
+
+  openModalDesaprobar() {
+    
+    this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'));
+    this.myModalDesaprobar.show();
+  }
+
+  closeModalDesaprobar() {
+    this.myModalDesaprobar.hide();
   }
 
   LimpiarControl() {
@@ -522,6 +533,34 @@ export class ControlExpedientesComponent implements OnInit {
     })
   }
 
+  rechazarExpediente() {
+    let razon = (document.getElementById('controlcalidad_textarea_rechazo') as HTMLInputElement).value;
+    let modulo = (document.getElementById('select-area') as HTMLInputElement).value;
+
+    console.log(razon);
+    console.log(modulo);
+
+    if (modulo === 'd') {
+      this.estadoService.RechazarControlDigitalizacion(this.data_expediente_temp.id_expediente, this.credencialesService.credenciales.username).subscribe({
+        next: (data: ModificarEstadoResponse) => {
+          console.log(data.message);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          console.log('rechazar digitalizacion exitosa');
+          this.ListarExpedientes();
+        }
+      })
+    }
+    if (modulo === 'i') {
+      
+    }
+    
+  }
+  
+// ---------------------------------------------------------------------------
 
   AgregarObservacion() {
     const valor = (document.getElementById('observacion') as HTMLInputElement).value;
