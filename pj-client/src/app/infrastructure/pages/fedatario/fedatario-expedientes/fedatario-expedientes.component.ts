@@ -27,11 +27,13 @@ import { InfoInventarioComponent } from '../../../components/info-inventario/inf
 import { NgxPaginationModule } from 'ngx-pagination';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+import { EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 import { ControlResponseDataView } from '../../../../domain/dto/ControlResponse.dto';
 import { FirmaDigitalEncontradaResponse, FirmaDigitalResponse } from '../../../../domain/dto/FirmaDigitalResponse.dto';
 import { FirmaDigitalService } from '../../../services/remoto/firmaDigital/firma-digital.service';
 import { CrearFedatarioResponse } from '../../../../domain/dto/FedatarioResponse.dto';
+import { Mensaje } from '../../../../domain/models/Mensaje.model';
+import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 
 
 declare var bootstrap: any;
@@ -56,6 +58,13 @@ export class FedatarioExpedientesComponent implements OnInit {
   mensaje_certificado: string | null = null;
   mensaje_firmado: string | null = null;
   msg_firmado: boolean = false;
+  mostrar_mensajes_expediente: boolean = false;
+  MensajesExpedienteTemp: Mensaje[] = [];
+
+  private myModalDesaprobar: any;
+  rechazoRazon: string = '';
+  moduloSeleccionado: string = '';
+
 
   nro_expediente_temp: string = '';
   id_expediente_temp: number = 0;
@@ -70,7 +79,7 @@ export class FedatarioExpedientesComponent implements OnInit {
   firmaProgressStatus = false;
   buttonFirma = true;
 
-  data_expediente_temp: ExpedienteResponse={
+  data_expediente_temp: ExpedienteResponse = {
     id_expediente: 0,
     nro_expediente: '',
     id_inventario: 0,
@@ -78,12 +87,12 @@ export class FedatarioExpedientesComponent implements OnInit {
     cod_paquete: '',
     estado_recepcionado: '',
     estado_preparado: '',
-    estado_digitalizado: '', 
-    estado_indizado:  '',
-    estado_controlado:   '',
-    estado_fedatado:   '',
-    estado_finalizado:   '',
-  } 
+    estado_digitalizado: '',
+    estado_indizado: '',
+    estado_controlado: '',
+    estado_fedatado: '',
+    estado_finalizado: '',
+  }
 
   data_preparacion_header: ExpedienteResponseDataView = {
     id_expediente: 0,
@@ -218,6 +227,42 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.recuperarDataDigitalizacion(id_expediente);
     this.recuperarDataIndizacion(id_expediente);
     this.RecuperarDatosControl(id_expediente);
+    this.ObtenerMensajesById_expediente(id_expediente);
+  }
+
+  ObtenerMensajesById_expediente(id_expediente: number) {
+    console.log('id_expediente_prueba:', id_expediente);
+    this.estadoService.ObtenerMensajesById_expediente(id_expediente).subscribe({
+      next: (data: EstadoMensajesResponse) => {
+        try {
+          // Si data es un string JSON, lo parsea. Si ya es array, lo usa directamente.
+          const mensajes = typeof data === 'string' ? JSON.parse(data) : data;
+
+          this.MensajesExpedienteTemp = Array.isArray(mensajes) ? mensajes : [];
+          console.log('Mensajes cargados:', this.MensajesExpedienteTemp);
+        } catch (e) {
+          console.error('Error al parsear mensajes:', e);
+          this.MensajesExpedienteTemp = [];
+        }
+      },
+      error: (error) => {
+        console.error(error);
+        this.MensajesExpedienteTemp = []; // Siempre asegúrate que sea un array
+      },
+      complete: () => {
+        console.log('listado de mensajes completado');
+      }
+    });
+  }
+
+  openModalDesaprobar() {
+
+    this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'));
+    this.myModalDesaprobar.show();
+  }
+
+  closeModalDesaprobar() {
+    this.myModalDesaprobar.hide();
   }
 
   obtenerExpedienteTemp(expediente: ExpedienteResponse) {
@@ -225,18 +270,18 @@ export class FedatarioExpedientesComponent implements OnInit {
   }
 
   ObtenerExpedienteDataViewXid(id_expediente: number) {
-      this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
-        next: (data: ExpedienteResponseDataView) => {
-          this.data_preparacion_header = data;
-        },
-        error: (error) => {
-          console.log(error);
-        },
-        complete: () => {
-          console.log('listado de preparacion detalle completado');
-        }
-      })
-    }
+    this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
+      next: (data: ExpedienteResponseDataView) => {
+        this.data_preparacion_header = data;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de preparacion detalle completado');
+      }
+    })
+  }
 
   recuperarFile(nro_expediente_temp: string) {
     let fileName = nro_expediente_temp + '.pdf';
@@ -333,10 +378,10 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
       next: (data: InventarioResponse) => {
         this.codigo_inventario = data.codigo;
-        this.folderPathDocument = `${this.codigo_inventario}/EXPEDIENTES` ;
-        this.folderPathPortada = `${this.codigo_inventario}/PORTADAS` ;
+        this.folderPathDocument = `${this.codigo_inventario}/EXPEDIENTES`;
+        this.folderPathPortada = `${this.codigo_inventario}/PORTADAS`;
         this.folderPathFirma = `/${this.codigo_inventario}/FIRMADOS`;
-        
+
       },
       error: (error) => {
         console.log(error);
@@ -402,7 +447,7 @@ export class FedatarioExpedientesComponent implements OnInit {
         this.closeModal();
         this.EstadoFedatarioAceptado()
         this.openModalFedatario(this.data_expediente_temp.id_expediente, this.data_expediente_temp.nro_expediente);
-        
+
       }
     })
   }
@@ -452,10 +497,72 @@ export class FedatarioExpedientesComponent implements OnInit {
         console.log(error);
       },
       complete: () => {
-        console.log('fedatario creado correctamente');  
+        console.log('fedatario creado correctamente');
         this.closeModal();
       }
     })
+  }
+
+  rechazarExpediente() {
+    const razon = this.rechazoRazon;
+    const destino = this.moduloSeleccionado;
+  
+    if (!destino || !razon) {
+      console.warn('Debe seleccionar un módulo y proporcionar una razón');
+      return;
+    }
+  
+    const idExpediente = this.data_expediente_temp.id_expediente;
+    const usuario = this.credencialesService.credenciales.username;
+  
+    // Mapa de funciones por módulo
+    const rechazarFnMap = {
+      DIGITALIZACION: () =>
+        this.estadoService.RechazarFedatarioDigitalizacion(idExpediente, usuario),
+      INDIZACION: () =>
+        this.estadoService.RechazarFedatarioIndizacion(idExpediente, usuario)
+    };
+  
+    const rechazarFn = rechazarFnMap[destino as keyof typeof rechazarFnMap];
+  
+    if (!rechazarFn) {
+      console.error('Destino no soportado:', destino);
+      return;
+    }
+  
+    rechazarFn().subscribe({
+      next: (data: ModificarEstadoResponse) => console.log(data.message),
+      error: (error) => console.error(error),
+      complete: () => {
+        console.log(`rechazo a ${destino} exitoso`);
+        this.ListarExpedientes();
+  
+        const nuevoMensaje: Mensaje = {
+          area_remitente: 'CONTROL',
+          responsable: usuario,
+          destino,
+          fecha: new Date(),
+          mensaje: razon,
+          respuestas: []
+        };
+  
+        this.MensajesExpedienteTemp.push(nuevoMensaje);
+  
+        const dataMessage: mensajeRequest = {
+          mensaje: JSON.stringify(this.MensajesExpedienteTemp),
+          app_user: usuario
+        };
+  
+        this.estadoService.GuardarMensajeById_expediente(idExpediente, dataMessage).subscribe({
+          next: (data: MensajeGuardarResponse) => console.log(data.message),
+          error: (error) => console.error(error),
+          complete: () => {
+            console.log('guardar mensaje exitosa');
+            this.ListarExpedientes();
+          }
+        });
+      }
+    });
   }
 
   mostarSignPanel() {
@@ -463,7 +570,7 @@ export class FedatarioExpedientesComponent implements OnInit {
   }
 
   progress_bar_sign() {
-   let password = (document.getElementById('password_certificado') as HTMLInputElement).value;
+    let password = (document.getElementById('password_certificado') as HTMLInputElement).value;
     if (password.trim() === '') {
       alert("La contraseña no puede estar vacía")
       return;
@@ -482,7 +589,7 @@ export class FedatarioExpedientesComponent implements OnInit {
 
         // Esperar 2 segundos antes de ocultar la barra
         setTimeout(() => {
-         this.firmaProgressStatus = false; 
+          this.firmaProgressStatus = false;
           this.progreso_firma = 0;
           this.msg_firmado = true;
           this.mensaje_firmado = '¡Firma exitosa!';
@@ -502,7 +609,7 @@ export class FedatarioExpedientesComponent implements OnInit {
       carpetaFirmados: `${this.folderPathFirma}`,
       carpetaCertificados: "/CERTIFICADOS"
     }
-  console.log(dataFirma)
+    console.log(dataFirma)
 
     this.firmaDigitalService.FirmarDocumento(dataFirma).subscribe({
       next: (data: FirmaDigitalResponse) => {
@@ -510,7 +617,7 @@ export class FedatarioExpedientesComponent implements OnInit {
         this.EstadoFedatarioTrabajado();
         this.crearFedatario()
         this.progress_bar_sign()
-       
+
       },
       error: (error) => {
         console.log(error);
@@ -519,7 +626,7 @@ export class FedatarioExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('firmado correctamente');
-         
+
       }
     })
   }
@@ -536,7 +643,7 @@ export class FedatarioExpedientesComponent implements OnInit {
       },
       error: (error) => {
         console.error("❌ Error al consultar firma digital:", error);
-  
+
         if (error.status === 0) {
           this.titulo_certificado = 'No se pudo conectar con el servidor. Verifique su red.';
         } else if (error.status === 404) {

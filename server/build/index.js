@@ -32,7 +32,7 @@ class Server {
         // this.app.use(morgan('dev'));
         this.app.use((0, morgan_1.default)(':method :url :status :res[content-length] - :response-time ms'));
         this.app.use((0, cors_1.default)());
-        this.app.use(express_1.default.json({ limit: '250mb' }));
+        this.app.use(express_1.default.json());
         this.app.use(express_1.default.urlencoded({ limit: '250mb', extended: true }));
     }
     ruotes() {

@@ -29,6 +29,8 @@ class EstadoExpedienteRoutes{
         this.router.put('/api/estado_expediente/rechazar/controlIndizacion/:id_expediente',estadoExpedienteController.RechazarControlIndizacion)
         this.router.put('/api/estado_expediente/rechazar/fedatarioDigitalizacion/:id_expediente',estadoExpedienteController.RechazarFedatarioDigitalizacion)
         this.router.put('/api/estado_expediente/rechazar/fedatarioIndizacion/:id_expediente',estadoExpedienteController.RechazarFedatarioIndizacion)
+        this.router.get('/api/estado_expediente/mensajes/:id_expediente',estadoExpedienteController.obtenerMensajesById_expediente)
+        this.router.put('/api/estado_expediente/mensajes/:id_expediente',estadoExpedienteController.guardarMensajeById_expediente)
 
     }
 }

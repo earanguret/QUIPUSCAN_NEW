@@ -458,7 +458,7 @@
                             <!-- Elemento inferior (botones) fijo abajo -->
                             <div class="d-flex justify-content-between"
                                 style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
-                                <button type="button" class="rechazar-btn mx-2">Rechazar</button>
+                                <button type="button" class="rechazar-btn mx-2" (click)="openModalDesaprobar()">Rechazar</button>
                                 <div style="position: relative;">
 
                                     <button type="button" class="cancelar-btn mx-2"
@@ -538,28 +538,78 @@
         </div>
     </div>
 
-
     <!-- mensajeria notas -->
-    <div [ngClass]="{ 'visible': show_message_panel, 'hidden': !show_message_panel }" class="message-panel shadow-lg">
+    <div [ngClass]="{ 'visible': mostrar_mensajes_expediente, 'hidden': !mostrar_mensajes_expediente }"
+        class="message-panel shadow-lg">
+        <div *ngFor="let item of MensajesExpedienteTemp; let i = index" style="width: 88%;">
+            <div class="card-note">
+                <div class="card-header-message">
+                    <div class="d-flex justify-content-between align-items-center my-0">
+                        <p class="text-muted mb-1">DE: {{item.area_remitente}} / <span>{{item.responsable}}</span></p>
+                        <p class="text-muted mb-1">{{ item.fecha | date:'dd/MM/yyyy'}}</p>
+                    </div>
+                    <p class="text-muted mb-0">PARA: {{item.destino}}</p>
+                </div>
 
+                <p class="text-muted mt-2">{{item.mensaje}}</p>
+                <div *ngFor="let respuesta of item.respuestas" class="box-respuesta">
+                    <div class="d-flex justify-content-between align-items-center my-0">
+                        <p class="text-muted mb-1">{{respuesta.area}} / <span>{{respuesta.responsable}}</span></p>
+                        <p class="text-muted mb-1">{{respuesta.fecha | date:'dd/MM/yyyy'}}</p>
+                    </div>
+                    <p>{{respuesta.respuesta}}</p>
 
-        <div class="mb-3" style="width: 88%;">
-            <label class="form-label mb-1 mt-3">Nota:</label>
-            <textarea class="form-control" id="text_area_nota" rows="4"></textarea>
-            <div class="d-flex justify-content-end mt-2">
-                <button class="btn btn-success btn-sm">+ Add</button>
+                </div>
+
             </div>
         </div>
-
     </div>
+
 
     <!-- Boton de notas -->
     <div class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
-        (click)="show_message_panel = !show_message_panel">
-        <i *ngIf="!show_message_panel" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
-        <i *ngIf="show_message_panel" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
+        (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
+        <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
+        <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
     </div>
 
+</div>
 
+<!-- modal de desaprobacion -->
+<div class="modal fade modal-lg " id="exampleModalCenter_desaprobar" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content shadow-lg" style="border: 4px solid #ccc; background-color: rgb(243, 243, 241);">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Creación de indice</h5>
+            </div>
+            <div class="form-group container">
+                <div class="m-1 p-1 px-2">
 
+                    <label for="">¿Por qué razón rechazara el documento?</label>
+                    <div class="form-floating my-2">
+                        <textarea class="form-control" id="controlcalidad_textarea_rechazo"
+                            style="height: 200px; resize: none" [(ngModel)]="rechazoRazon"></textarea>
+                        <label class="mx-4" for="controlcalidad_textarea_desaprobar">Observaciones</label>
+                    </div>
+                    <div class="container mb-4">
+                        <div class="d-flex justify-content-center mt-4">
+                            <select class="form-select" aria-label="Default select example" id="select-area"
+                                [(ngModel)]="moduloSeleccionado">
+                                <option value="" selected>SELECCIÓN DE AREA</option>
+                                <option value="DIGITALIZACION">DIGITALIZACIÓN</option>
+                                <option value="INDIZACION">INDIZACIÓN</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3 mb-2">
+                        <button type="button" class="cancelar-btn mx-2"
+                            (click)="closeModalDesaprobar()">Cancelar</button>
+                        <button type="button" class="registrar-btn mx-2" (click)="rechazarExpediente()">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

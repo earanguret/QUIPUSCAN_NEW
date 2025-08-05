@@ -12,19 +12,25 @@ export function form_indizacion_creacion_vf(dataIndizacion:IndizacionRequest): E
     if(!dataIndizacion.materia){
         errorValidacion.push({ campo: 'materia', mensaje: 'Campo requerido' });
     }
-    if(!dataIndizacion.fecha_inicial){
-        errorValidacion.push({ campo: 'fecha de inicio', mensaje: 'Campo requerido' });
-    }
-    if(!dataIndizacion.fecha_final){
+    if (
+        !dataIndizacion.fecha_inicial ||
+        !(dataIndizacion.fecha_inicial instanceof Date) ||
+        isNaN(dataIndizacion.fecha_inicial.getTime())
+      ) {
+        errorValidacion.push({ campo: 'fecha de inicio', mensaje: 'Campo requerido o inválido' });
+      }
+    if(!dataIndizacion.fecha_final ||
+        !(dataIndizacion.fecha_final instanceof Date) ||
+        isNaN(dataIndizacion.fecha_final.getTime())){
         errorValidacion.push({ campo: 'fecha de final', mensaje: 'Campo requerido' });
     }
-    if(!dataIndizacion.demandante){
+    if(dataIndizacion.demandante=="[]"){
         errorValidacion.push({ campo: 'demandante', mensaje: 'Campo requerido' });
     }
-    if(!dataIndizacion.demandado){
+    if(dataIndizacion.demandado=="[]"){
         errorValidacion.push({ campo: 'demandado', mensaje: 'Campo requerido' });
     }
-    if(!dataIndizacion.indice){
+    if(dataIndizacion.indice=="[]"){
         errorValidacion.push({ campo: 'indice', mensaje: 'Campo requerido' });
     }
     return errorValidacion;
@@ -41,19 +47,25 @@ export function form_indizacion_creacion_vf(dataIndizacion:IndizacionRequest): E
     if(!dataIndizacion.materia){
         errorValidacion.push({ campo: 'materia', mensaje: 'Campo requerido' });
     }
-    if(!dataIndizacion.fecha_inicial){
-        errorValidacion.push({ campo: 'fecha de inicio', mensaje: 'Campo requerido' });
-    }
-    if(!dataIndizacion.fecha_final){
+    if (
+        !dataIndizacion.fecha_inicial ||
+        !(dataIndizacion.fecha_inicial instanceof Date) ||
+        isNaN(dataIndizacion.fecha_inicial.getTime())
+      ) {
+        errorValidacion.push({ campo: 'fecha de inicio', mensaje: 'Campo requerido o inválido' });
+      }
+    if(!dataIndizacion.fecha_final ||
+        !(dataIndizacion.fecha_final instanceof Date) ||
+        isNaN(dataIndizacion.fecha_final.getTime())){
         errorValidacion.push({ campo: 'fecha de final', mensaje: 'Campo requerido' });
     }
-    if(!dataIndizacion.demandante){
+    if(dataIndizacion.demandante=="[]"){
         errorValidacion.push({ campo: 'demandante', mensaje: 'Campo requerido' });
     }
-    if(!dataIndizacion.demandado){
+    if(dataIndizacion.demandado=="[]"){
         errorValidacion.push({ campo: 'demandado', mensaje: 'Campo requerido' });
     }
-    if(!dataIndizacion.indice){
+    if(dataIndizacion.indice=="[]"){
         errorValidacion.push({ campo: 'indice', mensaje: 'Campo requerido' });
     }
     return errorValidacion;

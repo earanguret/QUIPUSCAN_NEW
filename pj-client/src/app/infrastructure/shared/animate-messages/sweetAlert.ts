@@ -8,7 +8,7 @@ export class SweetAlert {
 
   constructor() { }
 
-  // Función para mostrar mensaje de éxito
+  // Función para mostrar mensaje de éxito en formato toast
   MensajeToast(mensaje: string, time: number) {
     const Toast = Swal.mixin({
       toast: true,

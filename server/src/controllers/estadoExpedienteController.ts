@@ -410,7 +410,7 @@ class EstadoExpedienteController {
         try {
             const { id_expediente } = req.params;
             const { app_user } = req.body;
-            
+
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
             const consulta = `
@@ -426,8 +426,8 @@ class EstadoExpedienteController {
                             estado_fedatado=$5
 	                    WHERE id_expediente=$6;
                 
-                `;        
-            const valores = [app_user, null, ipAddressClient, null, 'T', id_expediente];            
+                `;
+            const valores = [app_user, null, ipAddressClient, null, 'T', id_expediente];
             db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error('Fedatado aprobado:', error);
@@ -468,7 +468,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$8;
                 
                 `;
-            const valores = [app_user, null, ipAddressClient, null, 'R','R','R', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'R', 'R', 'R', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -509,7 +509,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$7;
                 
                 `;
-            const valores = [app_user, null, ipAddressClient, null, 'R','R', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'R', 'R', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -550,7 +550,7 @@ class EstadoExpedienteController {
 
 	                    WHERE id_expediente=$9;
                 `;
-            const valores = [app_user, null, ipAddressClient, null, 'R','R','R','R', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'R', 'R', 'R', 'R', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -590,7 +590,7 @@ class EstadoExpedienteController {
 
 	                    WHERE id_expediente=$8;
                 `;
-            const valores = [app_user, null, ipAddressClient, null, 'R','R','R', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'R', 'R', 'R', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -606,15 +606,89 @@ class EstadoExpedienteController {
         }
     }
 
+    public async obtenerMensajesById_expediente(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_expediente } = req.params;
+    
+            const consulta = `
+                SELECT mensajes
+                FROM archivo.t_estado_expediente
+                WHERE id_expediente = $1
+            `;
+    
+            const resultado = await db.query(consulta, [id_expediente]);
+    
+            if (resultado.rows.length > 0) {
+                res.json(resultado.rows[0].mensajes);
+            } else {
+                res.status(404).json({ error: "No se encontraron mensajes para este expediente." });
+            }
+        } catch (error) {
+            console.error("Error al obtener mensaje:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+    
+
+    public async guardarMensajeById_expediente(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_expediente } = req.params;
+            const { mensaje, app_user } = req.body;
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            
+            const consulta = `
+                        UPDATE archivo.t_estado_expediente
+                        SET 
+                            f_aud=CURRENT_TIMESTAMP, 
+                            b_aud='U', 
+                            c_aud_uid='${key.user}', 
+                            c_aud_uidred=$1, 
+                            c_aud_pc=$2, 
+                            c_aud_ip=$3, 
+                            c_aud_mac=$4,
+
+                            mensajes=$5
+
+                        WHERE id_expediente=$6;
+                        `;
+            const valores = [
+                app_user,
+                null,
+                ipAddressClient,
+                null,
+                mensaje,
+                id_expediente,
+
+            ];
+            db.query(consulta, valores, (error, resultado) => {
+                if (error) {
+                    console.error("Error al insertar mensaje:", error);
+                    if ((error as any).code === '23505') {
+                        res.status(409).json({ text: 'Ya existe mensaje con ese nombre' });
+                    } else {
+                        res.status(500).json({ error: 'Error al insertar la persona' });
+                    }
+                } else {
+                    console.log('Datos de mensaje en BD:',);
+                    res.status(200).json({ message: 'Mensaje agregado correctamente' });
+                }
+            });
+        } catch (error) {
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
+
     public async AsociarExpedientesADisco(req: Request, res: Response) {
         try {
-          const { lista_expedientes, id_disco, app_user } = req.body;
-          const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-      
-          // Extraer solo los ID de expediente
-          const idsExpedientes = lista_expedientes.map((e: any) => e.id_expediente);
-      
-          const consulta = `
+            const { lista_expedientes, id_disco, app_user } = req.body;
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+            // Extraer solo los ID de expediente
+            const idsExpedientes = lista_expedientes.map((e: any) => e.id_expediente);
+
+            const consulta = `
             UPDATE archivo.t_estado_expediente
             SET 
               f_aud = CURRENT_TIMESTAMP,
@@ -628,32 +702,32 @@ class EstadoExpedienteController {
               id_disco = $5
             WHERE id_expediente = ANY($6);
           `;
-      
-          const valores = [
-            app_user,
-            null,
-            ipAddressClient,
-            null,
-            id_disco,         
-            idsExpedientes    
-          ];
-      
-          db.query(consulta, valores, (error) => {
-            if (error) {
-              console.error('Error al asociar expedientes:', error);
-              res.status(500).json({ error: 'Error al asociar expedientes' });
-            } else {
-              console.log('Expedientes asociados correctamente');
-              res.json({ text: 'Expedientes asociados correctamente' });
-            }
-          });
-      
+
+            const valores = [
+                app_user,
+                null,
+                ipAddressClient,
+                null,
+                id_disco,
+                idsExpedientes
+            ];
+
+            db.query(consulta, valores, (error) => {
+                if (error) {
+                    console.error('Error al asociar expedientes:', error);
+                    res.status(500).json({ error: 'Error al asociar expedientes' });
+                } else {
+                    console.log('Expedientes asociados correctamente');
+                    res.json({ text: 'Expedientes asociados correctamente' });
+                }
+            });
+
         } catch (error) {
-          console.error("Error interno en el servidor:", error);
-          res.status(500).json({ error: "Error interno del servidor" });
+            console.error("Error interno en el servidor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
         }
-      }
-      
+    }
+
 
 
 

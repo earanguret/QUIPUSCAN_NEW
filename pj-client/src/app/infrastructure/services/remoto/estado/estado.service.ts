@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { EstadoAsociarExpedientesADiscoRequest, EstadoRequest } from '../../../../domain/dto/EstadoRequest.dto';
-import { AsociarExpedientesADiscoResponse, CrearEstadoResponse, EliminarEstadoResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+import { EstadoAsociarExpedientesADiscoRequest, EstadoRequest, mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
+import { AsociarExpedientesADiscoResponse, CrearEstadoResponse, EliminarEstadoResponse, EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+import { Mensaje } from '../../../../domain/models/Mensaje.model';
 
 @Injectable({
   providedIn: 'root'
@@ -76,5 +77,13 @@ export class EstadoService {
 
   RechazarFedatarioIndizacion(id_expediente:number, app_user:string):Observable<ModificarEstadoResponse>{
     return this.http.put<ModificarEstadoResponse>(`${this.api_uri_estado}/rechazar/fedatarioIndizacion/${id_expediente}`, {app_user})
+  }
+
+  ObtenerMensajesById_expediente(id_expediente:number):Observable<EstadoMensajesResponse>{
+    return this.http.get<EstadoMensajesResponse>(`${this.api_uri_estado}/mensajes/${id_expediente}`)
+  }
+
+  GuardarMensajeById_expediente(id_expediente:number,mensaje:mensajeRequest):Observable<MensajeGuardarResponse>{
+    return this.http.put<MensajeGuardarResponse>(`${this.api_uri_estado}/mensajes/${id_expediente}`,mensaje)
   }
 }

@@ -246,7 +246,7 @@ CREATE TABLE archivo.t_estado_expediente (
     estado_fedatado char(1),
     estado_finalizado char(1),
     id_disco integer REFERENCES archivo.t_disco(id_disco),
-    mensajes varchar
+    mensajes jsonb
 );
 
 -- Tabla: archivo.t_flujograma

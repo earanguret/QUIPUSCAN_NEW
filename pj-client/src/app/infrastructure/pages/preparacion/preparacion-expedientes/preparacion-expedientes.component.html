@@ -166,7 +166,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input type="text" class="form-control mt-3 observation-input" name="observacion" id="observacion">
+                            <input type="text" class="form-control mt-3 observation-input" name="observacion" id="observacion" [(ngModel)]="observacion_temp">
                             <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2" (click)="AgregarObservacion()">+ Añadir observación</button>
                         </div>
                         <!-- <textarea id="observaciones" name="observaciones" placeholder="Observaciones" class="form-control" style="height: 208px;resize: none" rows="6"></textarea> -->

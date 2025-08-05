@@ -19,3 +19,8 @@ export interface EstadoAsociarExpedientesADiscoRequest {
     lista_expedientes: ExpedienteSinDiscoResponse[];
 }
 
+export interface mensajeRequest{
+    mensaje: string;
+    app_user: string;
+}
+

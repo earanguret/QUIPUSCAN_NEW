@@ -13,7 +13,7 @@ import { CrearFlujogramaResponse } from '../../../../domain/dto/FlujogramaRespon
 import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
 import { map } from 'rxjs/operators';
 import { EstadoService } from '../../../services/remoto/estado/estado.service';
-import { ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+import { EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
@@ -29,7 +29,9 @@ import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dt
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 import { form_digitalizacion_creacion_vf, form_digitalizacion_modificar_vf } from '../../../validator/fromValidator/digitalizacion.validator';
 import { PDFDocument } from 'pdf-lib';
-import { Mensaje } from '../../../../domain/models/Mensaje.model';
+import { Mensaje, Respuesta } from '../../../../domain/models/Mensaje.model';
+import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
+import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 
 declare var bootstrap: any;
 
@@ -40,73 +42,75 @@ declare var bootstrap: any;
   styleUrl: './digitalizacion-expedientes.component.css'
 })
 export class DigitalizacionExpedientesComponent implements OnInit {
-  
-  mensajes: Mensaje[] = [
-    {
-      area_remitente: 'CONTROL',
-      responsable: 'MCORREO',
-      destino: 'DIGITALIZACION',
-      fecha: '2020-05-01',
-      mensaje: 'CAMBIAR LA PAGINA 27',
-      respuestas: [
-        {
-          area: 'CONTROL',
-          responsable: 'MLORENZO',
-          fecha: '2020-05-02',
-          respuesta: 'SE ATENDIO LO SOLICITADO'
-        },
-        {
-          area: 'INDIZACION',
-          responsable: 'LCLIMA',
-          fecha: '2020-05-04',
-          respuesta: 'SE ATENDIO LO SOLICITADO'
-        }
-      ]
-    },
 
-    {
-      area_remitente: 'FEDAARIO',
-      responsable: 'EARANGURE',
-      destino: 'INDIZACION',
-      fecha: '2020-05-01',
-      mensaje: 'CAMBIAR LA PAGINA 27',
-      respuestas: [
-        {
-          area: 'CONTROL',
-          responsable: 'MLORENZO',
-          fecha: '2020-05-02',
-          respuesta: 'SE ATENDIO LO SOLICITADO'
-        },
-        {
-          area: 'INDIZACION',
-          responsable: 'LCLIMA',
-          fecha: '2020-05-04',
-          respuesta: 'SE ATENDIO LO SOLICITADO'
-        }
-      ]
-    },
-    {
-      area_remitente: 'FEDAARIO',
-      responsable: 'EARANGURE',
-      destino: 'INDIZACION',
-      fecha: '2020-05-01',
-      mensaje: 'CAMBIAR LA PAGINA 27',
-      respuestas: [
-        {
-          area: 'CONTROL',
-          responsable: 'MLORENZO',
-          fecha: '2020-05-02',
-          respuesta: 'SE ATENDIO LO SOLICITADO'
-        },
-        {
-          area: 'INDIZACION',
-          responsable: 'LCLIMA',
-          fecha: '2020-05-04',
-          respuesta: 'SE ATENDIO LO SOLICITADO'
-        }
-      ]
-    }
-  ];
+  // mensajes: Mensaje[] = [
+  //   {
+  //     area_remitente: 'CONTROL',
+  //     responsable: 'MCORREO',
+  //     destino: 'DIGITALIZACION',
+  //     fecha: new Date('2020-05-01') ,
+  //     mensaje: 'CAMBIAR LA PAGINA 27',
+  //     respuestas: [
+  //       {
+  //         area: 'CONTROL',
+  //         responsable: 'MLORENZO',
+  //         fecha: new Date('2020-05-02'),
+  //         respuesta: 'SE ATENDIO LO SOLICITADO'
+  //       },
+  //       {
+  //         area: 'INDIZACION',
+  //         responsable: 'LCLIMA',
+  //         fecha: new Date('2020-05-04'),
+  //         respuesta: 'SE ATENDIO LO SOLICITADO'
+  //       }
+  //     ]
+  //   },
+
+  //   {
+  //     area_remitente: 'FEDAARIO',
+  //     responsable: 'EARANGURE',
+  //     destino: 'INDIZACION',
+  //     fecha: new Date('2020-05-01'),
+  //     mensaje: 'CAMBIAR LA PAGINA 27',
+  //     respuestas: [
+  //       {
+  //         area: 'CONTROL',
+  //         responsable: 'MLORENZO',
+  //         fecha:  new Date('2020-05-02'),
+  //         respuesta: 'SE ATENDIO LO SOLICITADO'
+  //       },
+  //       {
+  //         area: 'INDIZACION',
+  //         responsable: 'LCLIMA',
+  //         fecha: new Date('2020-05-04'),
+  //         respuesta: 'SE ATENDIO LO SOLICITADO'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     area_remitente: 'FEDAARIO',
+  //     responsable: 'EARANGURE',
+  //     destino: 'INDIZACION',
+  //     fecha: new Date('2020-05-01'),
+  //     mensaje: 'CAMBIAR LA PAGINA 27',
+  //     respuestas: [
+  //       {
+  //         area: 'CONTROL',
+  //         responsable: 'MLORENZO',
+  //         fecha:  new Date('2020-05-02'),
+  //         respuesta: 'SE ATENDIO LO SOLICITADO'
+  //       },
+  //       {
+  //         area: 'INDIZACION',
+  //         responsable: 'LCLIMA',
+  //         fecha:  new Date('2020-05-04'),
+  //         respuesta: 'SE ATENDIO LO SOLICITADO'
+  //       }
+  //     ]
+  //   }
+  // ];
+
+  MensajesExpedienteTemp: Mensaje[] = [];
 
   mostrarPopupIndex: number | null = null; // Índice del mensaje con popup abierto
   nuevaRespuesta: string = '';
@@ -120,8 +124,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.mostrarPopupIndex = null;
     this.nuevaRespuesta = ''
   }
-  
-  
+
+
   private myModalReception: any;
   private myModalDigitalizacion: any;
 
@@ -134,11 +138,13 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
 
+
   ListObservacionesPreparacion: string[] = [];
   notasList: any[] = [];
 
   id_expediente_temp: number = 0;
-  
+  observacion_temp: string = '';
+
 
   modificarDigitalizacion: boolean = false;
   pdfUrl: SafeResourceUrl | null = null;
@@ -153,7 +159,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   codigo_inventario: string = '';
   mostrarPreparacion = false;
 
-  data_expediente_temp: ExpedienteResponse={
+  data_expediente_temp: ExpedienteResponse = {
     id_expediente: 0,
     nro_expediente: '',
     id_inventario: 0,
@@ -161,39 +167,39 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     cod_paquete: '',
     estado_recepcionado: '',
     estado_preparado: '',
-    estado_digitalizado: '', 
-    estado_indizado:  '',
-    estado_controlado:   '',
-    estado_fedatado:   '',
-    estado_finalizado:   '',
-  } 
+    estado_digitalizado: '',
+    estado_indizado: '',
+    estado_controlado: '',
+    estado_fedatado: '',
+    estado_finalizado: '',
+  }
 
   data_preparacion_header: ExpedienteResponseDataView = {
-      id_expediente: 0,
-      nro_expediente: '',
-      id_inventario: 0,
-      id_responsable: 0,
-      cod_paquete: '',
-      responsable: null,
-      create_at: null,
-      username: null,
-    }
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    id_responsable: 0,
+    cod_paquete: '',
+    responsable: null,
+    create_at: null,
+    username: null,
+  }
 
   data_preparacion: PreparacionResponseDataView = {
-      id_preparacion: 0,
-      id_responsable: 0,
-      id_expediente: 0,
-      fojas_total: null,
-      fojas_unacara: null,
-      fojas_doscaras: null,
-      observaciones: '',
-      copias_originales: false,
-      copias_simples: false,
-      cod_paquete: null,
-      create_at: null,
-      responsable: null,
-      username: null,
-      nro_expediente: null,
+    id_preparacion: 0,
+    id_responsable: 0,
+    id_expediente: 0,
+    fojas_total: null,
+    fojas_unacara: null,
+    fojas_doscaras: null,
+    observaciones: '',
+    copias_originales: false,
+    copias_simples: false,
+    cod_paquete: null,
+    create_at: null,
+    responsable: null,
+    username: null,
+    nro_expediente: null,
   }
 
   data_digitalizacion: DigitalizacionModel = {
@@ -222,6 +228,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     private preparacionService: PreparacionService,
     private digitalizacionService: DigitalizacionService,
     private ftpService: FtpService,
+    private sweetAlert: SweetAlert,
     private inventarioService: InventarioService) { }
 
   ngOnInit(): void {
@@ -246,25 +253,25 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       alert("El archivo no puede estar vacío");
       return;
     }
-  
+
     try {
       // Leer el archivo como ArrayBuffer
       const arrayBuffer = await file.arrayBuffer();
-  
+
       // Cargar el PDF original
       const originalPdf = await PDFDocument.load(arrayBuffer);
-  
+
       // Crear un nuevo PDF y copiar la primera página
       const newPdf = await PDFDocument.create();
       const [firstPage] = await newPdf.copyPages(originalPdf, [0]);
       newPdf.addPage(firstPage);
-  
+
       // Serializar el nuevo PDF a bytes
       const pdfBytes = await newPdf.save();
-  
+
       // Crear nuevo archivo con la primera página
       const firstPageFile = new File([pdfBytes], `primera_${nameFile}`, { type: 'application/pdf' });
-  
+
       // Subir portada primero
       this.ftpService.uploadFile(firstPageFile, this.folderPathPortada!, nameFile).subscribe({
         next: (data: CrearDigitalizacionResponse) => {
@@ -276,7 +283,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         },
         complete: () => {
           console.log("Portada subida correctamente");
-  
+
           // Ahora subir el documento completo
           this.ftpService.uploadFile(file, this.folderPathDocument!, nameFile).subscribe({
             next: (data: CrearDigitalizacionResponse) => {
@@ -293,13 +300,13 @@ export class DigitalizacionExpedientesComponent implements OnInit {
           });
         }
       });
-  
+
     } catch (error) {
       console.error("Error al procesar el PDF:", error);
       alert("Ocurrió un error al extraer la primera hoja del PDF.");
     }
   }
-  
+
   // #endregion ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -324,45 +331,88 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
   closeModalReception() {
-  if (this.myModalReception) {
-    this.myModalReception.hide();
+    if (this.myModalReception) {
+      this.myModalReception.hide();
+    }
+    this.LimpiarDatosDigitalizacion();
+    this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
   }
-  this.LimpiarDatosDigitalizacion();
-  this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
-}
 
 
   openModalDigitalizacion(id_expediente: number, modificar_digitalizacion: boolean) {
     this.id_expediente_temp = id_expediente;
     this.mostrar_obs_preparacion = false;
-  
+
     this.recuperarDataPreparacion(id_expediente);
     this.ObtenerExpedienteDataViewXid(id_expediente);
-  
+    this.ObtenerMensajesById_expediente(id_expediente);
+
     this.modificarDigitalizacion = modificar_digitalizacion;
-  
+
     if (modificar_digitalizacion) {
       this.ObternerDigitalizacionByIdExpediente(id_expediente);
     } else {
       this.LimpiarDatosDigitalizacion();
     }
-  
+
     this.myModalDigitalizacion = new bootstrap.Modal(document.getElementById('ModalDigitalizacion'));
     this.myModalDigitalizacion.show();
-  
+
     this.closeModalReception();
   }
-  
+
 
   closeModalDigitalizacion() {
     // Quitar el foco de cualquier elemento dentro del modal
     (document.activeElement as HTMLElement)?.blur();
-  
+
     // Cerrar el modal si está definido
     if (this.myModalDigitalizacion) {
       this.myModalDigitalizacion.hide();
     }
   }
+
+  ObtenerMensajesById_expediente(id_expediente: number) {
+    this.estadoService.ObtenerMensajesById_expediente(id_expediente).subscribe({
+      next: (data: EstadoMensajesResponse) => {
+        try {
+          // Si data es un string JSON, lo parsea. Si ya es array, lo usa directamente.
+          const mensajes = typeof data === 'string' ? JSON.parse(data) : data;
+
+          this.MensajesExpedienteTemp = Array.isArray(mensajes) ? mensajes : [];
+          console.log('Mensajes cargados:', this.MensajesExpedienteTemp);
+        } catch (e) {
+          console.error('Error al parsear mensajes:', e);
+          this.MensajesExpedienteTemp = [];
+        }
+      },
+      error: (error) => {
+        console.error(error);
+        this.MensajesExpedienteTemp = []; // Siempre asegúrate que sea un array
+      },
+      complete: () => {
+        console.log('listado de mensajes completado');
+      }
+    });
+  }
+
+  agregarRespuesta(index: number, nuevaRespuesta: string): void {
+
+
+    if (index >= 0 && index < this.MensajesExpedienteTemp.length) {
+      let dataRespuesta: Respuesta = {
+        area: 'DIGITALIZACION',
+        responsable: this.credencialesService.credenciales.username,
+        fecha: new Date(),
+        respuesta: nuevaRespuesta
+      };
+      this.MensajesExpedienteTemp[index].respuestas.push(dataRespuesta);
+    } else {
+      console.error("Índice de mensaje inválido");
+    }
+  }
+
+
 
   ObtenerExpedienteDataViewXid(id_expediente: number) {
     this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
@@ -423,7 +473,6 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
     } else {
       this.guardarPDF(this.file!, this.data_expediente_temp.nro_expediente + '.pdf');
-      //this.GuardarDatosDigitalizacion();
     }
   }
 
@@ -445,6 +494,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.ListObservacionesDigitalizacion = [];
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
     (document.getElementById('formFile') as HTMLInputElement).value = '';
+    this.observacion_temp = '';
     this.modificarDigitalizacion = false;
   }
 
@@ -458,7 +508,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       ocr: this.data_digitalizacion.ocr,
       escala_gris: this.data_digitalizacion.escala_gris,
       color: this.data_digitalizacion.color,
-      observaciones: this.ListObservacionesDigitalizacion.length? this.ListObservacionesDigitalizacion.join('|'): null,
+      observaciones: this.ListObservacionesDigitalizacion.length ? this.ListObservacionesDigitalizacion.join('|') : null,
       dir_ftp: this.folderPathDocument,
       hash_doc: hash,
       peso_doc: this.file!.size,
@@ -487,19 +537,41 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         console.log('creacion de digitalizacion completado');
         this.EstadoDigitalizacionTrabajado()
         this.closeModalDigitalizacion();
+        this.sweetAlert.MensajeExito('Digitalización creada correctamente');
       }
     })
   }
+
+  ModificarRespuestaMensaje() {
+    const dataMessage: mensajeRequest = {
+      mensaje: JSON.stringify(this.MensajesExpedienteTemp),
+      app_user: this.credencialesService.credenciales.username
+    };
+
+    this.estadoService.GuardarMensajeById_expediente(
+      this.data_expediente_temp.id_expediente,
+      dataMessage
+    ).subscribe({
+      next: (data: MensajeGuardarResponse) => console.log(data.message),
+      error: (error) => console.error(error),
+      complete: () => {
+        console.log('guardar mensaje exitosa');
+       // this.ListarExpedientes();
+      }
+    });
+    
+  }
+
 
   async ModificarDigitalizacion() {
     const usuario = this.credencialesService.credenciales;
     const expediente = this.id_expediente_temp;
     const isArchivoCargado = !!this.file;
-  
+
     const hashActual = isArchivoCargado ? await getFileHash(this.file!) : this.data_digitalizacion.hash_doc;
     const hashPrevio = this.data_digitalizacion.hash_doc;
     const archivoModificado = hashActual !== hashPrevio;
-  
+
     const dataDigitalizacion: DigitalizacionRequest = {
       id_responsable: usuario.id_usuario,
       id_expediente: expediente,
@@ -507,7 +579,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       ocr: this.data_digitalizacion.ocr,
       escala_gris: this.data_digitalizacion.escala_gris,
       color: this.data_digitalizacion.color,
-      observaciones: this.ListObservacionesDigitalizacion.length? this.ListObservacionesDigitalizacion.join('|'): null,
+      observaciones: this.ListObservacionesDigitalizacion.length ? this.ListObservacionesDigitalizacion.join('|') : null,
       dir_ftp: this.folderPathDocument,
       hash_doc: hashActual,
       peso_doc: isArchivoCargado ? this.file!.size : this.data_digitalizacion.peso_doc,
@@ -515,7 +587,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     };
 
 
-  const erroresValidacion = form_digitalizacion_modificar_vf(dataDigitalizacion);
+    const erroresValidacion = form_digitalizacion_modificar_vf(dataDigitalizacion);
     if (erroresValidacion.length > 0) {
       let errorMensaje = '';
       erroresValidacion.forEach(error => {
@@ -534,11 +606,13 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         complete: () => {
           console.log("✔️ Modificación de digitalización completada");
           this.EstadoDigitalizacionTrabajado();
+          this.ModificarRespuestaMensaje();
           this.closeModalDigitalizacion();
+          this.sweetAlert.MensajeExito('Digitalización modificada correctamente');
         }
       });
     };
-  
+
     // Si hay archivo cargado y fue modificado
     if (isArchivoCargado && archivoModificado) {
       this.ftpService.uploadFile(this.file!, this.folderPathDocument!, this.data_expediente_temp.nro_expediente + '.pdf').subscribe({
@@ -560,6 +634,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         complete: () => {
           console.log("Archivo subido correctamente.");
           actualizarDatos();
+          this.ModificarRespuestaMensaje();
         }
       });
     } else {
@@ -570,16 +645,17 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         console.log("ℹEl archivo no ha cambiado. Solo se actualizarán los metadatos.");
       }
       actualizarDatos();
+      this.ModificarRespuestaMensaje();
     }
   }
 
   ObternerDigitalizacionByIdExpediente(id_expediente: number) {
-   
+
     this.digitalizacionService.ObtenerDigitalizacion(id_expediente).subscribe({
       next: (data: DigitalizacionDataResponse) => {
         this.data_digitalizacion = data;
         this.modificarDigitalizacion = true;
-        this.ListObservacionesDigitalizacion = this.data_digitalizacion?.observaciones? this.data_digitalizacion.observaciones.split('|') : [];
+        this.ListObservacionesDigitalizacion = this.data_digitalizacion?.observaciones ? this.data_digitalizacion.observaciones.split('|') : [];
         this.recuperarFile()
       },
       error: (error) => {
@@ -641,7 +717,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       app_user: this.credencialesService.credenciales.username,
       area: 'DIGITALIZACION'
     };
-  
+
     this.flujogramaService.CrearFlujograma(data_flujograma).subscribe({
       next: (data: CrearFlujogramaResponse) => {
         console.log(data.message);
@@ -651,7 +727,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('flujograma creado correctamente');
-  
+
         const esRecepcionado = this.data_expediente_temp.estado_digitalizado === 'R';
         this.openModalDigitalizacion(this.id_expediente_temp, esRecepcionado);
         this.EstadoDigitalizacionAceptado();
@@ -704,10 +780,14 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
 
-  AgregarObservacion() {
-    const valor = (document.getElementById('observacion') as HTMLInputElement).value;
+  AgregarObservacion(){
+    if(this.observacion_temp==''){
+      alert('Debe escribir algo para agregar la observación')
+      return;
+    }
+    const valor = this.observacion_temp;
     this.ListObservacionesDigitalizacion.push(valor);
-    (document.getElementById('observacion') as HTMLInputElement).value = '';
+    this.observacion_temp = '';
   }
 
   EliminarObservacion(index: number) {

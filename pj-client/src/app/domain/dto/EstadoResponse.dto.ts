@@ -1,3 +1,5 @@
+import { Mensaje } from "../models/Mensaje.model";
+
 export interface EstadoResponse {
     id_estado_expediente: number;
     id_expediente: number;
@@ -27,4 +29,12 @@ export interface EliminarEstadoResponse {
 
 export interface AsociarExpedientesADiscoResponse {
     message: string;
+}
+
+export interface MensajeGuardarResponse {
+    message: string;
+}
+
+export interface EstadoMensajesResponse {
+    mensajes: Mensaje[];
 }

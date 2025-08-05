@@ -42,6 +42,7 @@ export class PreparacionExpedientesComponent implements OnInit {
 
   id_expediente_temp: number = 0;
   nro_expediente_temp: string = '';
+  observacion_temp: string = '';
 
   data_preparacion_header: ExpedienteResponseDataView = {
     id_expediente: 0,
@@ -89,7 +90,6 @@ export class PreparacionExpedientesComponent implements OnInit {
         this.ListExpedientes = data;
         this.ListExpedientesTemp = data;
         console.log(this.ListExpedientes);
-        //this.openModalPreparation();
       },
       error: (error) => {
         console.log(error);
@@ -116,12 +116,9 @@ export class PreparacionExpedientesComponent implements OnInit {
   }
 
   openModalPreparation(id_expediente:number) {
-
-    // this.myModal.hide();
     this.id_expediente_temp = id_expediente;
     this.myModal = new bootstrap.Modal(document.getElementById('exampleModalpreparation'));
     this.myModal.show();
-
   }
 
   ObtenerExpedienteDataViewXid(expediente:any) {
@@ -215,7 +212,6 @@ export class PreparacionExpedientesComponent implements OnInit {
       }
     })
   }
-
 
   CrearPreparacion() {
 
@@ -332,14 +328,19 @@ export class PreparacionExpedientesComponent implements OnInit {
 
     this.ListObservaciones = [];
     this.modificarPreparacion = false;
+    this.observacion_temp = '';
   }
 
   // 
 
   AgregarObservacion(){
-    const valor = (document.getElementById('observacion') as HTMLInputElement).value;
+    if(this.observacion_temp==''){
+      alert('Debe escribir algo para agregar la observación')
+      return;
+    }
+    const valor = this.observacion_temp;
     this.ListObservaciones.push(valor);
-    (document.getElementById('observacion') as HTMLInputElement).value='';
+    this.observacion_temp = '';
   }
 
   EliminarObservacion(index: number) {

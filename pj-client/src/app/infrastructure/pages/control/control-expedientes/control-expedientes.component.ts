@@ -13,7 +13,7 @@ import { CredencialesService } from '../../../services/local/credenciales.servic
 import { FlujogramaService } from '../../../services/remoto/flujograma/flujograma.service';
 import { CrearFlujogramaResponse } from '../../../../domain/dto/FlujogramaResponse.dto';
 import { EstadoService } from '../../../services/remoto/estado/estado.service';
-import { ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+import { EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 import { CommonModule } from '@angular/common';
 import { FtpService } from '../../../services/remoto/ftp/ftp.service';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
@@ -30,6 +30,8 @@ import { ControlRequest } from '../../../../domain/dto/ControlRequest.dto';
 import { ControlService } from '../../../services/remoto/control/control.service';
 import { ControlDataResponse, CrearControlResponse, ModificarControlResponse } from '../../../../domain/dto/ControlResponse.dto';
 import { ControlModel } from '../../../../domain/models/Control.model';
+import { Mensaje } from '../../../../domain/models/Mensaje.model';
+import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 
 declare var bootstrap: any;
 
@@ -46,6 +48,9 @@ export class ControlExpedientesComponent implements OnInit {
   id_inventario: number = 0;
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
+  MensajesExpedienteTemp: Mensaje[] = [];
+  mostrar_mensajes_expediente: boolean = false;
+ 
 
   nro_expediente_temp: string = '';
   id_expediente_temp: number = 0;
@@ -54,6 +59,8 @@ export class ControlExpedientesComponent implements OnInit {
   pdfUrl: SafeResourceUrl | null = null;
   folderPath: string | null = null;
   p: number = 1;
+  rechazoRazon: string = '';
+  moduloSeleccionado: string = '';
 
   data_expediente_temp: ExpedienteResponse={
     id_expediente: 0,
@@ -195,6 +202,7 @@ export class ControlExpedientesComponent implements OnInit {
     this.recuperarDataPreparacion(id_expediente);
     this.recuperarDataDigitalizacion(id_expediente);
     this.recuperarDataIndizacion(id_expediente);
+    this.ObtenerMensajesById_expediente(id_expediente);
 
     if (modificar_control === true) {
       this.modificarControl = true;
@@ -239,6 +247,31 @@ export class ControlExpedientesComponent implements OnInit {
 
     this.ListObservacionesControl = [];
   }
+
+  ObtenerMensajesById_expediente(id_expediente: number) {
+    this.estadoService.ObtenerMensajesById_expediente(id_expediente).subscribe({
+      next: (data: EstadoMensajesResponse) => {
+        try {
+          // Si data es un string JSON, lo parsea. Si ya es array, lo usa directamente.
+          const mensajes = typeof data === 'string' ? JSON.parse(data) : data;
+  
+          this.MensajesExpedienteTemp = Array.isArray(mensajes) ? mensajes : [];
+          console.log('Mensajes cargados:', this.MensajesExpedienteTemp);
+        } catch (e) {
+          console.error('Error al parsear mensajes:', e);
+          this.MensajesExpedienteTemp = [];
+        }
+      },
+      error: (error) => {
+        console.error(error);
+        this.MensajesExpedienteTemp = []; // Siempre asegúrate que sea un array
+      },
+      complete: () => {
+        console.log('listado de mensajes completado');
+      }
+    });
+  }
+  
 
   ObtenerExpedienteDataViewXid(id_expediente: number) {
     this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
@@ -534,31 +567,68 @@ export class ControlExpedientesComponent implements OnInit {
   }
 
   rechazarExpediente() {
-    let razon = (document.getElementById('controlcalidad_textarea_rechazo') as HTMLInputElement).value;
-    let modulo = (document.getElementById('select-area') as HTMLInputElement).value;
-
-    console.log(razon);
-    console.log(modulo);
-
-    if (modulo === 'd') {
-      this.estadoService.RechazarControlDigitalizacion(this.data_expediente_temp.id_expediente, this.credencialesService.credenciales.username).subscribe({
-        next: (data: ModificarEstadoResponse) => {
-          console.log(data.message);
-        },
-        error: (error) => {
-          console.log(error);
-        },
-        complete: () => {
-          console.log('rechazar digitalizacion exitosa');
-          this.ListarExpedientes();
-        }
-      })
+    const razon = this.rechazoRazon;
+    const destino = this.moduloSeleccionado;
+  
+    if (!destino || !razon) {
+      console.warn('Debe seleccionar un módulo y proporcionar una razón');
+      return;
     }
-    if (modulo === 'i') {
-      
+  
+    const idExpediente = this.data_expediente_temp.id_expediente;
+    const usuario = this.credencialesService.credenciales.username;
+  
+    // Mapa de funciones por módulo
+    const rechazarFnMap = {
+      DIGITALIZACION: () =>
+        this.estadoService.RechazarControlDigitalizacion(idExpediente, usuario),
+      INDIZACION: () =>
+        this.estadoService.RechazarControlIndizacion(idExpediente, usuario)
+    };
+  
+    const rechazarFn = rechazarFnMap[destino as keyof typeof rechazarFnMap];
+  
+    if (!rechazarFn) {
+      console.error('Destino no soportado:', destino);
+      return;
     }
-    
+  
+    rechazarFn().subscribe({
+      next: (data: ModificarEstadoResponse) => console.log(data.message),
+      error: (error) => console.error(error),
+      complete: () => {
+        console.log(`rechazo a ${destino} exitoso`);
+        this.ListarExpedientes();
+  
+        const nuevoMensaje: Mensaje = {
+          area_remitente: 'CONTROL',
+          responsable: usuario,
+          destino,
+          fecha: new Date(),
+          mensaje: razon,
+          respuestas: []
+        };
+  
+        this.MensajesExpedienteTemp.push(nuevoMensaje);
+  
+        const dataMessage: mensajeRequest = {
+          mensaje: JSON.stringify(this.MensajesExpedienteTemp),
+          app_user: usuario
+        };
+  
+        this.estadoService.GuardarMensajeById_expediente(idExpediente, dataMessage).subscribe({
+          next: (data: MensajeGuardarResponse) => console.log(data.message),
+          error: (error) => console.error(error),
+          complete: () => {
+            console.log('guardar mensaje exitosa');
+            this.ListarExpedientes();
+          }
+        });
+      }
+    });
   }
+  
+  
   
 // ---------------------------------------------------------------------------
 
@@ -587,5 +657,7 @@ export class ControlExpedientesComponent implements OnInit {
       this.ListObservacionesControl[index] = temp;
     }
   }
+
+
 
 }
