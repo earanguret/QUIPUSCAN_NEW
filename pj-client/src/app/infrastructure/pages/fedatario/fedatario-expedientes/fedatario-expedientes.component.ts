@@ -34,6 +34,7 @@ import { FirmaDigitalService } from '../../../services/remoto/firmaDigital/firma
 import { CrearFedatarioResponse } from '../../../../domain/dto/FedatarioResponse.dto';
 import { Mensaje } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
+import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 
 
 declare var bootstrap: any;
@@ -47,7 +48,8 @@ declare var bootstrap: any;
 export class FedatarioExpedientesComponent implements OnInit {
 
 
-  private myModal: any;
+  private myModalFedatario: any;
+  private myModalReception: any;
   show_message_panel: boolean = false;
   show_sign_panel: boolean = false;
   id_inventario: number = 0;
@@ -194,6 +196,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     private indizacionService: IndizacionService,
     private controlService: ControlService,
     private fedatarioService: FedatarioService,
+    private sweetAlert: SweetAlert,
     private firmaDigitalService: FirmaDigitalService,
   ) { }
 
@@ -208,19 +211,19 @@ export class FedatarioExpedientesComponent implements OnInit {
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
     this.modificarControl = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('ModalReception'));
-    this.myModal.show();
+    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
+    this.myModalReception.show();
   }
 
-  closeModal() {
-    this.myModal.hide();
+  closeModalReception() {
+    this.myModalReception.hide();
 
   }
   openModalFedatario(id_expediente: number, nro_expediente: string) {
 
     this.id_expediente_temp = id_expediente;
-    this.myModal = new bootstrap.Modal(document.getElementById('ModalFedatario'));
-    this.myModal.show();
+    this.myModalFedatario = new bootstrap.Modal(document.getElementById('ModalFedatario'));
+    this.myModalFedatario.show();
     this.ObtenerExpedienteDataViewXid(id_expediente);
     this.recuperarFile(nro_expediente);
     this.recuperarDataPreparacion(id_expediente);
@@ -253,6 +256,10 @@ export class FedatarioExpedientesComponent implements OnInit {
         console.log('listado de mensajes completado');
       }
     });
+  }
+
+  closeModalFedatario() {
+    this.myModalFedatario.hide();
   }
 
   openModalDesaprobar() {
@@ -444,7 +451,7 @@ export class FedatarioExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('flujograma creado correctamente');
-        this.closeModal();
+        this.closeModalReception();
         this.EstadoFedatarioAceptado()
         this.openModalFedatario(this.data_expediente_temp.id_expediente, this.data_expediente_temp.nro_expediente);
 
@@ -498,13 +505,13 @@ export class FedatarioExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('fedatario creado correctamente');
-        this.closeModal();
+        this.closeModalFedatario();
       }
     })
   }
 
   rechazarExpediente() {
-    const razon = this.rechazoRazon;
+    const razon = this.rechazoRazon?.toUpperCase();
     const destino = this.moduloSeleccionado;
   
     if (!destino || !razon) {
@@ -558,6 +565,9 @@ export class FedatarioExpedientesComponent implements OnInit {
           error: (error) => console.error(error),
           complete: () => {
             console.log('guardar mensaje exitosa');
+            this.sweetAlert.MensajeSimpleInfo('EXPEDIENTE RECHAZADO', 'El expediente ${this.data_expediente_temp.nro_expediente} ha sido rechazado correctamente');
+            this.closeModalDesaprobar();
+            this.closeModalFedatario();
             this.ListarExpedientes();
           }
         });

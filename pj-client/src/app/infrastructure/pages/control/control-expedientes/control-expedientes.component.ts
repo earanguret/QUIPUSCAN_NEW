@@ -32,6 +32,7 @@ import { ControlDataResponse, CrearControlResponse, ModificarControlResponse } f
 import { ControlModel } from '../../../../domain/models/Control.model';
 import { Mensaje } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
+import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 
 declare var bootstrap: any;
 
@@ -173,6 +174,7 @@ export class ControlExpedientesComponent implements OnInit {
     private digitalizacionService: DigitalizacionService,
     private indizacionService: IndizacionService,
     private controlService: ControlService,
+    private sweetAlert: SweetAlert,
   ) { }
 
   ngOnInit(): void {
@@ -203,6 +205,7 @@ export class ControlExpedientesComponent implements OnInit {
     this.recuperarDataDigitalizacion(id_expediente);
     this.recuperarDataIndizacion(id_expediente);
     this.ObtenerMensajesById_expediente(id_expediente);
+    this.mostrar_mensajes_expediente = false;
 
     if (modificar_control === true) {
       this.modificarControl = true;
@@ -254,7 +257,7 @@ export class ControlExpedientesComponent implements OnInit {
         try {
           // Si data es un string JSON, lo parsea. Si ya es array, lo usa directamente.
           const mensajes = typeof data === 'string' ? JSON.parse(data) : data;
-  
+
           this.MensajesExpedienteTemp = Array.isArray(mensajes) ? mensajes : [];
           console.log('Mensajes cargados:', this.MensajesExpedienteTemp);
         } catch (e) {
@@ -442,6 +445,7 @@ export class ControlExpedientesComponent implements OnInit {
         console.log('Aprobacion de control completado');
         this.EstadoControlTrabajado()
         this.closeModalControl();
+        this.sweetAlert.MensajeExito('Control de calidad aprobado correctamente');
       }
     })
   }
@@ -470,6 +474,7 @@ export class ControlExpedientesComponent implements OnInit {
         console.log('modificacion de control completado');
         this.EstadoControlTrabajado()
         this.closeModalControl();
+        this.sweetAlert.MensajeExito('Control de calidad modificado correctamente');
       }
     })
   }
@@ -567,11 +572,12 @@ export class ControlExpedientesComponent implements OnInit {
   }
 
   rechazarExpediente() {
-    const razon = this.rechazoRazon;
+    const razon = this.rechazoRazon?.toUpperCase();
     const destino = this.moduloSeleccionado;
   
     if (!destino || !razon) {
-      console.warn('Debe seleccionar un módulo y proporcionar una razón');
+      // console.warn('Debe seleccionar un módulo y proporcionar una razón');
+      alert('Debe seleccionar un módulo y proporcionar una razón');
       return;
     }
   
@@ -621,6 +627,9 @@ export class ControlExpedientesComponent implements OnInit {
           error: (error) => console.error(error),
           complete: () => {
             console.log('guardar mensaje exitosa');
+            this.closeModalControl();
+            this.closeModalDesaprobar();
+            this.sweetAlert.MensajeSimpleInfo('EXPEDIENTE RECHAZADO',`El expediente ${this.data_expediente_temp.nro_expediente} ha sido rechazado correctamente` );
             this.ListarExpedientes();
           }
         });

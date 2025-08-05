@@ -410,6 +410,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     } else {
       console.error("Índice de mensaje inválido");
     }
+    this.cerrarPopup();
   }
 
 

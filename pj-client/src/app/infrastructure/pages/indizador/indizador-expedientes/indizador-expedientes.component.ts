@@ -595,6 +595,8 @@ export class IndizadorExpedientesComponent implements OnInit {
     } else {
       console.error("Índice de mensaje inválido");
     }
+
+    this.cerrarPopup();
   }
 
   ModificarRespuestaMensaje() {

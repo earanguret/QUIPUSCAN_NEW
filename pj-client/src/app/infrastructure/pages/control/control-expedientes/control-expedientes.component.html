@@ -533,7 +533,7 @@
 
 
     <!-- Boton de notas -->
-    <div class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
+    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
         (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
         <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
         <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
@@ -547,7 +547,7 @@
     <div class="modal-dialog modal-dialog-centered " role="document">
         <div class="modal-content shadow-lg" style="border: 4px solid #ccc; background-color: rgb(243, 243, 241);">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Creación de indice</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Rechazar expediente</h5>
             </div>
             <div class="form-group container">
                 <div class="m-1 p-1 px-2">
@@ -556,7 +556,7 @@
                     <div class="form-floating my-2">
                         <textarea class="form-control" id="controlcalidad_textarea_rechazo"
                             style="height: 200px; resize: none" [(ngModel)]="rechazoRazon"></textarea>
-                        <label class="mx-4" for="controlcalidad_textarea_desaprobar">Observaciones</label>
+                        <label class="mx-4" for="controlcalidad_textarea_desaprobar">Razón</label>
                     </div>
                     <div class="container mb-4">
                         <div class="d-flex justify-content-center mt-4">

@@ -74,11 +74,19 @@ export class SweetAlert {
     });
   }
 
-  async MensajeSimpleIcon(title: string, text: string){
+  async MensajeSimpleWarning(title: string, text: string ){
     Swal.fire({
       title: title,
       text: text,
       icon: "warning"
+    });
+  }
+
+  async MensajeSimpleInfo(title: string, text: string ){
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: "info"
     });
   }
 
