@@ -1,6 +1,7 @@
 -- Crear esquemas
 CREATE SCHEMA IF NOT EXISTS archivo;
 CREATE SCHEMA IF NOT EXISTS maestro;
+CREATE SCHEMA IF NOT EXISTS auditoria;
 
 -- ====================
 -- TABLAS DEL ESQUEMA: archivo
@@ -449,3 +450,28 @@ CREATE TRIGGER trg_decrementar_cantidad
 AFTER DELETE ON archivo.t_expediente
 FOR EACH ROW
 EXECUTE FUNCTION actualizar_cantidad_inventario();
+
+
+-- ====================
+-- TABLAS DEL ESQUEMA: auditoria
+-- ====================
+
+-- Tabla: auditoria.t_logs_accesos
+CREATE TABLE auditoria.t_logs_accesos (
+    id_log_acceso SERIAL PRIMARY KEY,
+    direccion_ip VARCHAR,
+    usuario VARCHAR,
+    detalle VARCHAR,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla: auditoria.t_logs_eventos
+CREATE TABLE auditoria.t_logs_eventos (
+    id_log_evento SERIAL PRIMARY KEY,
+    direccion_ip VARCHAR,
+    usuario VARCHAR,
+    modulo VARCHAR,
+    detalle VARCHAR,
+    expediente VARCHAR,
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
