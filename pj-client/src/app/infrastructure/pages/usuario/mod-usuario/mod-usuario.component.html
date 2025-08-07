@@ -1,5 +1,48 @@
 <div class="panel">
     <app-navegator></app-navegator>
     <app-subnavegator></app-subnavegator>
-    <h1>listos en modificar usuario</h1>
+    <div class="container mt-3 ">
+        
+        <div class="encabezado_pages ">
+            <i class="bi bi-person icon-custom"></i>
+            <div class="text-start">
+                <p class="titulo_menu px-4">{{credenciales.username}}</p>
+                <p class="subtitulo_menu px-4">{{credenciales.perfil}}</p>
+            </div>
+        </div>
+        <div>
+            <form>
+                <!-- DATOS DEL PERSONALES -->
+                <fieldset>
+                    <div class="form-group">
+                        <label for="nombre" class="form-label mt-2">Nombres:</label>
+                        <input type="text" class="form-control" name="nombre" [(ngModel)]="data_persona.nombre"
+                            >
+                    </div>
+                    <div class="form-group">
+                        <label for="ap_paterno" class="form-label mt-3">Apellido Paterno:</label>
+                        <input type="text" class="form-control" name="ap_paterno"
+                            [(ngModel)]="data_persona.ap_paterno"
+                         >
+                    </div>
+                    <div class="form-group">
+                        <label for="ap_materno" class="form-label mt-3">Apellido Materno:</label>
+                        <input type="text" class="form-control" name="ap_materno"
+                            [(ngModel)]="data_persona.ap_materno"
+                            >
+                    </div>
+                  
+                    <div class="form-group">
+                        <label for="documento_dni" class="form-label mt-3">DNI:</label>
+                        <input type="text" class="form-control" name="documento_id" [(ngModel)]="data_persona.dni">
+                    </div>
+                    
+                </fieldset>
+            </form>
+            <div class="d-grid gap-2">
+                <button class="btn btn-lg btn-success  mt-3" type="button" (click)="modificarPersona()">SAVE</button>
+                <br>
+            </div>
+        </div>
+    </div>
 </div>

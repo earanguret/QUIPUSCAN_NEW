@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../../environment/environment';
 import { PersonaModel } from '../../../../domain/models/Persona.model';
 import { CrearPersonaMessageResponse, ModificarPersonaMessageResponse, PersonaResponse } from '../../../../domain/dto/PersonaResponse.dto';
+import { PersonaRequest } from '../../../../domain/dto/PersonaRequest.dto';
 
 
 @Injectable({
@@ -27,7 +28,7 @@ export class PersonaService {
     return this.http.get<PersonaResponse>(this.api_uri_persona+`/dni/${dni}`)
   }
 
-  CrearPersona(cuerpo_persona:PersonaModel):Observable<CrearPersonaMessageResponse>{
+  CrearPersona(cuerpo_persona:PersonaRequest):Observable<CrearPersonaMessageResponse>{
     cuerpo_persona.nombre=cuerpo_persona.nombre.trim().toUpperCase()
     cuerpo_persona.ap_paterno=cuerpo_persona.ap_paterno.trim().toUpperCase()
     cuerpo_persona.ap_materno=cuerpo_persona.ap_materno.trim().toUpperCase()
@@ -35,7 +36,7 @@ export class PersonaService {
     return this.http.post<CrearPersonaMessageResponse>(this.api_uri_persona,cuerpo_persona)
   }
 
-  ModificarPersona(id_persona:number,cuerpo_persona:any):Observable<ModificarPersonaMessageResponse>{
+  ModificarPersona(id_persona:number,cuerpo_persona:PersonaRequest):Observable<ModificarPersonaMessageResponse>{
     cuerpo_persona.nombre=cuerpo_persona.nombre.trim().toUpperCase()
     cuerpo_persona.ap_paterno=cuerpo_persona.ap_paterno.trim().toUpperCase()
     cuerpo_persona.ap_materno=cuerpo_persona.ap_materno.trim().toUpperCase()

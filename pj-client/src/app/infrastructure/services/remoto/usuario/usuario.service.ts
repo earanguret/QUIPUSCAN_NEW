@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../../environment/environment';
 import { CrearUsuarioResponse, ModificarDatosUsuarioResponse, UsuarioResponse } from '../../../../domain/dto/UsuarioResponse.dto';
 import { UsuarioModel } from '../../../../domain/models/Usuario.model';
+import { UsuarioRequest } from '../../../../domain/dto/UsuarioRequest.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class UsuarioService {
     return this.http.get<UsuarioModel>(`${this.api_uri_usuario}/${id_usuario}`)
   }
 
-  CrearUsuario(cuerpo_usuario:UsuarioModel):Observable<CrearUsuarioResponse>{
+  CrearUsuario(cuerpo_usuario:UsuarioRequest):Observable<CrearUsuarioResponse>{
     cuerpo_usuario.username=cuerpo_usuario.username.trim().toUpperCase()  
     return this.http.post<CrearUsuarioResponse>(`${this.api_uri_usuario}/crear`,cuerpo_usuario)
   }   

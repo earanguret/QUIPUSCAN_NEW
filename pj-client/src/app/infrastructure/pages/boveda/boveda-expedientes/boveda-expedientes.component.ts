@@ -218,7 +218,7 @@ export class BovedaExpedientesComponent implements OnInit {
       next: (data: ExpedienteSinDiscoResponse[]) => {
         this.ListExpedientesPendentesDisco = data;
          this.porcentajeExpedientes = this.calcularPorcentajeAcumlado(data);
-        // this.porcentajeExpedientes = 120;
+        
         console.log(this.ListExpedientesPendentesDisco);
       },
       error: (error) => {

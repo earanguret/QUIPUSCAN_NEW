@@ -465,7 +465,8 @@ class DiscoController {
                     i.create_at as fecha_indizacion,
                     cc.create_at as fecha_control,
                     f.create_at as fecha_fedatario,
-                    d.peso_doc
+                    d.peso_doc,
+                    d.fojas_total
                 FROM 
                     archivo.t_expediente e
                 JOIN 
@@ -536,7 +537,7 @@ class DiscoController {
                 fecha_acta_cierre:data_disco.rows[0].fecha_acta_cierre,
                 fecha_tarjeta_apertura:data_disco.rows[0].fecha_tarjeta_apertura,
                 fecha_tarjeta_cierre:data_disco.rows[0].fecha_tarjeta_cierre,
-                total_fojas:data_disco.rows[0].capacidad_gb, //corregir dato
+                total_fojas:expedientes.reduce((sum, exp) => sum + (exp.fojas_total || 0), 0),
                 cantidad_expedientes:expedientes.length
               };
 

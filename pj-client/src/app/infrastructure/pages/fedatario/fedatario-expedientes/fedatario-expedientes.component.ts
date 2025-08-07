@@ -224,6 +224,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.id_expediente_temp = id_expediente;
     this.myModalFedatario = new bootstrap.Modal(document.getElementById('ModalFedatario'));
     this.myModalFedatario.show();
+    this.mostrar_mensajes_expediente = false;
     this.ObtenerExpedienteDataViewXid(id_expediente);
     this.recuperarFile(nro_expediente);
     this.recuperarDataPreparacion(id_expediente);
@@ -260,6 +261,12 @@ export class FedatarioExpedientesComponent implements OnInit {
 
   closeModalFedatario() {
     this.myModalFedatario.hide();
+    this.mostrar_mensajes_expediente = false;
+    this.show_sign_panel = false;
+    this.msg_firmado = false;
+    this.buttonFirma = true;
+    (document.getElementById('password_certificado') as HTMLInputElement).value='';
+  
   }
 
   openModalDesaprobar() {
@@ -515,7 +522,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     const destino = this.moduloSeleccionado;
   
     if (!destino || !razon) {
-      console.warn('Debe seleccionar un módulo y proporcionar una razón');
+      alert('Debe seleccionar un módulo y proporcionar una razón');
       return;
     }
   
@@ -565,7 +572,7 @@ export class FedatarioExpedientesComponent implements OnInit {
           error: (error) => console.error(error),
           complete: () => {
             console.log('guardar mensaje exitosa');
-            this.sweetAlert.MensajeSimpleInfo('EXPEDIENTE RECHAZADO', 'El expediente ${this.data_expediente_temp.nro_expediente} ha sido rechazado correctamente');
+            this.sweetAlert.MensajeSimpleInfo('EXPEDIENTE RECHAZADO',`El expediente ${this.data_expediente_temp.nro_expediente} ha sido rechazado correctamente` );
             this.closeModalDesaprobar();
             this.closeModalFedatario();
             this.ListarExpedientes();
@@ -606,6 +613,11 @@ export class FedatarioExpedientesComponent implements OnInit {
         }, 2000);
       }
     }, 500);
+  }
+
+  terminarFirma(){
+    this.closeModalFedatario();
+    this.sweetAlert.MensajeExito('Expediente firmado correctamente');
   }
 
   firmarDocumento() {

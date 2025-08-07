@@ -479,8 +479,7 @@
 
                                             <div class="d-flex mt-3">
                                                 <p class="m-1 p-1 mb-0 pb-0 px-2">Password</p>
-                                                <input type="password" class="form-control form-control-sm sign-tag "
-                                                    name="observacion" id="password_certificado">
+                                                <input type="password" class="form-control form-control-sm sign-tag " name="observacion" id="password_certificado">
                                             </div>
 
                                             <div class="text-end mt-2" *ngIf="buttonFirma">
@@ -513,6 +512,7 @@
                                                 class="alert alert-success alert-dismissible fade show mt-3"
                                                 role="alert" style="margin-bottom: 0px; padding: 12px 8px; ">
                                                 {{mensaje_firmado}}
+                                                <button class="btn btn-secondary btn-sm" (click)="terminarFirma()">Terminar</button>
                                             </div>
 
                                             <!-- <input type="text" readonly class="form-control sign-tag" name="observacion" value="prueba"> -->
@@ -567,7 +567,7 @@
 
 
     <!-- Boton de notas -->
-    <div class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
+    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
         (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
         <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
         <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
@@ -581,7 +581,7 @@
     <div class="modal-dialog modal-dialog-centered " role="document">
         <div class="modal-content shadow-lg" style="border: 4px solid #ccc; background-color: rgb(243, 243, 241);">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Creación de indice</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Devolución de expediente</h5>
             </div>
             <div class="form-group container">
                 <div class="m-1 p-1 px-2">

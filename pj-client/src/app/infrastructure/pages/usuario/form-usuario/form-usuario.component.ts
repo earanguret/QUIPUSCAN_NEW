@@ -15,6 +15,9 @@ import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 import { SoloNumerosDirective } from '../../../directives/solo-numeros.directive';
 import { SoloLetrasDirective } from '../../../directives/solo-letras.directive';
 import { validarContrasenaInput } from '../../../validator/fromValidator/usuario.validator';
+import { PersonaRequest } from '../../../../domain/dto/PersonaRequest.dto';
+import { CredencialesService } from '../../../services/local/credenciales.service';
+import { UsuarioRequest } from '../../../../domain/dto/UsuarioRequest.dto';
 
 @Component({
   selector: 'app-form-usuario',
@@ -55,6 +58,7 @@ export class FormUsuarioComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private personaService: PersonaService,
     private usuarioService: UsuarioService,
+    private credencialesService: CredencialesService,
     private sweetAlert: SweetAlert) { }
 
   ngOnInit(): void {
@@ -132,7 +136,15 @@ export class FormUsuarioComponent implements OnInit {
   CrearUsuario() {
     this.dataUsuario.id_persona=this.dataPersona.id_persona;
     console.log(this.dataUsuario)
-    this.usuarioService.CrearUsuario(this.dataUsuario).subscribe({
+    const data_usuario_tem:UsuarioRequest = {
+      id_persona: this.dataPersona.id_persona,
+      username: this.dataUsuario.username,
+      password: this.dataUsuario.password!,
+      perfil: this.dataUsuario.perfil,
+      estado: this.dataUsuario.estado!,
+      app_user: this.credencialesService.credenciales.username
+    }
+    this.usuarioService.CrearUsuario(data_usuario_tem).subscribe({
       next: (usuario: CrearUsuarioResponse) => {
         console.log('Usuario creado:', usuario);
       },
@@ -204,7 +216,15 @@ export class FormUsuarioComponent implements OnInit {
 
   CrearPersona( ) {
     console.log(this.dataPersona)
-    this.personaService.CrearPersona(this.dataPersona).subscribe({
+    const data_persona_tem:PersonaRequest = {
+      nombre: this.dataPersona.nombre,
+      ap_paterno: this.dataPersona.ap_paterno,
+      ap_materno: this.dataPersona.ap_materno,
+      dni: this.dataPersona.dni,
+      app_user: this.credencialesService.credenciales.username
+    }
+
+    this.personaService.CrearPersona(data_persona_tem).subscribe({
       next: (data: CrearPersonaMessageResponse) => {
         console.log('Persona creada:', data);
         this.dataPersona.id_persona=data.id_persona;
@@ -230,7 +250,15 @@ export class FormUsuarioComponent implements OnInit {
   }
 
   ModificarDatosPersona(){
-    this.personaService.ModificarPersona(this.dataPersona.id_persona,this.dataPersona).subscribe({
+    const data_persona_tem:PersonaRequest = {
+          nombre: this.dataPersona.nombre,
+          ap_paterno: this.dataPersona.ap_paterno,
+          ap_materno: this.dataPersona.ap_materno,
+          dni: this.dataPersona.dni,
+          app_user: this.credencialesService.credenciales.username
+        }
+
+    this.personaService.ModificarPersona(this.dataPersona.id_persona,data_persona_tem).subscribe({
       next: (data: ModificarPersonaMessageResponse) => {
         console.log('Datos de la persona modificados:', data);
       },

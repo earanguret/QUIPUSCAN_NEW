@@ -49,7 +49,7 @@ class PersonaController{
     CrearPersona(req:Request,res:Response){
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const { nombre, ap_paterno, ap_materno, dni,username} = req.body;
+            const { nombre, ap_paterno, ap_materno, dni, app_user} = req.body;
             const consulta = `
                     INSERT INTO archivo.t_persona(
                             f_aud,        -- fecha de la transaccion
@@ -68,7 +68,7 @@ class PersonaController{
                             VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, $5, $6, $7, $8)
                             RETURNING id_persona;
             `;
-            const valores = [username, null, ipAddressClient, null,nombre, ap_paterno, ap_materno, dni];
+            const valores = [app_user, null, ipAddressClient, null, nombre, ap_paterno, ap_materno, dni];
             db.query(consulta, valores, (error, resultado) => {
                 if (error) {
                    
@@ -93,7 +93,7 @@ class PersonaController{
     public async ModificarPersona(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
-            const { nombre, ap_paterno, ap_materno, dni, user_app} = req.body;
+            const { nombre, ap_paterno, ap_materno, dni, app_user} = req.body;
             
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -115,7 +115,7 @@ class PersonaController{
 	                 WHERE id_persona=$9;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, nombre, ap_paterno, ap_materno, dni, id];
+            const valores = [app_user, null, ipAddressClient, null, nombre, ap_paterno, ap_materno, dni, id];
             console.log('datos persona:',valores)
 
             db.query(consulta, valores, (error) => {
