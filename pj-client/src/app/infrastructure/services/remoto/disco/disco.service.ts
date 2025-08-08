@@ -45,8 +45,8 @@ export class DiscoService {
     return this.http.post<ModificarDiscoResponse>(`${this.api_uri_disco}/cerrar/${id_disco}`,data_disco)
   }
 
-  GenerarDiscoMicroformas(id_disco: number): Observable<Blob> {
-    return this.http.get(`${this.api_uri_disco}/descargar-zip/${id_disco}`, {
+  GenerarDiscoMicroformas(id_disco: number, app_user: string): Observable<Blob> {
+    return this.http.get(`${this.api_uri_disco}/descargar-zip/${id_disco}/${app_user}`, {
       responseType: 'blob'
     }) as Observable<Blob>;
   }

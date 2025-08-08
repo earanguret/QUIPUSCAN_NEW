@@ -79,17 +79,14 @@ export class RecepcionExpedientesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    //this.ObtenerDatosInventario()
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
-
     this.ObtenerListaExpedientes()
-
-
   }
 
   closeModal() {
     this.myModal.hide();
   }
+
   openModalCreate() {
     this.limpiarDatosInventario();
     this.modificarExpediente = false;
@@ -173,7 +170,6 @@ export class RecepcionExpedientesComponent implements OnInit {
     })
   }
 
-
   EliminarExpediente(id: number) {
     this.flujogramaService.EliminarFlujograma(id).pipe(
       switchMap((data1: EliminarFlujogramaResponse) => {
@@ -182,7 +178,7 @@ export class RecepcionExpedientesComponent implements OnInit {
       }),
       switchMap((data2: EliminarEstadoResponse) => {
         console.log('Estado eliminado:', data2);
-        return this.expedienteService.EliminarExpediente(id);
+        return this.expedienteService.EliminarExpediente(id,this.credencialesService.credenciales.username);
       })
     ).subscribe({
       next: (data3: EliminarExpedienteResponse) => {
@@ -286,21 +282,6 @@ export class RecepcionExpedientesComponent implements OnInit {
     })
   }
 
-  // ObtenerListaExpedientes() {
-  //   this.expedienteService.ListarExpedientesXidInventario(this.id_inventario).subscribe({
-  //     next: (data: ExpedienteResponse[]) => {
-  //       this.ListExpedientes = data;
-  //       console.log(this.ListExpedientes);
-
-  //     },
-  //     error: (error) => {
-  //       console.log(error);
-  //     },
-  //     complete: () => {
-  //       console.log('listado de expedientes completado');
-  //     }
-  //   })
-  // }
   ObtenerDatosInventario() {
     const params = this.activatedRoute.snapshot.params;
     this.inventarioService.ObtenerInventarioDetalle(params['id']).subscribe({
@@ -331,38 +312,5 @@ export class RecepcionExpedientesComponent implements OnInit {
     });
     this.ListExpedientes = objetosFiltrados
   }
-
-  // EnviarExpedientesPreparacion() {
-  //   this.isLoading = true;
-  //     if (this.exp_count_pendientes > 0) {
-  //       this.ListExpedientes.forEach((expediente: any) => {
-  //         if (expediente.estado_preparado==null) {
-  //           this.estadoService.AprobarPreparacion(expediente.id_expediente, this.credencialesService.credenciales.username).subscribe({
-  //             next: (data:any) => {
-  //               console.log(data);
-  //             },
-  //             error: (error) => {
-  //               console.log(error);
-  //             },
-  //             complete: () => {
-  //               console.log('expediente preparado');
-  //               this.ObtenerListaExpedientes();
-  //             }
-  //           })
-  //         }
-  //       })
-  //       setTimeout(() => {
-  //         this.isLoading = false;
-  //         this.ObtenerListaExpedientes();
-  //       // mensaje : se enviaron los expedientes
-  //       }, 2000);
-
-  //     }
-  //     else {
-  //       this.isLoading = false;
-  //       // mensaje : no hay expedientes pendientes
-  //     }
-
-  // }
 
 }

@@ -99,11 +99,18 @@ class DiscoController {
                     }
                 } else {
                     console.log('Datos de disco creado correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "DISCO",
+                        detalle: `Creacion de disco ${nombre}`,
+                    };
                     res.status(200).json({ message: 'Datos de disco creado correctamente' });
                 }
             });
         } catch (error) {
             console.error('Error al crear disco:', error);
+            res.locals.body = { text: `"Error al crear el disco:" ${error}` };
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
@@ -310,8 +317,9 @@ class DiscoController {
     public async cerrarDisco(req: Request, res: Response): Promise<any> {
         try {
             const { id_disco } = req.params;
-            const { id_responsable_cierre, espacio_ocupado, user_app } = req.body;
+            const { id_responsable_cierre, espacio_ocupado, app_user } = req.body;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            const disco = await db.query('select * from archivo.t_disco where id_disco=$1',[id_disco]);
             const consulta = `
                 UPDATE archivo.t_disco
                 SET 
@@ -330,7 +338,7 @@ class DiscoController {
                     WHERE id_disco=$7;
                          `;
             const valores = [
-                user_app,
+                app_user,
                 null,
                 ipAddressClient,
                 null,
@@ -344,20 +352,31 @@ class DiscoController {
                     console.error('Error al cerrar disco:', error);
                 } else {
                     console.log('Disco cerrado correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "DISCO",
+                        detalle: `Cierre de disco ${disco["rows"][0]["nombre"]}`,
+
+                     
+                    };
                     res.status(200).json({ message: 'Disco cerrado correctamente' });
                 }
             });
         } catch (error) {
             console.error('Error interno en el servidor:', error);
+            res.locals.body = { text: `"Error al cerrar el disco:" ${error}` };
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 
 
     public async descargarDiscoZip(req: Request, res: Response): Promise<any> {
-        const { id_disco } = req.params;
-
+        const { id_disco, app_user } = req.params;
+        const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        const disco = await db.query('select * from archivo.t_disco where id_disco=$1',[id_disco]);
         const ftpClient = new Client();
+
         await ftpClient.access({
             host: process.env.FTP_HOST || "172.17.70.118",
             user: process.env.FTP_USER || "user1",
@@ -365,9 +384,6 @@ class DiscoController {
             secure: true,
             secureOptions: { rejectUnauthorized: false }
         });
-
-
-        
 
         try {
             // Configura el ZIP como respuesta HTTP
@@ -552,8 +568,16 @@ class DiscoController {
     
             // Finaliza el archivo ZIP
             archive.finalize();
+            res.locals.body = {
+                direccion_ip: ipAddressClient,
+                usuario: app_user,
+                modulo: "DISCO",
+                detalle: `Descarga de disco ${disco["rows"][0]["nombre"]}`,
+             
+            };
         } catch (error) {
             console.error("Error generando ZIP:", error);
+            res.locals.body = { text: `"Error al generar el ZIP:" ${error}` };
             res.status(500).json({ error: "Error generando el ZIP" });
         } finally {
             ftpClient.close();

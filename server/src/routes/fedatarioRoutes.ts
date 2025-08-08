@@ -1,5 +1,6 @@
 import { Router } from "express";
 import fedatarioController from "../controllers/fedatarioController";
+import CreateMiddleware from "../middlewares/log_evento/create.middleware";
 
 
 class FedatarioRoutes{
@@ -13,7 +14,7 @@ class FedatarioRoutes{
     }
     config():void{
         this.router.get('/api/fedatario',fedatarioController.listarFedatario)
-        this.router.post('/api/fedatario',fedatarioController.crearFedatario)
+        this.router.post('/api/fedatario', CreateMiddleware ,fedatarioController.crearFedatario)
     }
 
 }

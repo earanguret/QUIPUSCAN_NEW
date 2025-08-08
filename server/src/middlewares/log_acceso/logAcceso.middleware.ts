@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import db from "../../database/database"; // Ruta al archivo db.ts
 
-const logAcceso = async (
+const logAccesoMiddleware = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -33,4 +33,4 @@ const logAcceso = async (
     next();
 };
 
-export default logAcceso;
+export default logAccesoMiddleware;

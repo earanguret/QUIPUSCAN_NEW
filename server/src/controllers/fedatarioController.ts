@@ -17,6 +17,7 @@ class FedatarioController {
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             const { id_responsable, id_expediente, observaciones, app_user } = req.body;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                     INSERT INTO archivo.t_fedatar(
                             f_aud,        -- fecha de la transaccion
@@ -55,11 +56,19 @@ class FedatarioController {
                     }
                 } else {
                     console.log('Datos de fedatario en BD:', );
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "FEDATARIO",
+                        detalle: `Expediente fedatado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.status(200).json({ message: 'Datos de fedatario creado correctamente' });
                 }
             });
         } catch (error) {
             console.error('Error al crear fedatario:', error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }

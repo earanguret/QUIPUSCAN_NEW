@@ -32,8 +32,8 @@ export class ExpedienteService {
     return this.http.post<CrearExpedienteResponse>(this.api_uri_expediente,cuerpo_expediente)
   }
 
-  EliminarExpediente(id:number):Observable<EliminarExpedienteResponse>{
-    return this.http.delete<EliminarExpedienteResponse>(`${this.api_uri_expediente}/${id}`)
+  EliminarExpediente(id:number,app_user:string):Observable<EliminarExpedienteResponse>{
+    return this.http.delete<EliminarExpedienteResponse>(`${this.api_uri_expediente}/${id}/${app_user}`)
   }
 
   ModificarExpediente(id:number,cuerpo_expediente:ExpedienteRequest):Observable<ModificarExpedienteResponse>{

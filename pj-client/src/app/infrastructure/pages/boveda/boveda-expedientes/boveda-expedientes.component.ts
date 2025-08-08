@@ -548,7 +548,7 @@ export class BovedaExpedientesComponent implements OnInit {
   descargarMicroformas(disco: DiscoListaResponse) {
     this.cargandoZip = true;
   
-    this.discoService.GenerarDiscoMicroformas(disco.id_disco!).subscribe({
+    this.discoService.GenerarDiscoMicroformas(disco.id_disco!,this.credencialesService.credenciales.username).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -566,6 +566,4 @@ export class BovedaExpedientesComponent implements OnInit {
     });
   }
   
-  
-
 }

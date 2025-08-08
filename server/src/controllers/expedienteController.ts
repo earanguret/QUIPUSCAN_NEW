@@ -9,9 +9,9 @@ class ExpedienteController {
             res.json(expedientes['rows']);
         } catch (error) {
             console.error('Error al obtener expedientes:', error);
-            res.status(500).json({ error: 'Error interno del servidor'});
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
-    } 
+    }
 
     public async ObtenerExpedientesById_inventario(req: Request, res: Response): Promise<any> {
         try {
@@ -120,29 +120,39 @@ class ExpedienteController {
 
             db.query(consulta, valores, (error, resultado) => {
                 if (error) {
-                    console.error("Error al insertar expediente:", error);   
+                    console.error("Error al insertar expediente:", error);
                     if ((error as any).code === '23505') {
                         res.status(409).json({ text: 'Ya existe un expediente registrado con ese nombre' });
                     } else {
                         res.status(500).json({ error: 'Error al registrar expediente' });
-                    }                                     
+                    }
                 } else {
                     const id_expediente = resultado.rows[0]["id_expediente"]; // ID se encuentra en la primera fila
                     console.log("datos de expediente en BD:", id_expediente);
+
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "RECEPCION",
+                        detalle: `Recepción y registro de expediente`,
+                        expediente: nro_expediente
+                    };
+
                     res.status(201).json({
                         message: "Expediente creado correctamente",
                         expediente: {
-                          id_expediente,
-                          nro_expediente,
-                          id_inventario,
-                          id_responsable,
-                          cod_paquete
+                            id_expediente,
+                            nro_expediente,
+                            id_inventario,
+                            id_responsable,
+                            cod_paquete
                         }
-                      });
+                    });
                 }
             });
-        } catch (error) {            
+        } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
@@ -150,21 +160,28 @@ class ExpedienteController {
     public async EliminarExpediente(req: Request, res: Response) {
         try {
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-            const { id } = req.params;
-            const consulta = `
-                            DELETE FROM archivo.t_expediente WHERE id_expediente=$1;
-                        `;
+            const { id, app_user } = req.params;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id]);
+            const consulta = ` DELETE FROM archivo.t_expediente WHERE id_expediente=$1;`;
             const valores = [id];
             db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error("Error al eliminar expediente:", error);
                 } else {
                     console.log("expediente eliminado correctamente");
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "RECEPCION",
+                        detalle: `Expediente eliminado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.status(200).json({ message: "expediente eliminado correctamente" });
                 }
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
@@ -173,7 +190,8 @@ class ExpedienteController {
         try {
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
             const { id } = req.params;
-            const {  nro_expediente,cod_paquete,app_user } = req.body;
+            const { nro_expediente, cod_paquete, app_user } = req.body;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id]);
             const consulta = `
                             UPDATE archivo.t_expediente
                             SET 
@@ -199,16 +217,25 @@ class ExpedienteController {
                 id,
             ];
 
-            db.query(consulta, valores, (error) => {                
+            db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error("Error al modificar expediente:", error);
                 } else {
                     console.log("expediente modificado correctamente");
+
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "RECEPCION",
+                        detalle: `Expediente modificado  ${expediente["rows"][0]["nro_expediente"]}: ${expediente["rows"][0]["cod_paquete"]} `,
+                        expediente: nro_expediente
+                    };
                     res.status(200).json({ message: "expediente modificado correctamente" });
                 }
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
@@ -246,7 +273,7 @@ class ExpedienteController {
         }
     }
 
-    
+
 }
 const expedienteController = new ExpedienteController();
 export default expedienteController;

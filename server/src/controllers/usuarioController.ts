@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction} from "express";
 import db from '../database/database';
 import { key } from '../database/key';
 import { encriptar, comparar } from "../encrytor/encryptor";
@@ -180,7 +180,7 @@ class UsuarioController {
         }
     }
 
-    public async ValidarLogin(req: Request, res: Response) {
+    public async ValidarLogin(req: Request, res: Response, next: NextFunction) {
         try {
           const { username, password } = req.body; //optenemos el usuario del cuerpo de envio
           const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
@@ -203,6 +203,11 @@ class UsuarioController {
                     perfil: sqlusuario["rows"][0]["perfil"],
                     mensaje: 'Credenciales correctos'
                 });
+                res.locals.body = {
+                    usuario: username,
+                    direccion_ip: ipAddressClient,
+                    detalle: 'Acceso al sistema',
+                  };
               }
               //no esta activo
               else {
@@ -215,6 +220,12 @@ class UsuarioController {
                     perfil: sqlusuario["rows"][0]["perfil"],
                     mensaje: 'USUARIO INACTIVO, comunicarse con el area de informática'
                 });
+                res.locals.body = {
+                    usuario: username,
+                    direccion_ip: ipAddressClient,
+                    detalle: 'Acceso denegado, usuario inactivo',
+                };
+
               }
             }
             else {
@@ -230,6 +241,11 @@ class UsuarioController {
                     perfil: sqlusuario["rows"][0]["perfil"],
                     mensaje: `Acceso denegado, contraseña incorrecta, le quedan ${2-sqlusuario["rows"][0]["intentos_login"]} intento(s)`  
                 });
+                res.locals.body = {
+                    usuario: username,
+                    direccion_ip: ipAddressClient,
+                    detalle: `Acceso denegado, contraseña incorrecta, intento nro ${sqlusuario["rows"][0]["intentos_login"]+1}`,
+                };
               }
               if ((sqlusuario["rows"][0]["intentos_login"] == 3)) {
                 db.query(` UPDATE archivo.t_usuario SET estado=false  WHERE  id_usuario=$1`, [sqlusuario["rows"][0]["id_usuario"]]);
@@ -241,6 +257,11 @@ class UsuarioController {
                     perfil: sqlusuario["rows"][0]["perfil"],
                     mensaje: 'Acceso denegado, ha superado el numero de intentos, comunicarse con su jefe inmediato con el area de informática '
                 }); 
+                res.locals.body = {
+                    usuario: username,
+                    direccion_ip: ipAddressClient,
+                    detalle: 'Acceso denegado, contraseña incorrecta, usuario bloqueado',
+                };
               }
             }
           }
@@ -254,13 +275,20 @@ class UsuarioController {
                 username: null,
                 perfil: null,
                 mensaje: 'El usuario no existe'
-            });  
+            });
+            res.locals.body = {
+                usuario: username,
+                direccion_ip: ipAddressClient,
+                detalle: 'Acceso denegado, usuario incorrecto',
+            };  
           }
         } catch (error) {
           console.error("Error al loguear usuario:", error);
           res.status(500).json({ error: "Error interno del servidor" });
-        } 
-      }
+        } finally {
+            next();
+          }
+    }
 
     public async ModificarDatosUsuario(req: Request, res: Response): Promise<void> {
         try {

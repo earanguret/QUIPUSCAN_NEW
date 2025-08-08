@@ -5,10 +5,6 @@ import { key } from '../database/key';
 
 class DigitalizacionController {
 
-    constructor() {
-
-    }
-  
 
     public async listarDigitalizacion(req: Request, res: Response): Promise<any> {
         try {
@@ -22,8 +18,9 @@ class DigitalizacionController {
 
     public async crearDigitalizacion(req: Request, res: Response) {
         try {
-            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;      
             const { id_responsable, id_expediente, fojas_total, ocr, escala_gris, color, observaciones, dir_ftp, hash_doc, peso_doc, app_user } = req.body;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                     INSERT INTO archivo.t_digitalizacion(
                             f_aud,        -- fecha de la transaccion
@@ -75,11 +72,19 @@ class DigitalizacionController {
                     }
                 } else {
                     console.log('Datos de digitalizacion creado correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "DIGITALIZACION",
+                        detalle: `Expediente digitalizado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.status(200).json({ message: 'Datos de digitalizacion creado correctamente' });
                 }
             });
         } catch (error) {
             console.error('Error al crear digitalizacion:', error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
@@ -89,6 +94,7 @@ class DigitalizacionController {
             const { id_expediente } = req.params;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             const { fojas_total, ocr, escala_gris, color, observaciones, hash_doc, peso_doc, app_user } = req.body;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                     UPDATE archivo.t_digitalizacion
                     SET 
@@ -128,12 +134,20 @@ class DigitalizacionController {
                 if (error) {
                     console.error("Error al modificar digitalizacion:", error);
                 } else {
-                    console.log("digitalizacion modificada correctamente");                    
+                    console.log("digitalizacion modificada correctamente");      
+                    res.locals.body={
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "DIGITALIZACION",
+                        detalle: `Expediente modificado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    } ;             
                     res.status(200).json({ message: "digitalizacion modificada correctamente" });
                 }
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }       
@@ -256,9 +270,6 @@ class DigitalizacionController {
         }
 
     }
-
-    
-
 
 }
 

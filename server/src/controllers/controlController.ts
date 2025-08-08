@@ -3,10 +3,12 @@ import db from '../database/database';
 import { key } from '../database/key';
 
 class ControlController {
+
     public async crearControlCalidad(req: Request, res: Response) {
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             const { id_expediente, id_responsable, observaciones, val_observaciones, val_datos, val_nitidez, val_pruebas_impresion, val_copia_fiel, app_user } = req.body;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                    INSERT INTO archivo.t_control(
                         f_aud,        -- fecha de la transaccion
@@ -54,11 +56,19 @@ class ControlController {
                     }
                 } else {
                     console.log('Datos de control creado correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "CONTROL",
+                        detalle: `Expediente controlado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.status(200).json({ message: 'Datos de control creado correctamente' });
                 }
             });
         } catch (error) {
             console.error('Error al crear datos de control:', error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
@@ -68,6 +78,7 @@ class ControlController {
             const { id_expediente } = req.params;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             const {  observaciones, val_observaciones, val_datos, val_nitidez, val_pruebas_impresion, val_copia_fiel, app_user } = req.body;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                     UPDATE archivo.t_control
                     SET 
@@ -113,11 +124,19 @@ class ControlController {
                     }
                 } else {
                     console.log('Datos de digitalizacion creado correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "CONTROL",
+                        detalle: `Expediente modificado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.status(200).json({ message: 'Datos de digitalizacion creado correctamente' });
                 }
             });
         } catch (error) {
             console.error('Error al crear digitalizacion:', error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }

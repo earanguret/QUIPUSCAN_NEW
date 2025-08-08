@@ -1,4 +1,4 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import db from '../database/database';
 import { key } from '../database/key';
 
@@ -103,7 +103,7 @@ class InventarioController {
     }
   }
 
-  public async CrearInventario(req: Request, res: Response): Promise<void> {
+  public async CrearInventario(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const {
         id_responsable,
@@ -164,10 +164,20 @@ class InventarioController {
           const idinventario = resultado.rows[0]["id_inventario"]; // ID se encuentra en la primera fila
           console.log("datos de inventario en BD:", idinventario);
 
+          res.locals.body = {
+            direccion_ip: ipAddressClient,
+            usuario: app_user,
+            modulo: "RECEPCION",
+            detalle: `Creación de Serie Documental ${codigo} `,
+            expediente:null
+          };
+
           res.status(200).json({
             id_inventario: idinventario,
             message: "el inventario se creó correctamente",
           });
+
+          
         }
       });
     } catch (error) {
@@ -177,7 +187,7 @@ class InventarioController {
         text: `"Error al crear el inventario:"${error}`,
       };
       res.status(500).json({ error: "Error interno del servidor" });
-    }
+    } 
   }
 
   public async ModificarInventario(req: Request, res: Response): Promise<void> {
@@ -224,11 +234,18 @@ class InventarioController {
           console.error("Error al modificar inventario:", error);
         } else {
           console.log("inventario modificado correctamente");
+          res.locals.body = {
+            direccion_ip: ipAddressClient,
+            usuario: app_user,
+            modulo: "RECEPCION",
+            detalle: `Inventario ${codigo} modificado`,
+          };
           res.json({ message: "el inventario se modifico correctamente" });
         }
       });
     } catch (error) {
       console.error("Error al modificar inventario:", error);
+      res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }

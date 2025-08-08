@@ -447,9 +447,8 @@ class EstadoExpedienteController {
         try {
             const { id_expediente } = req.params;
             const { app_user } = req.body;
-
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            console.log(ipAddressClient);
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                      UPDATE archivo.t_estado_expediente
 	                    SET 
@@ -475,11 +474,19 @@ class EstadoExpedienteController {
                     console.error('Rechazo de control a digitalizacion:', error);
                 } else {
                     console.log('Rechazo de control a digitalizacion exitosa');
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "CONTROL",
+                        detalle: `Expediente rechazado - digitalización`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.json({ text: 'Rechazo de control a digitalizacion exitosa' });
                 }
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al modificar el expediente:" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
@@ -490,7 +497,7 @@ class EstadoExpedienteController {
             const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            console.log(ipAddressClient);
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                      UPDATE archivo.t_estado_expediente
 	                    SET 
@@ -516,11 +523,19 @@ class EstadoExpedienteController {
                     console.error('Rechazo de control a indizacion:', error);
                 } else {
                     console.log('Rechazo de control a indizacion exitosa');
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "CONTROL",
+                        detalle: `Expediente rechazado - indización`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.json({ text: 'Rechazo de control a indizacion exitosa' });
                 }
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al modificar el expediente:" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
@@ -531,7 +546,7 @@ class EstadoExpedienteController {
             const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            console.log(ipAddressClient);
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                      UPDATE archivo.t_estado_expediente
 	                    SET 
@@ -557,11 +572,19 @@ class EstadoExpedienteController {
                     console.error('Rechazo de Fedatario a digitalizacion:', error);
                 } else {
                     console.log('Rechazo de Fedatario a digitalizacion exitosa');
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "FEDATARIO",
+                        detalle: `Expediente rechazado - digitalización`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.json({ text: 'Rechazo de Fedatario a digitalizacion exitosa' });
                 }
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al modificar el expediente :" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
@@ -572,7 +595,7 @@ class EstadoExpedienteController {
             const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            console.log(ipAddressClient);
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                      UPDATE archivo.t_estado_expediente
 	                    SET 
@@ -594,14 +617,22 @@ class EstadoExpedienteController {
 
             db.query(consulta, valores, (error) => {
                 if (error) {
-                    console.error('Rechazo de Fedatario a digitalizacion:', error);
+                    console.error('Rechazo de Fedatario a indización:', error);
                 } else {
                     console.log('Rechazo de Fedatario a digitalizacion exitosa');
-                    res.json({ text: 'Rechazo de Fedatario a digitalizacion exitosa' });
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "FEDATARIO",
+                        detalle: `Expediente rechazado - indización`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
+                    res.json({ text: 'Rechazo de Fedatario a indización exitosa' });
                 }
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al modificar el expediente:" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }

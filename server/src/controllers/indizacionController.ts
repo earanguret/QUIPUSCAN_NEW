@@ -107,8 +107,8 @@ class IndizacionController {
                 app_user,
             } = req.body;
 
-            const ipAddressClient =
-                req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            const ipAddressClient =  req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                         INSERT INTO archivo.t_indizacion(
 
@@ -158,17 +158,19 @@ class IndizacionController {
                     console.error("Error al insertar indizacion:", error);
                     res.status(500).json({ error: "Error interno del servidor" });
                 } else {
-                    res.status(200).json({
-                        message: "el indizacion se creó correctamente",
-                    });
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "INDIZACION",
+                        detalle: `Expediente indizado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
+                    res.status(200).json({  message: "el indizacion se creó correctamente" });
                 }
             });
         } catch (error) {
             console.error("Error al crear indizacion:", error);
-            // Almacena el error en res.locals
-            res.locals.body = {
-                text: `"Error al crear el indizacion:"${error}`,
-            };
+            res.locals.body = { text: `"Error al crear el indizacion:"${error}`};
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
@@ -189,8 +191,8 @@ class IndizacionController {
                 app_user,
             } = req.body;
 
-            const ipAddressClient =
-                req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                         UPDATE archivo.t_indizacion
                             SET 
@@ -236,11 +238,19 @@ class IndizacionController {
                     console.error("Error al modificar indizacion:", error);
                 } else {
                     console.log("indizacion modificado correctamente");
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "INDIZACION",
+                        detalle: `Expediente modificado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     res.json({ message: "el indizacion se modifico correctamente" });
                 }
             });
         } catch (error) {
             console.error("Error al modificar indizacion:", error);
+            res.locals.body = { text: `"Error al crear el indizacion:"${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }

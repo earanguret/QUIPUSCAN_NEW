@@ -1,5 +1,7 @@
 import {Router} from "express";
 import inventarioController from "../controllers/inventarioController";
+import CreateMiddleware from "../middlewares/log_evento/create.middleware";
+import UpdateMiddleware from "../middlewares/log_evento/update.middleware";
 
 class InventarioRoutes{
 
@@ -13,8 +15,8 @@ class InventarioRoutes{
     config():void{
         this.router.get('/api/inventario',inventarioController.listarInventarioDetalle)
         this.router.get('/api/inventario/:id',inventarioController.ObtenerInventarioDetalleXid)
-        this.router.post('/api/inventario',inventarioController.CrearInventario)
-        this.router.put('/api/inventario/:id',inventarioController.ModificarInventario)
+        this.router.post('/api/inventario', CreateMiddleware ,inventarioController.CrearInventario)
+        this.router.put('/api/inventario/:id', UpdateMiddleware ,inventarioController.ModificarInventario)
     }
 }
 

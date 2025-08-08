@@ -127,6 +127,7 @@ class PreparacionController {
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             const { id_responsable, id_expediente, fojas_total, fojas_unacara, fojas_doscaras, observaciones, copias_originales, copias_simples, app_user } = req.body;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                     INSERT INTO archivo.t_preparacion(
                             f_aud,        -- fecha de la transaccion
@@ -173,13 +174,20 @@ class PreparacionController {
                         res.status(500).json({ error: 'Error al insertar la persona' });
                     }
                 } else {
-                    
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "PREPARACION",
+                        detalle: `Expediente preparado`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     console.log('datos de usuario en BD:', );
                     res.status(200).json({ message: 'Datos de preparacion creado correctamente' });
                 }
             });
         } catch (error) {
             console.error('Error al crear preparación:', error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
@@ -189,6 +197,7 @@ class PreparacionController {
             const {id_expediente} = req.params;
             const { fojas_total, fojas_unacara, fojas_doscaras, observaciones, copias_originales, copias_simples, app_user } = req.body;
             const ipAddressClient =  req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id_expediente]);
             const consulta = `
                         UPDATE archivo.t_preparacion
                             SET 
@@ -225,13 +234,21 @@ class PreparacionController {
             db.query(consulta, valores, (error) => {
                 if (error) {
                     console.error("Error al modificar preparación:", error);
-                } else {                    
+                } else {                 
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "PREPARACION",
+                        detalle: `Datos modificados`,
+                        expediente: expediente["rows"][0]["nro_expediente"]
+                    };
                     console.log("preparación modificada correctamente");
                     res.json({ message: "preparación modificada correctamente" });
                 }
             });
         } catch (error) {
             console.error("Error interno en el servidor:", error);
+            res.locals.body = { text: `"Error al crear el expediente:" ${error}` };
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }

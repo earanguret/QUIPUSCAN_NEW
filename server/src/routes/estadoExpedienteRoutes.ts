@@ -1,5 +1,6 @@
 import { Router } from "express";
 import estadoExpedienteController from "../controllers/estadoExpedienteController";
+import UpdateMiddleware from "../middlewares/log_evento/update.middleware";
 
 
 class EstadoExpedienteRoutes{
@@ -25,10 +26,10 @@ class EstadoExpedienteRoutes{
         this.router.put('/api/estado_expediente/aprobar/fedatario/:id_expediente',estadoExpedienteController.FedadoTrabajado)
         this.router.delete('/api/estado_expediente/:id_expediente',estadoExpedienteController.EliminarEstadoExpediente)
         this.router.put('/api/estado_expediente/asociar/disco',estadoExpedienteController.AsociarExpedientesADisco)
-        this.router.put('/api/estado_expediente/rechazar/controlDigitalizacion/:id_expediente',estadoExpedienteController.RechazarControlDigitalizacion)
-        this.router.put('/api/estado_expediente/rechazar/controlIndizacion/:id_expediente',estadoExpedienteController.RechazarControlIndizacion)
-        this.router.put('/api/estado_expediente/rechazar/fedatarioDigitalizacion/:id_expediente',estadoExpedienteController.RechazarFedatarioDigitalizacion)
-        this.router.put('/api/estado_expediente/rechazar/fedatarioIndizacion/:id_expediente',estadoExpedienteController.RechazarFedatarioIndizacion)
+        this.router.put('/api/estado_expediente/rechazar/controlDigitalizacion/:id_expediente', UpdateMiddleware ,estadoExpedienteController.RechazarControlDigitalizacion)
+        this.router.put('/api/estado_expediente/rechazar/controlIndizacion/:id_expediente', UpdateMiddleware,estadoExpedienteController.RechazarControlIndizacion)
+        this.router.put('/api/estado_expediente/rechazar/fedatarioDigitalizacion/:id_expediente', UpdateMiddleware ,estadoExpedienteController.RechazarFedatarioDigitalizacion)
+        this.router.put('/api/estado_expediente/rechazar/fedatarioIndizacion/:id_expediente', UpdateMiddleware,estadoExpedienteController.RechazarFedatarioIndizacion)
         this.router.get('/api/estado_expediente/mensajes/:id_expediente',estadoExpedienteController.obtenerMensajesById_expediente)
         this.router.put('/api/estado_expediente/mensajes/:id_expediente',estadoExpedienteController.guardarMensajeById_expediente)
 
