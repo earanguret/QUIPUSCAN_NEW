@@ -90,4 +90,12 @@ export class SweetAlert {
     });
   }
 
+  async MensajeSimpleSuccess(title: string, text: string ){
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: "success"
+    });
+  }
+
 }

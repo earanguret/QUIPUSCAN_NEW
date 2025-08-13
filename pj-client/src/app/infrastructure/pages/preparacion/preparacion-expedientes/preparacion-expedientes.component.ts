@@ -20,6 +20,7 @@ import { PreparacionModel } from '../../../../domain/models/Preparacion.model';
 import { PreparacionRequest } from '../../../../domain/dto/PreparacionRequest.dto';
 import { CrearPreparacionResponse, ModificarPreparacionResponse, PreparacionResponse } from '../../../../domain/dto/PreparacionResponse.dto';
 import { form_preparacion_vf } from '../../../validator/fromValidator/preparacion.validator';
+import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 
 declare var bootstrap: any;
 
@@ -43,6 +44,8 @@ export class PreparacionExpedientesComponent implements OnInit {
   id_expediente_temp: number = 0;
   nro_expediente_temp: string = '';
   observacion_temp: string = '';
+
+  checkAprobado: boolean = false;
 
   data_preparacion_header: ExpedienteResponseDataView = {
     id_expediente: 0,
@@ -76,6 +79,7 @@ export class PreparacionExpedientesComponent implements OnInit {
       private flujogramaService: FlujogramaService,
       private credencialesService: CredencialesService,
       private estadoService: EstadoService,
+      private sweetAlert: SweetAlert,
       private preparacionService: PreparacionService) {}
 
   ngOnInit(): void {
@@ -251,6 +255,7 @@ export class PreparacionExpedientesComponent implements OnInit {
         console.log('creacion de preparacion completado');
         this.EstadoPreparacionTrabajado()
         this.closeModal();
+        this.sweetAlert.MensajeSimpleSuccess('Expediente preparado',`Expediente ${this.data_preparacion_header.nro_expediente} Preparado con exito` );
       }
     })
 
@@ -310,6 +315,7 @@ export class PreparacionExpedientesComponent implements OnInit {
         console.log('modificacion de preparacion completado');
         this.ListarExpedientes();
         this.closeModal();
+        this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito` );
       }
     })  
   }

@@ -24,6 +24,7 @@ import { switchMap } from 'rxjs';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 
 import { InfoInventarioComponent } from '../../../components/info-inventario/info-inventario.component';
+import Swal from 'sweetalert2';
 
 declare var bootstrap: any;
 
@@ -171,27 +172,54 @@ export class RecepcionExpedientesComponent implements OnInit {
   }
 
   EliminarExpediente(id: number) {
-    this.flujogramaService.EliminarFlujograma(id).pipe(
-      switchMap((data1: EliminarFlujogramaResponse) => {
-        console.log('Flujograma eliminado:', data1);
-        return this.estadoService.EliminarEstado(id);
-      }),
-      switchMap((data2: EliminarEstadoResponse) => {
-        console.log('Estado eliminado:', data2);
-        return this.expedienteService.EliminarExpediente(id,this.credencialesService.credenciales.username);
-      })
-    ).subscribe({
-      next: (data3: EliminarExpedienteResponse) => {
-        console.log('Expediente eliminado:', data3);
-      },
-      error: (error) => {
-        console.error('Error durante la eliminación:', error);
-      },
-      complete: () => {
-        console.log('Eliminación completa');
-        this.ObtenerListaExpedientes();
+
+    Swal.fire({
+      title: "Estas seguro?",
+      text: "cuidado esta acción no es reversible!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "eliminar!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.flujogramaService.EliminarFlujograma(id).pipe(
+          switchMap((data1: EliminarFlujogramaResponse) => {
+            console.log('Flujograma eliminado:', data1);
+            return this.estadoService.EliminarEstado(id);
+          }),
+          switchMap((data2: EliminarEstadoResponse) => {
+            console.log('Estado eliminado:', data2);
+            return this.expedienteService.EliminarExpediente(id,this.credencialesService.credenciales.username);
+          })
+        ).subscribe({
+          next: (data3: EliminarExpedienteResponse) => {
+            console.log('Expediente eliminado:', data3);
+          },
+          error: (error) => {
+            console.error('Error durante la eliminación:', error);
+            Swal.fire({
+              title: "Error!",
+              text: "el expediente no fue eliminado correctamente.",
+              icon: "error"
+            });
+          },
+          complete: () => {
+            console.log('Eliminación completa');
+            Swal.fire({
+              title: "Eliminado!",
+              text: "el expediente fue eliminado correctamente.",
+              icon: "success"
+            });
+            this.ObtenerListaExpedientes();
+            
+          }
+        });
       }
     });
+
+
+    
   }
 
   ModificarExpediente() {

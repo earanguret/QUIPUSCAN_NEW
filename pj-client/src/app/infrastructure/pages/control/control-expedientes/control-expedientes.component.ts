@@ -51,6 +51,7 @@ export class ControlExpedientesComponent implements OnInit {
   ListExpedientesTemp: ExpedienteResponse[] = [];
   MensajesExpedienteTemp: Mensaje[] = [];
   mostrar_mensajes_expediente: boolean = false;
+  checkAprobado: boolean = false;
  
 
   nro_expediente_temp: string = '';
@@ -445,7 +446,7 @@ export class ControlExpedientesComponent implements OnInit {
         console.log('Aprobacion de control completado');
         this.EstadoControlTrabajado()
         this.closeModalControl();
-        this.sweetAlert.MensajeExito('Control de calidad aprobado correctamente');
+        this.sweetAlert.MensajeSimpleSuccess('Expediente Controlado',`Expediente ${this.data_preparacion_header.nro_expediente} paso el control de calidad con exito` );
       }
     })
   }
@@ -474,7 +475,7 @@ export class ControlExpedientesComponent implements OnInit {
         console.log('modificacion de control completado');
         this.EstadoControlTrabajado()
         this.closeModalControl();
-        this.sweetAlert.MensajeExito('Control de calidad modificado correctamente');
+        this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito` );
       }
     })
   }

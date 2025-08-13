@@ -49,6 +49,7 @@ export class IndizadorExpedientesComponent implements OnInit {
   private myModalIndice: any;
   private myModalSubIndice: any;
   id_inventario: number = 0;
+  checkAprobado: boolean = false;
   p: number = 1;
   modificarIndizacion: boolean = false;
   codigo_inventario: string = '';
@@ -503,7 +504,7 @@ export class IndizadorExpedientesComponent implements OnInit {
           console.log('creacion de indizacion completado');
           this.EstadoIndizacionTrabajado()
           this.closeModalIndizacion();
-          this.sweetAlert.MensajeExito('Indización creada correctamente');
+          this.sweetAlert.MensajeSimpleSuccess('Expediente Indizado',`Expediente ${this.data_preparacion_header.nro_expediente} indizado con exito` );
         }
       })
     }
@@ -551,7 +552,7 @@ export class IndizadorExpedientesComponent implements OnInit {
           this.EstadoIndizacionTrabajado();
           this.ModificarRespuestaMensaje();
           this.closeModalIndizacion();
-          this.sweetAlert.MensajeExito('Indización modificada correctamente');
+          this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito` );
         }
       })
     }

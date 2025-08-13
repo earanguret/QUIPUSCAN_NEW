@@ -125,6 +125,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.nuevaRespuesta = ''
   }
 
+  checkAprobado: boolean = false;
 
   private myModalReception: any;
   private myModalDigitalizacion: any;
@@ -538,7 +539,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         console.log('creacion de digitalizacion completado');
         this.EstadoDigitalizacionTrabajado()
         this.closeModalDigitalizacion();
-        this.sweetAlert.MensajeExito('Digitalización creada correctamente');
+        this.sweetAlert.MensajeSimpleSuccess('Expediente Digitalizado',`Expediente ${this.data_preparacion_header.nro_expediente} digitalizado con exito` );
       }
     })
   }
@@ -609,7 +610,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
           this.EstadoDigitalizacionTrabajado();
           this.ModificarRespuestaMensaje();
           this.closeModalDigitalizacion();
-          this.sweetAlert.MensajeExito('Digitalización modificada correctamente');
+          this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito` );
+
         }
       });
     };

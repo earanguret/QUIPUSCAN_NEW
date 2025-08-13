@@ -123,7 +123,10 @@ export class FormUsuarioComponent implements OnInit {
 
       if (personaCambiada||usuarioCambiado||this.dataUsuario.password?.trim()){
         this.sweetAlert.MensajeExito('Usuario modificado');
-        this.router.navigate(['/principal/list-usuario']);
+        setTimeout(() => {
+          this.router.navigate(['/principal/list-usuario']);
+        }, 1000);
+       
       }
       else{
         alert('No se ha modificado nada, solo presione volver para regresar a la lista de usuarios')
@@ -162,7 +165,11 @@ export class FormUsuarioComponent implements OnInit {
       },
       complete: () => {
         this.sweetAlert.MensajeExito('Usuario creado');
-        this.router.navigate(['/principal/list-usuario']);
+        setTimeout(() => {
+          this.router.navigate(['/principal/list-usuario']);
+        }, 2000); 
+
+        
       }
     })
   }

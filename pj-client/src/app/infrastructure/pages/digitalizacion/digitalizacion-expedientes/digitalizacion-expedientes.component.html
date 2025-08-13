@@ -123,7 +123,7 @@
                     preparación,
                     debe aprobar la recepcion del expediente.</p>
                 <div class="form-check text-start">
-                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" checked>
+                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" [(ngModel)]="checkAprobado">
                     <label class="form-check-label" for="checkChecked">
                         Confirmo tener el documento fisico en mi poder
                     </label>
@@ -131,7 +131,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()">Aprobar</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()" [disabled]="!checkAprobado">Aprobar</button>
             </div>
         </div>
     </div>
