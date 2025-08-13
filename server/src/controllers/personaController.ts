@@ -60,12 +60,13 @@ class PersonaController{
                             c_aud_ip,     -- 3 ip de la pc
                             c_aud_mac,    -- 4 mac de la pc
                     
+                            create_at,
                             nombre, 
                             ap_paterno, 
                             ap_materno, 
                             dni) 
 
-                            VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, $5, $6, $7, $8)
+                            VALUES (CURRENT_TIMESTAMP ,'I', '${key.user}', $1, $2, $3, $4, CURRENT_TIMESTAMP ,$5, $6, $7, $8)
                             RETURNING id_persona;
             `;
             const valores = [app_user, null, ipAddressClient, null, nombre, ap_paterno, ap_materno, dni];

@@ -226,7 +226,7 @@ class EstadoExpedienteController {
     public async IndizacionAceptada(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
-            const { user_app } = req.body;
+            const { app_user } = req.body;
 
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             console.log(ipAddressClient);
@@ -245,7 +245,7 @@ class EstadoExpedienteController {
 	                    WHERE id_expediente=$6;
                 
                 `;
-            const valores = [user_app, null, ipAddressClient, null, 'A', id_expediente];
+            const valores = [app_user, null, ipAddressClient, null, 'A', id_expediente];
 
             db.query(consulta, valores, (error) => {
                 if (error) {
@@ -490,7 +490,6 @@ class EstadoExpedienteController {
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
-
     public async RechazarControlIndizacion(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
@@ -588,7 +587,6 @@ class EstadoExpedienteController {
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
-
     public async RechazarFedatarioIndizacion(req: Request, res: Response) {
         try {
             const { id_expediente } = req.params;
@@ -759,6 +757,45 @@ class EstadoExpedienteController {
         }
     }
 
+
+    public async ObternerExpedientesRechazadosFedatario(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_inventario } = req.params;
+            const consulta = `
+                            SELECT      
+                                e.id_expediente,
+                                e.nro_expediente,
+                                e.cod_paquete,
+                                es.mensajes,
+                                es.estado_fedatado,
+                                es.estado_controlado,
+                                es.estado_indizado,
+                                es.estado_digitalizado,
+                            FROM
+                                archivo.t_expediente e
+                            JOIN
+                                archivo.t_estado_expediente es ON e.id_expediente = es.id_expediente
+                            JOIN
+                                archivo.t_inventario i ON e.id_inventario = i.id_inventario
+                            JOIN
+                                archivo.t_persona p ON i.id_responsable = p.id_persona
+                            JOIN
+                                archivo.t_usuario u ON i.id_responsable = u.id_usuario
+                            WHERE 
+                                i.id_inventario = $1
+                                AND (es.estado_fedatado = 'R' OR es.estado_fedatado IS NULL);
+                                 `;
+            const expedientes = await db.query(consulta, [id_inventario]);
+            if (expedientes && expedientes["rows"].length > 0) {
+                res.json(expedientes["rows"]);
+            } else {
+                res.status(404).json({ text: "no existe el total de imagenes" }); 
+            }
+        } catch (error) {
+            console.error("Error al obtener total de imagenes:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
 
 
 

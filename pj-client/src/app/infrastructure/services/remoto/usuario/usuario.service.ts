@@ -27,12 +27,12 @@ export class UsuarioService {
     return this.http.post<CrearUsuarioResponse>(`${this.api_uri_usuario}/crear`,cuerpo_usuario)
   }   
 
-  ModificarDatosUsuario(id_usuario:number,cuerpo_usuario:UsuarioModel):Observable<ModificarDatosUsuarioResponse>{
+  ModificarDatosUsuario(id_usuario:number,cuerpo_usuario:UsuarioRequest):Observable<ModificarDatosUsuarioResponse>{
     cuerpo_usuario.username=cuerpo_usuario.username.trim().toUpperCase()
     return this.http.put<ModificarDatosUsuarioResponse>(`${this.api_uri_usuario}/modificar/${id_usuario}`,cuerpo_usuario)
   }
 
-  ModificarPasswordUsuario(id_usuario:number,password:string):Observable<ModificarDatosUsuarioResponse>{
-    return this.http.put<ModificarDatosUsuarioResponse>(`${this.api_uri_usuario}/modificar/password/${id_usuario}`,{password})
+  ModificarPasswordUsuario(id_usuario:number,password:string,app_user:string):Observable<ModificarDatosUsuarioResponse>{
+    return this.http.put<ModificarDatosUsuarioResponse>(`${this.api_uri_usuario}/modificar/password/${id_usuario}`,{password,app_user})
   } 
 }

@@ -168,7 +168,13 @@ export class FormUsuarioComponent implements OnInit {
   }
 
   ModificarDatosUsuario(){
-    this.usuarioService.ModificarDatosUsuario(this.dataUsuario.id_usuario,this.dataUsuario).subscribe({
+    const data_usuario_tem:UsuarioRequest = {
+      username: this.dataUsuario.username,
+      perfil: this.dataUsuario.perfil,
+      estado: this.dataUsuario.estado!,
+      app_user: this.credencialesService.credenciales.username
+    }
+    this.usuarioService.ModificarDatosUsuario(this.dataUsuario.id_usuario,data_usuario_tem).subscribe({
       next: (data: ModificarDatosUsuarioResponse) => {
         console.log('Usuario modificado:', data);
       },
@@ -192,7 +198,7 @@ export class FormUsuarioComponent implements OnInit {
   }
 
   ModificarPasswordUsuario(password: string) {
-    this.usuarioService.ModificarPasswordUsuario(this.dataUsuario.id_usuario,password).subscribe({
+    this.usuarioService.ModificarPasswordUsuario(this.dataUsuario.id_usuario,password, this.credencialesService.credenciales.username).subscribe({
       next: (data: ModificarDatosUsuarioResponse) => {
         console.log('Usuario modificado:', data);
       },

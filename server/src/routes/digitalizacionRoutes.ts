@@ -19,6 +19,7 @@ class DigitalizacionRoutes{
         this.router.get('/api/digitalizacion/dataview/:id_expediente',digitalizacionController.obtenerDigitalizacionDataViewXidExpediente)
         this.router.post('/api/digitalizacion', CreateMiddleware ,digitalizacionController.crearDigitalizacion)
         this.router.put('/api/digitalizacion/:id_expediente',UpdateMiddleware,digitalizacionController.modificarDigitalizacion)
+        this.router.get('/api/digitalizacion/total_imagenes/fedatario/:id_inventario',digitalizacionController.obtenerTotalImagenesEnFedatario)
         
     }
 }

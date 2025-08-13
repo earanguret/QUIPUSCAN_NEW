@@ -92,12 +92,13 @@ class UsuarioController {
                             c_aud_ip, 
                             c_aud_mac,
 
+                            create_at,
                             id_persona, 
                             username, 
                             password, 
                             perfil, 
                             estado)
-                    VALUES (CURRENT_TIMESTAMP, 'I', '${key.user}',$1, $2, $3, $4, $5, $6 , $7, $8, $9);
+                    VALUES (CURRENT_TIMESTAMP, 'I', '${key.user}',$1, $2, $3, $4, CURRENT_TIMESTAMP ,$5, $6 , $7, $8, $9);
                 `;
             const valores = [
                 app_user,
@@ -293,7 +294,7 @@ class UsuarioController {
     public async ModificarDatosUsuario(req: Request, res: Response): Promise<void> {
         try {
             const { id_usuario } = req.params;
-            const { username, perfil, estado, user_app } = req.body;
+            const { username, perfil, estado, app_user } = req.body;
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
             const consulta = `
                 UPDATE archivo.t_usuario
@@ -314,7 +315,7 @@ class UsuarioController {
                         WHERE id_usuario=$8;`;
 
             const valores = [
-                user_app,
+                app_user,
                 null,
                 ipAddressClient,
                 null,
@@ -342,7 +343,7 @@ class UsuarioController {
     public async ModificarPasswordUsuario(req: Request, res: Response): Promise<void> {
         try {
             const { id_usuario } = req.params;
-            const { password, user_app } = req.body;
+            const { password, app_user } = req.body;
             const passwordcifrado = await encriptar(password);
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
@@ -361,7 +362,7 @@ class UsuarioController {
                         WHERE id_usuario=$6;
                      `;
             const valores = [
-                user_app,
+                app_user,
                 null,
                 ipAddressClient,
                 null,

@@ -4,7 +4,7 @@ import { NavegatorComponent } from '../../../shared/components/navegator/navegat
 import { SubnavegatorComponent } from '../../../shared/components/subnavegator/subnavegator.component';
 import { ExpedienteResponse, ExpedienteResponseDataView } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
-import { DigitalizacionResponseDataView } from '../../../../domain/dto/DigitalizacionResponse.dto';
+import { DigitalizacionResponseDataView, DigitalizacionTotalImagenesResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { IndizacionResponseDataView } from '../../../../domain/dto/IndizacionResponse.dto';
 import { map } from 'rxjs';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
@@ -80,6 +80,15 @@ export class FedatarioExpedientesComponent implements OnInit {
   progreso_firma = 0;
   firmaProgressStatus = false;
   buttonFirma = true;
+
+
+  // data de cabecera de informacion
+  nro_expedientes: number = 0;
+  nro_concluidos: number = 0;
+  nro_pendientes: number = 0;
+  nro_rechazados: number = 0;
+  nro_imagenes: number = 0;
+  list_expedinete_rechazados: ExpedienteResponse[] = [];
 
   data_expediente_temp: ExpedienteResponse = {
     id_expediente: 0,
@@ -406,17 +415,68 @@ export class FedatarioExpedientesComponent implements OnInit {
     })
   }
 
+ 
+  
+  informacionTags(expedientes: ExpedienteResponse[]) {
+    this.nro_expedientes = expedientes.length;
+    this.nro_concluidos = expedientes.filter(e => e.estado_fedatado === 'T').length;
+    this.nro_pendientes = expedientes.filter(e => e.estado_fedatado === null || e.estado_fedatado === 'A').length;
+    this.nro_rechazados = expedientes.filter(e => e.estado_fedatado === 'R').length;
+    this.obtenerTotalImagenesEnFedatario()
+    this.ObternerExpedientesRechazadosFedatario()
+  }
+
+  obtenerTotalImagenesEnFedatario() {
+    this.digitalizacionService.ObtenerTotalImagenesEnFedatario(this.id_inventario).subscribe({
+      next: (data: DigitalizacionTotalImagenesResponse) => {
+        console.log(data);
+        this.nro_imagenes = Number( data.total_imagenes);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('obtener total de imagenes completado');
+      }
+    })
+  }
+
+  ObternerExpedientesRechazadosFedatario() {
+    this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
+      .pipe(
+        map((data: ExpedienteResponse[]) =>
+          data.filter(exp => exp.estado_fedatado === 'R')
+        )
+      )
+      .subscribe({
+        next: (dataFiltrada: ExpedienteResponse[]) => {
+          this.list_expedinete_rechazados = dataFiltrada;
+          this.nro_rechazados = dataFiltrada.length;
+          console.log(this.ListExpedientes);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log('listado de expedientes filtrado completado');
+        }
+      });
+  }
+
+
   ListarExpedientes() {
     this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
       .pipe(
         map((data: ExpedienteResponse[]) =>
           data.filter(exp => exp.estado_controlado === 'T')
+        
         )
       )
       .subscribe({
         next: (dataFiltrada: ExpedienteResponse[]) => {
           this.ListExpedientes = dataFiltrada;
           this.ListExpedientesTemp = dataFiltrada;
+          this.informacionTags(this.ListExpedientesTemp);
           console.log(this.ListExpedientes);
         },
         error: (error) => {
@@ -512,7 +572,6 @@ export class FedatarioExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('fedatario creado correctamente');
-        this.closeModalFedatario();
       }
     })
   }

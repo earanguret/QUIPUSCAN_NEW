@@ -37,3 +37,7 @@ export interface CrearDigitalizacionResponse {
 export interface ModificarDigitalizacionResponse {
     message: string;
 }
+
+export interface DigitalizacionTotalImagenesResponse {
+    total_imagenes: string;
+}

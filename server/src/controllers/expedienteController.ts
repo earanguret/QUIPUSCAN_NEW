@@ -162,9 +162,34 @@ class ExpedienteController {
             const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
             const { id, app_user } = req.params;
             const expediente = await db.query('select * from archivo.t_expediente where id_expediente=$1',[id]);
-            const consulta = ` DELETE FROM archivo.t_expediente WHERE id_expediente=$1;`;
-            const valores = [id];
-            db.query(consulta, valores, (error) => {
+            // const consulta = ` DELETE FROM archivo.t_expediente WHERE id_expediente=$1;`;
+            const consultaEliminar = `
+                        DO $$
+                        DECLARE
+                            p_uidred TEXT := '${app_user}';  -- UID del cliente
+                            p_ip TEXT := '${ipAddressClient}';   -- IP del cliente
+                        BEGIN
+                            -- Establecer las variables de sesión
+                            EXECUTE 'SET myapp.c_trns_uidred = ' || quote_literal(p_uidred);
+                            EXECUTE 'SET myapp.c_trns_ip = ' || quote_literal(p_ip);
+                
+                            -- Eliminar el registro del expediente
+                            DELETE FROM archivo.t_expediente
+                            WHERE id_expediente = ${id};
+                
+                            -- Verificar si no se encontró ningún registro para eliminar
+                            IF NOT FOUND THEN
+                                RAISE EXCEPTION 'Expediente no encontrado';
+                            END IF;
+                
+                            -- Limpiar las variables de sesión
+                            EXECUTE 'RESET myapp.c_trns_uidred';
+                            EXECUTE 'RESET myapp.c_trns_ip';
+                
+                        END $$;
+                    `;
+         
+            db.query(consultaEliminar, (error) => {
                 if (error) {
                     console.error("Error al eliminar expediente:", error);
                 } else {
@@ -272,7 +297,6 @@ class ExpedienteController {
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
-
 
 }
 const expedienteController = new ExpedienteController();

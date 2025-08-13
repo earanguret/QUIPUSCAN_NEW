@@ -238,7 +238,7 @@ class InventarioController {
             direccion_ip: ipAddressClient,
             usuario: app_user,
             modulo: "RECEPCION",
-            detalle: `Inventario ${codigo} modificado`,
+            detalle: `Serie Documental ${codigo} modificado`,
           };
           res.json({ message: "el inventario se modifico correctamente" });
         }

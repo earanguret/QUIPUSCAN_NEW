@@ -271,6 +271,37 @@ class DigitalizacionController {
 
     }
 
+    public async obtenerTotalImagenesEnFedatario(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_inventario } = req.params;
+            const consulta = `
+                            SELECT
+                                SUM(d.fojas_total) AS total_imagenes
+                            FROM
+                                archivo.t_digitalizacion d
+                            JOIN
+                                archivo.t_estado_expediente es ON d.id_expediente = es.id_expediente
+                            JOIN 
+                                archivo.t_expediente ex ON d.id_expediente = ex.id_expediente
+                            JOIN 
+                                archivo.t_inventario i ON ex.id_inventario = i.id_inventario
+
+                            WHERE 
+                                i.id_inventario = $1
+                                AND (es.estado_fedatado IS NULL OR es.estado_fedatado <> 'R');
+                                 `;
+            const total_imagenes = await db.query(consulta, [id_inventario]);
+            if (total_imagenes && total_imagenes["rows"].length > 0) {
+                res.json(total_imagenes["rows"][0]);
+            } else {
+                res.status(404).json({ text: "no existe el total de imagenes" }); 
+            }
+        } catch (error) {
+            console.error("Error al obtener total de imagenes:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
 }
 
 const digitalizacionController = new DigitalizacionController();

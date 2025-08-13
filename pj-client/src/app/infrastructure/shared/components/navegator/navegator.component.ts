@@ -38,6 +38,8 @@ export class NavegatorComponent {
         console.log('Saliendo del sistema...');
         // this.loginService.logout();
         this.router.navigate(['/login'])
+        this.credencialesService.clear();
+        console.log('Sesión cerrada exitosamente',this.credencialesService.credenciales);
         
       }
     });
