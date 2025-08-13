@@ -15,8 +15,8 @@
         </div>
         <div class="row ">
             <hr>
-            <!-- INVENTARIO DE DIGITALIZACION-->
-            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="recepcion_serie_documental()">
+            <!-- INVENTARIO -->
+            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="recepcion_serie_documental()" [style]="disableInventario">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -30,8 +30,8 @@
                     </div>
                 </div>
             </div>
-            <!-- PREPARACION DE DOCUMENTOS -->
-            <div class=" tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="preparacion_documentos()">
+            <!-- PREPARACION -->
+            <div class=" tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="preparacion_documentos()" [style]="disablePreparador">
                 <div class="card border-left-warning shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <!-- DIGITALIZACION-->
-            <div class=" tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="digitalizacion()">
+            <div class=" tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="digitalizacion()" [style]="disableDigitalizador">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -61,7 +61,7 @@
                 </div>
             </div>
             <!-- #region INDIZADOR -->
-            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="indizador()" >
+            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="indizador()" [style]="disableIndizador">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -78,7 +78,7 @@
             <!-- #endregion -->
 
             <!--CONTROL DE CALIDAD -->
-            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="controlCalidad()">
+            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="controlCalidad()" [style]="disableControlCalidad">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -93,7 +93,7 @@
                 </div>
             </div>
             <!-- FEDATARIO -->
-            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="fedatario()">
+            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="fedatario()" [style]="disableFedatario">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -109,7 +109,7 @@
             </div>
 
             <!-- BOVEDA -->
-            <div class=" tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="boveda()" >
+            <div class=" tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="boveda()" [style]="disableBoveda">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -124,7 +124,7 @@
                 </div>
             </div>
             <!-- REPORTES -->
-            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="reporte()">
+            <div class="tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="reporte()" [style]="disableReporte">
                 <div class="card border-left-info shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -164,7 +164,7 @@
 
             <hr>
             <!-- USUARIOS -->
-            <div class=" tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="usuarios()">
+            <div class=" tarjeta col-xl-3 col-md-6 mb-4 hand_cursor" (click)="usuarios()" [style]="disableUsuarios">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -178,7 +178,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

@@ -20,6 +20,8 @@ import { BovedaListSerieDocComponent } from './infrastructure/pages/boveda/boved
 import { BovedaExpedientesComponent } from './infrastructure/pages/boveda/boveda-expedientes/boveda-expedientes.component';
 import { ReporteComponent } from './infrastructure/pages/reporte/reporte.component';
 
+import { AuthGuard } from './guard/auth.guard';
+
 export const routes: Routes = [
     
     {
@@ -28,35 +30,35 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
     {   path: 'login', component: LoginComponent  },
-    {   path: 'principal', component: PrincipalComponent  },
+    {   path: 'principal', component: PrincipalComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/form-usuario', component: FormUsuarioComponent  },
-    {   path: 'principal/list-usuario', component: ListUsuarioComponent  },
-    {   path: 'principal/form-usuario/:id_usuario', component: FormUsuarioComponent  },
-    {   path: 'principal/mod-usuario/:id_usuario', component: ModUsuarioComponent  },
+    {   path: 'principal/form-usuario', component: FormUsuarioComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/list-usuario', component: ListUsuarioComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/form-usuario/:id_usuario', component: FormUsuarioComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/mod-usuario/:id_usuario', component: ModUsuarioComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/recepcion/list-serie-documental', component: RecepcionListSerieDocComponent  },
-    {   path: 'principal/recepcion/serie-documental/expedientes/:id', component: RecepcionExpedientesComponent  },
+    {   path: 'principal/recepcion/list-serie-documental', component: RecepcionListSerieDocComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/recepcion/serie-documental/expedientes/:id', component: RecepcionExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/preparacion/list-serie-documental', component: PreparacionListSerieDocComponent  },
-    {   path: 'principal/preparacion/serie-documental/expedientes/:id', component: PreparacionExpedientesComponent  },
+    {   path: 'principal/preparacion/list-serie-documental', component: PreparacionListSerieDocComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/preparacion/serie-documental/expedientes/:id', component: PreparacionExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/digitalizacion/list-serie-documental', component: DigitalizacionListSerieDocComponent  },
-    {   path: 'principal/digitalizacion/serie-documental/expedientes/:id', component: DigitalizacionExpedientesComponent  },
+    {   path: 'principal/digitalizacion/list-serie-documental', component: DigitalizacionListSerieDocComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/digitalizacion/serie-documental/expedientes/:id', component: DigitalizacionExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/indizador/list-serie-documental', component: IndizadorListSerieDocComponent  },
-    {   path: 'principal/indizador/serie-documental/expedientes/:id', component: IndizadorExpedientesComponent  },
+    {   path: 'principal/indizador/list-serie-documental', component: IndizadorListSerieDocComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/indizador/serie-documental/expedientes/:id', component: IndizadorExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/controlcalidad/list-serie-documental', component: ControlListSerieDocComponent  },
-    {   path: 'principal/controlcalidad/serie-documental/expedientes/:id', component: ControlExpedientesComponent  },
+    {   path: 'principal/controlcalidad/list-serie-documental', component: ControlListSerieDocComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/controlcalidad/serie-documental/expedientes/:id', component: ControlExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/fedatario/list-serie-documental', component: FedatarioListSerieDocComponent  },
-    {   path: 'principal/fedatario/serie-documental/expedientes/:id', component: FedatarioExpedientesComponent  },
+    {   path: 'principal/fedatario/list-serie-documental', component: FedatarioListSerieDocComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/fedatario/serie-documental/expedientes/:id', component: FedatarioExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/boveda/list-serie-documental', component: BovedaListSerieDocComponent  },
-    {   path: 'principal/boveda/serie-documental/expedientes/:id', component: BovedaExpedientesComponent  },
+    {   path: 'principal/boveda/list-serie-documental', component: BovedaListSerieDocComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/boveda/serie-documental/expedientes/:id', component: BovedaExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/reportes', component: ReporteComponent  },
+    {   path: 'principal/reportes', component: ReporteComponent  ,canActivate: [AuthGuard]},
 
 
 ];
