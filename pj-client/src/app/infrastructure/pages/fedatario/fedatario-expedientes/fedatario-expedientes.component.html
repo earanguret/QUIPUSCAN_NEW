@@ -476,13 +476,13 @@
                             <!-- Elemento inferior (botones) fijo abajo -->
                             <div class="d-flex justify-content-between"
                                 style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
-                                <button type="button" class="rechazar-btn mx-2" (click)="openModalDesaprobar()">Rechazar</button>
+                                <button type="button" class="rechazar-btn mx-2" (click)="openModalDesaprobar()" [disabled]="!this.buttonFirma">Rechazar</button>
                                 <div style="position: relative;">
 
                                     <button type="button" class="cancelar-btn mx-2"
-                                        (click)="closeModalFedatario()">Cancelar</button>
+                                        (click)="closeModalFedatario()" [disabled]="!this.buttonFirma">Cancelar</button>
                                     <button type="button" class="guardar-btn mx-2"
-                                        (click)="mostarSignPanel()">Firmar</button>
+                                        (click)="mostarSignPanel()" [disabled]="!this.buttonFirma">Firmar</button>
 
                                     <!-- popup de firmar -->
                                     <div [ngClass]="{ 'visible': show_sign_panel, 'hidden': !show_sign_panel }"
@@ -526,9 +526,12 @@
                                             </div>
                                             <div *ngIf="msg_firmado"
                                                 class="alert alert-success alert-dismissible fade show mt-3"
-                                                role="alert" style="margin-bottom: 0px; padding: 12px 8px; ">
-                                                {{mensaje_firmado}}
-                                                <button class="btn btn-secondary btn-sm" (click)="terminarFirma()">Terminar</button>
+                                                role="alert" style="margin-bottom: 0px; padding: 8px 8px; ">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <label for="">{{mensaje_firmado}}</label> 
+                                                    <button class="btn btn-secondary btn-sm" (click)="terminarFirma()">Terminar</button>
+                                                </div>
+                                                
                                             </div>
 
                                             <!-- <input type="text" readonly class="form-control sign-tag" name="observacion" value="prueba"> -->

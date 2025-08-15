@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../../environment/environment';
-import { CrearUsuarioResponse, ModificarDatosUsuarioResponse, UsuarioResponse } from '../../../../domain/dto/UsuarioResponse.dto';
+import { CrearUsuarioResponse, ModificarDatosUsuarioResponse, UsuarioResponse, UsuarioSupervisorLineaResponse } from '../../../../domain/dto/UsuarioResponse.dto';
 import { UsuarioModel } from '../../../../domain/models/Usuario.model';
 import { UsuarioRequest } from '../../../../domain/dto/UsuarioRequest.dto';
 
@@ -35,4 +35,8 @@ export class UsuarioService {
   ModificarPasswordUsuario(id_usuario:number,password:string,app_user:string):Observable<ModificarDatosUsuarioResponse>{
     return this.http.put<ModificarDatosUsuarioResponse>(`${this.api_uri_usuario}/modificar/password/${id_usuario}`,{password,app_user})
   } 
+
+  ObtenerSupervisorLinea(): Observable<UsuarioSupervisorLineaResponse>{
+    return this.http.get<UsuarioSupervisorLineaResponse>(`${this.api_uri_usuario}/obtener/supervisor`)
+  }
 }

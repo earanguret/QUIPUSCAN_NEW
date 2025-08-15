@@ -22,6 +22,7 @@ export class InventarioComponent implements OnInit {
 
   dataExpediente: any[] = [];
   modificarInventario = false;
+  isSupervisorLinea = false;
 
   private myModal: any;
 
@@ -41,11 +42,14 @@ export class InventarioComponent implements OnInit {
 
   constructor(private router:Router, private inventarioService:InventarioService, private credencialesService:CredencialesService) { }
 
+  
+
   ngOnInit(): void {
     if (!this.ruta) {
       this.ruta = '/principal';
     }
     this.ListarInventarios()
+    this.isSupervisorLinea = this.credencialesService.credenciales.perfil=='SUPERVISORL'||this.credencialesService.credenciales.perfil=='ADMINISTRADOR'?true:false
   }
 
   closeModal() {

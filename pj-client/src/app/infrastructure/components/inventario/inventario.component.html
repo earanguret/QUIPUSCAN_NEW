@@ -47,7 +47,7 @@
                         style="top: 0px; right: -60px; z-index: 1;" (click)="openModalEdit(item)">
                         Editar
                     </button> -->
-                    <i class="bi bi-pencil-square  position-absolute edit-icon" title="modificar " (click)="openModalEdit(item)">
+                    <i *ngIf="isSupervisorLinea" class="bi bi-pencil-square  position-absolute edit-icon" title="modificar " (click)="openModalEdit(item)">
                     </i>
 
                     <div class="row p-4" (click)="ExpedientesSerieDocumental(item.id_inventario)">

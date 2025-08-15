@@ -20,6 +20,7 @@ class UsuarioRoutes{
         this.router.post('/api/usuario/login',logAccesoMiddleware,usuarioController.ValidarLogin)
         this.router.put('/api/usuario/modificar/:id_usuario',usuarioController.ModificarDatosUsuario)
         this.router.put('/api/usuario/modificar/password/:id_usuario',usuarioController.ModificarPasswordUsuario)
+        this.router.get('/api/usuario/obtener/supervisor',usuarioController.obtenerSupervisorLineaActivo)
     }
 }
 

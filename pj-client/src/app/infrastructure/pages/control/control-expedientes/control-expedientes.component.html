@@ -476,10 +476,9 @@
                             </div>
 
                             <!-- Elemento inferior (botones) fijo abajo -->
-                            <div class="d-flex justify-content-between"
-                                style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925;">
-                                <button type="button" class="rechazar-btn mx-2"
-                                    (click)="openModalDesaprobar()">Rechazar</button>
+                            <div class="d-flex justify-content-between" style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925;">
+                                <button *ngIf="data_expediente_temp.estado_controlado == null || data_expediente_temp.estado_controlado == 'R' || data_expediente_temp.estado_controlado == 'A'" type="button" class="rechazar-btn mx-2"
+                                    (click)="openModalDesaprobar()" >Rechazar</button>
                                 <div>
 
                                     <button type="button" class="cancelar-btn mx-2"

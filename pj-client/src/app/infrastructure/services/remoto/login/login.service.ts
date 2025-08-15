@@ -2,10 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../../../environment/environment';
 import { CredencialesService } from '../../local/credenciales.service';
+import { SupervisorLineaService } from '../../local/supervisorLinea.service';
 import { LoginRequest } from '../../../../domain/dto/LoginRequest.dto';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { LoginValidator } from '../../../validator/fromValidator/login.validator';
 import { UsuarioLoginResponse } from '../../../../domain/dto/LoginResponse.dto';
+import { UsuarioService } from '../usuario/usuario.service';
+import { UsuarioSupervisorLineaResponse } from '../../../../domain/dto/UsuarioResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +19,7 @@ export class LoginService {
 
   api_url_login = `${environment.urlApi}/usuario/login`;
 
-  constructor(private http: HttpClient, private credencialesService: CredencialesService) { }
+  constructor(private http: HttpClient, private credencialesService: CredencialesService, private supervisorLineaService: SupervisorLineaService, private usuarioService: UsuarioService) { }
 
   login(credenciales: LoginRequest): Observable<boolean> {
     const erroresValidacion = LoginValidator(credenciales);
@@ -40,6 +43,7 @@ export class LoginService {
           
           console.log(this.credencialesService.credenciales);
           this.isAuthenticated = true;
+          this.obtenerSupervisorLinea();
           return true;
         }
         this.mensaje=response.mensaje
@@ -64,6 +68,20 @@ export class LoginService {
 
   showMessage(){
     return this.mensaje;
+  }
+
+  obtenerSupervisorLinea(){
+    this.usuarioService.ObtenerSupervisorLinea().subscribe({
+      next: (data:UsuarioSupervisorLineaResponse) => {
+        this.supervisorLineaService.supervisor = data;
+      },
+      error: (error) => {
+        console.error('Error al obtener supervisor:', error);
+      },
+      complete: () => {
+        console.log('supervisor obtenido correctamente');
+      }
+    })
   }
 
 }

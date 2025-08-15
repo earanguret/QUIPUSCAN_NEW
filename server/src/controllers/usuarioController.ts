@@ -383,6 +383,37 @@ class UsuarioController {
             res.status(500).json({ error: "Error interno del servidor" });
         }
     }
+
+    public async obtenerSupervisorLineaActivo(req: Request, res: Response): Promise<any> {
+        try {
+            const consulta = `
+                            SELECT
+                                u.id_usuario,
+                                u.username,
+                                u.perfil,
+                                u.estado,
+                                p.nombre,
+                                p.ap_paterno,
+                                p.ap_materno
+                            FROM
+                                archivo.t_usuario u
+                            JOIN
+                                archivo.t_persona p ON u.id_persona = p.id_persona
+                            WHERE 
+                                u.perfil='SUPERVISORL'
+                                AND u.estado=true
+                                 `;
+            const supervisor = await db.query(consulta);
+            if (supervisor && supervisor["rows"].length > 0) {
+                res.status(200).json(supervisor["rows"][0]);
+            } else {
+                res.status(404).json({ text: "El supervisor no existe" });
+            }
+        } catch (error) {
+            console.error("Error al obtener supervisor:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
 }
 
 const usuarioController = new UsuarioController();

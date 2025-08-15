@@ -611,7 +611,7 @@ export class FedatarioExpedientesComponent implements OnInit {
         this.ListarExpedientes();
   
         const nuevoMensaje: Mensaje = {
-          area_remitente: 'CONTROL',
+          area_remitente: 'FEDATARIO',
           responsable: usuario,
           destino,
           fecha: new Date(),
