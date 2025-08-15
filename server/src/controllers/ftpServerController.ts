@@ -1,32 +1,8 @@
 import { Request, Response } from "express";
-import * as ftp from "basic-ftp";
-import * as fs from "fs";
-import * as path from "path";
-import { PassThrough } from "stream";
+import { createFtpClientConexion } from "../ftp/ftp_conexion";
 
 class FtpServerController {
-    private client: ftp.Client;
-    constructor() {
-        this.client = new ftp.Client();
-        this.client.ftp.verbose = true; // Activar logs para depuración
-    }
-    public async connect() {
-        if (!this.client.closed) return; // Evita reconectar si ya está conectado
-        try {
-            await this.client.access({
-                host: process.env.FTP_HOST || "172.17.70.118",
-                user: process.env.FTP_USER || "user1",
-                password: process.env.FTP_PASS || "123",
-                secure: true,
-                secureOptions: { rejectUnauthorized: false } // ⚠️ Solo para certificados autofirmados
-            });
-
-            console.log("✅ Conectado al servidor FTP");
-        } catch (err) {
-            console.error("❌ Error al conectar al servidor FTP:", err);
-            throw new Error("Error al conectar al servidor FTP");
-        }
-    }
+    
 
     public async createFolder (req: Request, res: Response):Promise<any> {
         const { folderName } = req.body;
@@ -35,14 +11,15 @@ class FtpServerController {
             return res.status(400).json({ error: "El nombre de la carpeta es obligatorio" });
         }
     
+        let client
         try {
-            await this.connect();
-            await this.client.ensureDir(folderName);
+            client = await createFtpClientConexion();
+            await client.ensureDir(folderName);
             res.status(200).json({ message: `📁 Carpeta creada: ${folderName}` });
         } catch (err) {
             res.status(500).json({ error: "Error al crear la carpeta", details: err });
         } finally {
-            this.client.close();
+            client?.close();
         }
     };
 
@@ -56,10 +33,11 @@ class FtpServerController {
             });
         }
     
+        let client
         try {
-            await this.connect();
-            await this.client.ensureDir(folderPath);
-            await this.client.uploadFrom(req, fileName);
+            client = await createFtpClientConexion();
+            await client.ensureDir(folderPath);
+            await client.uploadFrom(req, fileName);
     
             console.log(` Archivo subido correctamente: ${fileName}`);
             return res.status(200).json({ message: ` Archivo ${fileName} subido exitosamente` });
@@ -78,7 +56,7 @@ class FtpServerController {
                 details: err.message
             });
         } finally {
-            this.client.close();
+            client?.close();
         }
     }
     
@@ -92,8 +70,9 @@ class FtpServerController {
             });
         }
     
+        let client
         try {
-            await this.connect();
+            client = await createFtpClientConexion();
             const fullPath = `${folderPath}/${fileName}`;
     
             // Headers para visualizar en navegador
@@ -102,14 +81,14 @@ class FtpServerController {
             res.setHeader("Accept-Ranges", "bytes");
     
             // Streaming desde FTP hacia el navegador
-            await this.client.downloadTo(res, fullPath);
+            await client.downloadTo(res, fullPath);
     
             console.log(`📤 Archivo enviado: ${fileName}`);
         } catch (err: any) {
             console.error("❌ Error al descargar el archivo:", err);
             res.status(500).json({ error: "No se pudo descargar el archivo", details: err.message });
         } finally {
-            this.client.close();
+            client?.close();
         }
     }
 
@@ -119,13 +98,14 @@ class FtpServerController {
         if (!folderPath) {
             return res.status(400).json({ error: "El campo 'folderPath' es obligatorio en el cuerpo de la solicitud" });
         }
-    
+
+        let client
         try {
-            await this.connect();
+            client = await createFtpClientConexion();
     
             // Cambiar al directorio solicitado
-            await this.client.cd(folderPath);
-            const fileList = await this.client.list();
+            await client.cd(folderPath);
+            const fileList = await client.list();
     
             // Formatear la respuesta
             const result = fileList.map(file => ({
@@ -139,7 +119,7 @@ class FtpServerController {
             console.error(" Error al listar archivos:", err);
             res.status(500).json({ error: "Error al listar los archivos", details: err });
         } finally {
-            this.client.close();
+            client?.close();
         }
     }
 
@@ -152,11 +132,11 @@ class FtpServerController {
         }
     
         const filePath = `${folderPath}/${fileName}`;
-    
+        let client
         try {
-            await this.connect();
+            client = await createFtpClientConexion();
 
-            await this.client.remove(filePath);
+            await client.remove(filePath);
     
             console.log(` Archivo eliminado: ${filePath}`);
             res.status(200).json({ message: `Archivo ${fileName} eliminado exitosamente` });
@@ -164,7 +144,7 @@ class FtpServerController {
             console.error("Error al eliminar archivo:", err);
             res.status(500).json({ error: "Error al eliminar el archivo", details: err });
         } finally {
-            this.client.close();
+            client?.close();
         }
     }
 
@@ -180,12 +160,12 @@ class FtpServerController {
 
         const oldFilePath = `${folderPath}/${oldFileName}`;
         const newFilePath = `${folderPath}/${newFileName}`;
-    
+        let client
         try {
-            await this.connect();
+            client = await createFtpClientConexion();
     
             // Renombrar el archivo
-            await this.client.rename(oldFilePath, newFilePath);
+            await client.rename(oldFilePath, newFilePath);
     
             console.log(` Archivo renombrado: ${oldFileName} → ${newFileName}`);
             res.status(200).json({ message: `Archivo renombrado exitosamente a ${newFileName}` });
@@ -193,7 +173,7 @@ class FtpServerController {
             console.error(" Error al renombrar archivo:", err);
             res.status(500).json({ error: "Error al renombrar el archivo", details: err });
         } finally {
-            this.client.close();
+            client?.close();
         }
     }
 
