@@ -5,34 +5,19 @@ import { sign } from "pdf-signer";
 import { Readable } from "stream";
 import { WritableStreamBuffer } from 'stream-buffers';
 import { PDFDocument } from 'pdf-lib';
-import { PassThrough } from 'stream';
+import { createFtpClientConexion } from "../ftp/ftp_conexion";
+
 
 class FtpServerController {
-    private client: ftp.Client;
+
     isRunning = false;
     constructor() {
-        this.client = new ftp.Client();
-        this.client.ftp.verbose = true; // Activar logs para depuración
-    }
-    public async connect() {
-        if (!this.client.closed) return; // Evita reconectar si ya está conectado
-        try {
-            await this.client.access({
-                host: process.env.FTP_HOST || "172.17.70.118",
-                user: process.env.FTP_USER || "user1",
-                password: process.env.FTP_PASS || "123",
-                secure: true,
-                secureOptions: { rejectUnauthorized: false } // ⚠️ Solo para certificados autofirmados
-            });
 
-            console.log("✅ Conectado al servidor FTP");
-        } catch (err) {
-            console.error("❌ Error al conectar al servidor FTP:", err);
-            throw new Error("Error al conectar al servidor FTP");
-        }
     }
+
 
     public async firmarDocumentoDesdeFTP(req: Request, res: Response): Promise<any> {
+        let client
         try {
             const {
                 nombrePdf,
@@ -44,6 +29,7 @@ class FtpServerController {
                 carpetaFirmados,
                 carpetaCertificados // contiene también la imagen
             } = req.body;
+
     
             if (!nombrePdf || !nombreCertificado || !password || !ubicacion || !cargo || !carpetaOrigen || !carpetaFirmados || !carpetaCertificados) {
                 return res.status(400).json({
@@ -52,21 +38,22 @@ class FtpServerController {
                 });
             }
     
-            await this.connect();
+            
+            client = await createFtpClientConexion();
     
             // Descargar PDF
             const pdfStream = new WritableStreamBuffer();
-            await this.client.downloadTo(pdfStream, `${carpetaOrigen}/${nombrePdf}`);
+            await client.downloadTo(pdfStream, `${carpetaOrigen}/${nombrePdf}`);
             const pdfBuffer = pdfStream.getContents();
     
             // Descargar certificado (.p12)
             const certStream = new WritableStreamBuffer();
-            await this.client.downloadTo(certStream, `${carpetaCertificados}/${nombreCertificado}`);
+            await client.downloadTo(certStream, `${carpetaCertificados}/${nombreCertificado}`);
             const certBuffer = certStream.getContents();
     
             // Descargar imagen de firma
             const imgStream = new WritableStreamBuffer();
-            await this.client.downloadTo(imgStream, `${carpetaCertificados}/img/firmadigitalv3_.png`);
+            await client.downloadTo(imgStream, `${carpetaCertificados}/img/firmadigitalv3_.png`);
             const imageBuffer = imgStream.getContents();
     
             // Procesar certificado
@@ -140,9 +127,9 @@ class FtpServerController {
             // Subir al FTP
             // const nombreFirmado = `${nombrePdf}`;
             const fullOutputPath = `${carpetaFirmados}/${nombrePdf}`;
-            await this.client.ensureDir(carpetaFirmados);
+            await client.ensureDir(carpetaFirmados);
             const readableSignedPdf = Readable.from(signedPdfBuffer);
-            await this.client.uploadFrom(readableSignedPdf, fullOutputPath);
+            await client.uploadFrom(readableSignedPdf, fullOutputPath);
     
             return res.status(200).json({
                 ok: true,
@@ -162,7 +149,7 @@ class FtpServerController {
                 error: error instanceof Error ? error.message : String(error)
             });
         } finally {
-            this.client.close();
+            client?.close();
         }
     }
     
@@ -171,6 +158,7 @@ class FtpServerController {
             return res.status(429).json({ ok: false, mensaje: "Ya se está procesando una solicitud. Intenta más tarde." });
           }
           this.isRunning = true;
+          let client
         try {
             const {
                 nombresPdf,
@@ -190,15 +178,15 @@ class FtpServerController {
                 });
             }
     
-            await this.connect();
+            client = await createFtpClientConexion();
     
             // Descargar certificado y firma solo una vez
             const certStream = new WritableStreamBuffer();
-            await this.client.downloadTo(certStream, `${carpetaCertificados}/${nombreCertificado}`);
+            await client.downloadTo(certStream, `${carpetaCertificados}/${nombreCertificado}`);
             const certBuffer = certStream.getContents();
     
             const imgStream = new WritableStreamBuffer();
-            await this.client.downloadTo(imgStream, `${carpetaCertificados}/img/firmadigitalv3_.png`);
+            await client.downloadTo(imgStream, `${carpetaCertificados}/img/firmadigitalv3_.png`);
             const imageBuffer = imgStream.getContents();
     
             const certBinary = certBuffer.toString("binary");
@@ -226,7 +214,7 @@ class FtpServerController {
             for (const nombrePdf of nombresPdf) {
                 try {
                     const pdfStream = new WritableStreamBuffer();
-                    await this.client.downloadTo(pdfStream, `${carpetaOrigen}/${nombrePdf}`);
+                    await client.downloadTo(pdfStream, `${carpetaOrigen}/${nombrePdf}`);
                     const pdfBuffer = pdfStream.getContents();
                     if (!pdfBuffer) {
                         return res.status(500).json({ ok: false, mensaje: "Error al leer el PDF desde el FTP" });
@@ -274,9 +262,9 @@ class FtpServerController {
     
                     const nombreFirmado = `firmado-${nombrePdf}`;
                     const fullOutputPath = `${carpetaFirmados}/${nombreFirmado}`;
-                    await this.client.ensureDir(carpetaFirmados);
+                    await client.ensureDir(carpetaFirmados);
                     const readableSignedPdf = Readable.from(signedPdfBuffer);
-                    await this.client.uploadFrom(readableSignedPdf, fullOutputPath);
+                    await client.uploadFrom(readableSignedPdf, fullOutputPath);
     
                     resultados.push({
                         archivo: nombrePdf,
@@ -307,7 +295,7 @@ class FtpServerController {
                 error: error instanceof Error ? error.message : String(error)
             });
         } finally {
-            this.client.close();
+            client?.close();
             this.isRunning = false;
         }
     }
@@ -322,12 +310,13 @@ class FtpServerController {
           });
         }
       
+        let client
         try {
-          await this.connect();
+          client = await createFtpClientConexion();
       
           // Acceder a la carpeta donde están los certificados
-          await this.client.cd('CERTIFICADOS');
-          const fileList = await this.client.list();
+          await client.cd('CERTIFICADOS');
+          const fileList = await client.list();
       
           const nombreCertificado = `${username}.pfx`;
           const archivoEncontrado = fileList.find(file => file.name === nombreCertificado);
@@ -354,42 +343,10 @@ class FtpServerController {
             error: error instanceof Error ? error.message : String(error)
           });
         } finally {
-          this.client.close();
+          client?.close();
         }
       }
-      
-
-    // public async buscarFirmaDigitalByUsername(req: Request, res: Response): Promise<any> {
-    //     const { username } = req.body; //el nombre del certificado debe ser igual al nombre del usuario en el sistema
-    //     try {
-    //         await this.connect();
-    
-    //         // Cambiar al directorio solicitado
-    //         await this.client.cd('CERTIFICATOS');
-    //         const fileList = await this.client.list();
-    
-    //         // Formatear la respuesta
-    //         const result = fileList.map(file => ({
-    //             name: file.name,
-    //             size: file.size,
-    //             modifiedAt: file.modifiedAt,
-    //         }));
-    
-    //         res.status(200).json({ ok: true, certificado: result,});
-    //     }
-    //     catch (error) {
-    //         console.error("❌ Error al buscar firma digital por username:", error);
-    //         return res.status(500).json({
-    //             ok: false,
-    //             mensaje: "Error al buscar firma digital por username",
-    //             error: error instanceof Error ? error.message : String(error)
-    //         });
-    //     } finally {
-    //         this.client.close();
-    //     }
-    // }
-    
-
+          
 }
 
 const ftpServerController = new FtpServerController();
