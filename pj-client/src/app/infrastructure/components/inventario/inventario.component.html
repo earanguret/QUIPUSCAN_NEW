@@ -37,16 +37,11 @@
             </div>
             <div class="my-4 d-flex" style="max-width: 90%;">
                 <input type="text" class="form-control form-control-busqueda" name="buscar" placeholder="BUSCAR ">
-                <!-- <button class="buscar-btn">+ ADD</button> -->
-                <button class="btn btn-success opacity-75 mx-2" (click)="openModalCreate()">+ ADD</button>
+                <button *ngIf="isSupervisorLinea" class="btn btn-success opacity-75 mx-2" (click)="openModalCreate()">+ ADD</button>
             </div>
 
             <div *ngIf="ListInventarioDetalle.length>0">
                 <div *ngFor="let item of ListInventarioDetalle" class="card_panel position-relative">
-                    <!-- <button class="btn btn-success opacity-75 position-absolute"
-                        style="top: 0px; right: -60px; z-index: 1;" (click)="openModalEdit(item)">
-                        Editar
-                    </button> -->
                     <i *ngIf="isSupervisorLinea" class="bi bi-pencil-square  position-absolute edit-icon" title="modificar " (click)="openModalEdit(item)">
                     </i>
 
