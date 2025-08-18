@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import * as ftp from "basic-ftp";
 import forge from 'node-forge';
 import { sign } from "pdf-signer";
 import { Readable } from "stream";
