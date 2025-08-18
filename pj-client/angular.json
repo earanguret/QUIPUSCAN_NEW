@@ -20,6 +20,10 @@
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "sweetalert2",
+              "pako"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -46,7 +50,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
+                  "maximumWarning": "6kB",
                   "maximumError": "8kB"
                 }
               ],
@@ -101,4 +105,5 @@
   "cli": {
     "analytics": false
   }
+  
 }

@@ -59,6 +59,74 @@ class FtpServerController {
             client?.close();
         }
     }
+
+    // public async uploadFile(req: Request, res: Response): Promise<any> {
+    //     const fileName = req.headers["file-name"] as string;
+    //     const folderPath = req.headers["folder-path"] as string;
+    
+    //     if (!fileName || !folderPath) {
+    //         return res.status(400).json({
+    //             error: "El nombre del archivo y la ruta de la carpeta son obligatorios en los headers (file-name, folder-path)"
+    //         });
+    //     }
+    
+    //     let client;
+    //     const startTime = Date.now();
+    //     let bytesReceived = 0;
+    
+    //     try {
+    //         console.log(`📂 [FTP] Iniciando subida: ${fileName} → ${folderPath}`);
+    
+    //         // Medir bytes que llegan desde el cliente
+    //         req.on("data", chunk => {
+    //             bytesReceived += chunk.length;
+    //         });
+    
+    //         // Crear cliente FTP con timeout de 60s
+    //         client = await createFtpClientConexion();
+    
+    //         await client.ensureDir(folderPath);
+    //         await client.uploadFrom(req, fileName);
+    
+    //         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    //         console.log(`✅ Subida exitosa: ${fileName} (${bytesReceived} bytes en ${duration} s)`);
+    
+    //         return res.status(200).json({
+    //             message: `Archivo ${fileName} subido correctamente`,
+    //             size: bytesReceived,
+    //             duration: `${duration} segundos`
+    //         });
+    
+    //     } catch (err: any) {
+    //         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    //         console.error(`❌ Error subiendo ${fileName} después de ${duration} s:`, err);
+    
+    //         if (!res.headersSent) {
+    //             if (err.code === "ECONNRESET") {
+    //                 return res.status(502).json({
+    //                     error: "Conexión FTP interrumpida",
+    //                     code: err.code,
+    //                     duration: `${duration} segundos`
+    //                 });
+    //             }
+    //             if (err.message === "Error al conectar al servidor FTP") {
+    //                 return res.status(503).json({
+    //                     error: "No se pudo establecer conexión con el servidor FTP",
+    //                     duration: `${duration} segundos`
+    //                 });
+    //             }
+    //             return res.status(500).json({
+    //                 error: "Error al subir el archivo",
+    //                 details: err.message || "Error desconocido",
+    //                 duration: `${duration} segundos`
+    //             });
+    //         }
+    //     } finally {
+    //         client?.close();
+    //     }
+    // }
+    
+    
     
     public async downloadFile(req: Request, res: Response): Promise<any> {
         const fileName = req.query.fileName as string;

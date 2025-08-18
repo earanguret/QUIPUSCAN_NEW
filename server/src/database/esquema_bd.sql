@@ -2121,10 +2121,10 @@ BEGIN
     VALUES (
         CURRENT_TIMESTAMP,                       -- Fecha de la transacción actual
         'U',                                     -- Indicador de transacción
-        COALESCE(current_setting('myapp.c_trns_uidred', true), SESSION_USER), -- Usuario que hizo la modificación
-        current_setting('myapp.c_trns_pc', true), 
-        COALESCE(current_settingcurrent_setting('myapp.c_trns_ip', true),'172.0.0.1'), 
-        current_setting('myapp.c_trns_mac', true),
+        NEW.c_aud_uidred,        -- Usuario que hizo la modificación (nuevos datos)
+        NEW.c_aud_pc,         -- PC (nuevos datos)
+        NEW.c_aud_ip,         -- IP (nuevos datos)
+        NEW.c_aud_mac,        -- MAC (nuevos datos)
 
         OLD.f_aud, 
         OLD.b_aud, 
