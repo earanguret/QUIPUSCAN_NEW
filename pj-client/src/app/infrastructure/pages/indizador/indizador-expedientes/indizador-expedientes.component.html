@@ -277,40 +277,46 @@
                                             <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
 
                                             <div class="form-group mt-3">
-                                                <label for="juzgado_origen" class="form-label">Juzgado de
-                                                    origen:</label>
-                                                <input type="text" class="form-control form-control-sm"
-                                                    name="juzgado_origen" [(ngModel)]="dataIndizacion.juzgado_origen">
+                                                <label for="juzgado_origen" class="form-label">Juzgado de origen prueba:</label>
+                                                <input type="text" class="form-control form-control-sm"  name="juzgado_origen" [(ngModel)]="dataIndizacion.juzgado_origen" list="datalistOptions1" id="input_juzgado_origen">
+                                           
+                                                <datalist id="datalistOptions1">
+                                                    <option *ngFor="let option of listDistJudiciales" [value]="option"></option>
+                                                  </datalist>
                                             </div>
+
+                                            
 
                                             <div class="form-group mt-3">
                                                 <label for="tipo_proceso" class="form-label">Tipo de proceso:</label>
-                                                <input type="text" class="form-control form-control-sm"
-                                                    name="tipo_proceso" [(ngModel)]="dataIndizacion.tipo_proceso">
+                                                <input type="text" class="form-control form-control-sm" name="tipo_proceso" [(ngModel)]="dataIndizacion.tipo_proceso" list="datalistTipoProceso">
+                                                <datalist id="datalistTipoProceso">
+                                                    <option *ngFor="let option of listTipoProceso " [value]="option"></option>
+                                                </datalist>
                                             </div>
 
                                             <div class="form-group mt-3">
                                                 <label for="materia" class="form-label">Materia:</label>
-                                                <input type="text" class="form-control form-control-sm" name="materia"
-                                                    [(ngModel)]="dataIndizacion.materia">
+                                                <input type="text" class="form-control form-control-sm" name="materia"  [(ngModel)]="dataIndizacion.materia" list="datalistOptionsMateria">
+                                                <datalist id="datalistOptionsMateria">
+                                                    <option *ngFor="let option of listMateria " [value]="option"></option>
+                                                </datalist>
                                             </div>
 
                                             <div class="form-group mt-3">
                                                 <div class="row">
                                                     <div class="col">
-                                                        <label for="fecha_inicio" class="form-label ">Fecha
-                                                            inicio:</label>
+                                                        <label for="fecha_inicio" class="form-label ">Fecha inicio:</label>
                                                         <input id="fecha_inicio" type="date"
                                                             class="form-control form-control-sm "
-                                                            name="fecha_resolucion"
+                                                            name="fecha_inicio_resolucion"
                                                             [(ngModel)]="dataIndizacion.fecha_inicial">
                                                     </div>
                                                     <div class="col">
-                                                        <label for="fecha_final" class="form-label ">Fecha
-                                                            final:</label>
+                                                        <label for="fecha_final" class="form-label ">Fecha final:</label>
                                                         <input id="fecha_final" type="date"
                                                             class="form-control form-control-sm "
-                                                            name="fecha_resolucion"
+                                                            name="fecha_final_resolucion"
                                                             [(ngModel)]="dataIndizacion.fecha_final">
                                                     </div>
                                                 </div>
@@ -565,6 +571,7 @@
                     <div class="form-group mt-3">
                         <label for="descripcion" class="form-label">Descripción:</label>
                         <input id="indizacion_descripcion" type="text" class="form-control form-control-sm">
+                        
                     </div>
                     <div class="form-group mt-3" style="display: flex; gap: 1rem;">
                         <div>

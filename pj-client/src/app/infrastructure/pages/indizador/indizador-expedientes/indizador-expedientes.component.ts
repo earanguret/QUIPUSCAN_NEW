@@ -24,7 +24,7 @@ import { IndizacionModel } from '../../../../domain/models/Indizacion.model';
 import { FormsModule } from '@angular/forms';
 import { IndizacionService } from '../../../services/remoto/indizacion/indizacion.service';
 import { CrearIndizacionResponse, IndizacionDataResponse, ModificarIndizacionResponse } from '../../../../domain/dto/IndizacionResponse.dto';
-import { FechaConFormato, formatDateToInput } from '../../../functions/formateDate';
+import { FechaConFormato } from '../../../functions/formateDate';
 import { PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { DigitalizacionResponseDataView } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
@@ -32,6 +32,9 @@ import { DigitalizacionService } from '../../../services/remoto/digitalizacion/d
 import { Mensaje, Respuesta } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
+import { datalistDistJudiciales } from '../../../../../../public/info/juzgados.info';
+import { dataListProceso } from '../../../../../../public/info/proceso.info';
+import { dataListMateria } from '../../../../../../public/info/materia.info';
 
 
 declare var bootstrap: any;
@@ -59,6 +62,10 @@ export class IndizadorExpedientesComponent implements OnInit {
 
   mostrarPopupIndex: number | null = null; // Índice del mensaje con popup abierto
   nuevaRespuesta: string = '';
+
+  listDistJudiciales: string[] = datalistDistJudiciales;
+  listTipoProceso: string[] = dataListProceso;
+  listMateria: string[] = dataListMateria;
 
   togglePopup(index: number) {
     this.mostrarPopupIndex = this.mostrarPopupIndex === index ? null : index;
@@ -185,6 +192,8 @@ export class IndizadorExpedientesComponent implements OnInit {
     this.ListarExpedientes()
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
     this.ObternerCodigoInventario()
+    console.log('Opciones cargadas:', this.listDistJudiciales);
+   
   }
 
   closeModalReception() {
@@ -453,6 +462,7 @@ export class IndizadorExpedientesComponent implements OnInit {
 
         this.ListObservaciones = data.observaciones?.split('|') ?? [];
         this.dataIndice = JSON.parse(data.indice ? data.indice : '[]')
+        console.log(data);
       },
       error: (error) => {
         console.log(error);
