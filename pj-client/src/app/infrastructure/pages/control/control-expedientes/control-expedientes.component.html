@@ -363,22 +363,22 @@
                                                 <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div id="list-container">
                                                     <ol>
-                                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1" (click)="openModalDetalleIndice(dataIndice, i)">
-                                                            <span class="titulo_index">{{ item.descripcion }} </span>
-                                                            <span class="titulo_index">{{ '(Pg.'+ item.indice+' )' }}
+                                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1" >
+                                                            <span class="titulo_index" (click)="openModalDetalleIndice(dataIndice, i)">{{ item.descripcion }} </span>
+                                                            <span class="titulo_index" (click)="openModalDetalleIndice(dataIndice, i)">{{ '(Pg.'+ item.indice+' )' }}
                                                             </span>
 
                                                             <ol *ngIf="item.subItems && item.subItems.length > 0">
                                                                 <li 
-                                                                    *ngFor="let subItem of item.subItems; let j = index" (click)="openModalDetalleIndice(item.subItems, j)">
-                                                                    <span class="subtitulo_index">{{ subItem.descripcion}} </span>
-                                                                    <span class="subtitulo_index">{{ '(Pg.'+ subItem.indice+' )' }} </span>
+                                                                    *ngFor="let subItem of item.subItems; let j = index">
+                                                                    <span class="subtitulo_index" (click)="openModalDetalleIndice(item.subItems, j)">{{ subItem.descripcion}} </span>
+                                                                    <span class="subtitulo_index" (click)="openModalDetalleIndice(item.subItems, j)">{{ '(Pg.'+ subItem.indice+' )' }} </span>
                                                                     <ol
                                                                         *ngIf="subItem.subItems && subItem.subItems.length > 0">
                                                                         <li
-                                                                            *ngFor="let subSubItem of subItem.subItems; let k = index" (click)="openModalDetalleIndice(subItem.subItems, k)">
-                                                                            <span class="subsubtitulo_index">{{subSubItem.descripcion }}</span>
-                                                                            <span class="subsubtitulo_index">{{ '(Pg.'+ subSubItem.indice+')' }} </span>
+                                                                            *ngFor="let subSubItem of subItem.subItems; let k = index" >
+                                                                            <span class="subsubtitulo_index" (click)="openModalDetalleIndice(subItem.subItems, k)">{{subSubItem.descripcion }}</span>
+                                                                            <span class="subsubtitulo_index" (click)="openModalDetalleIndice(subItem.subItems, k)">{{ '(Pg.'+ subSubItem.indice+')' }} </span>
 
                                                                         </li>
                                                                     </ol>

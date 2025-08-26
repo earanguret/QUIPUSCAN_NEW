@@ -180,16 +180,39 @@ export class ControlExpedientesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.inicializadorModales();
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
     this.ListarExpedientes();
     this.ObternerCodigoInventario()
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
   }
 
+  inicializadorModales() {
+    this.myModalDetalleIndice = new bootstrap.Modal(document.getElementById('Modal_detalle_indice'), {
+      backdrop: false,
+      keyboard: true
+    });
+
+    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+    this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+    this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'), {
+      backdrop: false,
+      keyboard: false
+    });
+  }
+
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
     this.modificarControl = false;
-    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
+    // this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
     this.myModalReception.show();
   }
 
@@ -211,14 +234,14 @@ export class ControlExpedientesComponent implements OnInit {
     if (modificar_control === true) {
       this.modificarControl = true;
       this.RecuperarDatosControl(id_expediente)
-      this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
+      // this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
       this.myModalControl.show();
 
     }
     if (modificar_control === false) {
       this.LimpiarControl()
       this.modificarControl = false;
-      this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
+      // this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
       this.myModalControl.show();
     }
   }
@@ -228,8 +251,8 @@ export class ControlExpedientesComponent implements OnInit {
   }
 
   openModalDesaprobar() {
-    
-    this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'));
+    this.limpiarModarDsaprobar();
+    // this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'));
     this.myModalDesaprobar.show();
   }
 
@@ -237,22 +260,28 @@ export class ControlExpedientesComponent implements OnInit {
     this.myModalDesaprobar.hide();
   }
 
+  limpiarModarDsaprobar() {
+    this.rechazoRazon = '';
+    this.moduloSeleccionado = '';
+  }
+
   openModalDetalleIndice(items: any[], index: number) {
-    
-    this.myModalDetalleIndice = new bootstrap.Modal(document.getElementById('Modal_detalle_indice'));
-    this.myModalDetalleIndice.show();
     console.log('datos detalle indice', items[index]);
+  
+    this.myModalDetalleIndice.show();
+  
+    // Setear valores
     (<HTMLInputElement>document.getElementById('indizacion_descripcion_2')).value = items[index].descripcion;
     (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value = items[index].indice;
     (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value = items[index].fojas;
     (<HTMLInputElement>document.getElementById('fecha_indice_2')).value = items[index].fecha;
-      (<HTMLInputElement>document.getElementById('indizacion_radio_original_2')).checked = items[index].check_original;
-      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_2')).checked = items[index].check_copia;
-      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked = items[index].check_copia_certificada;
-      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked = items[index].check_copia_copia_certificada;
-  
+    (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value = items[index].check_textarea;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_original_2')).checked = items[index].check_original;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_2')).checked = items[index].check_copia;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked = items[index].check_copia_certificada;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked = items[index].check_copia_copia_certificada;
   }
-
+  
   closeModalDetalleIndice() {
     this.myModalDetalleIndice.hide();
   }
