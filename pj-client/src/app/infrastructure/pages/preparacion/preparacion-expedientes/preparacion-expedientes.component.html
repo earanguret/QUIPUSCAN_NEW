@@ -113,10 +113,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-sm" [disabled]="!checkAprobado"
-                    (click)="RecepcionFlujograma(); closeModal(); openModalPreparation(this.id_expediente_temp)">
-                    Aprobar
-                </button>
+                <button type="button" class="btn btn-primary btn-sm" [disabled]="!checkAprobado" (click)="RecepcionFlujograma()">Aprobar</button>
             </div>
         </div>
     </div>
@@ -198,7 +195,7 @@
                         </div>
                         <!-- <textarea id="observaciones" name="observaciones" placeholder="Observaciones" class="form-control" style="height: 208px;resize: none" rows="6"></textarea> -->
                         <div class="d-flex justify-content-end mt-4">
-                            <button type="button" class="cancelar-btn mx-4" (click)="closeModal()">Cancelar</button>
+                            <button type="button" class="cancelar-btn mx-4" (click)="closeModalPreparation()">Cancelar</button>
                             <button type="button" class="guardar-btn"
                                 (click)="EventAction()">{{modificarPreparacion?'Modificar': 'Guardar'}}</button>
                         </div>

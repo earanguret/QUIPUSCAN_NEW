@@ -34,7 +34,8 @@ export class PreparacionExpedientesComponent implements OnInit {
   id_inventario: number = 0;
   p: number = 1;
   modificarPreparacion: boolean = false;
-  private myModal: any;
+  private myModalRecepcion: any;
+  private myModalPreparation: any;
 
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
@@ -83,6 +84,7 @@ export class PreparacionExpedientesComponent implements OnInit {
       private preparacionService: PreparacionService) {}
 
   ngOnInit(): void {
+    this.inicializadorModales();
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
     this.ListarExpedientes();
     
@@ -104,25 +106,38 @@ export class PreparacionExpedientesComponent implements OnInit {
     })
   }
 
-  closeModal() {
-    this.myModal.hide();
-    this.LimpiarDatosPreparacion();
-    
+  inicializadorModales() {
+    this.myModalRecepcion = new bootstrap.Modal(document.getElementById('exampleModalReception'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+    this.myModalPreparation = new bootstrap.Modal(document.getElementById('exampleModalpreparation'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+  }
+
+  closeModalRecepcion() {
+    this.myModalRecepcion.hide();
+  }
+
+  closeModalPreparation() {
+    this.myModalPreparation.hide();
   }
 
   openModalReception(id_expediente:number) {
 
     this.modificarPreparacion = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('exampleModalReception'));
-    this.myModal.show();
+    this.myModalRecepcion.show();
     this.id_expediente_temp = id_expediente;
 
   }
 
   openModalPreparation(id_expediente:number) {
     this.id_expediente_temp = id_expediente;
-    this.myModal = new bootstrap.Modal(document.getElementById('exampleModalpreparation'));
-    this.myModal.show();
+    this.myModalPreparation.show();
   }
 
   ObtenerExpedienteDataViewXid(expediente:any) {
@@ -180,9 +195,9 @@ export class PreparacionExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('flujograma creado correctamente');
+        this.openModalPreparation(this.id_expediente_temp);
         this.EstadoPreparacionAceptado()
-       
-
+        this.closeModalRecepcion();
       }
     })
   }
@@ -254,7 +269,7 @@ export class PreparacionExpedientesComponent implements OnInit {
       complete: () => {
         console.log('creacion de preparacion completado');
         this.EstadoPreparacionTrabajado()
-        this.closeModal();
+        this.closeModalPreparation();
         this.sweetAlert.MensajeSimpleSuccess('Expediente preparado',`Expediente ${this.data_preparacion_header.nro_expediente} Preparado con exito` );
       }
     })
@@ -314,7 +329,7 @@ export class PreparacionExpedientesComponent implements OnInit {
       complete: () => {
         console.log('modificacion de preparacion completado');
         this.ListarExpedientes();
-        this.closeModal();
+        this.closeModalPreparation();
         this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito` );
       }
     })  
@@ -337,8 +352,8 @@ export class PreparacionExpedientesComponent implements OnInit {
     this.observacion_temp = '';
   }
 
-  // 
 
+  // manejo de observaciones
   AgregarObservacion(){
     if(this.observacion_temp==''){
       alert('Debe escribir algo para agregar la observación')

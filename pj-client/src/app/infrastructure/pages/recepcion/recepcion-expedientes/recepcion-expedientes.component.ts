@@ -80,9 +80,20 @@ export class RecepcionExpedientesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.inicializadorModales();
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
     this.ObtenerListaExpedientes()
   }
+
+  
+inicializadorModales() {
+
+  this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'), {
+    backdrop: false,
+    keyboard: true
+  });
+
+}
 
   closeModal() {
     this.myModal.hide();
@@ -91,7 +102,6 @@ export class RecepcionExpedientesComponent implements OnInit {
   openModalCreate() {
     this.limpiarDatosInventario();
     this.modificarExpediente = false;
-    this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
     this.myModal.show();
   }
 
@@ -105,9 +115,7 @@ export class RecepcionExpedientesComponent implements OnInit {
       cod_paquete: data_expediente.cod_paquete,
     }
     this.modificarExpediente = true;
-    this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
     this.myModal.show();
-    console.log(data_expediente)
   }
 
   limpiarDatosInventario() {
