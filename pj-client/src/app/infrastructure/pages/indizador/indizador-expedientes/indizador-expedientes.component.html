@@ -82,7 +82,7 @@
                                                 <img *ngIf="expediente.estado_indizado=='T'"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
                                                     title="ver información" width="24px" height="24px">
-                                                <img *ngIf="expediente.estado_indizado=='T' && expediente.estado_controlado==null"
+                                                <img *ngIf="(expediente.estado_indizado=='T' && expediente.estado_controlado==null) || (expediente.estado_indizado=='T' && expediente.estado_controlado=='R')"
                                                     src="/icon/lapiz.png" alt="logo" title="ver información"
                                                     width="24px" height="24px"
                                                     (click)="openModalIndizacion(expediente.id_expediente, expediente.nro_expediente, true)">
@@ -547,8 +547,7 @@
 
 
     <!-- Boton de notas -->
-    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
-        (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
+    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992" (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
         <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
         <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
     </div>

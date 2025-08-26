@@ -70,7 +70,7 @@
                                                 Digitalizar
                                             </button>
                                             <button
-                                                *ngIf="expediente.estado_digitalizado=='A' && expediente.estado_indizado=='R'"
+                                                *ngIf="(expediente.estado_digitalizado=='A' && expediente.estado_indizado=='R')"
                                                 class="btn btn-light btn-sm"
                                                 (click)="openModalDigitalizacion(expediente.id_expediente,true)">
                                                 <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion"
@@ -84,7 +84,7 @@
                                                 <img *ngIf="expediente.estado_digitalizado=='T'"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
                                                     title="ver información" width="24px" height="24px">
-                                                <img *ngIf="expediente.estado_digitalizado=='T' && expediente.estado_indizado==null"
+                                                <img *ngIf="(expediente.estado_digitalizado=='T' && expediente.estado_indizado==null)|| (expediente.estado_digitalizado=='T' && expediente.estado_indizado=='R')"
                                                     src="/icon/lapiz.png" alt="logo" title="ver información"
                                                     width="24px" height="24px"
                                                     (click)="openModalDigitalizacion(expediente.id_expediente,true)">

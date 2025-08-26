@@ -86,7 +86,7 @@
                                                 <img *ngIf="expediente.estado_controlado=='T'"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
                                                     title="ver información" width="24px" height="24px">
-                                                <img *ngIf="expediente.estado_controlado=='T' && expediente.estado_fedatado==null"
+                                                <img *ngIf="(expediente.estado_controlado=='T' && expediente.estado_fedatado==null) || (expediente.estado_controlado=='T' && expediente.estado_fedatado=='R')"
                                                     src="/icon/lapiz.png" alt="logo" title="ver información"
                                                     width="24px" height="24px"
                                                     (click)="openModalControl(expediente.id_expediente, expediente.nro_expediente,true)">
