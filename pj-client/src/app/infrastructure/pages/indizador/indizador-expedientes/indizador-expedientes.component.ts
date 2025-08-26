@@ -460,7 +460,8 @@ export class IndizadorExpedientesComponent implements OnInit {
         // (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
         // (document.getElementById('fecha_final') as HTMLInputElement).value = FechaConFormato(data.fecha_final!);
 
-        this.ListObservaciones = data.observaciones?.split('|') ?? [];
+        this.ListObservaciones = data?.observaciones? data.observaciones.split('|') : [];
+
         this.dataIndice = JSON.parse(data.indice ? data.indice : '[]')
         console.log(data);
       },
@@ -738,6 +739,10 @@ export class IndizadorExpedientesComponent implements OnInit {
     (<HTMLInputElement>document.getElementById('indizacion_fojas')).value = '';
     (<HTMLInputElement>document.getElementById('fecha_indice')).value = '';
     (<HTMLInputElement>document.getElementById('indizacion_textarea')).value = '';
+    (<HTMLInputElement>document.getElementById('indizacion_radio_original')).checked = false;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia')).checked = false;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada')).checked = false;  
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada')).checked = false;
   }
   limpiarCamposSubIndice() {
     (<HTMLInputElement>document.getElementById('indizacion_descripcion_2')).value = '';
@@ -745,6 +750,10 @@ export class IndizadorExpedientesComponent implements OnInit {
     (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value = '';
     (<HTMLInputElement>document.getElementById('fecha_indice_2')).value = '';
     (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value = '';
+    (<HTMLInputElement>document.getElementById('indizacion_radio_original_2')).checked = false;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_2')).checked = false;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked = false;  
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked = false;
   }
 
   addItem() {
@@ -793,6 +802,10 @@ export class IndizadorExpedientesComponent implements OnInit {
     datosIndex.indice = (<HTMLInputElement>document.getElementById('indizacion_indice')).value;
     datosIndex.fojas = (<HTMLInputElement>document.getElementById('indizacion_fojas')).value;
     datosIndex.fecha = (<HTMLInputElement>document.getElementById('fecha_indice')).value;
+      datosIndex.check_original = (<HTMLInputElement>document.getElementById('indizacion_radio_original')).checked;
+      datosIndex.check_copia = (<HTMLInputElement>document.getElementById('indizacion_radio_copia')).checked;
+      datosIndex.check_copia_certificada = (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada')).checked;
+      datosIndex.check_copia_copia_certificada = (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada')).checked;
     datosIndex.check_textarea = (<HTMLInputElement>document.getElementById('indizacion_textarea')).value;
     datosIndex.subItems = []
 
@@ -806,6 +819,10 @@ export class IndizadorExpedientesComponent implements OnInit {
     datosIndex.indice = (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value;
     datosIndex.fojas = (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value;
     datosIndex.fecha = (<HTMLInputElement>document.getElementById('fecha_indice_2')).value;
+      datosIndex.check_original = (<HTMLInputElement>document.getElementById('indizacion_radio_original_2')).checked;
+      datosIndex.check_copia = (<HTMLInputElement>document.getElementById('indizacion_radio_copia_2')).checked;
+      datosIndex.check_copia_certificada = (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked;
+      datosIndex.check_copia_copia_certificada = (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked;
     datosIndex.check_textarea = (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value;
     // datosIndex.subItems=[]
     if (datosIndex) {
@@ -827,6 +844,10 @@ export class IndizadorExpedientesComponent implements OnInit {
     (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value = items[index].fojas;
     (<HTMLInputElement>document.getElementById('fecha_indice_2')).value = items[index].fecha;
     (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value = items[index].check_textarea;
+      (<HTMLInputElement>document.getElementById('indizacion_radio_original_2')).checked = items[index].check_original;
+      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_2')).checked = items[index].check_copia;
+      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked = items[index].check_copia_certificada;
+      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked = items[index].check_copia_copia_certificada;
     const botonRegistrar = document.getElementById('boton_agregar_subitem');
     if (botonRegistrar) {
       botonRegistrar.onclick = () => this.registrarModificarItem(items, index);
@@ -837,10 +858,10 @@ export class IndizadorExpedientesComponent implements OnInit {
     items[index].indice = (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value;
     items[index].fojas = (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value;
     items[index].fecha = (<HTMLInputElement>document.getElementById('fecha_indice_2')).value;
-    // items[index].check_original = (<HTMLInputElement>document.getElementById('indizacion_checkbox_original_2')).checked;
-    // items[index].check_copia = (<HTMLInputElement>document.getElementById('indizacion_checkbox_copia_2')).checked;
-    // items[index].check_color = (<HTMLInputElement>document.getElementById('indizacion_checkbox_color_2')).checked;
-    // items[index].check_escalagris = (<HTMLInputElement>document.getElementById('indizacion_checkbox_escalagris_2')).checked;
+      items[index].check_original = (<HTMLInputElement>document.getElementById('indizacion_radio_original_2')).checked;
+      items[index].check_copia = (<HTMLInputElement>document.getElementById('indizacion_radio_copia_2')).checked;
+      items[index].check_copia_certificada = (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked;
+      items[index].check_copia_copia_certificada = (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked;
     items[index].check_textarea = (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value;
     this.myModalSubIndice.hide()
   }

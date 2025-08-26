@@ -339,3 +339,30 @@ ol {
   .p-subtitle {
     margin: 0px 0px;
   }
+
+
+  /* cursor de indice */
+ #list-container ol li {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* cuando el mouse pasa encima */
+#list-container ol li:hover {
+  background-color: #f0f0f0; /* color de resaltado */
+  color: #333; /* cambia el color del texto si quieres */
+}
+
+#list-container > ol > li:hover {
+  background-color: #d1e7dd; /* nivel principal */
+}
+
+#list-container ol li ol > li:hover {
+  background-color: #ffeeba; /* subnivel */
+}
+
+#list-container ol li ol li ol > li:hover {
+  background-color: #f8d7da; /* sub-subnivel */
+}

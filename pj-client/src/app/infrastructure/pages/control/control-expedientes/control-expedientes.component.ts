@@ -46,6 +46,7 @@ export class ControlExpedientesComponent implements OnInit {
   private myModalReception: any;
   private myModalControl: any;
   private myModalDesaprobar: any;
+  private myModalDetalleIndice: any;
   id_inventario: number = 0;
   ListExpedientes: ExpedienteResponse[] = [];
   ListExpedientesTemp: ExpedienteResponse[] = [];
@@ -194,7 +195,6 @@ export class ControlExpedientesComponent implements OnInit {
 
   closeModalReception() {
     this.myModalReception.hide();
-
   }
 
   openModalControl(id_expediente: number, nro_expediente: string, modificar_control: boolean) {
@@ -235,6 +235,26 @@ export class ControlExpedientesComponent implements OnInit {
 
   closeModalDesaprobar() {
     this.myModalDesaprobar.hide();
+  }
+
+  openModalDetalleIndice(items: any[], index: number) {
+    
+    this.myModalDetalleIndice = new bootstrap.Modal(document.getElementById('Modal_detalle_indice'));
+    this.myModalDetalleIndice.show();
+    console.log('datos detalle indice', items[index]);
+    (<HTMLInputElement>document.getElementById('indizacion_descripcion_2')).value = items[index].descripcion;
+    (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value = items[index].indice;
+    (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value = items[index].fojas;
+    (<HTMLInputElement>document.getElementById('fecha_indice_2')).value = items[index].fecha;
+      (<HTMLInputElement>document.getElementById('indizacion_radio_original_2')).checked = items[index].check_original;
+      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_2')).checked = items[index].check_copia;
+      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked = items[index].check_copia_certificada;
+      (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked = items[index].check_copia_copia_certificada;
+  
+  }
+
+  closeModalDetalleIndice() {
+    this.myModalDetalleIndice.hide();
   }
 
   LimpiarControl() {
@@ -355,7 +375,7 @@ export class ControlExpedientesComponent implements OnInit {
     this.indizacionService.ObtenerIndizacionDataViewXidExpediente(id_expediente).subscribe({
       next: (data: IndizacionResponseDataView) => {
         this.data_indizacion = data;
-        this.ListObservacionesIndizacion = data.observaciones?.split('|') ?? [];
+        this.ListObservacionesIndizacion = data?.observaciones? data.observaciones.split('|') : [];
         this.ListDamandantes = JSON.parse(data.demandante ? data.demandante : '[]');
         this.ListDamandados = JSON.parse(data.demandado ? data.demandado : '[]');
         (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
@@ -426,7 +446,7 @@ export class ControlExpedientesComponent implements OnInit {
     const data_control_request: ControlRequest = {
       id_responsable: this.credencialesService.credenciales.id_usuario,
       id_expediente: this.id_expediente_temp,
-      observaciones: this.ListObservacionesControl.join('|'),
+      observaciones: this.ListObservacionesControl.length? this.ListObservacionesControl.join('|'): null,
       val_observaciones: this.data_control.val_observaciones,
       val_datos: this.data_control.val_datos,
       val_nitidez: this.data_control.val_nitidez,
@@ -455,7 +475,7 @@ export class ControlExpedientesComponent implements OnInit {
     const data_control_request: ControlRequest = {
       id_responsable: this.credencialesService.credenciales.id_usuario,
       id_expediente: this.id_expediente_temp,
-      observaciones: this.ListObservacionesControl.join('|'),
+      observaciones: this.ListObservacionesControl.length? this.ListObservacionesControl.join('|'): null,
       val_observaciones: this.data_control.val_observaciones,
       val_datos: this.data_control.val_datos,
       val_nitidez: this.data_control.val_nitidez,
