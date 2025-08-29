@@ -80,7 +80,7 @@
                                                 Recepcionar
                                             </button>
                                             <button *ngIf="expediente.estado_fedatado=='A'" class="btn btn-light btn-sm"
-                                                (click)="openModalFedatario(expediente.id_expediente, expediente.nro_expediente)">
+                                                (click)="openModalFedatario(expediente)">
                                                 <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion"
                                                     width="16px" height="16px">
                                                 Inspeccionar
@@ -91,7 +91,7 @@
                                                     height="24px">
                                                 <img *ngIf="expediente.estado_fedatado=='T'"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
-                                                    title="ver información" width="24px" height="24px">
+                                                    title="ver información" width="24px" height="24px" (click)="openModalFedatario(expediente)">
                                             </div>
 
                                         </td>
@@ -418,9 +418,9 @@
                                             <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
                                             <div class="sub_title">
                                                 <p class="p-subtitle "> <strong>Responsable:</strong>
-                                                    {{data_indizacion.responsable}}</p>
+                                                    {{data_control.responsable}}</p>
                                                 <p class="p-subtitle"><strong>Creación:</strong>
-                                                    {{data_indizacion.create_at | date:'dd/MM/yyyy'}}</p>
+                                                    {{data_control.create_at | date:'dd/MM/yyyy'}}</p>
                                             </div>
                                             <label for="fojas" class="form-label mt-2">Validaciones: </label>
                                             <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0"> -->
@@ -469,75 +469,89 @@
 
                                             </div>
                                         </section>
+                                        <section *ngIf="this.data_expediente_temp.estado_fedatado=='T'" class="section-area">
+                                            <h4 class="title-section">Data Fedatario</h4>
+                                            <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                            <div class="sub_title">
+                                                <p class="p-subtitle "> <strong>Responsable:</strong>
+                                                    {{data_fedatario.responsable}}</p>
+                                                <p class="p-subtitle"><strong>Creación:</strong>
+                                                    {{data_fedatario.create_at | date:'dd/MM/yyyy'}}</p>
+                                            </div>
+                                        </section>
                                     </fieldset>
                                 </form>
                             </div>
 
                             <!-- Elemento inferior (botones) fijo abajo -->
-                            <div class="d-flex justify-content-between"
-                                style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
-                                <button type="button" class="rechazar-btn mx-2" (click)="openModalDesaprobar()" [disabled]="!this.buttonFirma">Rechazar</button>
-                                <div style="position: relative;">
-
-                                    <button type="button" class="cancelar-btn mx-2"
-                                        (click)="closeModalFedatario()" [disabled]="!this.buttonFirma">Cancelar</button>
-                                    <button type="button" class="guardar-btn mx-2"
-                                        (click)="mostarSignPanel()" [disabled]="!this.buttonFirma">Firmar</button>
-
-                                    <!-- popup de firmar -->
-                                    <div [ngClass]="{ 'visible': show_sign_panel, 'hidden': !show_sign_panel }"
-                                        class="sign-panel shadow-lg" style="width: 400px; height: 220px;">
-                                        <div class="sign-panel-header px-3" style="width: 100%;">
-                                            <p class="m-1 p-1 mb-0 pb-0">{{titulo_certificado}}</p>
-                                            <div class="form-control sign-tag">
-                                                <img src="/icon/certificado.png" alt="logo" title="Recepcion"
-                                                    width="20px" height="18px">
-                                                <label for="" class=" mx-2"> {{certificado}}</label>
-                                            </div>
-
-                                            <div class="d-flex mt-3">
-                                                <p class="m-1 p-1 mb-0 pb-0 px-2">Password</p>
-                                                <input type="password" class="form-control form-control-sm sign-tag " name="observacion" id="password_certificado">
-                                            </div>
-
-                                            <div class="text-end mt-2" *ngIf="buttonFirma">
-                                                <!-- <button *ngIf="!firmaProgressStatus" type="button" class="guardar-btn mx-2"
-                                                (click)="progress_bar_sign()">Firmar</button> -->
-                                                <button type="button" class="btn btn-secondary btn-sm"
-                                                    (click)="firmarDocumento()">Firmar</button>
-                                            </div>
-
-
-                                            <div *ngIf="firmaProgressStatus"
-                                                class="d-flex flex-column align-items-center mx-3">
-                                                <img src="/gif/acuerdo_clean.gif" alt="Firma" width="50" height="50">
-
-                                                <div class="progress" role="progressbar" aria-label="Example 4px high"
-                                                    [attr.aria-valuenow]="progreso_firma" aria-valuemin="0"
-                                                    aria-valuemax="100" style="width: 100%; height: 8px;">
-                                                    <!-- ← altura ajustada aquí -->
-
-                                                    <div class="progress-bar progress-bar-striped progress-bar-animated opacity-75"
-                                                        [style.width.%]="progreso_firma">
+                            <div style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
+                                <div  class="d-flex justify-content-between" *ngIf="this.data_expediente_temp.estado_fedatado!='T'">
+                                    <button type="button" class="rechazar-btn mx-2" (click)="openModalDesaprobar()" [disabled]="!this.buttonFirma">Rechazar</button>
+                                    <div style="position: relative;">
+    
+                                        <button type="button" class="cancelar-btn mx-2"
+                                            (click)="closeModalFedatario()" [disabled]="!this.buttonFirma">Cancelar</button>
+                                        <button type="button" class="guardar-btn mx-2"
+                                            (click)="mostarSignPanel()" [disabled]="!this.buttonFirma">Firmar</button>
+    
+                                        <!-- popup de firmar -->
+                                        <div [ngClass]="{ 'visible': show_sign_panel, 'hidden': !show_sign_panel }"
+                                            class="sign-panel shadow-lg" style="width: 400px; height: 220px;">
+                                            <div class="sign-panel-header px-3" style="width: 100%;">
+                                                <p class="m-1 p-1 mb-0 pb-0">{{titulo_certificado}}</p>
+                                                <div class="form-control sign-tag">
+                                                    <img src="/icon/certificado.png" alt="logo" title="Recepcion"
+                                                        width="20px" height="18px">
+                                                    <label for="" class=" mx-2"> {{certificado}}</label>
+                                                </div>
+    
+                                                <div class="d-flex mt-3">
+                                                    <p class="m-1 p-1 mb-0 pb-0 px-2">Password</p>
+                                                    <input type="password" class="form-control form-control-sm sign-tag " name="observacion" id="password_certificado">
+                                                </div>
+    
+                                                <div class="text-end mt-2" *ngIf="buttonFirma">
+                                                    <!-- <button *ngIf="!firmaProgressStatus" type="button" class="guardar-btn mx-2"
+                                                    (click)="progress_bar_sign()">Firmar</button> -->
+                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                        (click)="firmarDocumento()">Firmar</button>
+                                                </div>
+    
+    
+                                                <div *ngIf="firmaProgressStatus"
+                                                    class="d-flex flex-column align-items-center mx-3">
+                                                    <img src="/gif/acuerdo_clean.gif" alt="Firma" width="50" height="50">
+    
+                                                    <div class="progress" role="progressbar" aria-label="Example 4px high"
+                                                        [attr.aria-valuenow]="progreso_firma" aria-valuemin="0"
+                                                        aria-valuemax="100" style="width: 100%; height: 8px;">
+                                                        <!-- ← altura ajustada aquí -->
+    
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated opacity-75"
+                                                            [style.width.%]="progreso_firma">
+                                                        </div>
+    
+    
                                                     </div>
-
-
                                                 </div>
-                                            </div>
-                                            <div *ngIf="msg_firmado"
-                                                class="alert alert-success alert-dismissible fade show mt-3"
-                                                role="alert" style="margin-bottom: 0px; padding: 8px 8px; ">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <label for="">{{mensaje_firmado}}</label> 
-                                                    <button class="btn btn-secondary btn-sm" (click)="terminarFirma()">Terminar</button>
+                                                <div *ngIf="msg_firmado"
+                                                    class="alert alert-success alert-dismissible fade show mt-3"
+                                                    role="alert" style="margin-bottom: 0px; padding: 8px 8px; ">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <label for="">{{mensaje_firmado}}</label> 
+                                                        <button class="btn btn-secondary btn-sm" (click)="terminarFirma()">Terminar</button>
+                                                    </div>
+                                                    
                                                 </div>
-                                                
+    
+                                                <!-- <input type="text" readonly class="form-control sign-tag" name="observacion" value="prueba"> -->
                                             </div>
-
-                                            <!-- <input type="text" readonly class="form-control sign-tag" name="observacion" value="prueba"> -->
+    
                                         </div>
-
                                     </div>
+                                </div>
+                                <div *ngIf="this.data_expediente_temp.estado_fedatado=='T'" class="text-end">
+                                    <button type="button" class="cancelar-btn mx-2" (click)="closeModalFedatario()" [disabled]="!this.buttonFirma">Cancelar</button>
                                 </div>
 
                             </div>

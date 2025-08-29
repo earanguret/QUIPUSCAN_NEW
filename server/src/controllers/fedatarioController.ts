@@ -73,6 +73,39 @@ class FedatarioController {
         }
     }
 
+    public async ObtenerFedatarioDataViewXidExpediente(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_expediente } = req.params;
+            const consulta = `
+                            SELECT
+                                f.id_fedatar,
+                                f.id_responsable,
+                                f.id_expediente,
+                                f.create_at,
+                                CONCAT(p.nombre, ' ', p.ap_paterno, ' ', p.ap_materno) AS responsable,
+                                u.username
+                                
+                            FROM
+                                archivo.t_fedatar f
+                            JOIN
+                                archivo.t_usuario u ON f.id_responsable = u.id_usuario
+                            JOIN
+                                archivo.t_persona p ON u.id_persona = p.id_persona
+                            WHERE 
+                                f.id_expediente=$1
+                                 `;
+            const fedatario = await db.query(consulta, [id_expediente]);
+            if (fedatario && fedatario["rows"].length > 0) {
+                res.json(fedatario["rows"][0]);
+            } else {
+                res.status(404).json({ text: "El fedatario no existe" });
+            }
+        } catch (error) {
+            console.error("Error al obtener fedatario:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
 }
 
 const fedatarioController = new FedatarioController();

@@ -6,6 +6,16 @@ export interface FedatarioResponse {
     observaciones?: string | null;
 }
 
+export interface FedatarioResponseDataView {
+    id_fedatar: number;
+    id_responsable: number;
+    id_expediente: number;
+    create_at: Date | null;
+    responsable: string | null;
+    username: string | null;
+
+}
+
 export interface CrearFedatarioResponse {
     message: string;
 }

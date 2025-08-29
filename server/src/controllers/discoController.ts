@@ -409,6 +409,7 @@ class DiscoController {
             // 1. Agregar el entorno de ejecucion JavaScript (datos de la carpeta visor)
             const projectRoot = path.resolve(__dirname, '../'); // Sube dos niveles desde build/controllers
             const filesToLoad = [
+                'visor/libs/pdf-lib.min.js',
                 'visor/bootstrap-icons.min.css',
                 'visor/bootstrap.min.css',
                 'visor/index.html',
@@ -419,16 +420,17 @@ class DiscoController {
             ];
 
             for (const relativePath of filesToLoad) {
-                const fullPath = path.join(projectRoot, relativePath); // ✅ desde la raíz real
-                const fileName = path.basename(relativePath);
-                const zipPath = `VISOR/${fileName}`; // ZIP interno
-
+                const fullPath = path.join(projectRoot, relativePath);
+                // Mantiene la estructura de carpetas dentro del ZIP
+                const zipPath = path.join("VISOR", relativePath.replace(/^visor[\\/]/, ""));
+              
                 if (fs.existsSync(fullPath)) {
-                    archive.file(fullPath, { name: zipPath });
+                  archive.file(fullPath, { name: zipPath });
                 } else {
-                    console.warn(`⚠️ Archivo no encontrado y omitido: ${fullPath}`);
+                  console.warn(`⚠️ Archivo no encontrado y omitido: ${fullPath}`);
                 }
-            }
+              }
+              
             
             // 2. Obtener los datos del disco desde la base de datos 
             const data_disco = await db.query(
@@ -473,7 +475,8 @@ class DiscoController {
                     cc.create_at as fecha_control,
                     f.create_at as fecha_fedatario,
                     d.peso_doc,
-                    d.fojas_total
+                    d.fojas_total,
+                    inv.codigo as codigo_inventario
                 FROM 
                     archivo.t_expediente e
                 JOIN 
@@ -488,6 +491,8 @@ class DiscoController {
                     archivo.t_control cc ON e.id_expediente = cc.id_expediente
                 JOIN
                     archivo.t_fedatar f ON e.id_expediente = f.id_expediente
+                JOIN
+                    archivo.t_inventario inv ON e.id_inventario = inv.id_inventario
                 WHERE 
                     es.id_disco = $1`,
                 [id_disco]
@@ -500,7 +505,7 @@ class DiscoController {
         
             // Agrega los archivos al ZIP desde el FTP
             for (const exp of expedientes) {
-                const remotePath = `${exp.dir_ftp}/${exp.nro_expediente}.pdf`;
+                const remotePath = `${exp.codigo_inventario}/EXPEDIENTES/${exp.nro_expediente}.pdf`;
                 try {
                     const chunks: Buffer[] = [];
 
@@ -513,11 +518,33 @@ class DiscoController {
 
                     await ftpClient.downloadTo(writable, remotePath);
                     const buffer = Buffer.concat(chunks);
-                    archive.append(buffer, { name: `VISOR/ADJUNTOS/MICROFORMAS/${exp.nro_expediente}.pdf` });
+                    archive.append(buffer, { name: `VISOR/ADJUNTOS/MICROFORMAS/EXPEDIENTES/${exp.nro_expediente}.pdf` });
                 } catch (err: any) {
                     console.warn(`❌ No se pudo descargar ${remotePath}, se omite.`, err.message);
                 }
             }
+
+            for (const exp of expedientes) {
+                const remotePath = `${exp.codigo_inventario}/FIRMADOS/${exp.nro_expediente}.pdf`;
+                try {
+                    const chunks: Buffer[] = [];
+
+                    const writable = new Writable({
+                        write(chunk, _encoding, callback) {
+                            chunks.push(chunk);
+                            callback(); // ✔️ importante
+                        }
+                    });
+
+                    await ftpClient.downloadTo(writable, remotePath);
+                    const buffer = Buffer.concat(chunks);
+                    archive.append(buffer, { name: `VISOR/ADJUNTOS/MICROFORMAS/FIRMADOS/${exp.nro_expediente}.pdf` });
+                } catch (err: any) {
+                    console.warn(`❌ No se pudo descargar ${remotePath}, se omite.`, err.message);
+                }
+            }
+
+            
 
             const documentos = [
                 { name: 'TCA.pdf', zipName: 'TCA.pdf' },

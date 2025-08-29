@@ -15,6 +15,7 @@ class FedatarioRoutes{
     config():void{
         this.router.get('/api/fedatario',fedatarioController.listarFedatario)
         this.router.post('/api/fedatario', CreateMiddleware ,fedatarioController.crearFedatario)
+        this.router.get('/api/fedatario/dataview/:id_expediente',fedatarioController.ObtenerFedatarioDataViewXidExpediente)
     }
 
 }

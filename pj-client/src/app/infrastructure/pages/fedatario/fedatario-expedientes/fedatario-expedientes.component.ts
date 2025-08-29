@@ -31,10 +31,11 @@ import { EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse
 import { ControlResponseDataView } from '../../../../domain/dto/ControlResponse.dto';
 import { FirmaDigitalEncontradaResponse, FirmaDigitalResponse } from '../../../../domain/dto/FirmaDigitalResponse.dto';
 import { FirmaDigitalService } from '../../../services/remoto/firmaDigital/firma-digital.service';
-import { CrearFedatarioResponse } from '../../../../domain/dto/FedatarioResponse.dto';
+import { CrearFedatarioResponse, FedatarioResponseDataView } from '../../../../domain/dto/FedatarioResponse.dto';
 import { Mensaje } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
+import { PDFDocument } from 'pdf-lib';
 
 
 declare var bootstrap: any;
@@ -183,6 +184,15 @@ export class FedatarioExpedientesComponent implements OnInit {
     username: null,
   }
 
+  data_fedatario: FedatarioResponseDataView = {
+    id_fedatar: 0,
+    id_responsable: 0,
+    id_expediente: 0,
+    create_at: null,
+    responsable: null,
+    username: null,
+  }
+
   ListObservacionesPreparacion: string[] = [];
   ListObservacionesDigitalizacion: string[] = [];
   ListObservacionesIndizacion: string[] = [];
@@ -228,19 +238,24 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.myModalReception.hide();
 
   }
-  openModalFedatario(id_expediente: number, nro_expediente: string) {
+  openModalFedatario(expediente_temp: ExpedienteResponse) {
 
-    this.id_expediente_temp = id_expediente;
+    this.id_expediente_temp = expediente_temp.id_expediente;
     this.myModalFedatario = new bootstrap.Modal(document.getElementById('ModalFedatario'));
     this.myModalFedatario.show();
     this.mostrar_mensajes_expediente = false;
-    this.ObtenerExpedienteDataViewXid(id_expediente);
-    this.recuperarFile(nro_expediente);
-    this.recuperarDataPreparacion(id_expediente);
-    this.recuperarDataDigitalizacion(id_expediente);
-    this.recuperarDataIndizacion(id_expediente);
-    this.RecuperarDatosControl(id_expediente);
-    this.ObtenerMensajesById_expediente(id_expediente);
+    this.ObtenerExpedienteDataViewXid(expediente_temp.id_expediente);
+    if(expediente_temp.estado_fedatado=='T'){
+      this.recuperarFileFirmado(expediente_temp.nro_expediente);
+      this.RecuperarDatosFedatario(expediente_temp.id_expediente);
+    }else{
+      this.recuperarFile(expediente_temp.nro_expediente);
+    }
+    this.recuperarDataPreparacion(expediente_temp.id_expediente);
+    this.recuperarDataDigitalizacion(expediente_temp.id_expediente);
+    this.recuperarDataIndizacion(expediente_temp.id_expediente);
+    this.RecuperarDatosControl(expediente_temp.id_expediente);
+    this.ObtenerMensajesById_expediente(expediente_temp.id_expediente);
   }
 
   ObtenerMensajesById_expediente(id_expediente: number) {
@@ -325,6 +340,63 @@ export class FedatarioExpedientesComponent implements OnInit {
       }
     })
   }
+  
+  async recuperarFileFirmado(nro_expediente_temp: string) {
+    const fileName = nro_expediente_temp + '.pdf';
+    const folderPath = this.folderPathDocument!;
+    const pathFirmados = this.folderPathFirma!; // 👈 asegúrate de tener esta ruta configurada
+  
+    try {
+      // Descargar expediente
+      const expediente$ = this.ftpService.downloadFile(fileName, folderPath);
+      // Descargar firmado
+      const firmado$ = this.ftpService.downloadFile(fileName, pathFirmados);
+  
+      // Esperar ambos en paralelo
+      const [expedienteBlob, firmadoBlob] = await Promise.all([
+        expediente$.toPromise(),
+        firmado$.toPromise()
+      ]);
+  
+      // Convertir a ArrayBuffer
+      const expedienteBuffer = await expedienteBlob!.arrayBuffer();
+      const firmadoBuffer = await firmadoBlob!.arrayBuffer();
+  
+      // Cargar PDFs
+      const expedientePdf = await PDFDocument.load(expedienteBuffer);
+      const firmadoPdf = await PDFDocument.load(firmadoBuffer);
+  
+      // Crear un nuevo PDF
+      const finalPdf = await PDFDocument.create();
+  
+      // Copiar la primera página desde firmado
+      const [firstPageFirmado] = await finalPdf.copyPages(firmadoPdf, [0]);
+      finalPdf.addPage(firstPageFirmado);
+  
+      // Copiar el resto de las páginas del expediente (desde la segunda)
+      const restPages = await finalPdf.copyPages(
+        expedientePdf,
+        expedientePdf.getPageIndices().slice(1)
+      );
+      restPages.forEach(p => finalPdf.addPage(p));
+  
+      // Guardar como Uint8Array
+      const finalBytes = await finalPdf.save();
+  
+      // Convertir a Blob y mostrar en el visor
+      const temp = new Blob([finalBytes], { type: 'application/pdf' });
+      this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        URL.createObjectURL(temp)
+      );
+  
+      console.log('📄 Expediente combinado generado correctamente');
+    } catch (error) {
+      console.error('❌ Error al recuperar o combinar archivos:', error);
+    }
+  }
+
+
+
 
   recuperarDataPreparacion(id_expediente: number) {
     this.preparacionService.ObtenerPreparacionDataViewXidExpediente(id_expediente).subscribe({
@@ -392,6 +464,20 @@ export class FedatarioExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('listado de control detalle completado');
+      }
+    })
+  }
+
+  RecuperarDatosFedatario(id_expediente: number) {
+    this.fedatarioService.ObtenerFedatarioDataViewXidExpediente(id_expediente).subscribe({
+      next: (data: FedatarioResponseDataView) => {
+        this.data_fedatario = data;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de fedatario detalle completado');
       }
     })
   }
@@ -520,7 +606,7 @@ export class FedatarioExpedientesComponent implements OnInit {
         console.log('flujograma creado correctamente');
         this.closeModalReception();
         this.EstadoFedatarioAceptado()
-        this.openModalFedatario(this.data_expediente_temp.id_expediente, this.data_expediente_temp.nro_expediente);
+        this.openModalFedatario(this.data_expediente_temp);
 
       }
     })
