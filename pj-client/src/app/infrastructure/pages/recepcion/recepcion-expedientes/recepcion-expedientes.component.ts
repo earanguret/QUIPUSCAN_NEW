@@ -89,7 +89,7 @@ export class RecepcionExpedientesComponent implements OnInit {
 inicializadorModales() {
 
   this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'), {
-    backdrop: false,
+    backdrop: true,
     keyboard: true
   });
 

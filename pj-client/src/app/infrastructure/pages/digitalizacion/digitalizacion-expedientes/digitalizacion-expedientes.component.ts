@@ -160,6 +160,12 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   codigo_inventario: string = '';
   mostrarPreparacion = false;
 
+  nro_expedientes: number = 0;
+  nro_concluidos: number = 0;
+  nro_pendientes: number = 0;
+  nro_rechazados: number = 0;
+  list_expedinete_rechazados: ExpedienteResponse[] = [];
+
   data_expediente_temp: ExpedienteResponse = {
     id_expediente: 0,
     nro_expediente: '',
@@ -309,8 +315,6 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
   // #endregion ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
   openModalPreparacionPreView(id_expediente: number) {
 
     this.mostrarPreparacion = false; // fuerza destrucción del componente si ya estaba
@@ -441,6 +445,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         next: (dataFiltrada: ExpedienteResponse[]) => {
           this.ListExpedientes = dataFiltrada;
           this.ListExpedientesTemp = dataFiltrada;
+          this.informacionTags(this.ListExpedientesTemp);
           console.log(this.ListExpedientes);
         },
         error: (error) => {
@@ -450,6 +455,36 @@ export class DigitalizacionExpedientesComponent implements OnInit {
           console.log('listado de expedientes filtrado completado');
         }
       });
+  }
+
+  informacionTags(expedientes: ExpedienteResponse[]) {
+    this.nro_expedientes = expedientes.length;
+    this.nro_concluidos = expedientes.filter(e => e.estado_digitalizado === 'T').length;
+    this.nro_pendientes = expedientes.filter(e => e.estado_digitalizado === null || e.estado_digitalizado === 'A').length;
+    this.nro_rechazados = expedientes.filter(e => e.estado_digitalizado === 'R').length;
+    this.ObternerExpedientesRechazadosDigitalizacion()
+  }
+
+  ObternerExpedientesRechazadosDigitalizacion() {
+    this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
+    .pipe(
+      map((data: ExpedienteResponse[]) =>
+        data.filter(exp => exp.estado_digitalizado === 'R')
+      )
+    )
+    .subscribe({
+      next: (dataFiltrada: ExpedienteResponse[]) => {
+        this.list_expedinete_rechazados = dataFiltrada;
+        this.nro_rechazados = dataFiltrada.length;
+        console.log(this.ListExpedientes);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+      complete: () => {
+        console.log('listado de expedientes filtrado completado');
+      }
+    });
   }
 
   ObternerCodigoInventario() {

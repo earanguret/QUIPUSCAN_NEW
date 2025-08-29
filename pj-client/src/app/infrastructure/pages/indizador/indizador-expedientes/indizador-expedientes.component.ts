@@ -67,6 +67,13 @@ export class IndizadorExpedientesComponent implements OnInit {
   listTipoProceso: string[] = dataListProceso;
   listMateria: string[] = dataListMateria;
 
+    // data de cabecera de informacion
+    nro_expedientes: number = 0;
+    nro_concluidos: number = 0;
+    nro_pendientes: number = 0;
+    nro_rechazados: number = 0;
+    list_expedinete_rechazados: ExpedienteResponse[] = [];
+
   togglePopup(index: number) {
     this.mostrarPopupIndex = this.mostrarPopupIndex === index ? null : index;
     console.log(this.mostrarPopupIndex)
@@ -316,6 +323,7 @@ export class IndizadorExpedientesComponent implements OnInit {
         next: (dataFiltrada: ExpedienteResponse[]) => {
           this.ListExpedientes = dataFiltrada;
           this.ListExpedientesTemp = dataFiltrada;
+          this.informacionTags(this.ListExpedientesTemp);
           console.log(this.ListExpedientes);
         },
         error: (error) => {
@@ -325,6 +333,36 @@ export class IndizadorExpedientesComponent implements OnInit {
           console.log('listado de expedientes filtrado completado');
         }
       });
+  }
+
+  informacionTags(expedientes: ExpedienteResponse[]) {
+    this.nro_expedientes = expedientes.length;
+    this.nro_concluidos = expedientes.filter(e => e.estado_indizado === 'T').length;
+    this.nro_pendientes = expedientes.filter(e => e.estado_indizado === null || e.estado_indizado === 'A').length;
+    this.nro_rechazados = expedientes.filter(e => e.estado_indizado === 'R').length;
+    this.ObternerExpedientesRechazadosIndizacion()
+  }
+
+  ObternerExpedientesRechazadosIndizacion() {
+    this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
+    .pipe(
+      map((data: ExpedienteResponse[]) =>
+        data.filter(exp => exp.estado_indizado === 'R')
+      )
+    )
+    .subscribe({
+      next: (dataFiltrada: ExpedienteResponse[]) => {
+        this.list_expedinete_rechazados = dataFiltrada;
+        this.nro_rechazados = dataFiltrada.length;
+        console.log(this.ListExpedientes);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+      complete: () => {
+        console.log('listado de expedientes filtrado completado');
+      }
+    });
   }
 
   ObternerCodigoInventario() {

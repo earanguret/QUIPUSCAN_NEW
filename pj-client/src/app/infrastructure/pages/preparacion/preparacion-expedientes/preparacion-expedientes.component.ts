@@ -21,6 +21,7 @@ import { PreparacionRequest } from '../../../../domain/dto/PreparacionRequest.dt
 import { CrearPreparacionResponse, ModificarPreparacionResponse, PreparacionResponse } from '../../../../domain/dto/PreparacionResponse.dto';
 import { form_preparacion_vf } from '../../../validator/fromValidator/preparacion.validator';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
+import { map } from 'rxjs';
 
 declare var bootstrap: any;
 
@@ -47,6 +48,13 @@ export class PreparacionExpedientesComponent implements OnInit {
   observacion_temp: string = '';
 
   checkAprobado: boolean = false;
+
+
+  nro_expedientes: number = 0;
+  nro_concluidos: number = 0;
+  nro_pendientes: number = 0;
+  nro_rechazados: number = 0;
+  list_expedinete_rechazados: ExpedienteResponse[] = [];
 
   data_preparacion_header: ExpedienteResponseDataView = {
     id_expediente: 0,
@@ -95,6 +103,7 @@ export class PreparacionExpedientesComponent implements OnInit {
       next: (data: ExpedienteResponse[]) => {
         this.ListExpedientes = data;
         this.ListExpedientesTemp = data;
+        this.informacionTags(this.ListExpedientesTemp);
         console.log(this.ListExpedientes);
       },
       error: (error) => {
@@ -105,6 +114,36 @@ export class PreparacionExpedientesComponent implements OnInit {
       }
     })
   }
+
+   informacionTags(expedientes: ExpedienteResponse[]) {
+      this.nro_expedientes = expedientes.length;
+      this.nro_concluidos = expedientes.filter(e => e.estado_preparado === 'T').length;
+      this.nro_pendientes = expedientes.filter(e => e.estado_preparado === null || e.estado_preparado === 'A').length;
+      this.nro_rechazados = expedientes.filter(e => e.estado_preparado === 'R').length;
+      this.ObternerExpedientesRechazadosPreparados()
+    }
+  
+    ObternerExpedientesRechazadosPreparados() {
+      this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
+      .pipe(
+        map((data: ExpedienteResponse[]) =>
+          data.filter(exp => exp.estado_digitalizado === 'R')
+        )
+      )
+      .subscribe({
+        next: (dataFiltrada: ExpedienteResponse[]) => {
+          this.list_expedinete_rechazados = dataFiltrada;
+          this.nro_rechazados = dataFiltrada.length;
+          console.log(this.ListExpedientes);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log('listado de expedientes filtrado completado');
+        }
+      });
+    }
 
   inicializadorModales() {
     this.myModalRecepcion = new bootstrap.Modal(document.getElementById('exampleModalReception'), {

@@ -24,11 +24,8 @@
                             <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
                             <div *ngIf="nro_imagenes>0" class="meta_label mx-2 px-3"><i class="bi bi-files mx-2" ></i> Imagenes {{nro_imagenes}}</div>
                         </div>
-                        
                         <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
                     </div>
-                    
-
                 </div>
                 <div class="card rounded shadow border-2 mt-2 ">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center ">
@@ -61,9 +58,7 @@
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
                                         <td (click)="obtenerExpedienteTemp(expediente)">
-                                            <img *ngIf="expediente.estado_fedatado==null" src="/icon/doc-previo.png"
-                                                alt="logo" title="datos de indización" width="24px" height="24px"
-                                                class="mx-3">
+                                        
 
                                             <button *ngIf="expediente.estado_fedatado==null"
                                                 class="btn btn-secondary btn-sm"

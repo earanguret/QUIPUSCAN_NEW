@@ -14,7 +14,20 @@
                     <i class="bi bi-card-list icon-custom"></i>
                     <p class="titulo_menu px-4">PREPARACIÓN DE EXPEDIENTES</p>
                 </div>
-                <div class="card rounded shadow border-2 ">
+                <div class="document-meta-wrapper pb-2">
+                    <div class="title_meta">Status</div>
+                    <div class="label_live">LIVE</div>
+                    <div class="label_open mx-2">OPEN</div>
+                    <div class="title_meta mt-2">Información</div>
+                    <div class="d-flex justify-content-start">
+                  
+                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
+                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Preparados {{nro_concluidos}}</div>
+                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
+                     
+                    </div>
+                </div>
+                <div class="card rounded shadow border-2 mt-2">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center ">
                         <!-- <p class="subtitulo_menu">expedientes</p>
                                   <button id="buton_agregar" type="button" class="btn btn-success mx-4" >AGREGAR</button> -->

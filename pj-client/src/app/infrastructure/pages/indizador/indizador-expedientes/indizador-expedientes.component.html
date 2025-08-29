@@ -12,11 +12,24 @@
                     <i class="bi bi-card-list icon-custom"></i>
                     <p class="titulo_menu px-4">INDIZACIÓN DE EXPEDIENTES</p>
                 </div>
-                <div class="card rounded shadow border-2 ">
+                <div class="document-meta-wrapper pb-2">
+                    <div class="title_meta">Status</div>
+                    <div class="label_live">LIVE</div>
+                    <div class="label_open mx-2">OPEN</div>
+                    <div class="title_meta mt-2">Información</div>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
+                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Indizados {{nro_concluidos}}</div>
+                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
+                        </div>
+                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
+                    </div>
+                </div>
+                <div class="card rounded shadow border-2 mt-2">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center ">
                         <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente"
                             placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
-
                     </div>
                     <div class="card-body px-5 bg-white rounded">
                         <div class="mb-2 d-flex align-items-center">
@@ -43,9 +56,6 @@
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
                                         <td (click)="obtenerExpedienteTemp(expediente)">
-                                            <img *ngIf="expediente.estado_indizado==null" src="/icon/doc-previo.png"
-                                                alt="logo" title="datos de digitalización" width="24px" height="24px"
-                                                class="mx-3">
                                             <button *ngIf="expediente.estado_indizado==null"
                                                 class="btn btn-secondary btn-sm"
                                                 (click)="openModalReception(expediente.id_expediente)">

@@ -65,6 +65,14 @@ export class ControlExpedientesComponent implements OnInit {
   rechazoRazon: string = '';
   moduloSeleccionado: string = '';
 
+
+  // data de cabecera de informacion
+  nro_expedientes: number = 0;
+  nro_concluidos: number = 0;
+  nro_pendientes: number = 0;
+  nro_rechazados: number = 0;
+  list_expedinete_rechazados: ExpedienteResponse[] = [];
+
   data_expediente_temp: ExpedienteResponse={
     id_expediente: 0,
     nro_expediente: '',
@@ -263,6 +271,36 @@ export class ControlExpedientesComponent implements OnInit {
   limpiarModarDsaprobar() {
     this.rechazoRazon = '';
     this.moduloSeleccionado = '';
+  }
+
+  informacionTags(expedientes: ExpedienteResponse[]) {
+    this.nro_expedientes = expedientes.length;
+    this.nro_concluidos = expedientes.filter(e => e.estado_controlado === 'T').length;
+    this.nro_pendientes = expedientes.filter(e => e.estado_controlado === null || e.estado_controlado === 'A').length;
+    this.nro_rechazados = expedientes.filter(e => e.estado_controlado === 'R').length;
+    this.ObternerExpedientesRechazadosControl()
+  }
+
+  ObternerExpedientesRechazadosControl() {
+    this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
+    .pipe(
+      map((data: ExpedienteResponse[]) =>
+        data.filter(exp => exp.estado_controlado === 'R')
+      )
+    )
+    .subscribe({
+      next: (dataFiltrada: ExpedienteResponse[]) => {
+        this.list_expedinete_rechazados = dataFiltrada;
+        this.nro_rechazados = dataFiltrada.length;
+        console.log(this.ListExpedientes);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+      complete: () => {
+        console.log('listado de expedientes filtrado completado');
+      }
+    });
   }
 
   openModalDetalleIndice(items: any[], index: number) {
@@ -555,6 +593,7 @@ export class ControlExpedientesComponent implements OnInit {
         next: (dataFiltrada: ExpedienteResponse[]) => {
           this.ListExpedientes = dataFiltrada;
           this.ListExpedientesTemp = dataFiltrada;
+          this.informacionTags(this.ListExpedientesTemp);
           console.log(this.ListExpedientes);
         },
         error: (error) => {
