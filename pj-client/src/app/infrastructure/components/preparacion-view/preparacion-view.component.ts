@@ -35,7 +35,6 @@ export class PreparacionViewComponent implements OnInit {
       responsable: null,
       username: null,
       nro_expediente: null,
-
     }
 
     ObtenerPreparacionByIdExpediente( ){

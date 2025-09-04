@@ -31,6 +31,7 @@ export class ListUsuarioComponent implements OnInit {
     this.usuarioService.ListarUsuarios().subscribe({
       next: (data:UsuarioResponse[])=>{
         this.listaUsuarios=data;
+        this.listaUsuariosTemp=data;
         console.log(this.listaUsuarios);
       },
       error:()=>{
@@ -51,7 +52,38 @@ export class ListUsuarioComponent implements OnInit {
   }
 
   buscarEnObjeto(event: any) {
-    
+    this.p = 1;
+    const textoBusqueda = (event.target.value || '').toLowerCase();
+  
+    this.listaUsuarios = this.listaUsuariosTemp.filter((usuario: UsuarioResponse) => {
+      const username = (usuario.username ?? '').toLowerCase();
+      const nombre = (usuario.nombre ?? '').toLowerCase();
+      const apPaterno = (usuario.ap_paterno ?? '').toLowerCase();
+      const apMaterno = (usuario.ap_materno ?? '').toLowerCase();
+      const dni = (usuario.dni ?? '').toLowerCase();
+      const perfil = (usuario.perfil ?? '').toLowerCase();
+      const estadoTexto = usuario.estado ? 'activo' : 'inactivo';
+  
+      // concatenamos nombre completo
+      const nombreCompleto = `${nombre} ${apPaterno} ${apMaterno}`.trim();
+  
+      return (
+        username.includes(textoBusqueda) ||
+        nombre.includes(textoBusqueda) ||
+        apPaterno.includes(textoBusqueda) ||
+        apMaterno.includes(textoBusqueda) ||
+        nombreCompleto.includes(textoBusqueda) ||
+        dni.includes(textoBusqueda) ||
+        perfil.includes(textoBusqueda) ||
+        estadoTexto.startsWith(textoBusqueda) // evita confusión activo/inactivo
+      );
+    });
   }
+  
+
+
+
+
+  
   
 }

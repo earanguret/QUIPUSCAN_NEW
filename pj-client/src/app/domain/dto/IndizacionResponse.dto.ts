@@ -9,8 +9,8 @@ export interface IndizacionResponseDataView {
     materia: string | null;
     demandante: string | null;
     demandado: string | null;
-    fecha_inicial : Date | null;
-    fecha_final : Date | null;
+    fecha_inicial : Date | string | null;
+    fecha_final : Date | string | null;
     create_at: Date | null;
     responsable: string | null;
     username: string | null;

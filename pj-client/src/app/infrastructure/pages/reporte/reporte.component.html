@@ -1,10 +1,154 @@
-<div class="panel">
+<div class="principal-panel">
     <app-navegator></app-navegator>
     <app-subnavegator></app-subnavegator>
     <div class="container">
+        <header>
+            <div class="pt-4">
+                <h1>Reportes pendientes en desarrollo</h1>
+                <p>Listado de reportes y métricas pendientes para el sistema </p>
+            </div>
+            <div class="estado">Estado: borrador</div>
+        </header>
 
-        <h1>Modulo de reportes en desarrollo </h1>
+        <!-- Datos fijos -->
+        <section>
+            <h2>Datos fijos</h2>
+            <div class="cards">
+                <div class="card">
+                    <div class="label">Total de series documentales</div>
+                    <div class="value">—</div>
+                </div>
+                <div class="card">
+                    <div class="label">Total de expedientes</div>
+                    <div class="value">—</div>
+                </div>
+                <div class="card">
+                    <div class="label">Total de digitalizados</div>
+                    <div class="value">—</div>
+                </div>
+                <div class="card">
+                    <div class="label">Total de fojas</div>
+                    <div class="value">—</div>
+                </div>
+                <div class="card">
+                    <div class="label">Volumen (AxH)</div>
+                    <div class="value">—</div>
+                </div>
+                <div class="card">
+                    <div class="label">Peso (KG)</div>
+                    <div class="value">—</div>
+                </div>
+                <div class="card">
+                    <div class="label">Peso (GB)</div>
+                    <div class="value">—</div>
+                </div>
+                <div class="card">
+                    <div class="label">Discos cerrados en boveda</div>
+                    <div class="value">—</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Otros reportes -->
+        <section>
+            <h2>Otros reportes</h2>
+
+            <div class="report">
+                <h3>1) Reportes de usuarios</h3>
+                <p class="muted">Listado y métricas por usuario / perfil.</p>
+                <ul>
+                    <li>Listado de usuarios registrados por su perfil.</li>
+                    <li>Usuarios activos / inactivos.</li>
+                    <li>Cantidad de expedientes procesados por cada usuario.</li>
+                    <li>Ranking de productividad por usuario — perfil.</li>
+                    <li>Histórico de acceso por usuario.</li>
+                    <li>Histórico de eventos por usuario.</li>
+                </ul>
+                <p class="meta">Filtros sugeridos: rango de fechas, sede, perfil, serie documental.</p>
+            </div>
+
+            <div class="report">
+                <h3>2) Reportes por Serie Documental</h3>
+                <p class="muted">Información de series y volumen documental.</p>
+                <ul>
+                    <li>Listado general de las series documentales (por año, especialidad, sede, cantidad de
+                        documentos).</li>
+                </ul>
+            </div>
+
+            <div class="report">
+                <h3>3) Reportes de producción</h3>
+                <ul>
+                    <li>Listado de expedientes (serie documental, rango de fechas, por usuario).</li>
+                    <li>Reporte detallado por expediente.</li>
+                    <li>Flujograma completo de cada expediente.</li>
+                    <li>Estado de cada expediente.</li>
+                    <li>Ranking de producción (por usuario activo, por rango de fechas).</li>
+                </ul>
+            </div>
+
+            <div class="report">
+                <h3>4) Reportes digitalización</h3>
+                <ul>
+                    <li>Listado de expedientes (serie documental, rango de fechas, por usuario).</li>
+                    <li>Ranking de producción (por usuario activo, por rango de fechas).</li>
+                </ul>
+            </div>
+
+            <div class="report">
+                <h3>5) Reportes indización</h3>
+                <ul>
+                    <li>Listado de expedientes (serie documental, rango de fechas, por usuario).</li>
+                    <li>Ranking de producción (por usuario activo, por rango de fechas).</li>
+                </ul>
+            </div>
+
+            <div class="report">
+                <h3>6) Reportes control de calidad</h3>
+                <ul>
+                    <li>Listado de expedientes (serie documental, rango de fechas, por usuario).</li>
+                    <li>Ranking de producción (por usuario activo, por rango de fechas).</li>
+                </ul>
+            </div>
+
+            <div class="report">
+                <h3>7) Reportes fedatario</h3>
+                <ul>
+                    <li>Listado de expedientes (serie documental, rango de fechas, por usuario).</li>
+                    <li>Ranking de producción (por usuario activo, por rango de fechas).</li>
+                </ul>
+            </div>
+
+            <div class="report">
+                <h3>8) Reportes de discos</h3>
+                <ul>
+                    <li>Lista de discos creados (abiertos, cerrados, responsables apertura, responsables de cierre).
+                    </li>
+                    <li>Expedientes almacenados en disco.</li>
+                    <li>Actas y tarjetas de calibración.</li>
+                </ul>
+            </div>
+
+            <div class="report">
+                <h3>9) Reportes de estado del expediente</h3>
+                <ul>
+                    <li>Reporte detallado por expediente.</li>
+                </ul>
+            </div>
+
+            <div class="report">
+                <h3>10) Reportes de auditoría</h3>
+                <p class="muted">Trazabilidad y seguridad.</p>
+                <ul>
+                    <li>Trazabilidad completa de cada expediente (qué áreas y qué responsables lo procesaron y en qué
+                        orden).</li>
+                    <li>Logs de accesos al sistema (IP, usuario, fecha).</li>
+                    <li>Eventos por módulo.</li>
+                    <li>Historial de acciones por expediente.</li>
+                    <li>Análisis de seguridad: intentos de login fallidos, accesos desde IPs inusuales.</li>
+                </ul>
+            </div>
+
+        </section>
     </div>
-    
-
 </div>

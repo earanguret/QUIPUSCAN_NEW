@@ -62,3 +62,31 @@
     border: 2px solid #ecece5c9;
     border-bottom: 0px;
   }
+
+
+  /* section */
+.title-section {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #133349b7;
+  margin: 0px;
+  text-transform: uppercase !important;
+  margin-top: 3%;
+
+}
+
+
+/* sub title */
+.sub_title {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #4f5152cc;
+  margin: 0px;
+  margin-top: 5px;
+  background-color: #e6e9eb5b;
+  border-radius: 5px;
+}
+
+.p-subtitle {
+  margin: 0px 0px;
+}

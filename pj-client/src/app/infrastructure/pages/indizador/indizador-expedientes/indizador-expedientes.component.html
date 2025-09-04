@@ -19,11 +19,15 @@
                     <div class="title_meta mt-2">Información</div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
-                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Indizados {{nro_concluidos}}</div>
-                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
+                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i
+                                    class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
+                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i
+                                    class="bi bi-pencil-square mx-2"></i> Indizados {{nro_concluidos}}</div>
+                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i
+                                    class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
                         </div>
-                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
+                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i
+                                class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
                     </div>
                 </div>
                 <div class="card rounded shadow border-2 mt-2">
@@ -89,12 +93,13 @@
                                                 <img *ngIf="expediente.estado_indizado=='T'" src="/icon/check.png"
                                                     alt="logo" title="Preparado correctamente" width="24px"
                                                     height="24px">
-                                                <img *ngIf="expediente.estado_indizado=='T'"
+                                                <img *ngIf="expediente.estado_indizado=='T' && (expediente.estado_controlado=='T' || expediente.estado_controlado=='A')"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
-                                                    title="ver información" width="24px" height="24px">
-                                                <img *ngIf="(expediente.estado_indizado=='T' && expediente.estado_controlado==null) || (expediente.estado_indizado=='T' && expediente.estado_controlado=='R')"
+                                                    title="ver información" width="24px" height="24px"
+                                                    (click)="openModalIndizacionView(expediente.id_expediente)">
+                                                <img *ngIf="expediente.estado_indizado=='T' && (expediente.estado_controlado==null || expediente.estado_controlado=='R')"
                                                     src="/icon/lapiz.png" alt="logo" title="ver información"
-                                                    width="24px" height="24px"
+                                                    width="24px" height="24px" class="mx-3"
                                                     (click)="openModalIndizacion(expediente.id_expediente, expediente.nro_expediente, true)">
                                             </div>
                                         </td>
@@ -127,7 +132,8 @@
                     preparación,
                     debe aprobar la recepcion del expediente.</p>
                 <div class="form-check text-start">
-                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" [(ngModel)]="checkAprobado">
+                    <input class="form-check-input" type="checkbox" value="" id="checkChecked"
+                        [(ngModel)]="checkAprobado">
                     <label class="form-check-label" for="checkChecked">
                         Confirmo tener el documento fisico en mi poder
                     </label>
@@ -135,7 +141,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()" [disabled]="!checkAprobado">Aprobar</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()"
+                    [disabled]="!checkAprobado">Aprobar</button>
             </div>
         </div>
     </div>
@@ -285,45 +292,63 @@
                                         <section class="section-area">
                                             <h4 class="title-section">Data indización</h4>
                                             <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                            <div *ngIf="this.data_indizacion_temp.id_indizacion!=0"
+                                                class="sub_titulo_expediente  ">
+                                                <p class="p-subtitle "> <strong>Responsable:</strong>
+                                                    {{data_indizacion_temp.responsable}}</p>
+                                                <p class="p-subtitle"><strong>Creación:</strong>
+                                                    {{data_indizacion_temp.create_at | date:'dd/MM/yyyy'}}</p>
 
+                                            </div>
                                             <div class="form-group mt-3">
-                                                <label for="juzgado_origen" class="form-label">Juzgado de origen prueba:</label>
-                                                <input type="text" class="form-control form-control-sm"  name="juzgado_origen" [(ngModel)]="dataIndizacion.juzgado_origen" list="datalistOptions1" id="input_juzgado_origen">
-                                           
+                                                <label for="juzgado_origen" class="form-label">Juzgado de origen
+                                                    prueba:</label>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="juzgado_origen" [(ngModel)]="dataIndizacion.juzgado_origen"
+                                                    list="datalistOptions1" id="input_juzgado_origen">
+
                                                 <datalist id="datalistOptions1">
-                                                    <option *ngFor="let option of listDistJudiciales" [value]="option"></option>
-                                                  </datalist>
+                                                    <option *ngFor="let option of listDistJudiciales" [value]="option">
+                                                    </option>
+                                                </datalist>
                                             </div>
 
-                                            
+
 
                                             <div class="form-group mt-3">
                                                 <label for="tipo_proceso" class="form-label">Tipo de proceso:</label>
-                                                <input type="text" class="form-control form-control-sm" name="tipo_proceso" [(ngModel)]="dataIndizacion.tipo_proceso" list="datalistTipoProceso">
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="tipo_proceso" [(ngModel)]="dataIndizacion.tipo_proceso"
+                                                    list="datalistTipoProceso">
                                                 <datalist id="datalistTipoProceso">
-                                                    <option *ngFor="let option of listTipoProceso " [value]="option"></option>
+                                                    <option *ngFor="let option of listTipoProceso " [value]="option">
+                                                    </option>
                                                 </datalist>
                                             </div>
 
                                             <div class="form-group mt-3">
                                                 <label for="materia" class="form-label">Materia:</label>
-                                                <input type="text" class="form-control form-control-sm" name="materia"  [(ngModel)]="dataIndizacion.materia" list="datalistOptionsMateria">
+                                                <input type="text" class="form-control form-control-sm" name="materia"
+                                                    [(ngModel)]="dataIndizacion.materia" list="datalistOptionsMateria">
                                                 <datalist id="datalistOptionsMateria">
-                                                    <option *ngFor="let option of listMateria " [value]="option"></option>
+                                                    <option *ngFor="let option of listMateria " [value]="option">
+                                                    </option>
                                                 </datalist>
                                             </div>
 
                                             <div class="form-group mt-3">
                                                 <div class="row">
                                                     <div class="col">
-                                                        <label for="fecha_inicio" class="form-label ">Fecha inicio:</label>
+                                                        <label for="fecha_inicio" class="form-label ">Fecha
+                                                            inicio:</label>
                                                         <input id="fecha_inicio" type="date"
                                                             class="form-control form-control-sm "
                                                             name="fecha_inicio_resolucion"
                                                             [(ngModel)]="dataIndizacion.fecha_inicial">
                                                     </div>
                                                     <div class="col">
-                                                        <label for="fecha_final" class="form-label ">Fecha final:</label>
+                                                        <label for="fecha_final" class="form-label ">Fecha
+                                                            final:</label>
                                                         <input id="fecha_final" type="date"
                                                             class="form-control form-control-sm "
                                                             name="fecha_final_resolucion"
@@ -340,14 +365,17 @@
                                                         <div class="form-control tag d-flex justify-content-between align-items-center"
                                                             style="padding-right: 4rem;">
                                                             <span>{{ item.demandante }}</span>
-                                                            <span>{{ item.id }}</span>
+                                                            <span>{{ item.identificador }}</span>
                                                         </div>
                                                         <div class="icons-tag">
-                                                            <i class="bi bi-chevron-down icon-tag"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-chevron-down icon-tag"
                                                                 (click)="BajarDemandante(i)"></i>
-                                                            <i class="bi bi-chevron-up icon-tag mx-1"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-chevron-up icon-tag mx-1"
                                                                 (click)="SubirDemandante(i)"></i>
-                                                            <i class="bi bi-x-square icon-tag"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-x-square icon-tag"
                                                                 (click)="EliminarDemandante(i)"></i>
                                                         </div>
                                                     </div>
@@ -372,14 +400,17 @@
                                                         <div class="form-control tag d-flex justify-content-between align-items-center"
                                                             style="padding-right: 4rem;">
                                                             <span>{{ item.demandado }}</span>
-                                                            <span>{{ item.id }}</span>
+                                                            <span>{{ item.identificador }}</span>
                                                         </div>
                                                         <div class="icons-tag">
-                                                            <i class="bi bi-chevron-down icon-tag"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-chevron-down icon-tag"
                                                                 (click)="BajarDemandado(i)"></i>
-                                                            <i class="bi bi-chevron-up icon-tag mx-1"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-chevron-up icon-tag mx-1"
                                                                 (click)="SubirDemandado(i)"></i>
-                                                            <i class="bi bi-x-square icon-tag"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-x-square icon-tag"
                                                                 (click)="EliminarDemandado(i)"></i>
                                                         </div>
                                                     </div>
@@ -435,12 +466,12 @@
                                                                         *ngIf="subItem.subItems && subItem.subItems.length > 0">
                                                                         <li
                                                                             *ngFor="let subSubItem of subItem.subItems; let k = index">
-                                                                            <span class="subsubtitulo_index">{{
-                                                                                subSubItem.descripcion }}
+                                                                            <span
+                                                                                class="subsubtitulo_index">{{subSubItem.descripcion
+                                                                                }}
                                                                             </span>
-                                                                            <span class="subsubtitulo_index">{{ '(Pg.'+
-                                                                                subSubItem.indice+'
-                                                                                )' }} </span>
+                                                                            <span class="subsubtitulo_index">{{
+                                                                                '(Pg.'+subSubItem.indice+' )' }} </span>
                                                                             <button type="button" class="action-button"
                                                                                 (click)="editItem(subItem.subItems, k)"><i
                                                                                     class="bi bi-pencil"></i></button>
@@ -454,7 +485,9 @@
                                                         </li>
                                                     </ol>
                                                 </div>
-                                                <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2"
+                                                <button
+                                                    *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                    type="button" class="btn btn-secondary btn-sm opacity-75 mt-2"
                                                     (click)="addItem()">+ Añadir elemento</button>
                                             </div>
 
@@ -467,24 +500,30 @@
                                                         <input type="text" readonly class="form-control observation-tag"
                                                             name="observacion" value="{{observacion}}">
                                                         <div class="observation-icons">
-                                                            <i class="bi bi-chevron-down obs-icon"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-chevron-down obs-icon"
                                                                 (click)="BajarObservacion(i)"></i>
-                                                            <i class="bi bi-chevron-up obs-icon mx-1"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-chevron-up obs-icon mx-1"
                                                                 (click)="SubirObservacion(i)"></i>
-                                                            <i class="bi bi-x-square obs-icon"
+                                                            <i *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                                                class="bi bi-x-square obs-icon"
                                                                 (click)="EliminarObservacion(i)"></i>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <input type="text" class="form-control mt-3 observation-input"
-                                                    name="observacion" id="observacion" [(ngModel)]="observacion_temp">
-                                                <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2"
-                                                    (click)="AgregarObservacion()">+ Añadir observación</button>
+                                                <div
+                                                    *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'">
+                                                    <input type="text" class="form-control mt-3 observation-input"
+                                                        name="observacion" id="observacion"
+                                                        [(ngModel)]="observacion_temp">
+                                                    <button type="button"
+                                                        class="btn btn-secondary btn-sm opacity-75 mt-2"
+                                                        (click)="AgregarObservacion()">+ Añadir observación</button>
+                                                </div>
+
                                             </div>
                                         </section>
-
-
-
                                     </fieldset>
                                 </form>
                             </div>
@@ -494,7 +533,9 @@
                                 style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925;">
                                 <button type="button" class="cancelar-btn mx-2"
                                     (click)="closeModalIndizacion()">Cancelar</button>
-                                <button type="button" class="guardar-btn mx-2" (click)="EventAction()">
+                                <button
+                                    *ngIf="this.data_expediente_temp.estado_controlado == null || this.data_expediente_temp.estado_controlado == 'R'"
+                                    type="button" class="guardar-btn mx-2" (click)="EventAction()">
                                     {{modificarIndizacion ? 'Modificar' : 'Guardar'}}
                                 </button>
                             </div>
@@ -557,14 +598,12 @@
 
 
     <!-- Boton de notas -->
-    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992" (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
+    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action=""
+        data-ember-action-4992="4992" (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
         <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
         <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
     </div>
 </div>
-
-
-
 
 <!-- MODAL DE INDICE PRINCIPAL-->
 <div class="modal fade modal-lg " id="Modal_Indizador_primero" tabindex="-1" role="dialog"
@@ -580,7 +619,7 @@
                     <div class="form-group mt-3">
                         <label for="descripcion" class="form-label">Descripción:</label>
                         <input id="indizacion_descripcion" type="text" class="form-control form-control-sm">
-                        
+
                     </div>
                     <div class="form-group mt-3" style="display: flex; gap: 1rem;">
                         <div>
@@ -599,25 +638,31 @@
                     </div>
                     <div class="form-group mt-3">
                         <label for="opciones" class="form-label">Característica:</label>
-                        
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_original" name="caracteristica" class="form-check-input" type="radio">
+                            <input id="indizacion_radio_original" name="caracteristica" class="form-check-input"
+                                type="radio">
                             <label class="form-check-label" for="indizacion_radio_original">Original</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia" name="caracteristica" class="form-check-input" type="radio">
+                            <input id="indizacion_radio_copia" name="caracteristica" class="form-check-input"
+                                type="radio">
                             <label class="form-check-label" for="indizacion_radio_copia">Copia</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_certificada" name="caracteristica" class="form-check-input" type="radio">
-                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia certificada</label>
+                            <input id="indizacion_radio_copia_certificada" name="caracteristica"
+                                class="form-check-input" type="radio">
+                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia
+                                certificada</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_copia_certificada" name="caracteristica" class="form-check-input" type="radio">
-                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de copia certificada</label>
+                            <input id="indizacion_radio_copia_copia_certificada" name="caracteristica"
+                                class="form-check-input" type="radio">
+                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de
+                                copia certificada</label>
                         </div>
                     </div>
                     <div class="form-group mt-3">
@@ -666,25 +711,31 @@
                     </div>
                     <div class="form-group mt-3">
                         <label for="opciones" class="form-label">Característica:</label>
-                        
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_original_2" name="caracteristica_2" class="form-check-input" type="radio">
+                            <input id="indizacion_radio_original_2" name="caracteristica_2" class="form-check-input"
+                                type="radio">
                             <label class="form-check-label" for="indizacion_radio_original">Original</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_2" name="caracteristica_2" class="form-check-input" type="radio">
+                            <input id="indizacion_radio_copia_2" name="caracteristica_2" class="form-check-input"
+                                type="radio">
                             <label class="form-check-label" for="indizacion_radio_copia">Copia</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_certificada_2" name="caracteristica_2" class="form-check-input" type="radio">
-                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia certificada</label>
+                            <input id="indizacion_radio_copia_certificada_2" name="caracteristica_2"
+                                class="form-check-input" type="radio">
+                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia
+                                certificada</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_copia_certificada_2" name="caracteristica_2" class="form-check-input" type="radio">
-                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de copia certificada</label>
+                            <input id="indizacion_radio_copia_copia_certificada_2" name="caracteristica_2"
+                                class="form-check-input" type="radio">
+                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de
+                                copia certificada</label>
                         </div>
                     </div>
                     <div class="form-group mt-3">
@@ -702,6 +753,21 @@
                         <button type="button" class="registrar-btn mx-2" id="boton_agregar_subitem">Registrar</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  -->
+<div class="modal fade" id="ModalIndizacionView" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog   modal-custom-width " role="document">
+        <div class="modal-content" style="height: 94vh;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">DATA INDIZACIÓN</h5>
+            </div>
+            <div class="modal-body m-0 p-0">
+                <app-data-progress-view *ngIf="mostrarIndizacion" [id_expediente]="id_expediente_temp"  [modulo]="'INDIZACION'"></app-data-progress-view>
             </div>
         </div>
     </div>

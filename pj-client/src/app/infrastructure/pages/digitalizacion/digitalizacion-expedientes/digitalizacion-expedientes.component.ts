@@ -21,7 +21,7 @@ import { DigitalizacionService } from '../../../services/remoto/digitalizacion/d
 import { PreparacionViewComponent } from '../../../components/preparacion-view/preparacion-view.component';
 import { DigitalizacionModel } from '../../../../domain/models/Digitalizacion.model';
 import { FtpService } from '../../../services/remoto/ftp/ftp.service';
-import { CrearDigitalizacionResponse, DigitalizacionDataResponse, ModificarDigitalizacionResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
+import { CrearDigitalizacionResponse, DigitalizacionDataResponse, DigitalizacionResponseDataView, ModificarDigitalizacionResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { DigitalizacionRequest } from '../../../../domain/dto/DigitalizacionRequest.dto';
 import { getFileHash } from '../../../functions/hashFuntions';
 import { FormsModule } from '@angular/forms';
@@ -33,82 +33,18 @@ import { Mensaje, Respuesta } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 
+import { DataProgressViewComponent } from '../../../components/data-progress-view/data-progress-view.component';
+
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-digitalizacion-expedientes',
-  imports: [NavegatorComponent, SubnavegatorComponent, CommonModule, FormsModule, InfoInventarioComponent, NgxPaginationModule, PreparacionViewComponent],
+  imports: [NavegatorComponent, SubnavegatorComponent, CommonModule, FormsModule, InfoInventarioComponent, NgxPaginationModule, PreparacionViewComponent,DataProgressViewComponent],
   templateUrl: './digitalizacion-expedientes.component.html',
   styleUrl: './digitalizacion-expedientes.component.css'
 })
 export class DigitalizacionExpedientesComponent implements OnInit {
 
-  // mensajes: Mensaje[] = [
-  //   {
-  //     area_remitente: 'CONTROL',
-  //     responsable: 'MCORREO',
-  //     destino: 'DIGITALIZACION',
-  //     fecha: new Date('2020-05-01') ,
-  //     mensaje: 'CAMBIAR LA PAGINA 27',
-  //     respuestas: [
-  //       {
-  //         area: 'CONTROL',
-  //         responsable: 'MLORENZO',
-  //         fecha: new Date('2020-05-02'),
-  //         respuesta: 'SE ATENDIO LO SOLICITADO'
-  //       },
-  //       {
-  //         area: 'INDIZACION',
-  //         responsable: 'LCLIMA',
-  //         fecha: new Date('2020-05-04'),
-  //         respuesta: 'SE ATENDIO LO SOLICITADO'
-  //       }
-  //     ]
-  //   },
-
-  //   {
-  //     area_remitente: 'FEDAARIO',
-  //     responsable: 'EARANGURE',
-  //     destino: 'INDIZACION',
-  //     fecha: new Date('2020-05-01'),
-  //     mensaje: 'CAMBIAR LA PAGINA 27',
-  //     respuestas: [
-  //       {
-  //         area: 'CONTROL',
-  //         responsable: 'MLORENZO',
-  //         fecha:  new Date('2020-05-02'),
-  //         respuesta: 'SE ATENDIO LO SOLICITADO'
-  //       },
-  //       {
-  //         area: 'INDIZACION',
-  //         responsable: 'LCLIMA',
-  //         fecha: new Date('2020-05-04'),
-  //         respuesta: 'SE ATENDIO LO SOLICITADO'
-  //       }
-  //     ]
-  //   },
-  //   {
-  //     area_remitente: 'FEDAARIO',
-  //     responsable: 'EARANGURE',
-  //     destino: 'INDIZACION',
-  //     fecha: new Date('2020-05-01'),
-  //     mensaje: 'CAMBIAR LA PAGINA 27',
-  //     respuestas: [
-  //       {
-  //         area: 'CONTROL',
-  //         responsable: 'MLORENZO',
-  //         fecha:  new Date('2020-05-02'),
-  //         respuesta: 'SE ATENDIO LO SOLICITADO'
-  //       },
-  //       {
-  //         area: 'INDIZACION',
-  //         responsable: 'LCLIMA',
-  //         fecha:  new Date('2020-05-04'),
-  //         respuesta: 'SE ATENDIO LO SOLICITADO'
-  //       }
-  //     ]
-  //   }
-  // ];
 
   MensajesExpedienteTemp: Mensaje[] = [];
 
@@ -129,6 +65,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
   private myModalReception: any;
   private myModalDigitalizacion: any;
+  private myModalPreparation: any;
+  private myModalDigitalizacionView: any;
 
   id_inventario: number = 0;
   p: number = 1;
@@ -159,6 +97,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
   codigo_inventario: string = '';
   mostrarPreparacion = false;
+  mostrarDigitalizacion = false;
 
   nro_expedientes: number = 0;
   nro_concluidos: number = 0;
@@ -185,6 +124,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     id_expediente: 0,
     nro_expediente: '',
     id_inventario: 0,
+    codigo_inventario: '',
     id_responsable: 0,
     cod_paquete: '',
     responsable: null,
@@ -209,6 +149,23 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     nro_expediente: null,
   }
 
+  data_digitalizacion_detalle: DigitalizacionResponseDataView = {
+      id_digitalizacion: 0,
+      id_responsable: 0,
+      id_expediente: 0,
+      fojas_total: null,
+      ocr: false,
+      escala_gris: false,
+      color: false,
+      observaciones: '',
+      dir_ftp: null,
+      hash_doc: null,
+      peso_doc: null,
+      create_at: null,
+      responsable: null,
+      username: null,
+    }
+
   data_digitalizacion: DigitalizacionModel = {
     id_digitalizacion: 0,
     id_responsable: 0,
@@ -222,6 +179,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     hash_doc: '',
     peso_doc: null,
   }
+
+
 
 
 
@@ -240,8 +199,9 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
   ngOnInit(): void {
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
-    this.ListarExpedientes()
-    this.ObternerCodigoInventario()
+    this.ListarExpedientes();
+    this.ObternerCodigoInventario();
+    this.inicializadorModales();
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
   }
 
@@ -315,6 +275,42 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   }
 
   // #endregion ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  inicializadorModales() {
+    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+    this.myModalDigitalizacion = new bootstrap.Modal(document.getElementById('ModalDigitalizacion'), {
+      backdrop: 'static',
+      keyboard: true
+    });
+
+    this.myModalPreparation = new bootstrap.Modal(document.getElementById('ModalPreparationView'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+    this.myModalDigitalizacionView = new bootstrap.Modal(document.getElementById('ModalDigitalizacionView'), {
+      backdrop: true,
+      keyboard: true
+    });
+  }
+ 
+  openModalDigitalizacionView(id_expediente:number){
+    this.mostrarDigitalizacion = false; // fuerza destrucción del componente si ya estaba
+    this.id_expediente_temp = id_expediente;
+
+    // Espera un tick del ciclo de Angular para que *ngIf lo vuelva a renderizar
+    setTimeout(() => {
+      this.mostrarDigitalizacion = true;
+     this.myModalDigitalizacionView.show();
+    });
+  }
+  closeModalDigitalizacionView(){
+    this.myModalDigitalizacionView.hide()
+  }
+
   openModalPreparacionPreView(id_expediente: number) {
 
     this.mostrarPreparacion = false; // fuerza destrucción del componente si ya estaba
@@ -323,15 +319,13 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     // Espera un tick del ciclo de Angular para que *ngIf lo vuelva a renderizar
     setTimeout(() => {
       this.mostrarPreparacion = true;
-      const modal = new bootstrap.Modal(document.getElementById('ModalPreparationView')!);
-      modal.show();
+     this.myModalPreparation.show();
     });
   }
 
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
     this.modificarDigitalizacion = false;
-    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
     this.myModalReception.show();
   }
 
@@ -351,6 +345,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     this.recuperarDataPreparacion(id_expediente);
     this.ObtenerExpedienteDataViewXid(id_expediente);
     this.ObtenerMensajesById_expediente(id_expediente);
+    this.recuperarDataDigitalizacion(id_expediente);
 
     this.modificarDigitalizacion = modificar_digitalizacion;
 
@@ -359,11 +354,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     } else {
       this.LimpiarDatosDigitalizacion();
     }
-
-    this.myModalDigitalizacion = new bootstrap.Modal(document.getElementById('ModalDigitalizacion'));
     this.myModalDigitalizacion.show();
 
-    this.closeModalReception();
   }
 
 
@@ -457,6 +449,21 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       });
   }
 
+  recuperarDataDigitalizacion(id_expediente: number) {
+    this.digitalizacionService.ObtenerDigitalizacionDataViewXidExpediente(id_expediente).subscribe({
+      next: (data: DigitalizacionResponseDataView) => {
+        this.data_digitalizacion_detalle = data;
+        console.log('data digitalizacion',this.data_digitalizacion_detalle);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de digitalizacion detalle completado');
+      }
+    })
+  }
+
   informacionTags(expedientes: ExpedienteResponse[]) {
     this.nro_expedientes = expedientes.length;
     this.nro_concluidos = expedientes.filter(e => e.estado_digitalizado === 'T').length;
@@ -526,6 +533,22 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       dir_ftp: '',
       hash_doc: '',
       peso_doc: null,
+    }
+    this.data_digitalizacion_detalle = {
+      id_digitalizacion: 0,
+      id_responsable: 0,
+      id_expediente: 0,
+      fojas_total: null,
+      ocr: false,
+      escala_gris: false,
+      color: false,
+      observaciones: '',
+      dir_ftp: null,
+      hash_doc: null,
+      peso_doc: null,
+      create_at: null,
+      responsable: null,
+      username: null,
     }
     this.file = null;
     this.ListObservacionesDigitalizacion = [];
@@ -769,6 +792,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
         const esRecepcionado = this.data_expediente_temp.estado_digitalizado === 'R';
         this.openModalDigitalizacion(this.id_expediente_temp, esRecepcionado);
         this.EstadoDigitalizacionAceptado();
+        this.closeModalReception();
       }
     });
   }

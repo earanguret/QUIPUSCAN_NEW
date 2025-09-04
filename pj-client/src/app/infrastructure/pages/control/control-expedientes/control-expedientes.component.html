@@ -95,12 +95,12 @@
                                                 <img *ngIf="expediente.estado_controlado=='T'" src="/icon/check.png"
                                                     alt="logo" title="Preparado correctamente" width="24px"
                                                     height="24px">
-                                                <img *ngIf="expediente.estado_controlado=='T'"
+                                                <img *ngIf="(expediente.estado_controlado=='T' && (expediente.estado_fedatado=='T' || expediente.estado_fedatado=='A'))"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
-                                                    title="ver información" width="24px" height="24px">
-                                                <img *ngIf="(expediente.estado_controlado=='T' && expediente.estado_fedatado==null) || (expediente.estado_controlado=='T' && expediente.estado_fedatado=='R')"
+                                                    title="ver información" width="24px" height="24px" (click)="openModalControlView(expediente.id_expediente)">
+                                                <img *ngIf="expediente.estado_controlado=='T' && (expediente.estado_fedatado==null || expediente.estado_fedatado=='R')"
                                                     src="/icon/lapiz.png" alt="logo" title="ver información"
-                                                    width="24px" height="24px"
+                                                    width="24px" height="24px" class="mx-3"
                                                     (click)="openModalControl(expediente.id_expediente, expediente.nro_expediente,true)">
                                             </div>
 
@@ -349,7 +349,7 @@
                                                         <div
                                                             class="form-control tag d-flex justify-content-between align-items-center">
                                                             <span>{{ item.demandante }}</span>
-                                                            <span>{{ item.id }}</span>
+                                                            <span>{{ item.identificador }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -364,7 +364,7 @@
                                                         <div
                                                             class="form-control tag d-flex justify-content-between align-items-center">
                                                             <span>{{ item.demandado }}</span>
-                                                            <span>{{ item.id }}</span>
+                                                            <span>{{ item.identificador }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -416,9 +416,15 @@
                                         </section>
 
                                         <!--  -->
-                                        <section>
+                                        <section class="section-area">
                                             <h4 class="title-section">Data Control de calidad</h4>
                                             <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                            <div *ngIf="this.data_control_temp.id_control!=0" class="sub_titulo_expediente  ">
+                                                <p class="p-subtitle "> <strong>Responsable:</strong>
+                                                    {{data_control_temp.responsable}}</p>
+                                                <p class="p-subtitle"><strong>Creación:</strong>
+                                                    {{data_control_temp.create_at | date:'dd/MM/yyyy'}}</p>
+                                            </div>
                                             <label for="fojas" class="form-label mb-1">Validaciones: </label>
                                             <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0"> -->
                                             <div class="form-check mt-3">
@@ -651,6 +657,23 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<!--  -->
+<div class="modal fade" id="ModalControlView" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog   modal-custom-width " role="document">
+        <div class="modal-content" style="height: 94vh;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">DATA CONTROL DE CALIDAD</h5>
+            </div>
+            <div class="modal-body m-0 p-0">
+                <app-data-progress-view *ngIf="mostrarControl" [id_expediente]="id_expediente_temp" [modulo]="'CONTROL'"></app-data-progress-view>
+            </div>
+
         </div>
     </div>
 </div>

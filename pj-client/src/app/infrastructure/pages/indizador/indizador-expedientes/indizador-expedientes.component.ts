@@ -23,7 +23,7 @@ import { IndizacionRequest } from '../../../../domain/dto/IndizacionRequest.dto'
 import { IndizacionModel } from '../../../../domain/models/Indizacion.model';
 import { FormsModule } from '@angular/forms';
 import { IndizacionService } from '../../../services/remoto/indizacion/indizacion.service';
-import { CrearIndizacionResponse, IndizacionDataResponse, ModificarIndizacionResponse } from '../../../../domain/dto/IndizacionResponse.dto';
+import { CrearIndizacionResponse, IndizacionDataResponse, IndizacionResponseDataView, ModificarIndizacionResponse } from '../../../../domain/dto/IndizacionResponse.dto';
 import { FechaConFormato } from '../../../functions/formateDate';
 import { PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { DigitalizacionResponseDataView } from '../../../../domain/dto/DigitalizacionResponse.dto';
@@ -36,19 +36,21 @@ import { datalistDistJudiciales } from '../../../../../../public/info/juzgados.i
 import { dataListProceso } from '../../../../../../public/info/proceso.info';
 import { dataListMateria } from '../../../../../../public/info/materia.info';
 
+import { DataProgressViewComponent } from '../../../components/data-progress-view/data-progress-view.component';
 
 declare var bootstrap: any;
 
 
 @Component({
   selector: 'app-indizador-expedientes',
-  imports: [NavegatorComponent, SubnavegatorComponent, NgxPaginationModule, InfoInventarioComponent, CommonModule, FormsModule],
+  imports: [NavegatorComponent, SubnavegatorComponent, NgxPaginationModule, InfoInventarioComponent, CommonModule, FormsModule, DataProgressViewComponent],
   templateUrl: './indizador-expedientes.component.html',
   styleUrl: './indizador-expedientes.component.css'
 })
 export class IndizadorExpedientesComponent implements OnInit {
   private myModalReception: any;
   private myModalIndizacion: any;
+  private myModalIndizacionView: any;
   private myModalIndice: any;
   private myModalSubIndice: any;
   id_inventario: number = 0;
@@ -125,6 +127,7 @@ export class IndizadorExpedientesComponent implements OnInit {
     id_expediente: 0,
     nro_expediente: '',
     id_inventario: 0,
+    codigo_inventario: '',
     id_responsable: 0,
     cod_paquete: '',
     responsable: null,
@@ -166,6 +169,24 @@ export class IndizadorExpedientesComponent implements OnInit {
     username: null,
   }
 
+  data_indizacion_temp: IndizacionResponseDataView = {
+    id_indizacion: 0,
+    id_responsable: 0,
+    id_expediente: 0,
+    indice: '',
+    observaciones: '',
+    juzgado_origen: '',
+    tipo_proceso: '',
+    materia: '',
+    demandante: '',
+    demandado: '',
+    fecha_inicial: null,
+    fecha_final: null,
+    create_at: null,
+    responsable: null,
+    username: null,
+  }
+
   dataIndizacion: IndizacionModel = {
     id_responsable: 0,
     id_expediente: 0,
@@ -199,8 +220,26 @@ export class IndizadorExpedientesComponent implements OnInit {
     this.ListarExpedientes()
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
     this.ObternerCodigoInventario()
-    console.log('Opciones cargadas:', this.listDistJudiciales);
+    this.inicializadorModales();
    
+  }
+
+  inicializadorModales() {
+    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+    this.myModalIndizacion = new bootstrap.Modal(document.getElementById('ModalIndizacion'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+
+    this.myModalIndizacionView = new bootstrap.Modal(document.getElementById('ModalIndizacionView'), {
+      backdrop: true,
+      keyboard: true
+    });
   }
 
   closeModalReception() {
@@ -208,10 +247,26 @@ export class IndizadorExpedientesComponent implements OnInit {
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
   }
 
+  closeModalIndizacionView() {
+    this.myModalIndizacionView.hide();
+  }
+  mostrarIndizacion: boolean = false;
+  openModalIndizacionView(id_expediente:number){
+    this.mostrarIndizacion = false; // fuerza destrucción del componente si ya estaba
+    this.id_expediente_temp = id_expediente;
+
+    // Espera un tick del ciclo de Angular para que *ngIf lo vuelva a renderizar
+    setTimeout(() => {
+      this.mostrarIndizacion = true;
+     this.myModalIndizacionView.show();
+    });
+  }
+
+
+
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
     this.modificarIndizacion = false;
-    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
     this.myModalReception.show();
   }
 
@@ -223,17 +278,16 @@ export class IndizadorExpedientesComponent implements OnInit {
     this.recuperarDataPreparacion(id_expediente)
     this.recuperarDataDigitalizacion(id_expediente)
     this.ObtenerMensajesById_expediente(id_expediente)
+    this.recuperarDataIndizacion(id_expediente)
     if (modificar_indizacion === true) {
       this.modificarIndizacion = true;
       this.ObtenerIndizacionById_expediente(id_expediente)
-      this.myModalIndizacion = new bootstrap.Modal(document.getElementById('ModalIndizacion'));
       this.myModalIndizacion.show();
 
     }
     if (modificar_indizacion === false) {
       this.LimpiarIndizacion();
       this.modificarIndizacion = false;
-      this.myModalIndizacion = new bootstrap.Modal(document.getElementById('ModalIndizacion'));
       this.myModalIndizacion.show();
     }
   }
@@ -285,6 +339,20 @@ export class IndizadorExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('listado de digitalizacion detalle completado');
+      }
+    })
+  }
+
+  recuperarDataIndizacion(id_expediente: number) {
+    this.indizacionService.ObtenerIndizacionDataViewXidExpediente(id_expediente).subscribe({
+      next: (data: IndizacionResponseDataView) => {
+        this.data_indizacion_temp = data;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de indizacion detalle completado');
       }
     })
   }
@@ -671,14 +739,14 @@ export class IndizadorExpedientesComponent implements OnInit {
   // manejo demandates --------------------------------------------------------------------------------------
   AgregarDemandante() {
     const demandante = (document.getElementById('demandante') as HTMLInputElement).value;
-    const id = (document.getElementById('id_demandante') as HTMLInputElement).value;
+    const identificador = (document.getElementById('id_demandante') as HTMLInputElement).value;
 
     if (demandante.trim() === '') {
       alert('Debe escribir datos para agregar el demandante');
       return;
     }
 
-    this.ListDamandantes.push({ demandante, id });
+    this.ListDamandantes.push({ demandante, identificador });
     (document.getElementById('demandante') as HTMLInputElement).value = '';
     (document.getElementById('id_demandante') as HTMLInputElement).value = '';
   }
@@ -707,14 +775,14 @@ export class IndizadorExpedientesComponent implements OnInit {
 
   AgregarDemandado() {
     const demandado = (document.getElementById('demandado') as HTMLInputElement).value;
-    const id = (document.getElementById('id_demandado') as HTMLInputElement).value;
+    const identificador = (document.getElementById('id_demandado') as HTMLInputElement).value;
 
     if (demandado.trim() === '') {
       alert('Debe escribir datos para agregar el demandado');
       return;
     }
 
-    this.ListDamandados.push({ demandado, id });
+    this.ListDamandados.push({ demandado, identificador });
     (document.getElementById('demandado') as HTMLInputElement).value = '';
     (document.getElementById('id_demandado') as HTMLInputElement).value = '';
   }

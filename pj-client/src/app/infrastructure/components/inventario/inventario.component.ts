@@ -39,6 +39,7 @@ export class InventarioComponent implements OnInit {
   }
 
   ListInventarioDetalle: InventarioDetalleResponse[] = [];
+  ListInventarioDetalleTemp: InventarioDetalleResponse[] = [];
 
   constructor(private router:Router, private inventarioService:InventarioService, private credencialesService:CredencialesService) { }
 
@@ -86,6 +87,7 @@ export class InventarioComponent implements OnInit {
     this.inventarioService.ListarInventarios().subscribe({
       next: (data:InventarioDetalleResponse[]) => {
         this.ListInventarioDetalle = data;
+        this.ListInventarioDetalleTemp = data;
         console.log(this.ListInventarioDetalle);
       },
       error: (error) => {
@@ -176,8 +178,23 @@ export class InventarioComponent implements OnInit {
     }
   }
 
+  buscarEnObjeto(event: any) {
+    let objetosFiltrados = []
+    const textoBusqueda = event.target.value.toLowerCase();
+    objetosFiltrados = this.ListInventarioDetalleTemp.filter((objeto:
+      {
+        serie_doc: string;
+      }) => {
+      const serie_doc = objeto.serie_doc.toLowerCase();
+      return serie_doc.includes(textoBusqueda);
+    });
+    this.ListInventarioDetalle = objetosFiltrados
+  }
+
   ExpedientesSerieDocumental(id_inventario:number){
     this.router.navigate([this.ruta , id_inventario]);
   }
+
+
 
 }

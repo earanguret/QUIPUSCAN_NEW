@@ -36,7 +36,7 @@
                 <p class="titulo_menu"> SERIE DOCUMENTAL</p>
             </div>
             <div class="my-4 d-flex" style="max-width: 90%;">
-                <input type="text" class="form-control form-control-busqueda" name="buscar" placeholder="BUSCAR ">
+                <input type="text" class="form-control form-control-busqueda" name="buscar" placeholder="BUSCAR POR SERIE DOCUMENTAL" (input)=" buscarEnObjeto($event)">
                 <button *ngIf="isSupervisorLinea" class="btn btn-success opacity-75 mx-2" (click)="openModalCreate()">+ ADD</button>
             </div>
 

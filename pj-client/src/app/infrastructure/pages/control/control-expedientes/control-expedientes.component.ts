@@ -28,23 +28,26 @@ import { IndizacionService } from '../../../services/remoto/indizacion/indizacio
 import { FechaConFormato } from '../../../functions/formateDate';
 import { ControlRequest } from '../../../../domain/dto/ControlRequest.dto';
 import { ControlService } from '../../../services/remoto/control/control.service';
-import { ControlDataResponse, CrearControlResponse, ModificarControlResponse } from '../../../../domain/dto/ControlResponse.dto';
+import { ControlDataResponse, ControlResponseDataView, CrearControlResponse, ModificarControlResponse } from '../../../../domain/dto/ControlResponse.dto';
 import { ControlModel } from '../../../../domain/models/Control.model';
 import { Mensaje } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 
+import { DataProgressViewComponent } from '../../../components/data-progress-view/data-progress-view.component';
+
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-control-expedientes',
-  imports: [NavegatorComponent, SubnavegatorComponent, InfoInventarioComponent, NgxPaginationModule, CommonModule, FormsModule],
+  imports: [NavegatorComponent, SubnavegatorComponent, InfoInventarioComponent, NgxPaginationModule, CommonModule, FormsModule, DataProgressViewComponent],
   templateUrl: './control-expedientes.component.html',
   styleUrl: './control-expedientes.component.css'
 })
 export class ControlExpedientesComponent implements OnInit {
   private myModalReception: any;
   private myModalControl: any;
+  private myModalControlView: any;
   private myModalDesaprobar: any;
   private myModalDetalleIndice: any;
   id_inventario: number = 0;
@@ -92,6 +95,7 @@ export class ControlExpedientesComponent implements OnInit {
     id_expediente: 0,
     nro_expediente: '',
     id_inventario: 0,
+    codigo_inventario: '',
     id_responsable: 0,
     cod_paquete: '',
     responsable: null,
@@ -159,6 +163,21 @@ export class ControlExpedientesComponent implements OnInit {
   ListDamandados: any[] = []
   dataIndice: any = [];
 
+  data_control_temp: ControlResponseDataView = {
+    id_control: 0,
+    id_responsable: 0,
+    id_expediente: 0,
+    observaciones: '',
+    val_observaciones: null,
+    val_datos: null,
+    val_nitidez: null,
+    val_pruebas_impresion: null,
+    val_copia_fiel: null,
+    create_at: null,
+    responsable: null,
+    username: null,
+  }
+
   data_control: ControlModel = {
     id_responsable: 0,
     id_expediente: 0,
@@ -211,9 +230,30 @@ export class ControlExpedientesComponent implements OnInit {
       keyboard: true
     });
 
+    this.myModalControlView = new bootstrap.Modal(document.getElementById('ModalControlView'), {
+      backdrop: true,
+      keyboard: true
+    });
+
     this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'), {
       backdrop: false,
       keyboard: false
+    });
+  }
+
+  closeModalControlView() {
+    this.myModalControlView.hide();
+  }
+  mostrarControl: boolean = false;
+
+  openModalControlView(id_expediente: number) {
+    this.mostrarControl = false; // fuerza destrucción del componente si ya estaba
+    this.id_expediente_temp = id_expediente;
+
+    // Espera un tick del ciclo de Angular para que *ngIf lo vuelva a renderizar
+    setTimeout(() => {
+      this.mostrarControl = true;
+     this.myModalControlView.show();
     });
   }
 
@@ -237,6 +277,7 @@ export class ControlExpedientesComponent implements OnInit {
     this.recuperarDataDigitalizacion(id_expediente);
     this.recuperarDataIndizacion(id_expediente);
     this.ObtenerMensajesById_expediente(id_expediente);
+    this.RecuperarDatosControlView(id_expediente)
     this.mostrar_mensajes_expediente = false;
 
     if (modificar_control === true) {
@@ -483,6 +524,22 @@ export class ControlExpedientesComponent implements OnInit {
       }
     })
   }
+
+  RecuperarDatosControlView(id_expediente: number) {
+    this.controlService.ObtenerControlDataViewXidExpediente(id_expediente).subscribe({
+      next: (data: ControlResponseDataView) => {
+        this.data_control_temp = data;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de control detalle completado');
+      }
+    })
+  }
+
+
 
   ObternerCodigoInventario() {
     const params = this.activatedRoute.snapshot.params;

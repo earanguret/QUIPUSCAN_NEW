@@ -110,6 +110,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     id_expediente: 0,
     nro_expediente: '',
     id_inventario: 0,
+    codigo_inventario: '',
     id_responsable: 0,
     cod_paquete: '',
     responsable: null,

@@ -19,10 +19,6 @@ export class IndizacionService {
     return this.http.get<any>(this.api_uri_indizacion+`/search/${id_expediente}`)
   }
 
-  // ObtenerIndizacionDetalleById_expediente(id_expediente:number):Observable<IndizacionDataDetalleResponse>{
-  //   return this.http.get<IndizacionDataDetalleResponse>(this.api_uri_indizacion+`/search/detail/${id_expediente}`)
-  // }
-
   ObtenerIndizacionDataViewXidExpediente(id_expediente:number):Observable<IndizacionResponseDataView>{
     return this.http.get<IndizacionResponseDataView>(this.api_uri_indizacion+`/dataview/${id_expediente}`)
   }

@@ -18,6 +18,7 @@ export interface ExpedienteResponseDataView {
     id_expediente: number;
     nro_expediente: string;
     id_inventario: number;
+    codigo_inventario: string;
     id_responsable: number;
     cod_paquete: string;
     responsable: string | null;

@@ -19,11 +19,15 @@
                     <div class="title_meta mt-2">Información</div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
-                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Aprobados {{nro_concluidos}}</div>
-                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
+                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i
+                                    class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
+                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i
+                                    class="bi bi-pencil-square mx-2"></i> Aprobados {{nro_concluidos}}</div>
+                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i
+                                    class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
                         </div>
-                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
+                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i
+                                class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
                     </div>
                 </div>
                 <div class="card rounded shadow border-2 mt-2">
@@ -93,16 +97,18 @@
                                             </button>
                                             <div>
                                                 <img *ngIf="expediente.estado_digitalizado=='T'" src="/icon/check.png"
-                                                    alt="logo" title="Preparado correctamente" width="24px"
+                                                    alt="logo" title="digitalizado correctamente" width="24px"
                                                     height="24px">
-                                                <img *ngIf="expediente.estado_digitalizado=='T'"
+                                                <img *ngIf="expediente.estado_digitalizado=='T' && (expediente.estado_indizado=='T' || expediente.estado_indizado=='A')"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
-                                                    title="ver información" width="24px" height="24px">
-                                                <img *ngIf="(expediente.estado_digitalizado=='T' && expediente.estado_indizado==null)|| (expediente.estado_digitalizado=='T' && expediente.estado_indizado=='R')"
+                                                    title="ver información" width="24px" height="24px"
+                                                    (click)="openModalDigitalizacionView(expediente.id_expediente)">
+                                                <img *ngIf="expediente.estado_digitalizado=='T' && (expediente.estado_indizado==null || expediente.estado_indizado=='R')"
                                                     src="/icon/lapiz.png" alt="logo" title="ver información"
-                                                    width="24px" height="24px"
+                                                    width="24px" height="24px" class="mx-3"
                                                     (click)="openModalDigitalizacion(expediente.id_expediente,true)">
                                             </div>
+
 
                                         </td>
 
@@ -137,7 +143,8 @@
                     preparación,
                     debe aprobar la recepcion del expediente.</p>
                 <div class="form-check text-start">
-                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" [(ngModel)]="checkAprobado">
+                    <input class="form-check-input" type="checkbox" value="" id="checkChecked"
+                        [(ngModel)]="checkAprobado">
                     <label class="form-check-label" for="checkChecked">
                         Confirmo tener el documento fisico en mi poder
                     </label>
@@ -145,7 +152,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()" [disabled]="!checkAprobado">Aprobar</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()"
+                    [disabled]="!checkAprobado">Aprobar</button>
             </div>
         </div>
     </div>
@@ -230,7 +238,6 @@
                                                     <div class="observation-wrapper position-relative">
                                                         <input type="text" readonly class="form-control observation-tag"
                                                             name="observacion" value="{{observacion}}">
-
                                                     </div>
                                                 </div>
 
@@ -240,6 +247,13 @@
                                         <section>
                                             <h4 class="title-section">Data Digitalización</h4>
                                             <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                                            <div class="sub_title">
+                                                <p class="p-subtitle "> <strong>Responsable:</strong>
+                                                    {{data_digitalizacion_detalle.responsable}}</p>
+                                                <p class="p-subtitle"><strong>Creación:</strong>
+                                                    {{data_digitalizacion_detalle.create_at | date:'dd/MM/yyyy'}}</p>
+
+                                            </div>
                                             <div class="form-group mt-3">
                                                 <label for="fojas" class="form-label">Archivo digitalizado: </label>
                                                 <input class="form-control form-control-sm" type="file" id="formFile"
@@ -283,22 +297,28 @@
                                                                 class="form-control observation-tag" name="observacion"
                                                                 [value]="observacion">
                                                             <div class="observation-icons">
-                                                                <i class="bi bi-chevron-down obs-icon"
+                                                                <i *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'"
+                                                                    class="bi bi-chevron-down obs-icon"
                                                                     (click)="BajarObservacion(i)"></i>
-                                                                <i class="bi bi-chevron-up obs-icon mx-1"
+                                                                <i *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'"
+                                                                    class="bi bi-chevron-up obs-icon mx-1"
                                                                     (click)="SubirObservacion(i)"></i>
-                                                                <i class="bi bi-x-square obs-icon"
+                                                                <i *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'"
+                                                                    class="bi bi-x-square obs-icon"
                                                                     (click)="EliminarObservacion(i)"></i>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <input type="text" class="form-control mt-3 observation-input"
-                                                    name="observacion" id="observacion" [(ngModel)]="observacion_temp">
-                                                <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2"
-                                                    (click)="AgregarObservacion()">+ Añadir observación</button>
+                                                <div *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'">
+                                                    <input type="text" class="form-control mt-3 observation-input"
+                                                        name="observacion" id="observacion"
+                                                        [(ngModel)]="observacion_temp">
+                                                    <button type="button"
+                                                        class="btn btn-secondary btn-sm opacity-75 mt-2"
+                                                        (click)="AgregarObservacion()">+ Añadir observación</button>
+                                                </div>
                                             </div>
-
                                         </section>
                                     </fieldset>
                                 </form>
@@ -309,7 +329,8 @@
                                 style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
                                 <button type="button" class="cancelar-btn mx-4"
                                     (click)="closeModalDigitalizacion()">Cancelar</button>
-                                <button type="button" class="guardar-btn"
+                                <button *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'" type="button"
+                                    class="guardar-btn"
                                     (click)="EventAction()">{{modificarDigitalizacion?'Modificar':'Guardar'}}</button>
                             </div>
 
@@ -358,23 +379,23 @@
                                 <input type="text" [(ngModel)]="nuevaRespuesta" class="form-control"
                                     placeholder="Escribe tu respuesta">
                                 <div class="mt-3 d-flex justify-content-end">
-                                    <button  class="btn btn-primary btn-sm"  (click)="agregarRespuesta(i, nuevaRespuesta)">Guardar</button>
-                                    <button (click)="cerrarPopup()" class="btn btn-secondary btn-sm ms-2">Cancelar</button>
+                                    <button class="btn btn-primary btn-sm"
+                                        (click)="agregarRespuesta(i, nuevaRespuesta)">Guardar</button>
+                                    <button (click)="cerrarPopup()"
+                                        class="btn btn-secondary btn-sm ms-2">Cancelar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-
             </div>
         </div>
     </div>
 
 
     <!-- Boton de notas -->
-    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
-        (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
+    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action=""
+        data-ember-action-4992="4992" (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
         <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
         <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
     </div>
@@ -392,6 +413,21 @@
                 <app-preparacion-view *ngIf="mostrarPreparacion" [id_expediente]="id_expediente_temp">
                 </app-preparacion-view>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalDigitalizacionView" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog   modal-custom-width " role="document">
+        <div class="modal-content" style="height: 94vh;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">DIGITALIZACIÓN DE EXPEDIENTE</h5>
+            </div>
+            <div class="modal-body m-0 p-0">
+                <app-data-progress-view *ngIf="mostrarDigitalizacion" [id_expediente]="id_expediente_temp" [modulo]="'DIGITALIZACION'"></app-data-progress-view>
+            </div>
+
         </div>
     </div>
 </div>

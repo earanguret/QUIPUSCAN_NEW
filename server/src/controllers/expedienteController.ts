@@ -55,6 +55,7 @@ class ExpedienteController {
                                 e.id_expediente,
                                 e.nro_expediente,
                                 e.id_inventario,
+                                i.codigo as codigo_inventario,
                                 e.id_responsable,
                                 e.cod_paquete,
                                 e.create_at,

@@ -1,0 +1,369 @@
+<div class="row">
+    <div class="col col-lg-4 col-sm-12 " style="padding-right:0px; margin-right:0px;">
+        <div style="display: flex; flex-direction: column; height: 87vh;">
+
+            <!-- Elemento superior (siempre en la parte de arriba) -->
+            <div class="sub_titulo_expediente  ">
+                <section class="contenedor">
+                    <h5 style="font-size: 1.1rem;">{{data_expediente_header.nro_expediente}}</h5>
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span
+                            style="color: #666666c7; font-weight: 600;">Recepcionado por:</span>
+                        {{data_expediente_header.responsable}}</p>
+                    <p style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span
+                            style="color: #666666c7; font-weight: 600;">Fecha de recepción:</span>
+                        {{data_expediente_header.create_at | date:'dd/MM/yyyy'}}</p>
+                    <P style="font-size: 0.8rem;margin-top: 0.3rem; margin-bottom: 0.3rem;"><span
+                            style="color: #666666c7; font-weight: 600;">Cod. de paquete:</span>
+                        {{data_expediente_header.cod_paquete}}</P>
+                </section>
+            </div>
+            <!-- Elemento central que ocupa el espacio restante -->
+            <div class="contenedor-form scroll-hidden" style="flex: 1;">
+                <form style="flex: 1; display: flex; flex-direction: column;">
+                    <fieldset style="flex: 1; display: flex; flex-direction: column;">
+                        <!--  DATA PREPARACION -->
+                        <section class="section-area">
+                            <h4 class="title-section">Data preparación</h4>
+                            <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                            <div class="sub_title">
+                                <p class="p-subtitle "> <strong>Responsable:</strong> {{
+                                    data_preparacion.responsable}}</p>
+                                <p class="p-subtitle"><strong>Creación:</strong> {{
+                                    data_preparacion.create_at | date:'dd/MM/yyyy'}}</p>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="fojas" class="form-label">Fojas fisicas: </label>
+                                <input type="text" class="form-control" name="fojas"
+                                    [(ngModel)]="data_preparacion.fojas_total" readonly>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="fojas" class="form-label">1 cara:</label>
+                                <input type="text" class="form-control" name="unaCara"
+                                    [(ngModel)]="data_preparacion.fojas_unacara" readonly>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="fojas" class="form-label">2 caras:</label>
+                                <input type="text" class="form-control" name="dosCaras"
+                                    [(ngModel)]="data_preparacion.fojas_doscaras" readonly>
+                            </div>
+
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" value="" id="checkDefault"
+                                    name="docOriginales" [(ngModel)]="data_preparacion.copias_originales">
+                                <label class="form-check-label" for="checkDefault">Doc. Originales
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="checkChecked"
+                                    name="docCopias" [(ngModel)]="data_preparacion.copias_simples">
+                                <label class="form-check-label" for="checkChecked">Copias</label>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="fojas" class="form-label">Observaciones: </label>
+                                <div *ngFor="let observacion of ListObservacionesPreparacion; let i = index"
+                                    class="  mb-2">
+                                    <div class="observation-wrapper position-relative">
+                                        <input type="text" readonly class="form-control observation-tag"
+                                            name="observacion" value="{{observacion}}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </section>
+                        <!-- DATA DIGITALIZACION -->
+                        <section *ngIf="modulo=='CONTROL' || modulo =='DIGITALIZACION' || modulo =='INDIZACION'" class="section-area">
+                            <h4 class="title-section">Data Digitalización</h4>
+                            <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                            <div class="sub_title">
+                                <p class="p-subtitle "> <strong>Responsable:</strong>
+                                    {{data_digitalizacion.responsable}}</p>
+                                <p class="p-subtitle"><strong>Creación:</strong>
+                                    {{data_digitalizacion.create_at | date:'dd/MM/yyyy'}}</p>
+
+                            </div>
+                            
+                            <div class="form-group mt-3">
+                                <label for="fojas" class="form-label">Total de fojas
+                                    digitalizadas:</label>
+                                <input type="text" class="form-control" name="fojas_total_digitalizacion"
+                                    [(ngModel)]="data_digitalizacion.fojas_total">
+                            </div>
+
+
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="checkDefault" name="ocr"
+                                    [(ngModel)]="data_digitalizacion.ocr">
+                                <label class="form-check-label" for="checkDefault">OCR </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkChecked" name="escala_gris"
+                                    [(ngModel)]="data_digitalizacion.escala_gris">
+                                <label class="form-check-label" for="checkChecked">Escala de
+                                    Grises</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkChecked" name="color"
+                                    [(ngModel)]="data_digitalizacion.color">
+                                <label class="form-check-label" for="checkChecked">Color</label>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="fojas" class="form-label">Observaciones: </label>
+
+                                <div style="max-height: 320px; overflow-y: auto; flex: 1; padding-right: 8px;"
+                                    class="observaciones-scroll">
+                                    <div *ngFor="let observacion of ListObservacionesDigitalizacion; let i = index"
+                                        class="mb-2">
+                                        <div class="observation-wrapper position-relative">
+                                            <input type="text" readonly class="form-control observation-tag"
+                                                name="observacion" [value]="observacion">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </section>
+                        <!-- DATA INDIZACION -->
+                        <section *ngIf="modulo=='CONTROL' || modulo =='INDIZACION'" class="section-area">
+                            <h4 class="title-section">Data indización</h4>
+                            <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                            <div class="sub_title">
+                                <p class="p-subtitle "> <strong>Responsable:</strong>
+                                    {{data_indizacion.responsable}}</p>
+                                <p class="p-subtitle"><strong>Creación:</strong>
+                                    {{data_indizacion.create_at | date:'dd/MM/yyyy'}}</p>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="juzgado_origen" class="form-label">Juzgado de
+                                    origen:</label>
+                                <input type="text" class="form-control form-control-sm"
+                                    name="juzgado_origen" [(ngModel)]="data_indizacion.juzgado_origen"
+                                    readonly>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="tipo_proceso" class="form-label">Tipo de proceso:</label>
+                                <input type="text" class="form-control form-control-sm"
+                                    name="tipo_proceso" [(ngModel)]="data_indizacion.tipo_proceso"
+                                    readonly>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="materia" class="form-label">Materia:</label>
+                                <input type="text" class="form-control form-control-sm" name="materia"
+                                    [(ngModel)]="data_indizacion.materia" readonly>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="fecha_inicio" class="form-label ">Fecha
+                                            inicio:</label>
+                                        <input id="fecha_inicio" type="date"
+                                            class="form-control form-control-sm "
+                                            name="fecha_inicio_resolucion"
+                                            [(ngModel)]="data_indizacion.fecha_inicial">
+                                    </div>
+                                    <div class="col">
+                                        <label for="fecha_final" class="form-label ">Fecha
+                                            final:</label>
+                                        <input id="fecha_final" type="date"
+                                            class="form-control form-control-sm "
+                                            name="fecha_final_resolucion"
+                                            [(ngModel)]="data_indizacion.fecha_final">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="demandante" class="form-label mb-1">Demandante(s):</label>
+                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                <div *ngFor="let item of ListDamandantes; let i = index" class="mb-2 ">
+                                    <div class="wrapper-tag position-relative">
+                                        <div
+                                            class="form-control tag d-flex justify-content-between align-items-center">
+                                            <span>{{ item.demandante }}</span>
+                                            <span>{{ item.identificador }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group mt-3 ">
+                                <label for="demandados" class="form-label mb-1">Demandado(s): </label>
+                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                <div *ngFor="let item of ListDamandados; let i = index" class="mb-2 ">
+                                    <div class="wrapper-tag position-relative">
+                                        <div
+                                            class="form-control tag d-flex justify-content-between align-items-center">
+                                            <span>{{ item.demandado }}</span>
+                                            <span>{{ item.identificador }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="form-group mt-3 ">
+                                <label for="indice" class="form-label mb-1">Indice: </label>
+                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                <div id="list-container">
+                                    <ol>
+                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1">
+                                            <span class="titulo_index">{{ item.descripcion }} </span>
+                                            <span class="titulo_index">{{ '(Pg.'+ item.indice+' )' }}
+                                            </span>
+
+                                            <ol *ngIf="item.subItems && item.subItems.length > 0">
+                                                <li
+                                                    *ngFor="let subItem of item.subItems; let j = index">
+                                                    <span class="subtitulo_index">{{ subItem.descripcion
+                                                        }} </span>
+                                                    <span class="subtitulo_index">{{ '(Pg.'+
+                                                        subItem.indice+' )' }} </span>
+
+                                                    <ol
+                                                        *ngIf="subItem.subItems && subItem.subItems.length > 0">
+                                                        <li
+                                                            *ngFor="let subSubItem of subItem.subItems; let k = index">
+                                                            <span class="subsubtitulo_index">{{
+                                                                subSubItem.descripcion }}
+                                                            </span>
+                                                            <span class="subsubtitulo_index">{{ '(Pg.'+
+                                                                subSubItem.indice+'
+                                                                )' }} </span>
+
+                                                        </li>
+                                                    </ol>
+                                                </li>
+                                            </ol>
+                                        </li>
+                                    </ol>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="fojas" class="form-label mb-1">Observaciones: </label>
+                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                <div *ngFor="let observacion of ListObservacionesIndizacion; let i = index"
+                                    class="  mb-2">
+                                    <div class="observation-wrapper position-relative">
+                                        <input type="text" readonly class="form-control observation-tag"
+                                            name="observacion" value="{{observacion}}">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </section>
+                        <!-- DATA CONTROL -->
+                        <section *ngIf="modulo=='CONTROL'" class="section-area">
+                            <h4 class="title-section">Data Control de calidad</h4>
+                            <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                            <div class="sub_title">
+                                <p class="p-subtitle "> <strong>Responsable:</strong>
+                                    {{data_control.responsable}}</p>
+                                <p class="p-subtitle"><strong>Creación:</strong>
+                                    {{data_control.create_at | date:'dd/MM/yyyy'}}</p>
+                            </div>
+                            <label for="fojas" class="form-label mt-2">Validaciones: </label>
+                            <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0"> -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                    name="observaciones" [(ngModel)]="data_control.val_observaciones">
+                                <label class="form-check-label" for="checkChecked">VERIFICACION DE
+                                    OBSERVACIONES </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                    name="datos" [(ngModel)]="data_control.val_datos">
+                                <label class="form-check-label" for="checkChecked">VERIFICACION DE
+                                    DATOS</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                    name="nitidez" [(ngModel)]="data_control.val_nitidez">
+                                <label class="form-check-label" for="checkChecked">VERIFICACION DE
+                                    NITIDEZ</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                    name="impresion" [(ngModel)]="data_control.val_pruebas_impresion">
+                                <label class="form-check-label" for="checkChecked">PRUEBAS DE
+                                    IMPRESION</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                    name="copia_fiel" [(ngModel)]="data_control.val_copia_fiel">
+                                <label class="form-check-label" for="checkChecked">COPIA FIEL DEL
+                                    ORIGINAL</label>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="fojas" class="form-label mb-1">Observaciones: </label>
+                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+                                <div *ngFor="let observacion of ListObservacionesControl; let i = index"
+                                    class="  mb-2">
+                                    <div class="observation-wrapper position-relative">
+                                        <input type="text" readonly class="form-control observation-tag"
+                                            name="observacion" value="{{observacion}}">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </section>
+                    </fieldset>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <div class="col col-lg-8 col-sm-12 p-0 m-0 " style="height: 89vh; ">
+        <iframe [src]="pdfUrl"
+            style="width: 99%; height: 98.2%; border: none; background-color: #f6f6ee; border-bottom-right-radius: 10px;"
+            type="application/pdf">
+        </iframe>
+    </div>
+</div>
+
+<!-- mensajeria notas -->
+<div [ngClass]="{ 'visible': mostrar_mensajes_expediente, 'hidden': !mostrar_mensajes_expediente }"
+    class="message-panel shadow-lg">
+    <div *ngFor="let item of MensajesExpedienteTemp; let i = index" style="width: 88%;">
+        <div class="card-note">
+            <div class="card-header-message">
+                <div class="d-flex justify-content-between align-items-center my-0">
+                    <p class="text-muted mb-1">DE: {{item.area_remitente}} / <span>{{item.responsable}}</span></p>
+                    <p class="text-muted mb-1">{{ item.fecha | date:'dd/MM/yyyy'}}</p>
+                </div>
+                <p class="text-muted mb-0">PARA: {{item.destino}}</p>
+            </div>
+
+            <p class="text-muted mt-2">{{item.mensaje}}</p>
+            <div *ngFor="let respuesta of item.respuestas" class="box-respuesta">
+                <div class="d-flex justify-content-between align-items-center my-0">
+                    <p class="text-muted mb-1">{{respuesta.area}} / <span>{{respuesta.responsable}}</span></p>
+                    <p class="text-muted mb-1">{{respuesta.fecha | date:'dd/MM/yyyy'}}</p>
+                </div>
+                <p>{{respuesta.respuesta}}</p>
+
+            </div>
+          
+   
+        </div>
+    </div>
+</div>
+
+
+<!-- Boton de notas -->
+<div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action=""
+    data-ember-action-4992="4992" (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
+    <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
+    <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
+</div>

@@ -18,7 +18,7 @@ import { ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.d
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
 import { PreparacionModel } from '../../../../domain/models/Preparacion.model';
 import { PreparacionRequest } from '../../../../domain/dto/PreparacionRequest.dto';
-import { CrearPreparacionResponse, ModificarPreparacionResponse, PreparacionResponse } from '../../../../domain/dto/PreparacionResponse.dto';
+import { CrearPreparacionResponse, ModificarPreparacionResponse, PreparacionResponse, PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { form_preparacion_vf } from '../../../validator/fromValidator/preparacion.validator';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 import { map } from 'rxjs';
@@ -56,15 +56,48 @@ export class PreparacionExpedientesComponent implements OnInit {
   nro_rechazados: number = 0;
   list_expedinete_rechazados: ExpedienteResponse[] = [];
 
-  data_preparacion_header: ExpedienteResponseDataView = {
+  data_expediente_temp: ExpedienteResponse = {
     id_expediente: 0,
     nro_expediente: '',
     id_inventario: 0,
     id_responsable: 0,
     cod_paquete: '',
+    estado_recepcionado: '',
+    estado_preparado: '',
+    estado_digitalizado: '',
+    estado_indizado: '',
+    estado_controlado: '',
+    estado_fedatado: '',
+    estado_finalizado: '',
+  }
+
+  data_expediente_header: ExpedienteResponseDataView = {
+    id_expediente: 0,
+    nro_expediente: '',
+    id_inventario: 0,
+    codigo_inventario: '',
+    id_responsable: 0,
+    cod_paquete: '',
     responsable: null,
     create_at: null,
     username: null,
+  }
+
+  data_preparacion: PreparacionResponseDataView = {
+    id_preparacion: 0,
+    id_responsable: 0,
+    id_expediente: 0,
+    fojas_total: null,
+    fojas_unacara: null,
+    fojas_doscaras: null,
+    observaciones: '',
+    copias_originales: false,
+    copias_simples: false,
+    cod_paquete: null,
+    create_at: null,
+    responsable: null,
+    username: null,
+    nro_expediente: null,
   }
  
   data_expediente_preparacion: PreparacionModel ={
@@ -115,6 +148,7 @@ export class PreparacionExpedientesComponent implements OnInit {
     })
   }
 
+
    informacionTags(expedientes: ExpedienteResponse[]) {
       this.nro_expedientes = expedientes.length;
       this.nro_concluidos = expedientes.filter(e => e.estado_preparado === 'T').length;
@@ -152,10 +186,9 @@ export class PreparacionExpedientesComponent implements OnInit {
     });
 
     this.myModalPreparation = new bootstrap.Modal(document.getElementById('exampleModalpreparation'), {
-      backdrop: true,
+      backdrop: 'static',
       keyboard: true
     });
-
   }
 
   closeModalRecepcion() {
@@ -175,15 +208,17 @@ export class PreparacionExpedientesComponent implements OnInit {
   }
 
   openModalPreparation(id_expediente:number) {
+    this.ObtenerExpedienteDataViewXid(id_expediente)
+    this.recuperarDataPreparacion(id_expediente)
     this.id_expediente_temp = id_expediente;
     this.myModalPreparation.show();
   }
 
-  ObtenerExpedienteDataViewXid(expediente:any) {
-    console.log('expediente recuperado:',expediente)
-    this.expedienteService.ObtenerExpedienteDataViewXid(expediente.id_expediente).subscribe({
+  ObtenerExpedienteDataViewXid(id_expediente:number) {
+    console.log('expediente recuperado:',id_expediente)
+    this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
       next: (data: ExpedienteResponseDataView) => {
-        this.data_preparacion_header = data;
+        this.data_expediente_header = data;
       },
       error: (error) => {
         console.log(error);
@@ -194,6 +229,24 @@ export class PreparacionExpedientesComponent implements OnInit {
     })
   }
 
+  recuperarDataPreparacion(id_expediente: number) {
+    this.preparacionService.ObtenerPreparacionDataViewXidExpediente(id_expediente).subscribe({
+      next: (data: PreparacionResponseDataView) => {
+        this.data_preparacion = data;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de preparacion detalle completado');
+      }
+    })
+  }
+
+  obtenerExpedienteTem(expediente_temp: ExpedienteResponse) {
+    this.data_expediente_temp = expediente_temp;
+    console.log(this.data_expediente_temp)
+  }
 
   buscarEnObjeto(event: any) {
     this.p = 1
@@ -309,7 +362,7 @@ export class PreparacionExpedientesComponent implements OnInit {
         console.log('creacion de preparacion completado');
         this.EstadoPreparacionTrabajado()
         this.closeModalPreparation();
-        this.sweetAlert.MensajeSimpleSuccess('Expediente preparado',`Expediente ${this.data_preparacion_header.nro_expediente} Preparado con exito` );
+        this.sweetAlert.MensajeSimpleSuccess('Expediente preparado',`Expediente ${this.data_expediente_header.nro_expediente} Preparado con exito` );
       }
     })
 
@@ -369,7 +422,7 @@ export class PreparacionExpedientesComponent implements OnInit {
         console.log('modificacion de preparacion completado');
         this.ListarExpedientes();
         this.closeModalPreparation();
-        this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito` );
+        this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_expediente_header.nro_expediente} modificado con exito` );
       }
     })  
   }

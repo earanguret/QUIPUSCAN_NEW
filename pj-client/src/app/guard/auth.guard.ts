@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
 import { LoginService } from '../infrastructure/services/remoto/login/login.service';
 
 @Injectable({
@@ -8,13 +7,8 @@ import { LoginService } from '../infrastructure/services/remoto/login/login.serv
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private loginService: LoginService, private router: Router, private activateRoute:ActivatedRoute) {}
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    
-
-    // Aquí puedes utilizar los datos compartidos desde el servicio como necesites.
-    
-
+  constructor(private loginService: LoginService, private router: Router) {}
+  async canActivate(): Promise<boolean> {
     
     try {
 
