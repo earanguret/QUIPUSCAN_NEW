@@ -163,7 +163,7 @@
                     <div class="col col-lg-5 col-sm-12  " style="padding-right: 0px; margin-right:0px;">
                         <div style="display: flex; flex-direction: column; height: 87vh;">
 
-                            <!-- Elemento superior (siempre en la parte de arriba) -->
+                            <!-- Elemento superior -->
                             <div class="sub_titulo_expediente  ">
                                 <section class="contenedor">
                                     <h5 style="font-size: 1.1rem;">{{data_preparacion_header.nro_expediente}}</h5>
@@ -183,8 +183,6 @@
                             <div class="contenedor-form scroll-hidden" style="flex: 1;">
                                 <form style="flex: 1; display: flex; flex-direction: column;">
                                     <fieldset style="flex: 1; display: flex; flex-direction: column;">
-
-                                        <!--  -->
 
                                         <section class="section-area">
                                             <h4 class="title-section">Data preparación</h4>
@@ -343,7 +341,6 @@
 
                                             <div class="form-group mt-3">
                                                 <label for="demandante" class="form-label mb-1">Demandante(s):</label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div *ngFor="let item of ListDamandantes; let i = index" class="mb-2 ">
                                                     <div class="wrapper-tag position-relative">
                                                         <div
@@ -358,7 +355,6 @@
 
                                             <div class="form-group mt-3 ">
                                                 <label for="demandados" class="form-label mb-1">Demandado(s): </label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div *ngFor="let item of ListDamandados; let i = index" class="mb-2 ">
                                                     <div class="wrapper-tag position-relative">
                                                         <div
@@ -372,7 +368,6 @@
 
                                             <div class="form-group mt-3 ">
                                                 <label for="indice" class="form-label mb-1">Indice: </label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div id="list-container">
                                                     <ol>
                                                         <li *ngFor="let item of dataIndice; let i = index" class="mb-1" >
@@ -404,7 +399,6 @@
 
                                             <div class="form-group mt-3">
                                                 <label for="fojas" class="form-label mb-1">Observaciones: </label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div *ngFor="let observacion of ListObservacionesIndizacion; let i = index"
                                                     class="  mb-2">
                                                     <div class="observation-wrapper position-relative">

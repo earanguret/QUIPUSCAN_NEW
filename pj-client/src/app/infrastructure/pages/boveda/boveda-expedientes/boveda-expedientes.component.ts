@@ -51,6 +51,8 @@ export class BovedaExpedientesComponent implements OnInit {
   ListExpedientesPendentesDisco: ExpedienteSinDiscoResponse[] = [];
 
   porcentajeExpedientes: number = 0;
+  peso_limite: number = 23 * 1024 * 1024 * 1024; // 23 GB en bytes, dejamos un margen de 2GB
+  cargandoZip = false; // variable para indicar si se está descargando el ZIP
 
   data_inventario: InventarioModel = {
     id_inventario: 0,
@@ -93,7 +95,6 @@ export class BovedaExpedientesComponent implements OnInit {
   }
 
   constructor(
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private discoService: DiscoService,
     private credencialesService: CredencialesService,
@@ -138,7 +139,6 @@ export class BovedaExpedientesComponent implements OnInit {
     this.myModalActaCierre.show();
     this.pdfUrlActaCierre = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
     this.data_disco_temp = disco;
-    console.log(disco)
     
   }
   closeModalRegistrarActaCierre() {
@@ -150,7 +150,6 @@ export class BovedaExpedientesComponent implements OnInit {
     this.myModalTarjetaApertura.show(); 
     this.pdfUrlTarjetaApertura = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
     this.data_disco_temp = disco;
-    console.log(disco);
   }
 
   closeModalRegistrarTarjetaApertura() {
@@ -162,9 +161,8 @@ export class BovedaExpedientesComponent implements OnInit {
     this.myModalTarjetaCierre.show();
     this.pdfUrlTarjetaCierre = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
     this.data_disco_temp = disco;
-    console.log(disco)
-    
   }
+
   closeModalRegistrarTarjetaCierre() {
     this.myModalTarjetaCierre.hide();
   }
@@ -178,9 +176,6 @@ export class BovedaExpedientesComponent implements OnInit {
       volumen : this.list_data_discos.length +1,
       app_user: this.credencialesService.credenciales.username
     }
-
-    console.log(data_disco_temp)
-
     this.discoService.CrearDisco(data_disco_temp).subscribe({
       next: (data: any) => {
         console.log(data.text);
@@ -200,7 +195,6 @@ export class BovedaExpedientesComponent implements OnInit {
     this.discoService.ListarDiscosByInventario(id_inventario).subscribe({
       next: (data: DiscoListaResponse[]) => {
         this.list_data_discos = data;
-        console.log(this.list_data_discos);
       },
       error: (error) => {
         console.log(error);
@@ -232,7 +226,7 @@ export class BovedaExpedientesComponent implements OnInit {
 
   private calcularPorcentajeAcumlado(expedientes: ExpedienteSinDiscoResponse[]): number {
     const pesoTotalBytes = expedientes.reduce((total, exp) => total + (exp.peso_doc || 0), 0);
-    const totalPermitido = 23 * 1024 * 1024 * 1024; // 25 GB en bytes
+    const totalPermitido = this.peso_limite; // 23 GB en bytes, dejamos un margen de 2GB
   
     const porcentaje = (pesoTotalBytes / totalPermitido) * 100;
     return parseFloat(porcentaje.toFixed(2)); // redondeado a 2 decimales
@@ -244,7 +238,6 @@ export class BovedaExpedientesComponent implements OnInit {
       next: (data: InventarioResponse) => {
         this.data_inventario = data;
         this.listarDiscosByInventario(data.id_inventario)
-        // this.listarExpedientesPendentesDisco(data.id_inventario)
       },
       error: (error) => {
         console.log(error);
@@ -298,8 +291,6 @@ export class BovedaExpedientesComponent implements OnInit {
       try {
         
         const folderPathDisco = `${this.data_inventario.codigo}/DISCOS/${this.data_disco_temp.nombre}`;
-        // `${this.data_inventario.codigo}V${this.list_data_discos.length + 1}`
-        // Subir portada primero
         this.ftpService.uploadFile(file, folderPathDisco, nameFile).subscribe({
           next: (data: CrearDigitalizacionResponse) => {
             console.log("Respuesta portada:", data);
@@ -310,7 +301,6 @@ export class BovedaExpedientesComponent implements OnInit {
           },
           complete: () => {
             console.log("Portada subida correctamente");
-    
           }
         });
     
@@ -346,16 +336,12 @@ export class BovedaExpedientesComponent implements OnInit {
     // -------------------------------------------------------------------------------------------------------------------------
    guardarDataDiscoTarjetaApertura() {
     const data_disco_aux: DiscoRequest = {
-     
       dir_ftp_tarjeta_apertura:  `${this.data_inventario.codigo}/DISCOS/${this.data_disco_temp.nombre}`,
       peso_tarjeta_apertura: this.file ? this.file.size : 0,
       fecha_tarjeta_apertura: new Date(),
       id_responsable_tca: this.credencialesService.credenciales.id_usuario,
       app_user: this.credencialesService.credenciales.username
     }
-
-    console.log(data_disco_aux)
-
     this.discoService.AgregarDataDiscoTarjetaApertura(this.data_disco_temp.id_disco!,data_disco_aux).subscribe(
       {
         next: (data: ModificarDiscoResponse) => {
@@ -370,21 +356,16 @@ export class BovedaExpedientesComponent implements OnInit {
           this.closeModalRegistrarTarjetaApertura();
         }
       })
-    
    }
 
    AgregarDataDiscoTarjetaCierre() {
-      const data_disco_aux: DiscoRequest = {
-       
+      const data_disco_aux: DiscoRequest = {      
         dir_ftp_tarjeta_cierre:  `${this.data_inventario.codigo}/DISCOS/${this.data_disco_temp.nombre}`,
         peso_tarjeta_cierre: this.file ? this.file.size : 0,
         fecha_tarjeta_cierre: new Date(),
         id_responsable_tcc: this.credencialesService.credenciales.id_usuario,
         app_user: this.credencialesService.credenciales.username
-      }
-  
-      console.log(data_disco_aux)
-  
+      }  
       this.discoService.AgregarDataDiscoTarjetaCierre(this.data_disco_temp.id_disco!,data_disco_aux).subscribe(
         {
           next: (data: ModificarDiscoResponse) => {
@@ -403,15 +384,12 @@ export class BovedaExpedientesComponent implements OnInit {
 
    AgregarDataDiscoActaApertura() {
     const data_disco_aux: DiscoRequest = {
-     
       dir_ftp_acta_apertura:  `${this.data_inventario.codigo}/DISCOS/${this.data_disco_temp.nombre}`,
       peso_acta_apertura: this.file ? this.file.size : 0,
       fecha_acta_apertura: new Date(),
       id_responsable_aa: this.credencialesService.credenciales.id_usuario,
       app_user: this.credencialesService.credenciales.username
     }
-
-    console.log(data_disco_aux)
 
     this.discoService.AgregarDataDiscoActaApertura(this.data_disco_temp.id_disco!,data_disco_aux).subscribe(
       {
@@ -440,8 +418,6 @@ export class BovedaExpedientesComponent implements OnInit {
       app_user: this.credencialesService.credenciales.username
     }
 
-    console.log(data_disco_aux)
-
     this.discoService.AgregarDataDiscoActaCierre(this.data_disco_temp.id_disco!,data_disco_aux).subscribe(
       {
         next: (data: ModificarDiscoResponse) => {
@@ -459,32 +435,10 @@ export class BovedaExpedientesComponent implements OnInit {
     
    }
 
-  //  CerrarDisco(disco:any) {
-  //   const data_disco_aux: DiscoRequest = {
-  //     id_responsable_cierre: this.credencialesService.credenciales.id_usuario,
-  //     app_user: this.credencialesService.credenciales.username,
-  //     espacio_ocupado: disco.espacio_ocupado
-  //   }
-
-  //   console.log(data_disco_aux)
-
-  //   // this.discoService.CerrarDisco(disco.id_disco!,data_disco_aux).subscribe(
-  //   //   {
-  //   //     next: (data: ModificarDiscoResponse) => {
-  //   //       console.log(data.message);
-  //   //     },
-  //   //     error: (error) => {
-  //   //       console.log(error);
-  //   //     },
-  //   //     complete: () => {
-  //   //       console.log('modificacion de disco acta cierre completada');
-  //   //       this.AsociarExpedientesCD(this.ListExpedientesPendentesDisco,disco.id_disco)
-  //   //     }
-  //   //   })  
-  //  }
-
    CerrarDisco(disco:any) {
-    const limiteBytes = 23 * 1024 * 1024 * 1024; // 23 GB en bytes
+
+    
+    const limiteBytes = this.peso_limite; // 23 GB en bytes
     let acumulado = 0;
     const listaFinal: ExpedienteSinDiscoResponse[] = [];
   
@@ -544,10 +498,8 @@ export class BovedaExpedientesComponent implements OnInit {
 
   }
   
-  cargandoZip = false;
   descargarMicroformas(disco: DiscoListaResponse) {
     this.cargandoZip = true;
-  
     this.discoService.GenerarDiscoMicroformas(disco.id_disco!,this.credencialesService.credenciales.username).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -561,7 +513,7 @@ export class BovedaExpedientesComponent implements OnInit {
         console.error('Error descargando el ZIP:', err);
       },
       complete: () => {
-        this.cargandoZip = false;  // 🔚 Detiene el spinner
+        this.cargandoZip = false; 
       }
     });
   }

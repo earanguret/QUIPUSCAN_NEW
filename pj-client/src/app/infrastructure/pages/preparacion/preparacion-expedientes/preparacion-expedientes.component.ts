@@ -207,9 +207,17 @@ export class PreparacionExpedientesComponent implements OnInit {
 
   }
 
-  openModalPreparation(id_expediente:number) {
+  openNewModalPreparation(id_expediente:number) {
+   this.LimpiarDatosPreparacion();
     this.ObtenerExpedienteDataViewXid(id_expediente)
-    this.recuperarDataPreparacion(id_expediente)
+    this.id_expediente_temp = id_expediente;
+    this.myModalPreparation.show();
+  }
+
+  openEditModalPreparation(id_expediente:number) {
+   
+    this.ObtenerExpedienteDataViewXid(id_expediente)
+    this.recuperarDataPreparacionView(id_expediente)
     this.id_expediente_temp = id_expediente;
     this.myModalPreparation.show();
   }
@@ -229,7 +237,7 @@ export class PreparacionExpedientesComponent implements OnInit {
     })
   }
 
-  recuperarDataPreparacion(id_expediente: number) {
+  recuperarDataPreparacionView(id_expediente: number) {
     this.preparacionService.ObtenerPreparacionDataViewXidExpediente(id_expediente).subscribe({
       next: (data: PreparacionResponseDataView) => {
         this.data_preparacion = data;
@@ -287,7 +295,7 @@ export class PreparacionExpedientesComponent implements OnInit {
       },
       complete: () => {
         console.log('flujograma creado correctamente');
-        this.openModalPreparation(this.id_expediente_temp);
+        this.openNewModalPreparation(this.id_expediente_temp);
         this.EstadoPreparacionAceptado()
         this.closeModalRecepcion();
       }
@@ -376,7 +384,7 @@ export class PreparacionExpedientesComponent implements OnInit {
         this.data_expediente_preparacion = data;
         this.modificarPreparacion = true;
         this.ListObservaciones = this.data_expediente_preparacion?.observaciones? this.data_expediente_preparacion.observaciones.split('|') : [];
-        this.openModalPreparation(id_expediente);
+        this.openEditModalPreparation(id_expediente);
       },
       error: (error) => {
         console.log(error);
@@ -386,6 +394,7 @@ export class PreparacionExpedientesComponent implements OnInit {
       }
     })    
   }
+
 
   ModificarPreparacion() {
     const erroresValidacion = form_preparacion_vf(this.data_expediente_preparacion);

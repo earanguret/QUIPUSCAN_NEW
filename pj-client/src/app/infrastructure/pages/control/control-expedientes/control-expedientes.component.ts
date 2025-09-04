@@ -190,7 +190,7 @@ export class ControlExpedientesComponent implements OnInit {
   }
 
 
-  constructor(private router: Router,
+  constructor(
     private activatedRoute: ActivatedRoute,
     private expedienteService: ExpedienteService,
     private credencialesService: CredencialesService,
@@ -260,7 +260,6 @@ export class ControlExpedientesComponent implements OnInit {
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
     this.modificarControl = false;
-    // this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
     this.myModalReception.show();
   }
 
@@ -283,14 +282,12 @@ export class ControlExpedientesComponent implements OnInit {
     if (modificar_control === true) {
       this.modificarControl = true;
       this.RecuperarDatosControl(id_expediente)
-      // this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
       this.myModalControl.show();
 
     }
     if (modificar_control === false) {
       this.LimpiarControl()
       this.modificarControl = false;
-      // this.myModalControl = new bootstrap.Modal(document.getElementById('ModalControl'));
       this.myModalControl.show();
     }
   }
@@ -301,7 +298,6 @@ export class ControlExpedientesComponent implements OnInit {
 
   openModalDesaprobar() {
     this.limpiarModarDsaprobar();
-    // this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'));
     this.myModalDesaprobar.show();
   }
 
@@ -396,7 +392,7 @@ export class ControlExpedientesComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.MensajesExpedienteTemp = []; // Siempre asegúrate que sea un array
+        this.MensajesExpedienteTemp = []; 
       },
       complete: () => {
         console.log('listado de mensajes completado');
@@ -513,7 +509,6 @@ export class ControlExpedientesComponent implements OnInit {
         this.data_control.val_nitidez = data.val_nitidez;
         this.data_control.val_pruebas_impresion = data.val_pruebas_impresion;
         this.data_control.val_copia_fiel = data.val_copia_fiel;
-        console.log(data);
         this.ListObservacionesControl = data.observaciones?.split('|') ?? [];
       },
       error: (error) => {
@@ -538,8 +533,6 @@ export class ControlExpedientesComponent implements OnInit {
       }
     })
   }
-
-
 
   ObternerCodigoInventario() {
     const params = this.activatedRoute.snapshot.params;
@@ -782,8 +775,6 @@ export class ControlExpedientesComponent implements OnInit {
       }
     });
   }
-  
-  
   
 // ---------------------------------------------------------------------------
 

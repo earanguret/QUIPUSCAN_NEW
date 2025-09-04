@@ -1,348 +1,284 @@
 .contenedor {
-    margin: 2% 4%;
-    max-width: 1680px;
-    max-width: 1680px;
-  }
+  margin: 2% 4%;
+  max-width: 1680px;
+  max-width: 1680px;
+}
 
-  .contenedor-form{
-    margin: 0px 0px;
-    padding: 0px 4% 4% 4%;
-    max-width: 1680px;
-  }
+.contenedor-form {
+  margin: 0px 0px;
+  padding: 0px 4% 4% 4%;
+  max-width: 1680px;
+}
 
-  .modal-custom-width {
-    max-width: 90%;
-    /* Ajusta este valor según tus necesidades */
-  }
-
-
-  .sub_titulo_expediente {
-    background-color: #f1f1f3;
-    color: #8d8d88;
-    border: 2px solid #ecece5c9;
-    border-bottom: 0px;
-  }
+.modal-custom-width {
+  max-width: 90%;
+  /* Ajusta este valor según tus necesidades */
+}
 
 
- 
-
-  
-
-  .tag{
-    background-color: #e2e2df79;
-    /* color: #8d8d88 ; */
-    color: #888a8d ;
-    font-size: 0.9rem;
-    border: 2px solid #ecece5c9;
-  }
-
-  .input-tag{
-    font-size: 0.9rem;
-    color: #888c8d ;
-  }
-
-  .wrapper-tag {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-  }
-  
-  .icons-tag {
-    position: absolute;
-    top: 0.25rem; /* ajusta según lo necesites */
-    right: 0.5rem;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-size: 0.8rem;
-    color: #9b9b1f85;
-  
-  }
-
-  .icon-tag {
-    font-size: 0.8rem;
-    font-weight: bold; /* hace el ícono más “grueso” si soportado */
-    text-shadow: 0 0 1px currentColor; /* efecto de grosor sin agrandar el espacio */
-    transition: transform 0.2s ease;
-  }
-  
-  .icon-tag:hover {
-    color: #8b8b1b;
-    transform: scale(1.1); /* ligeramente más grande al pasar el mouse */
-  }
+.sub_titulo_expediente {
+  background-color: #f1f1f3;
+  color: #8d8d88;
+  border: 2px solid #ecece5c9;
+  border-bottom: 0px;
+}
 
 
 
-  /* observaciones tags */
-  .observation-tag{
-    background-color: #f6f6ee;
-    color: #8d8d88 ;
-    font-size: 0.9rem;
-    border: 2px solid #ecece5c9;
-  }
-
-  .observation-input{
-    font-size: 0.9rem;
-    color: #8d8d88 ;
-  }
 
 
-  .observation-wrapper {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-  }
-  
-  .observation-icons {
-    position: absolute;
-    top: 0.25rem; /* ajusta según lo necesites */
-    right: 0.5rem;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-size: 0.8rem;
-    color: #9b9b1f85;
-  
-  }
 
-  .obs-icon {
-    font-size: 0.8rem;
-    font-weight: bold; /* hace el ícono más “grueso” si soportado */
-    text-shadow: 0 0 1px currentColor; /* efecto de grosor sin agrandar el espacio */
-    transition: transform 0.2s ease;
-  }
-  
-  .obs-icon:hover {
-    color: #8b8b1b;
-    transform: scale(1.1); /* ligeramente más grande al pasar el mouse */
-  }
+.tag {
+  background-color: #e2e2df79;
+  /* color: #8d8d88 ; */
+  color: #888a8d;
+  font-size: 0.9rem;
+  border: 2px solid #ecece5c9;
+}
+
+.input-tag {
+  font-size: 0.9rem;
+  color: #888c8d;
+}
+
+.wrapper-tag {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+}
+
+.icons-tag {
+  position: absolute;
+  top: 0.25rem;
+  /* ajusta según lo necesites */
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #9b9b1f85;
+
+}
+
+.icon-tag {
+  font-size: 0.8rem;
+  font-weight: bold;
+  /* hace el ícono más “grueso” si soportado */
+  text-shadow: 0 0 1px currentColor;
+  /* efecto de grosor sin agrandar el espacio */
+  transition: transform 0.2s ease;
+}
+
+.icon-tag:hover {
+  color: #8b8b1b;
+  transform: scale(1.1);
+  /* ligeramente más grande al pasar el mouse */
+}
 
 
+/* lista de Indice */
 ol {
-    counter-reset: item;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color:  #404B5A;
-    text-transform: uppercase;
-    padding-left: 8px;
-  }
-  
-  ol>li {
-    display: block;
-    counter-increment: item;
-    /* margin-bottom: 10px; */
-    
-    
-  }
-  
-  ol>li::before {
-    content: counters(item, ".") " ";
-    font-weight: bold;
-    color: #176091;
-    background-color: #EEF7FC;
-    padding: .15rem 0.9rem;
-    font-size: 1rem;
-    margin: 0 0.5rem 0 0;
-    font-weight: 400;
-    text-align: center;
-    display: inline-block;
-  }
-  
-  ol ol {
-    font-size: 0.8rem;
-    counter-reset: item;
-    font-weight: 600;
-    color: #383a3df2;
-    text-transform: uppercase;
-  }
-  
-  ol ol>li {
-    display: block;
-    counter-increment: item;
-  
-  }
-  
-  ol ol>li::before {
-    content: counters(item, ".") " ";
-    font-weight: bold;
-    color: #176091;
-    background-color: white;
-    padding: .10rem 0.5rem;
-    font-size: 1rem;
-    margin: 0 0.5rem 0 0;
-    font-weight: 400;
-    text-align: center;
-    display: inline-block;
-  }
-  
-  ol ol ol {
-    counter-reset: subitem;
-    font-weight: 400;
-    color: #525963af;
-    text-transform: uppercase;
-    padding-left: 15px;
-    margin: 0px !important;
-    /* font-style: italic; */
-  }
-  
-  ol ol ol>li {
-    display: block;
-    counter-increment: subitem;
-  }
-  
-  ol ol ol>li::before {
-    content: counters(item, ".") "." counters(subitem, ".") " ";
-    font-weight: bold;
-    color: #176091;
-    background-color: white;
-    padding: .10rem 0.5rem;
-    font-size: 1rem;
-    margin: 0 0.5rem 0 0;
-    font-weight: 400;
-    text-align: center;
-    display: inline-block;
-  }
-  
-  .action-button {
-    margin-left: 10px;
-    cursor: pointer;
-  }
-  
+  counter-reset: item;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #404B5A;
+  text-transform: uppercase;
+  padding-left: 8px;
+}
 
-  /* Ocultar los botones por defecto */
-  #list-container .action-button {
-    display: none;
-  }
-  
-  /* Mostrar los botones cuando el cursor está sobre el li */
-  #list-container li:hover>.action-button {
-    display: inline-block;
-  }
-  
-  /* Opcional: Añadir estilos adicionales para los botones */
-  #list-container .action-button {
-    margin-left: 10px;
-    /* Espacio entre botones */
-    padding: 0px 5px;
-    /* Espaciado interno */
-    background-color: transparent;
-    /* Color de fondo */
-    color: #2b79c2;
-    /* Color del texto */
-    border: none;
-    /* Sin borde */
-    border-radius: 5px;
-    /* Bordes redondeados */
-    cursor: pointer;
-    /* Manito al pasar sobre el botón */
-  }
-  
-  /* Cambiar el color del texto al pasar sobre el botón */
-  #list-container .action-button:hover {
-    color: #2bb0c2;
-  }
-  
-  
-  
-  /* chat container */
-  .chat-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    height: 100%;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  
-  .message {
-    padding: 10px;
-    border-radius: 10px;
-    max-width: 100%;
-  }
-  
-  .sent {
-    background-color: #f8f8f8;
-    align-self: flex-start;
-  }
-  
-  .received {
-    background-color: #b8b8bd42;
-    align-self: flex-end;
-  }
-  
-  .message-time {
-    font-size: 0.8rem;
-    color: gray;
-    display: block;
-    margin-top: 5px;
-    text-align: right;
-  }
-  
-  .position-relative {
-    position: relative;
-  }
-  
-  .popup-box {
-    position: absolute;
-    top: 100%; /* Colocar justo debajo del botón "responder" */
-    right: 0; /* Alinear el popup a la derecha */
-    z-index: 1000;
-    width: 300px;
-    background-color: white;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    padding: 10px;
-  }
-  
-  .bi-pencil-fill:hover{
-    cursor: pointer;
-    color: #434343;
-  }
+ol>li {
+  display: block;
+  counter-increment: item;
+}
+
+ol>li::before {
+  content: counters(item, ".") " ";
+  font-weight: bold;
+  color: #176091;
+  background-color: #EEF7FC;
+  padding: .15rem 0.9rem;
+  font-size: 1rem;
+  margin: 0 0.5rem 0 0;
+  font-weight: 400;
+  text-align: center;
+  display: inline-block;
+}
+
+ol ol {
+  font-size: 0.8rem;
+  counter-reset: item;
+  font-weight: 600;
+  color: #383a3df2;
+  text-transform: uppercase;
+}
+
+ol ol>li {
+  display: block;
+  counter-increment: item;
+
+}
+
+ol ol>li::before {
+  content: counters(item, ".") " ";
+  font-weight: bold;
+  color: #176091;
+  background-color: white;
+  padding: .10rem 0.5rem;
+  font-size: 1rem;
+  margin: 0 0.5rem 0 0;
+  font-weight: 400;
+  text-align: center;
+  display: inline-block;
+}
+
+ol ol ol {
+  counter-reset: subitem;
+  font-weight: 400;
+  color: #525963af;
+  text-transform: uppercase;
+  padding-left: 15px;
+  margin: 0px !important;
+}
+
+ol ol ol>li {
+  display: block;
+  counter-increment: subitem;
+}
+
+ol ol ol>li::before {
+  content: counters(item, ".") "." counters(subitem, ".") " ";
+  font-weight: bold;
+  color: #176091;
+  background-color: white;
+  padding: .10rem 0.5rem;
+  font-size: 1rem;
+  margin: 0 0.5rem 0 0;
+  font-weight: 400;
+  text-align: center;
+  display: inline-block;
+}
+
+.action-button {
+  margin-left: 10px;
+  cursor: pointer;
+}
 
 
-  /* scroll personalizado  */
-  .scroll-hidden {
-    overflow-y: scroll;          /* habilita el scroll */
-    scrollbar-width: none;       /* Firefox */
-    -ms-overflow-style: none;    /* IE/Edge */
-  }
-  
-  .scroll-hidden::-webkit-scrollbar {
-    display: none;               /* Chrome/Safari */
-  }
-  
+/* Ocultar los botones por defecto */
+#list-container .action-button {
+  display: none;
+}
 
-  /* section */
-  .title-section {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #133349b7;
-    margin: 0px;
-    text-transform: uppercase !important;
-    margin-top: 3%;
-   
-  }
+/* Mostrar los botones cuando el cursor está sobre el li */
+#list-container li:hover>.action-button {
+  display: inline-block;
+}
 
+/* Opcional: Añadir estilos adicionales para los botones */
+#list-container .action-button {
+  margin-left: 10px;
+  padding: 0px 5px;
+  background-color: transparent;
+  color: #2b79c2;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  /* sub title */
-  .sub_title {
-    font-size: 0.9rem;
-    font-weight: 400;
-    color: #4f5152cc;
-    margin: 0px;
-    margin-top: 5px;
-    background-color: #e6e9eb5b;
-    border-radius: 5px;
-  }
-
-  .p-subtitle {
-    margin: 0px 0px;
-  }
+/* Cambiar el color del texto al pasar sobre el botón */
+#list-container .action-button:hover {
+  color: #2bb0c2;
+}
 
 
-  /* cursor de indice */
- #list-container ol li {
+
+/* chat container */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.message {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 100%;
+}
+
+.sent {
+  background-color: #f8f8f8;
+  align-self: flex-start;
+}
+
+.received {
+  background-color: #b8b8bd42;
+  align-self: flex-end;
+}
+
+.message-time {
+  font-size: 0.8rem;
+  color: gray;
+  display: block;
+  margin-top: 5px;
+  text-align: right;
+}
+
+.position-relative {
+  position: relative;
+}
+
+
+
+/* scroll personalizado  */
+.scroll-hidden {
+  overflow-y: scroll;
+  /* habilita el scroll */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
+}
+
+
+/* section */
+.title-section {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #133349b7;
+  margin: 0px;
+  text-transform: uppercase !important;
+  margin-top: 3%;
+
+}
+
+
+/* sub title */
+.sub_title {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #4f5152cc;
+  margin: 0px;
+  margin-top: 5px;
+  background-color: #e6e9eb5b;
+  border-radius: 5px;
+}
+
+.p-subtitle {
+  margin: 0px 0px;
+}
+
+
+/* cursor de indice */
+#list-container ol li {
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 6px;
@@ -351,18 +287,23 @@ ol {
 
 /* cuando el mouse pasa encima */
 #list-container ol li:hover {
-  background-color: #f0f0f0; /* color de resaltado */
-  color: #333; /* cambia el color del texto si quieres */
+  background-color: #f0f0f0;
+  /* color de resaltado */
+  color: #333;
+  /* cambia el color del texto si quieres */
 }
 
-#list-container > ol > li:hover {
-  background-color: #d1e7dd; /* nivel principal */
+#list-container>ol>li:hover {
+  background-color: #d1e7dd;
+  /* nivel principal */
 }
 
-#list-container ol li ol > li:hover {
-  background-color: #ffeeba; /* subnivel */
+#list-container ol li ol>li:hover {
+  background-color: #ffeeba;
+  /* subnivel */
 }
 
-#list-container ol li ol li ol > li:hover {
-  background-color: #f8d7da; /* sub-subnivel */
+#list-container ol li ol li ol>li:hover {
+  background-color: #f8d7da;
+  /* sub-subnivel */
 }

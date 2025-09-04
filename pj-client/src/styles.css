@@ -1,12 +1,8 @@
 .panel {
-
     height: 100vh;
-    /* overflow-y: hidden; */
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-
-
 }
 
 /* Scroll personalizado para paneles de navegación */
@@ -26,14 +22,10 @@
 
 
 .icon-custom {
-
     color: rgba(49, 49, 49, 0.452);
-    /* Establece el color del texto en blanco */
     cursor: pointer;
-    /* Cambiar el cursor a una manito cuando el ratón está sobre el icono */
     font-weight: bold;
     font-size: 50px;
-
 }
 
 
@@ -42,7 +34,6 @@
 
     font-size: 2.0rem;
     font-weight: 700;
-    /* color: #26547ae0; */
     color: #1a3a55cb;
     margin: 0px;
 
@@ -59,7 +50,6 @@
 
 .hand_cursor {
     cursor: pointer;
-    /*  convierte el cursor en una mano */
 
 }
 
@@ -71,18 +61,12 @@ img {
     margin: 0px;
 }
 
-
-
-
 /* modifica la posicion y alinacion de todos los lementos del encabezado de la pagina */
 .encabezado_pages {
     display: flex;
     justify-content: start;
-    /* Centra los elementos horizontalmente */
     align-items: center;
-    /* Centra los elementos verticalmente */
     text-align: center;
-    /* Centra el texto del <p> */
 
 }
 
@@ -126,7 +110,6 @@ img {
 .bi-pencil {
     cursor: pointer;
     transition: color 0.3s ease;
-    /* Para una transición suave */
 }
 
 .bi-pencil:hover {
@@ -143,7 +126,7 @@ img {
     color: rgb(255, 0, 0);
 }
 
-.bi-box-arrow-in-down{
+.bi-box-arrow-in-down {
     cursor: pointer;
 }
 
@@ -163,66 +146,66 @@ img {
 
 
 /* boton de guardar y cancelar*/
-/*  */
-.guardar-btn{
+.guardar-btn {
     background-color: #B9EACE;
     color: #227243;
     border: 1px solid #92DFB2;
     box-shadow: 1px 1px 3px 0 #D5DDE5;
     font-weight: 600
 }
-.guardar-btn:hover{
-    background-color:  #86d993;
+
+.guardar-btn:hover {
+    background-color: #86d993;
     color: #227243;
     border: 1px solid #92DFB2;
     box-shadow: 1px 1px 3px 0 #D5DDE5;
     font-weight: 600
-
 }
 
-.cancelar-btn{
-   
+.cancelar-btn {
+
     background-color: #E1E7EB;
     color: #6E7A89;
     border: 1px solid #dde2e9;
     box-shadow: 1px 1px 3px 0 #D5DDE5;
     font-weight: 600;
-    
+
 }
-.cancelar-btn:hover{
-   
+
+.cancelar-btn:hover {
+
     background-color: #cdcecf;
     color: #525355;
     border: 1px solid #d6dadf;
     box-shadow: 1px 1px 3px 0 #D5DDE5;
     font-weight: 600;
-    
+
 }
 
 .rechazar-btn {
-    background-color: #F4B5B5; /* rojo claro */
-    color: #8B1E1E; /* rojo oscuro */
-    border: 1px solid #E89A9A; /* rojo medio */
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600;
-}
-
-.rechazar-btn:hover {
-    background-color: #E88A8A; /* rojo más intenso al pasar el mouse */
+    background-color: #F4B5B5;
     color: #8B1E1E;
     border: 1px solid #E89A9A;
     box-shadow: 1px 1px 3px 0 #D5DDE5;
     font-weight: 600;
 }
 
-.registrar-btn{
+.rechazar-btn:hover {
+    background-color: #E88A8A;
+    color: #8B1E1E;
+    border: 1px solid #E89A9A;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    font-weight: 600;
+}
+
+.registrar-btn {
     background-color: #fcf0d3cc;
     color: #C28E0E;
     border: 1px solid #FAE5B3;
     box-shadow: 1px 1px 3px 0
 }
 
-.registrar-btn:hover{
+.registrar-btn:hover {
     background-color: #faeac6;
     color: #C28E0E;
     border: 1px solid #f8e7be;
@@ -234,7 +217,7 @@ img {
 /* mensajeria notas */
 /* mensaje panel */
 .message-panel {
-    
+
     position: fixed;
     z-index: 9999;
     bottom: 100px;
@@ -248,81 +231,82 @@ img {
     align-items: center;
     background-color: #D5DDE5;
     border: 6px solid #c1c4c7;
-    box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.45) !important;  
+    box-shadow: -15px 20px 40px rgba(0, 0, 0, 0.45) !important;
     overflow-y: auto;
     flex: 1;
-  
+
     opacity: 0;
     transition: opacity 0.6s ease;
-    pointer-events: none; 
+    pointer-events: none;
     font-size: 0.9rem;
-  }
-  /* Scroll personalizado para paneles de navegación */
-  .message-panel::-webkit-scrollbar {
+}
+
+/* Scroll personalizado para paneles de navegación */
+.message-panel::-webkit-scrollbar {
     width: 7px;
-  }
-  
-  .message-panel::-webkit-scrollbar-thumb {
+}
+
+.message-panel::-webkit-scrollbar-thumb {
     background-color: #b7bbb877;
     border-radius: 10px;
-  }
-  
-  .message-panel::-webkit-scrollbar-track {
+}
+
+.message-panel::-webkit-scrollbar-track {
     background: #e9ecef;
-  }
-  
-  /* 🔽 Clase cuando está visible */
-  .message-panel.visible {
+}
+
+/* 🔽 Clase cuando está visible */
+.message-panel.visible {
     opacity: 1;
     pointer-events: auto;
-  }
-  
-  /* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
-  .message-panel.hidden {
+}
+
+/* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
+.message-panel.hidden {
     opacity: 0;
     pointer-events: none;
-  }
-  
-  .card-note {
+}
+
+.card-note {
     background-color: #f8f9fa;
     border: 1px solid #e9ecef;
     border-radius: 0.25rem;
     padding: 1rem;
     margin-top: 1.2rem;
-  
-  }
-  
-  .card-header-message{
+
+}
+
+.card-header-message {
     background-color: #3ad67842;
     padding: 0.5rem;
-  }
-  
-  .popup-box {
+}
+
+.popup-box {
     position: absolute;
-    top: 100%; /* Colocar justo debajo del botón "responder" */
-    right: 0; /* Alinear el popup a la derecha */
+    top: 100%;
+    right: 0;
     z-index: 1000;
     width: 300px;
     background-color: white;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     padding: 10px;
-  }
-  
-  .bi-pencil-fill:hover{
+}
+
+.bi-pencil-fill:hover {
     cursor: pointer;
     color: #434343;
-  }
-  
-  .box-respuesta{
+}
+
+.box-respuesta {
     background-color: #b8b8bd42;
     align-self: flex-end;
     padding: 10px;
     border-radius: 10px;
     margin-top: 10px;
-  }
+}
 
-  /* boton notas */
+/* boton notas */
 .doc-chat-popper {
     position: fixed;
     z-index: 9999;
@@ -339,11 +323,11 @@ img {
     cursor: pointer;
     background-color: #176091;
     color: #fff;
-  }
+}
 
 
 
-  /* metadata sub encabezado modulos */
+/* metadata sub encabezado modulos */
 .document-meta-wrapper {
     padding: 12px 20px 0;
     border-radius: 16px;
@@ -355,7 +339,7 @@ img {
     font-size: .7rem;
     font-weight: 600;
     color: #6E7A89;
-   
+
 }
 
 .label_live {
@@ -381,6 +365,7 @@ img {
     font-size: 0.7rem;
     font-weight: 500;
 }
+
 .meta_label_expedientes {
     border-radius: 3px;
     border: 4px solid #6e7a8936;
@@ -424,11 +409,63 @@ img {
     padding: .3rem .7rem;
     font-size: 0.8rem;
     font-weight: 500;
-    /* background-color:  #c13939; */
     background-color: #6E7A89;
     border: 1px solid #6E7A89;
-    /* color: #fffcfc; */
     color: #eee8e8;
     cursor: pointer;
 
+}
+
+/* observaciones tags */
+.observation-tag {
+    background-color: #f6f6ee;
+    color: #8d8d88;
+    font-size: 0.9rem;
+    border: 2px solid #ecece5c9;
+}
+
+.observation-input {
+    font-size: 0.9rem;
+    color: #8d8d88;
+}
+
+
+.observation-wrapper {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+}
+
+.observation-icons {
+    position: absolute;
+    top: 0.25rem;
+    /* ajusta según lo necesites */
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #9b9b1f85;
+
+}
+
+.obs-icon {
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-shadow: 0 0 1px currentColor;
+    transition: transform 0.2s ease;
+}
+
+.obs-icon:hover {
+    color: #8b8b1b;
+    transform: scale(1.1);
+}
+
+
+/* subtitulo expediente datos de encabezado */
+.sub_titulo_expediente {
+    background-color: #f1f1f3;
+    color: #8d8d88;
+    border: 2px solid #ecece5c9;
+    border-bottom: 0px;
 }

@@ -12,14 +12,14 @@ export class AuthGuard implements CanActivate {
     
     try {
 
-      // Llamada a tu servicio de autenticación personalizado que verifica en el servidor
+      // Llamada al servicio de autenticación 
       const authResponse = this.loginService.isAuthenticatedUser();      
       
       if (authResponse) {
       console.log() 
-      return true; // Permitir acceso a la ruta protegida
+      return true; // Permite el acceso a la ruta protegida
       } else {
-        this.router.navigate(['/login']); // Redirigir al inicio de sesión en caso de fallo de autenticación
+        this.router.navigate(['/login']); // Redirige al inicio de sesión en caso de fallo de autenticación
         return false; // Denegar acceso
       }
      

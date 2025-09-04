@@ -144,7 +144,6 @@ export class DataProgressViewComponent {
   }
 
   ObtenerPreparacionByIdExpediente() {
-
     this.preparacionService.ObtenerPreparacionDataViewXidExpediente(this.id_expediente).subscribe({
       next: (data: PreparacionResponseDataView) => {
         this.data_preparacion = data;
@@ -182,7 +181,6 @@ export class DataProgressViewComponent {
         try {
           // Si data es un string JSON, lo parsea. Si ya es array, lo usa directamente.
           const mensajes = typeof data === 'string' ? JSON.parse(data) : data;
-
           this.MensajesExpedienteTemp = Array.isArray(mensajes) ? mensajes : [];
           console.log('Mensajes cargados:', this.MensajesExpedienteTemp);
         } catch (e) {
@@ -208,7 +206,6 @@ export class DataProgressViewComponent {
       next: (data: Blob) => {
         console.log(data);
         let temp = new Blob([data], { type: 'application/pdf' });
-
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(temp));
       },
       error: (error) => {
@@ -245,9 +242,6 @@ export class DataProgressViewComponent {
         this.ListObservacionesIndizacion = data.observaciones?.split('|') ?? [];
         this.ListDamandantes = JSON.parse(data.demandante ? data.demandante : '[]');
         this.ListDamandados = JSON.parse(data.demandado ? data.demandado : '[]');
-        // (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
-        // (document.getElementById('fecha_final') as HTMLInputElement).value = FechaConFormato(data.fecha_final!);
-
         this.data_indizacion.fecha_inicial = FechaConFormato(data.fecha_inicial!);;
         this.data_indizacion.fecha_final = FechaConFormato(data.fecha_final!);
         console.log(this.data_indizacion);

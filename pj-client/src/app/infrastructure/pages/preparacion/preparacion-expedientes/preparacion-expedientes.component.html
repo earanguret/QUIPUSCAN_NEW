@@ -69,7 +69,7 @@
                                                 recepcionar</button>
                                             <button *ngIf="expediente.estado_preparado=='A'"
                                                 class="btn btn-light btn-sm"
-                                                (click)="openModalPreparation(expediente.id_expediente)">
+                                                (click)="openNewModalPreparation(expediente.id_expediente)">
                                                 <img src="/icon/doc_aceptado.png" alt="logo" title="Recepcion"
                                                     width="16px" height="16px">
                                                 preparar
@@ -141,7 +141,7 @@
                 <h5 class="modal-title" id="exampleModalLongTitle">PREPARACIÓN DE EXPEDIENTE</h5>
             </div>
 
-            <div class="sub_titulo_expediente  ">
+            <div  class="sub_titulo_expediente  ">
                 <section class="contenedor">
                     <h5 style="font-size: 1.1rem;">{{data_expediente_header.nro_expediente}}</h5>
                     <p style="font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.3rem;"> <span
@@ -156,15 +156,18 @@
                 </section>
             </div>
             <div class="contenedor">
-             
-                    <h4 class="title-section">Data preparación</h4>
-                    <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
-                    <div class="sub_title">
-                        <p class="p-subtitle "> <strong>Responsable:</strong> {{
-                            data_preparacion.responsable}}</p>
-                        <p class="p-subtitle"><strong>Creación:</strong> {{
-                            data_preparacion.create_at | date:'dd/MM/yyyy'}}</p>
-                    </div>
+
+             <div *ngIf="this.data_expediente_preparacion.id_expediente!=0">
+                <h4 class="title-section">Data preparación</h4>
+                <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
+                <div class="sub_title">
+                    <p class="p-subtitle "> <strong>Responsable:</strong> {{
+                        data_preparacion.responsable}}</p>
+                    <p class="p-subtitle"><strong>Creación:</strong> {{
+                        data_preparacion.create_at | date:'dd/MM/yyyy'}}</p>
+                </div>
+             </div>
+                    
                 <form>
                     <!-- DATOS DE INVENTARIO -->
                     <fieldset>

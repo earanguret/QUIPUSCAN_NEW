@@ -11,21 +11,19 @@
                 <div class="encabezado_pages ">
                     <i class="bi bi-disc icon-custom"></i>
                     <p class="titulo_menu px-4">DISCOS</p>
-                    <!-- <img src="/icon/cd.jpg" class="card-img-top" alt="..." style="width: 210px; height: 200px;"> -->
                 </div>
                 <div *ngFor="let disco of list_data_discos, let i = index" class="mb-4">
                     <div class="card rounded shadow border-2">
                         <div class="card-header  d-flex justify-content-between align-items-center">
-                            <h4>Volumen {{ disco.volumen }}</h4> <!-- Mostrar el volumen dinámicamente -->
-                            <h4>nombre: {{ disco.nombre }}</h4> <!-- Mostrar el volumen dinámicamente -->
-                            <h6>25 GB</h6> <!-- Mostrar el espacio dinámicamente -->
+                            <h4>Volumen {{ disco.volumen }}</h4> 
+                            <h4>nombre: {{ disco.nombre }}</h4> 
+                            <h6>25 GB</h6> 
                         </div>
 
                         <div class="card-body px-3 bg-white rounded">
                             <div class="d-flex justify-content-between w-100">
                                 <div class="card" style="width: 15rem;">
                                     <img src="icon/cd.jpg" class="card-img-top" alt="...">
-                                    <!-- Mostrar imagen dinámica -->
                                     <div class="card-body">
                                         <label *ngIf="disco.estado_cerrado==null"
                                             for="">{{porcentajeExpedientes.toFixed(2)}}%</label>
@@ -123,13 +121,11 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-success" (click)="openModalCrearDisco()"
-                    [disabled]="list_data_discos.length==0?false:list_data_discos[list_data_discos.length-1].estado_cerrado==null?true:false">Agregar
-                    Disco</button>
+                    [disabled]="list_data_discos.length==0?false:list_data_discos[list_data_discos.length-1].estado_cerrado==null?true:false">Agregar Disco</button>
             </div>
         </div>
     </div>
 </div>
-
 
 
 <div class="modal fade" id="ModalCrearDisco" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"

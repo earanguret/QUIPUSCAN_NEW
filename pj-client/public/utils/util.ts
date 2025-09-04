@@ -1,5 +1,5 @@
 export const Util = Object({
-    "v1": "http://localhost:5000/api",//api rest
+    "v1": "http://172.17.70.118:5000/api",
     "v2": "",//token captcha
     "v3": "",//codigo cliente
     "v4": "",//codigo rol
