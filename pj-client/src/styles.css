@@ -28,29 +28,23 @@
     font-size: 50px;
 }
 
-
-
 .titulo_menu {
 
     font-size: 2.0rem;
     font-weight: 700;
     color: #1a3a55cb;
     margin: 0px;
-
 }
 
 .subtitulo_menu {
-
     font-size: 1.2rem;
     font-weight: 500;
     color: #284761e7;
     margin: 0px;
-
 }
 
 .hand_cursor {
     cursor: pointer;
-
 }
 
 .font-weight-bold {
@@ -67,7 +61,6 @@ img {
     justify-content: start;
     align-items: center;
     text-align: center;
-
 }
 
 /* boton volver */
@@ -83,14 +76,12 @@ img {
     font-size: 3.5rem;
     color: #929FB1;
     margin-right: 10px;
-
 }
 
 /* texto de correo */
 .text-correo {
     text-transform: lowercase !important;
     color: #3f91c7;
-
 }
 
 /* texto de encabezado de formulario */
@@ -99,7 +90,6 @@ img {
     color: rgba(17, 55, 90, 0.662);
     font-weight: 700;
     letter-spacing: 0.4px;
-
 }
 
 .form-control {
@@ -119,7 +109,6 @@ img {
 .bi-trash {
     cursor: pointer;
     transition: color 0.3s ease;
-    /* Para una transición suave */
 }
 
 .bi-trash:hover {
@@ -255,13 +244,11 @@ img {
     background: #e9ecef;
 }
 
-/* 🔽 Clase cuando está visible */
 .message-panel.visible {
     opacity: 1;
     pointer-events: auto;
 }
 
-/* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
 .message-panel.hidden {
     opacity: 0;
     pointer-events: none;
@@ -325,8 +312,6 @@ img {
     color: #fff;
 }
 
-
-
 /* metadata sub encabezado modulos */
 .document-meta-wrapper {
     padding: 12px 20px 0;
@@ -346,7 +331,6 @@ img {
     background-color: #39C171;
     color: #F8F9FA;
     display: inline-block;
-    /* margin: 5px 5px 5px 0; */
     font-size: 0.7rem;
     font-weight: 500;
     border-radius: 3px;
@@ -439,7 +423,6 @@ img {
 .observation-icons {
     position: absolute;
     top: 0.25rem;
-    /* ajusta según lo necesites */
     right: 0.5rem;
     display: flex;
     align-items: center;

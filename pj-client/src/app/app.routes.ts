@@ -19,6 +19,9 @@ import { FedatarioExpedientesComponent } from './infrastructure/pages/fedatario/
 import { BovedaListSerieDocComponent } from './infrastructure/pages/boveda/boveda-list-serie-doc/boveda-list-serie-doc.component';
 import { BovedaExpedientesComponent } from './infrastructure/pages/boveda/boveda-expedientes/boveda-expedientes.component';
 import { ReporteComponent } from './infrastructure/pages/reporte/reporte.component';
+import { ReportesDemoComponent } from './infrastructure/pages/reportes-demo/reportes-demo.component';
+import { UsuariosReporteComponent } from './infrastructure/components/reportes/usuarios-reporte/usuarios-reporte.component';
+import { DashboardComponent } from './infrastructure/components/reportes/dashboard/dashboard.component';
 
 import { AuthGuard } from './guard/auth.guard';
 
@@ -58,7 +61,17 @@ export const routes: Routes = [
     {   path: 'principal/boveda/list-serie-documental', component: BovedaListSerieDocComponent  ,canActivate: [AuthGuard]},
     {   path: 'principal/boveda/serie-documental/expedientes/:id', component: BovedaExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/reportes', component: ReporteComponent  ,canActivate: [AuthGuard]},
+
+    // {   path: 'principal/reportes', component: ReporteComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/reportes', 
+        component: ReportesDemoComponent,
+        children: [
+            { path: 'dashboard', component: DashboardComponent },
+            { path: 'usuarios', component: UsuariosReporteComponent },
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' } 
+          ]
+    },
+
 
 
 ];

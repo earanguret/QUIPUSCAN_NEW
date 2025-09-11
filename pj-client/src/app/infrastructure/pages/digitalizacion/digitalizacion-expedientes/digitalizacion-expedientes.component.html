@@ -7,7 +7,6 @@
                 <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
             </div>
             <div class="col-lg-9">
-
                 <div class="encabezado_pages ">
                     <i class="bi bi-card-list icon-custom"></i>
                     <p class="titulo_menu px-4">DIGITALIZACIÓN DE EXPEDIENTES</p>
@@ -34,7 +33,6 @@
                     <div class="card-header py-3 d-flex justify-content-between align-items-center ">
                         <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente"
                             placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
-
                     </div>
                     <div class="card-body px-5 bg-white rounded">
                         <div class="mb-2 d-flex align-items-center">
@@ -108,10 +106,7 @@
                                                     width="24px" height="24px" class="mx-3"
                                                     (click)="openModalDigitalizacion(expediente.id_expediente,true)">
                                             </div>
-
-
                                         </td>
-
                                     </tr>
                                 </tbody>
                             </table>
@@ -125,7 +120,6 @@
 
             </div>
         </div>
-
     </div>
 </div>
 
@@ -240,7 +234,6 @@
                                                             name="observacion" value="{{observacion}}">
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </section>
                                         <!--  -->
@@ -310,7 +303,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'">
+                                                <div
+                                                    *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'">
                                                     <input type="text" class="form-control mt-3 observation-input"
                                                         name="observacion" id="observacion"
                                                         [(ngModel)]="observacion_temp">
@@ -329,8 +323,9 @@
                                 style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
                                 <button type="button" class="cancelar-btn mx-4"
                                     (click)="closeModalDigitalizacion()">Cancelar</button>
-                                <button *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'" type="button"
-                                    class="guardar-btn"
+                                <button
+                                    *ngIf="this.data_expediente_temp.estado_indizado == null || this.data_expediente_temp.estado_indizado == 'R'"
+                                    type="button" class="guardar-btn"
                                     (click)="EventAction()">{{modificarDigitalizacion?'Modificar':'Guardar'}}</button>
                             </div>
 
@@ -399,7 +394,6 @@
         <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
         <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
     </div>
-
 </div>
 
 <div class="modal fade" id="ModalPreparationView" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
@@ -425,7 +419,8 @@
                 <h5 class="modal-title" id="exampleModalLongTitle">DIGITALIZACIÓN DE EXPEDIENTE</h5>
             </div>
             <div class="modal-body m-0 p-0">
-                <app-data-progress-view *ngIf="mostrarDigitalizacion" [id_expediente]="id_expediente_temp" [modulo]="'DIGITALIZACION'"></app-data-progress-view>
+                <app-data-progress-view *ngIf="mostrarDigitalizacion" [id_expediente]="id_expediente_temp"
+                    [modulo]="'DIGITALIZACION'"></app-data-progress-view>
             </div>
 
         </div>

@@ -18,7 +18,6 @@ export class ListUsuarioComponent implements OnInit {
 
   listaUsuarios:UsuarioResponse[]=[];
   listaUsuariosTemp:UsuarioResponse[]=[];
-
   p:number=1;
 
   constructor(private router:Router, private usuarioService:UsuarioService, private credencialesService:CredencialesService) { }
@@ -63,10 +62,8 @@ export class ListUsuarioComponent implements OnInit {
       const dni = (usuario.dni ?? '').toLowerCase();
       const perfil = (usuario.perfil ?? '').toLowerCase();
       const estadoTexto = usuario.estado ? 'activo' : 'inactivo';
-  
       // concatenamos nombre completo
       const nombreCompleto = `${nombre} ${apPaterno} ${apMaterno}`.trim();
-  
       return (
         username.includes(textoBusqueda) ||
         nombre.includes(textoBusqueda) ||
@@ -79,11 +76,4 @@ export class ListUsuarioComponent implements OnInit {
       );
     });
   }
-  
-
-
-
-
-  
-  
 }

@@ -1,0 +1,206 @@
+<div class="panel-report">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Dashboard</h1>
+        <a class=" btn btn-sm btn-primary shadow opacity-75"><i class="bi bi-download"></i> Generate Report</a>
+    </div>
+    
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-primary text-uppercase mb-1">
+                                Serie Documental</div>
+                            <div class="h5 mb-0 label-text-card-report">N° 5</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-archive-fill icon-custom-report"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-success text-uppercase mb-1">
+                                total expedientes</div>
+                            <div class="h5 mb-0 label-text-card-report">N° 3256</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-folder-fill icon-custom-report"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-info text-uppercase mb-1">
+                                total digitalizados</div>
+                            <div class="h5 mb-0 label-text-card-report">N° 1586</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-file-earmark-break-fill icon-custom-report"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-warning text-uppercase mb-1">
+                                total fojas</div>
+                            <div class="h5 mb-0 label-text-card-report">N° 189632</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-files icon-custom-report"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-8 col-md-6 mb-4">
+            <div class="card-report shadow">
+                <h3>TABLA DE PRODUCCION MENSUAL AÑO 2025</h3>
+
+                <apx-chart [series]="chartOptions.series!" [chart]="chartOptions.chart!"
+                    [plotOptions]="chartOptions.plotOptions!" [dataLabels]="chartOptions.dataLabels!"
+                    [stroke]="chartOptions.stroke!" [xaxis]="chartOptions.xaxis!" [yaxis]="chartOptions.yaxis!"
+                    [fill]="chartOptions.fill!" [tooltip]="chartOptions.tooltip!">
+                </apx-chart>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card-report shadow">
+                <h3>ESTADO DE PRODUCCION TOTAL</h3>
+                <apx-chart
+                [series]="chartOptionsRadial.series"
+                [chart]="chartOptionsRadial.chart"
+                [labels]="chartOptionsRadial.labels"
+                [plotOptions]="chartOptionsRadial.plotOptions">
+              </apx-chart>
+            </div>
+
+        </div>
+        <div class="col-xl-1 col-md-4 mb-4 d-flex flex-column h-100 gap-2">
+            <div class="card border-left-primary shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-primary text-uppercase mb-1">
+                                Volumen</div>
+                            <div class="h5 mb-0 label-text-card-report">50 AxH</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-left-success shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-success text-uppercase mb-1">
+                                Peso (Kg)</div>
+                            <div class="h5 mb-0 label-text-card-report">120 Kg</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-left-info shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-info text-uppercase mb-1">
+                                Peso (Gb)</div>
+                            <div class="h5 mb-0 label-text-card-report">50 Gb</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-left-warning shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-warning text-uppercase mb-1">
+                                Discos</div>
+                            <div class="h5 mb-0 label-text-card-report">45</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="card-report shadow">
+        <h3>PRODUCCIÓN DEL DIA</h3>
+        <div class="d-flex justify-content-between align-items-center mx-4">
+            <div class="d-flex ">
+                <div class="widget-content-right ms-0 me-3">
+                    <div class="widget-numbers-success">1896</div>
+                </div>
+                <div class="widget-content-left">
+                    <div class="widget-heading">Preparación</div>
+                    <div class="widget-subheading">expedientes</div>
+                </div>
+            </div>
+
+            <div class="d-flex ">
+                <div class="widget-content-right ms-0 me-3">
+                    <div class="widget-numbers-info">150</div>
+                </div>
+                <div class="widget-content-left">
+                    <div class="widget-heading">Digitalización</div>
+                    <div class="widget-subheading">expedientes</div>
+                </div>
+            </div>
+
+            <div class="d-flex ">
+                <div class="widget-content-right ms-0 me-3">
+                    <div class="widget-numbers-primary">120</div>
+                </div>
+                <div class="widget-content-left">
+                    <div class="widget-heading">Indización</div>
+                    <div class="widget-subheading">expedientes</div>
+                </div>
+            </div>
+
+            <div class="d-flex ">
+                <div class="widget-content-right ms-0 me-3">
+                    <div class="widget-numbers-warning">80</div>
+                </div>
+                <div class="widget-content-left">
+                    <div class="widget-heading">Control Calidad</div>
+                    <div class="widget-subheading">expedientes</div>
+                </div>
+            </div>
+
+            <div class="d-flex ">
+                <div class="widget-content-right ms-0 me-3">
+                    <div class="widget-numbers-warning">70</div>
+                </div>
+                <div class="widget-content-left">
+                    <div class="widget-heading">Fedatario</div>
+                    <div class="widget-subheading">expedientes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

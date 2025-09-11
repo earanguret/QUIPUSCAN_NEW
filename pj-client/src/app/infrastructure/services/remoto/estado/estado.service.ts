@@ -4,7 +4,6 @@ import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
 import { EstadoAsociarExpedientesADiscoRequest, EstadoRequest, mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 import { AsociarExpedientesADiscoResponse, CrearEstadoResponse, EliminarEstadoResponse, EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
-import { Mensaje } from '../../../../domain/models/Mensaje.model';
 
 @Injectable({
   providedIn: 'root'

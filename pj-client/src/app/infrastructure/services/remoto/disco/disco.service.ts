@@ -14,9 +14,6 @@ export class DiscoService {
 
   api_uri_disco=`${environment.urlApi}/disco`;
 
-  //this.router.get('/api/disco/lista/:id_inventario', discoController.listarDiscosByInventario.bind(discoController));
-
-
   ListarDiscosByInventario(id_inventario:number):Observable<DiscoListaResponse[]>{
     return this.http.get<DiscoListaResponse[]>(`${this.api_uri_disco}/lista/${id_inventario}`)
   }

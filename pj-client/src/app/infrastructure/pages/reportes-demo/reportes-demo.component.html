@@ -1,0 +1,63 @@
+<div class="panel">
+    <app-navegator></app-navegator>
+
+    <div class="layout">
+        <aside class="sidebar" [class.collapsed]="isCollapsed">
+            <button class="toggle-btn" (click)="toggleSidebar()">
+                {{ isCollapsed ? ' ➤' : 'Reportes' }}
+            </button>
+
+            <div class="menu">
+                <a (click)="cambiarmenu('dashboard')"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a (click)="cambiarmenu('usuarios')"><i class="bi bi-person-badge-fill"></i> Usuarios</a>
+                <a (click)="cambiarmenu('series_documentales')" class="submenu-title"> <i class="bi bi-archive-fill"></i> Serie documental</a>
+                
+
+                <a (click)="toggleSubmenu('produccion')" class="submenu-title">
+                    <i class="bi bi-bar-chart-fill"></i> Producción
+                </a>
+                <div class="submenu-options" [class.open]="submenuOpen['produccion']">
+                    <a (click)="cambiarmenu('produccion_serie_documental')">Serie Documental</a>
+                    <a (click)="cambiarmenu('produccion_usuario')">Usuarios</a>
+                    <a (click)="cambiarmenu('produccion_expedientes')">Expedientes</a>
+                </div>
+
+                <a (click)="toggleSubmenu('auditoria')" class="submenu-title">
+                    <i class="bi bi-calendar-week-fill"></i> Auditoria
+                </a>
+                <div class="submenu-options" [class.open]="submenuOpen['auditoria']">
+                    <a (click)="cambiarmenu('auditoria_accesos')">accesos</a>
+                    <a (click)="cambiarmenu('auditoria_historico_eventos')">historico eventos</a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <a routerLink="/principal">Vover principal</a>
+            <div *ngIf="menu=='dashboard'" >
+                <app-dashboard></app-dashboard>
+            </div>
+            <div *ngIf="menu=='usuarios'">
+                <app-usuarios-reporte></app-usuarios-reporte>
+            </div>
+            <div *ngIf="menu=='series_documentales'">
+                <app-serie-documental-reporte></app-serie-documental-reporte>
+            </div>
+            <div *ngIf="menu=='produccion_serie_documental'">
+                <app-produccion-serie-documental-reporte></app-produccion-serie-documental-reporte>
+            </div>
+            <div *ngIf="menu=='produccion_usuario'">
+                <app-produccion-usuario-reporte></app-produccion-usuario-reporte>
+            </div>
+            <div *ngIf="menu=='produccion_expedientes'">
+                <app-produccion-expedientes></app-produccion-expedientes>
+            </div>
+            <div *ngIf="menu=='auditoria_accesos'">
+                <app-auditoria-accesos></app-auditoria-accesos>
+            </div>
+            <div *ngIf="menu=='auditoria_historico_eventos'">
+                <app-auditoria-historico-eventos></app-auditoria-historico-eventos>
+            </div>
+        </main>
+    </div>
+</div>

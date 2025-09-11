@@ -1,0 +1,119 @@
+/* Layout principal */
+.layout {
+    display: flex;
+    height: 95vh;
+    overflow: hidden;
+}
+  
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background: #2c3e50;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+  
+.sidebar.collapsed {
+    width: 60px;
+}
+  
+/* Links del menú */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.5rem;
+}
+  
+.menu a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    white-space: nowrap;
+    transition: opacity 0.3s ease, background 0.2s ease;
+    padding: 0.5rem 1rem;
+    display: block;
+    cursor: pointer;
+}
+  
+.menu a:hover {
+    background: #3b4a5a;
+}
+  
+.sidebar.collapsed .menu a {
+    opacity: 0;
+    pointer-events: none;
+}
+  
+/* Botón para colapsar */
+.toggle-btn {
+    background: #1abc9c;
+    border: none;
+    color: white;
+    padding: 0.5rem;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    order: -1;
+}
+  
+/* Contenido */
+.content {
+    flex: 1;
+    padding: 2rem;
+    transition: margin-left 0.3s ease;
+    background: #ecf0f1;
+    overflow-y: auto;
+}
+  
+/* Submenús */
+.submenu {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Configuración y otros con submenu: se ven como un link normal */
+.submenu-title {
+    font-size: 16px;
+    white-space: nowrap;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    display: block;
+    transition: opacity 0.3s ease, background 0.2s ease;
+}
+  
+.submenu-title:hover {
+    background: #3b4a5a;
+}
+  
+/* Submenú cerrado */
+.submenu-options {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #34495e;
+    display: flex;
+    flex-direction: column;
+}
+  
+/* Submenú abierto */
+.submenu-options.open {
+    max-height: 500px; /* suficiente para contener ítems */
+}
+  
+/* Ítems internos */
+.submenu-options a {
+    padding: 0.3rem 0rem 0.2rem 3rem;
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+  
+.submenu-options a:hover {
+    background: #3b4a5a;
+}

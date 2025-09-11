@@ -1,0 +1,67 @@
+<div class="panel-report">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Reportes / Produccion / Serie Documental</h1>
+        <a class=" btn btn-sm btn-primary shadow opacity-75"><i class="bi bi-download"></i> Generate Report</a>
+    </div>
+
+    <div class="card-report shadow ">
+        <div class="row">
+            <div class="col-xl-7 col-md-6  col-separator">
+                <div class="">
+                    <div class="row p-4">
+                        <div class="col-lg-10 d-flex flex-column px-4 ">
+                            <p class="text-serie-doc m-0"><i class="bi bi-box-seam icon-box"></i>EXPEDIENTE JURIDICCIONAL FAMILIA TUTELAR 2016 </p>
+                            <div class=" m-1 mb-2 mx-4">
+                                <p class="text-content m-0">CODIGO: EJFT2016CUSCO</p>
+                                <p class="text-content m-0">RESPONSABLE : ROMINA MARICA CANCAPA</p>
+                                <p class="text-content m-0">SEDE: CUSCO</p>
+    
+                            </div>
+    
+                            <samp>
+                                <div class=" bg-especialidad m-1">
+                                    <span> FAMILIA TUTELAR  </span>
+                                </div>
+                                <div class="tag-title m-1">
+                                    <span> 2016 </span>
+                                </div>
+                                <div class="tag-title m-1">
+                                    <span> EXPEDIENTE JURIDICCIONAL </span>
+                                </div>
+                            </samp>
+                        </div>
+                        <div class="col-lg-2 ">
+                            <div class="text-center d-flex flex-column justify-content-between align-items-end h-100">
+                                <div class="text-center px-4 d-flex flex-column align-items-end">
+                                    <div class="d-flex flex-column">
+                                        <span class="number-folio ">402</span>
+                                        <samp class="text-folio mx-1">EXP</samp>
+                                    </div>
+                                </div>
+                                <div class="text-center px-4 d-flex flex-column align-items-end">
+                                    <div class="d-flex flex-column">
+                                        <span class="number-folio ">5</span>
+                                        <samp class="text-folio mx-1">DIS</samp>
+                                    </div>
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                </div>
+                
+
+            </div>
+            <div class="col-xl-5 col-md-6 mb-4">
+                <apx-chart [series]="chartOptionsBar.series!" [chart]="chartOptionsBar.chart!"
+                    [labels]="chartOptionsBar.labels!" [theme]="chartOptionsBar.theme!"
+                    [plotOptions]="chartOptionsBar.plotOptions!" [grid]="chartOptionsBar.grid!"
+                    [dataLabels]="chartOptionsBar.dataLabels!" [legend]="chartOptionsBar.legend!"
+                    [xaxis]="chartOptionsBar.xaxis!">
+                </apx-chart>
+            </div>
+
+        </div>
+    </div>
+
+</div>

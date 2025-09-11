@@ -56,7 +56,7 @@ export class ControlExpedientesComponent implements OnInit {
   MensajesExpedienteTemp: Mensaje[] = [];
   mostrar_mensajes_expediente: boolean = false;
   checkAprobado: boolean = false;
- 
+
 
   nro_expediente_temp: string = '';
   id_expediente_temp: number = 0;
@@ -76,7 +76,7 @@ export class ControlExpedientesComponent implements OnInit {
   nro_rechazados: number = 0;
   list_expedinete_rechazados: ExpedienteResponse[] = [];
 
-  data_expediente_temp: ExpedienteResponse={
+  data_expediente_temp: ExpedienteResponse = {
     id_expediente: 0,
     nro_expediente: '',
     id_inventario: 0,
@@ -84,12 +84,12 @@ export class ControlExpedientesComponent implements OnInit {
     cod_paquete: '',
     estado_recepcionado: '',
     estado_preparado: '',
-    estado_digitalizado: '', 
-    estado_indizado:  '',
-    estado_controlado:   '',
-    estado_fedatado:   '',
-    estado_finalizado:   '',
-  } 
+    estado_digitalizado: '',
+    estado_indizado: '',
+    estado_controlado: '',
+    estado_fedatado: '',
+    estado_finalizado: '',
+  }
 
   data_preparacion_header: ExpedienteResponseDataView = {
     id_expediente: 0,
@@ -249,11 +249,9 @@ export class ControlExpedientesComponent implements OnInit {
   openModalControlView(id_expediente: number) {
     this.mostrarControl = false; // fuerza destrucción del componente si ya estaba
     this.id_expediente_temp = id_expediente;
-
-    // Espera un tick del ciclo de Angular para que *ngIf lo vuelva a renderizar
     setTimeout(() => {
       this.mostrarControl = true;
-     this.myModalControlView.show();
+      this.myModalControlView.show();
     });
   }
 
@@ -320,31 +318,31 @@ export class ControlExpedientesComponent implements OnInit {
 
   ObternerExpedientesRechazadosControl() {
     this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
-    .pipe(
-      map((data: ExpedienteResponse[]) =>
-        data.filter(exp => exp.estado_controlado === 'R')
+      .pipe(
+        map((data: ExpedienteResponse[]) =>
+          data.filter(exp => exp.estado_controlado === 'R')
+        )
       )
-    )
-    .subscribe({
-      next: (dataFiltrada: ExpedienteResponse[]) => {
-        this.list_expedinete_rechazados = dataFiltrada;
-        this.nro_rechazados = dataFiltrada.length;
-        console.log(this.ListExpedientes);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        console.log('listado de expedientes filtrado completado');
-      }
-    });
+      .subscribe({
+        next: (dataFiltrada: ExpedienteResponse[]) => {
+          this.list_expedinete_rechazados = dataFiltrada;
+          this.nro_rechazados = dataFiltrada.length;
+          console.log(this.ListExpedientes);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          console.log('listado de expedientes filtrado completado');
+        }
+      });
   }
 
   openModalDetalleIndice(items: any[], index: number) {
     console.log('datos detalle indice', items[index]);
-  
+
     this.myModalDetalleIndice.show();
-  
+
     // Setear valores
     (<HTMLInputElement>document.getElementById('indizacion_descripcion_2')).value = items[index].descripcion;
     (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value = items[index].indice;
@@ -356,7 +354,7 @@ export class ControlExpedientesComponent implements OnInit {
     (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked = items[index].check_copia_certificada;
     (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked = items[index].check_copia_copia_certificada;
   }
-  
+
   closeModalDetalleIndice() {
     this.myModalDetalleIndice.hide();
   }
@@ -382,7 +380,6 @@ export class ControlExpedientesComponent implements OnInit {
         try {
           // Si data es un string JSON, lo parsea. Si ya es array, lo usa directamente.
           const mensajes = typeof data === 'string' ? JSON.parse(data) : data;
-
           this.MensajesExpedienteTemp = Array.isArray(mensajes) ? mensajes : [];
           console.log('Mensajes cargados:', this.MensajesExpedienteTemp);
         } catch (e) {
@@ -392,14 +389,14 @@ export class ControlExpedientesComponent implements OnInit {
       },
       error: (error) => {
         console.error(error);
-        this.MensajesExpedienteTemp = []; 
+        this.MensajesExpedienteTemp = [];
       },
       complete: () => {
         console.log('listado de mensajes completado');
       }
     });
   }
-  
+
 
   ObtenerExpedienteDataViewXid(id_expediente: number) {
     this.expedienteService.ObtenerExpedienteDataViewXid(id_expediente).subscribe({
@@ -419,8 +416,6 @@ export class ControlExpedientesComponent implements OnInit {
     this.data_expediente_temp = expediente_temp;
     console.log(this.data_expediente_temp)
   }
-
-
 
   recuperarFile(nro_expediente_temp: string) {
     let fileName = nro_expediente_temp + '.pdf';
@@ -447,7 +442,6 @@ export class ControlExpedientesComponent implements OnInit {
       next: (data: PreparacionResponseDataView) => {
         this.data_preparacion = data;
         this.ListObservacionesPreparacion = data.observaciones?.split('|') ?? [];
-
       },
       error: (error) => {
         console.log(error);
@@ -464,7 +458,6 @@ export class ControlExpedientesComponent implements OnInit {
         this.data_digitalizacion = data;
         this.ListObservacionesDigitalizacion = data.observaciones?.split('|') ?? [];
         console.log(this.data_digitalizacion);
-
       },
       error: (error) => {
         console.log(error);
@@ -479,14 +472,12 @@ export class ControlExpedientesComponent implements OnInit {
     this.indizacionService.ObtenerIndizacionDataViewXidExpediente(id_expediente).subscribe({
       next: (data: IndizacionResponseDataView) => {
         this.data_indizacion = data;
-        this.ListObservacionesIndizacion = data?.observaciones? data.observaciones.split('|') : [];
+        this.ListObservacionesIndizacion = data?.observaciones ? data.observaciones.split('|') : [];
         this.ListDamandantes = JSON.parse(data.demandante ? data.demandante : '[]');
         this.ListDamandados = JSON.parse(data.demandado ? data.demandado : '[]');
         (document.getElementById('fecha_inicio') as HTMLInputElement).value = FechaConFormato(data.fecha_inicial!);
         (document.getElementById('fecha_final') as HTMLInputElement).value = FechaConFormato(data.fecha_final!);
-        console.log(this.data_indizacion);
         this.dataIndice = JSON.parse(data.indice ? data.indice : '[]')
-
       },
       error: (error) => {
         console.log(error);
@@ -563,7 +554,7 @@ export class ControlExpedientesComponent implements OnInit {
     const data_control_request: ControlRequest = {
       id_responsable: this.credencialesService.credenciales.id_usuario,
       id_expediente: this.id_expediente_temp,
-      observaciones: this.ListObservacionesControl.length? this.ListObservacionesControl.join('|'): null,
+      observaciones: this.ListObservacionesControl.length ? this.ListObservacionesControl.join('|') : null,
       val_observaciones: this.data_control.val_observaciones,
       val_datos: this.data_control.val_datos,
       val_nitidez: this.data_control.val_nitidez,
@@ -583,7 +574,7 @@ export class ControlExpedientesComponent implements OnInit {
         console.log('Aprobacion de control completado');
         this.EstadoControlTrabajado()
         this.closeModalControl();
-        this.sweetAlert.MensajeSimpleSuccess('Expediente Controlado',`Expediente ${this.data_preparacion_header.nro_expediente} paso el control de calidad con exito` );
+        this.sweetAlert.MensajeSimpleSuccess('Expediente Controlado', `Expediente ${this.data_preparacion_header.nro_expediente} paso el control de calidad con exito`);
       }
     })
   }
@@ -592,7 +583,7 @@ export class ControlExpedientesComponent implements OnInit {
     const data_control_request: ControlRequest = {
       id_responsable: this.credencialesService.credenciales.id_usuario,
       id_expediente: this.id_expediente_temp,
-      observaciones: this.ListObservacionesControl.length? this.ListObservacionesControl.join('|'): null,
+      observaciones: this.ListObservacionesControl.length ? this.ListObservacionesControl.join('|') : null,
       val_observaciones: this.data_control.val_observaciones,
       val_datos: this.data_control.val_datos,
       val_nitidez: this.data_control.val_nitidez,
@@ -612,7 +603,7 @@ export class ControlExpedientesComponent implements OnInit {
         console.log('modificacion de control completado');
         this.EstadoControlTrabajado()
         this.closeModalControl();
-        this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito` );
+        this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado', `Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito`);
       }
     })
   }
@@ -713,16 +704,16 @@ export class ControlExpedientesComponent implements OnInit {
   rechazarExpediente() {
     const razon = this.rechazoRazon?.toUpperCase();
     const destino = this.moduloSeleccionado;
-  
+
     if (!destino || !razon) {
       // console.warn('Debe seleccionar un módulo y proporcionar una razón');
       alert('Debe seleccionar un módulo y proporcionar una razón');
       return;
     }
-  
+
     const idExpediente = this.data_expediente_temp.id_expediente;
     const usuario = this.credencialesService.credenciales.username;
-  
+
     // Mapa de funciones por módulo
     const rechazarFnMap = {
       DIGITALIZACION: () =>
@@ -730,21 +721,21 @@ export class ControlExpedientesComponent implements OnInit {
       INDIZACION: () =>
         this.estadoService.RechazarControlIndizacion(idExpediente, usuario)
     };
-  
+
     const rechazarFn = rechazarFnMap[destino as keyof typeof rechazarFnMap];
-  
+
     if (!rechazarFn) {
       console.error('Destino no soportado:', destino);
       return;
     }
-  
+
     rechazarFn().subscribe({
       next: (data: ModificarEstadoResponse) => console.log(data.message),
       error: (error) => console.error(error),
       complete: () => {
         console.log(`rechazo a ${destino} exitoso`);
         this.ListarExpedientes();
-  
+
         const nuevoMensaje: Mensaje = {
           area_remitente: 'CONTROL',
           responsable: usuario,
@@ -753,14 +744,14 @@ export class ControlExpedientesComponent implements OnInit {
           mensaje: razon,
           respuestas: []
         };
-  
+
         this.MensajesExpedienteTemp.push(nuevoMensaje);
-  
+
         const dataMessage: mensajeRequest = {
           mensaje: JSON.stringify(this.MensajesExpedienteTemp),
           app_user: usuario
         };
-  
+
         this.estadoService.GuardarMensajeById_expediente(idExpediente, dataMessage).subscribe({
           next: (data: MensajeGuardarResponse) => console.log(data.message),
           error: (error) => console.error(error),
@@ -768,15 +759,15 @@ export class ControlExpedientesComponent implements OnInit {
             console.log('guardar mensaje exitosa');
             this.closeModalControl();
             this.closeModalDesaprobar();
-            this.sweetAlert.MensajeSimpleInfo('EXPEDIENTE RECHAZADO',`El expediente ${this.data_expediente_temp.nro_expediente} ha sido rechazado correctamente` );
+            this.sweetAlert.MensajeSimpleInfo('EXPEDIENTE RECHAZADO', `El expediente ${this.data_expediente_temp.nro_expediente} ha sido rechazado correctamente`);
             this.ListarExpedientes();
           }
         });
       }
     });
   }
-  
-// ---------------------------------------------------------------------------
+
+  // ---------------------------------------------------------------------------
 
   AgregarObservacion() {
     const valor = (document.getElementById('observacion') as HTMLInputElement).value;

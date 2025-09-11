@@ -2,11 +2,9 @@
     background-color: #eeeeeec0;  
 }
 .card{
-    /* box-shadow: 0 0 10px rgba(70, 69, 69, 0.13); */
     box-shadow: -15px 25px 25px rgba(31, 30, 30, 0.438);
     border: none;
     border-radius: none;
-
 }
 
 .section-login::before {
@@ -27,7 +25,6 @@
 .titulo-principal{
     font-size: 1.5rem;
     font-weight: 700;
-    /* color: #26547ae0; */
     color: #1a3a55cb;
     margin: 0px;
 }
@@ -51,7 +48,6 @@
     }
 }
 
-
 .blue-background {
     position: absolute;
     top: 0;
@@ -59,11 +55,6 @@
     width: 50%;
     height: 100%;
     background-color: rgba(13, 119, 248, 0.952);
-    /* background-color: rgba(27, 122, 238, 0.952); */
-    /* background-color: rgba(54, 130, 223, 0.952); */
-    /* background-color: rgb(66, 133, 244); */
-    /* background-color: rgb(58, 116, 209); */
-    /* background-color: #176091 !important; */
     z-index: 0;
     box-shadow: -10px 10px 30px rgba(31, 30, 30, 0.616);
     
@@ -80,7 +71,6 @@
 
   /* boton login */
   .btn-login{
-
     background-color:  #237aeb;
     border-radius: 5px;
     border-color: #237aeb;

@@ -11,8 +11,6 @@ import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto'
 })
 export class ExpedienteService {
 
-  //  this.router.get('/api/expediente/:id',expedienteController.ObtenerExpedienteDetalleXid)
-
   api_uri_expediente=`${environment.urlApi}/expediente`;
   constructor(private http: HttpClient) { }
 

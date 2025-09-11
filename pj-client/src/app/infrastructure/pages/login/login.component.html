@@ -1,57 +1,46 @@
 <section class="h-80 gradient-form section-login">
-    <div class="blue-background d-none d-lg-block"></div>
-    <div class="container py-5 h-100 position-relative">
-  
-      <!-- Fondo azul a la derecha -->
-      
-  
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-xl-10">
-          <div class="card rounded-3 text-black position-relative">
-            <div class="row g-0">
-              <div class="col-lg-6">
-                <div class="card-body p-md-5 mx-md-4">
-                  <div class="text-center">
-                    <img src="img/logos/logo_cspj.png" width="285px" alt="logo">
-                    <h4 class="mt-1 mb-4 mt-4 pb-1 titulo-principal">
-                      SISTEMA DE INFORMACIÓN Y GESTION DE ARCHIVOS
-                    </h4>
-                  </div>
-  
-                  <form>
-                    <div class="form-outline mb-4">
-                      <label class="form-label" for="form2Example11">Username</label>
-                      <input type="text" id="form2Example11" class="form-control" name="username"
-                        [(ngModel)]="credentials.username"/>
-                    </div>
-  
-                    <div class="form-outline mb-4">
-                      <label class="form-label" for="form2Example22">Password</label>
-                      <input type="password" id="form2Example22" class="form-control" name="password"
-                        [(ngModel)]="credentials.password" 
-                        (keyup.enter)="login()"/>
-                    </div>
-  
-                    <div class="text-center pt-1 mb-5 pb-1">
-                      <button class="btn btn-login " type="button" (click)="login()" >Entrar</button>
-                    </div>
-                  </form>
+  <div class="blue-background d-none d-lg-block"></div>
+  <div class="container py-5 h-100 position-relative">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-xl-10">
+        <div class="card rounded-3 text-black position-relative">
+          <div class="row g-0">
+            <div class="col-lg-6">
+              <div class="card-body p-md-5 mx-md-4">
+                <div class="text-center">
+                  <img src="img/logos/logo_cspj.png" width="285px" alt="logo">
+                  <h4 class="mt-1 mb-4 mt-4 pb-1 titulo-principal">
+                    SISTEMA DE INFORMACIÓN Y GESTION DE ARCHIVOS
+                  </h4>
                 </div>
+
+                <form>
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form2Example11">Username</label>
+                    <input type="text" id="form2Example11" class="form-control" name="username"
+                      [(ngModel)]="credentials.username" />
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form2Example22">Password</label>
+                    <input type="password" id="form2Example22" class="form-control" name="password"
+                      [(ngModel)]="credentials.password" (keyup.enter)="login()" />
+                  </div>
+
+                  <div class="text-center pt-1 mb-5 pb-1">
+                    <button class="btn btn-login " type="button" (click)="login()">Entrar</button>
+                  </div>
+                </form>
               </div>
-  
-              <div class="col-lg-6 d-flex align-items-center gradient-custom-2" id="background-container">
-                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                  <!-- <h4 class="mb-4">Somos más que una entidad pública</h4>
-                  <p class="small mb-0">Dirigimos y orientamos, con eficiencia y responsabilidad,
-                    el avance de la infraestructura y los servicios de transporte y comunicaciones. También guiamos,
-                    de manera eficiente y responsable, el mantenimiento de la infraestructura existente,
-                    aportando al progreso económico y social de la región del Cusco.</p>-->
-                </div> 
+            </div>
+
+            <div class="col-lg-6 d-flex align-items-center gradient-custom-2" id="background-container">
+              <div class="text-white px-3 py-4 p-md-5 mx-md-4">
               </div>
-  
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>

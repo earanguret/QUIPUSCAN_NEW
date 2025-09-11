@@ -12,7 +12,6 @@
 
 .modal-custom-width {
   max-width: 90%;
-  /* Ajusta este valor según tus necesidades */
 }
 
 
@@ -23,14 +22,8 @@
   border-bottom: 0px;
 }
 
-
-
-
-
-
 .tag {
   background-color: #e2e2df79;
-  /* color: #8d8d88 ; */
   color: #888a8d;
   font-size: 0.9rem;
   border: 2px solid #ecece5c9;
@@ -50,7 +43,6 @@
 .icons-tag {
   position: absolute;
   top: 0.25rem;
-  /* ajusta según lo necesites */
   right: 0.5rem;
   display: flex;
   align-items: center;
@@ -63,16 +55,13 @@
 .icon-tag {
   font-size: 0.8rem;
   font-weight: bold;
-  /* hace el ícono más “grueso” si soportado */
   text-shadow: 0 0 1px currentColor;
-  /* efecto de grosor sin agrandar el espacio */
   transition: transform 0.2s ease;
 }
 
 .icon-tag:hover {
   color: #8b8b1b;
   transform: scale(1.1);
-  /* ligeramente más grande al pasar el mouse */
 }
 
 
@@ -186,12 +175,9 @@ ol ol ol>li::before {
   cursor: pointer;
 }
 
-/* Cambiar el color del texto al pasar sobre el botón */
 #list-container .action-button:hover {
   color: #2bb0c2;
 }
-
-
 
 /* chat container */
 .chat-container {
@@ -236,16 +222,12 @@ ol ol ol>li::before {
 /* scroll personalizado  */
 .scroll-hidden {
   overflow-y: scroll;
-  /* habilita el scroll */
   scrollbar-width: none;
-  /* Firefox */
   -ms-overflow-style: none;
-  /* IE/Edge */
 }
 
 .scroll-hidden::-webkit-scrollbar {
   display: none;
-  /* Chrome/Safari */
 }
 
 
@@ -288,22 +270,17 @@ ol ol ol>li::before {
 /* cuando el mouse pasa encima */
 #list-container ol li:hover {
   background-color: #f0f0f0;
-  /* color de resaltado */
   color: #333;
-  /* cambia el color del texto si quieres */
 }
 
 #list-container>ol>li:hover {
   background-color: #d1e7dd;
-  /* nivel principal */
 }
 
 #list-container ol li ol>li:hover {
   background-color: #ffeeba;
-  /* subnivel */
 }
 
 #list-container ol li ol li ol>li:hover {
   background-color: #f8d7da;
-  /* sub-subnivel */
 }

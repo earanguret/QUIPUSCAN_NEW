@@ -1,11 +1,8 @@
 <div class="panel">
   <app-navegator></app-navegator>
   <app-subnavegator [ruta]="'principal/recepcion/list-serie-documental'"></app-subnavegator>
-
-
   <div class="contenedor">
     <div class="row">
-
       <div class="col-lg-3">
         <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
         <div class="text-end mt-4">
@@ -13,23 +10,14 @@
         </div>
       </div>
       <div class="col-lg-9">
-
         <div class="encabezado_pages ">
           <i class="bi bi-card-list icon-custom"></i>
           <p class="titulo_menu px-4">REGISTRO DE EXPEDIENTES</p>
-
         </div>
-        <!-- <hr class="my-0 py-0"> -->
-
-
-
         <div class="card rounded shadow border-2 ">
           <div class="card-header py-3 d-flex justify-content-between align-items-center ">
-            <!-- <p class="subtitulo_menu">expedientes</p>
-                          <button id="buton_agregar" type="button" class="btn btn-success mx-4" >AGREGAR</button> -->
             <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente"
               placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
-
           </div>
           <div class="card-body px-5 bg-white rounded">
             <div class="mb-2 d-flex align-items-center">
@@ -72,7 +60,6 @@
     </div>
   </div>
 
-
   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog " role="document">
@@ -82,7 +69,6 @@
         </div>
         <form>
           <fieldset class="p-4">
-
 
             <div class="form-group ">
               <label for="expediente" class="form-label">Nro de expediente:</label>
@@ -100,8 +86,6 @@
               </div>
             </div>
 
-
-
             <div class="d-flex justify-content-end mt-3 position-relative">
               <p class="text-danger position-absolute start-0 px-1" style="font-size: 0.8rem;">
                 {{mensajeError}}
@@ -112,21 +96,9 @@
             </div>
           </fieldset>
         </form>
-
       </div>
     </div>
   </div>
-
-  <!-- <div 
-  *ngIf="mostrarAlerta" 
-  [ngClass]="{'fade-alert': true, 'show': alertaVisible}" 
-  class="alert alert-success position-fixed end-0 me-3 shadow" 
-  role="alert" 
-  style="top: 100px; z-index: 1050;"
-  >
-  expediente creado correctamente
-</div> -->
-
   <app-alerta *ngIf="showCreateAlert" [mensaje]="'Expediente creado correctamente'" [tipo]="'success'"
     [duracion]="3000">
   </app-alerta>

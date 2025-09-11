@@ -127,9 +127,8 @@ export class BovedaExpedientesComponent implements OnInit {
     this.myModalActaApertura.show();
     this.pdfUrlActaApertura = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
     this.data_disco_temp = disco;
-    console.log(disco)
-    
   }
+
   closeModalRegistrarActaApertura() {
     this.myModalActaApertura.hide();
   }
@@ -226,7 +225,7 @@ export class BovedaExpedientesComponent implements OnInit {
 
   private calcularPorcentajeAcumlado(expedientes: ExpedienteSinDiscoResponse[]): number {
     const pesoTotalBytes = expedientes.reduce((total, exp) => total + (exp.peso_doc || 0), 0);
-    const totalPermitido = this.peso_limite; // 23 GB en bytes, dejamos un margen de 2GB
+    const totalPermitido = this.peso_limite; 
   
     const porcentaje = (pesoTotalBytes / totalPermitido) * 100;
     return parseFloat(porcentaje.toFixed(2)); // redondeado a 2 decimales
@@ -435,9 +434,7 @@ export class BovedaExpedientesComponent implements OnInit {
     
    }
 
-   CerrarDisco(disco:any) {
-
-    
+   CerrarDisco(disco:any) {    
     const limiteBytes = this.peso_limite; // 23 GB en bytes
     let acumulado = 0;
     const listaFinal: ExpedienteSinDiscoResponse[] = [];

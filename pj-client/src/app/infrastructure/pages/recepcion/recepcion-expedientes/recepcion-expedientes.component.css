@@ -1,89 +1,82 @@
-
 .icon-custom {
-    cursor: pointer; /* Cambiar el cursor a una manito cuando el ratón está sobre el icono */
-    font-weight: bold; 
-    font-size: 3.5rem;
-    color: #929FB1;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 3.5rem;
+  color: #929FB1;
 }
 
-
 .contenedor {
-    margin: 2% 4%;
-    max-width: 1680px;
-  }
+  margin: 2% 4%;
+  max-width: 1680px;
+}
 
 
 /* titulo reportes */
-.titulo_reporte{
-    font-size: 2rem;
-    font-weight: 700;
-    color: #404B5A;
+.titulo_reporte {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #404B5A;
 }
 
-
-
-  /* BOTON ENVIAR A PREPARACION */
-  .btn-preparacion{
-    background-color: #B9EACE;
-    color: #227243;
-    border: 1px solid #92DFB2;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-size: 0.8rem;
-  }
-  .btn-preparacion:hover{
-   background-color: #92DFB2;
-    color: #227243;
-    border: 1px solid #92DFB2;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-  }
-
-  /* tabla text */
-  th{
-    font-size: 1rem;
-    font-weight: 700;
-    color: #404B5A;
-  }
-
-  td{
-    font-size: 1rem;
-    font-weight: 400;
-    margin-top: .4rem;
-    color: #434343;
-  }
-  /* modal */
-  .guardar-btn{
-    background-color: #B9EACE;
-    color: #227243;
-    border: 1px solid #92DFB2;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600
-}
-.guardar-btn:hover{
-    background-color:  #86d993;
-    color: #227243;
-    border: 1px solid #92DFB2;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600
-
+/* BOTON ENVIAR A PREPARACION */
+.btn-preparacion {
+  background-color: #B9EACE;
+  color: #227243;
+  border: 1px solid #92DFB2;
+  box-shadow: 1px 1px 3px 0 #D5DDE5;
+  font-size: 0.8rem;
 }
 
-.cancelar-btn{
-   
-    background-color: #E1E7EB;
-    color: #6E7A89;
-    border: 1px solid #dde2e9;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600;
-    
-}
-.cancelar-btn:hover{
-   
-    background-color: #cdcecf;
-    color: #525355;
-    border: 1px solid #d6dadf;
-    box-shadow: 1px 1px 3px 0 #D5DDE5;
-    font-weight: 600;
-    
+.btn-preparacion:hover {
+  background-color: #92DFB2;
+  color: #227243;
+  border: 1px solid #92DFB2;
+  box-shadow: 1px 1px 3px 0 #D5DDE5;
 }
 
-/*  */
+/* tabla text */
+th {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #404B5A;
+}
+
+td {
+  font-size: 1rem;
+  font-weight: 400;
+  margin-top: .4rem;
+  color: #434343;
+}
+
+/* modal */
+.guardar-btn {
+  background-color: #B9EACE;
+  color: #227243;
+  border: 1px solid #92DFB2;
+  box-shadow: 1px 1px 3px 0 #D5DDE5;
+  font-weight: 600
+}
+
+.guardar-btn:hover {
+  background-color: #86d993;
+  color: #227243;
+  border: 1px solid #92DFB2;
+  box-shadow: 1px 1px 3px 0 #D5DDE5;
+  font-weight: 600
+}
+
+.cancelar-btn {
+  background-color: #E1E7EB;
+  color: #6E7A89;
+  border: 1px solid #dde2e9;
+  box-shadow: 1px 1px 3px 0 #D5DDE5;
+  font-weight: 600;
+}
+
+.cancelar-btn:hover {
+  background-color: #cdcecf;
+  color: #525355;
+  border: 1px solid #d6dadf;
+  box-shadow: 1px 1px 3px 0 #D5DDE5;
+  font-weight: 600;
+}

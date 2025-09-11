@@ -50,7 +50,6 @@
 .icons-tag {
     position: absolute;
     top: 0.25rem;
-    /* ajusta según lo necesites */
     right: 0.5rem;
     display: flex;
     align-items: center;
@@ -63,19 +62,14 @@
 .icon-tag {
     font-size: 0.8rem;
     font-weight: bold;
-    /* hace el ícono más “grueso” si soportado */
     text-shadow: 0 0 1px currentColor;
-    /* efecto de grosor sin agrandar el espacio */
     transition: transform 0.2s ease;
 }
 
 .icon-tag:hover {
     color: #8b8b1b;
     transform: scale(1.1);
-    /* ligeramente más grande al pasar el mouse */
 }
-
-
 
 /* observaciones tags */
 .observation-tag {
@@ -100,7 +94,6 @@
 .observation-icons {
     position: absolute;
     top: 0.25rem;
-    /* ajusta según lo necesites */
     right: 0.5rem;
     display: flex;
     align-items: center;
@@ -113,16 +106,13 @@
 .obs-icon {
     font-size: 0.8rem;
     font-weight: bold;
-    /* hace el ícono más “grueso” si soportado */
     text-shadow: 0 0 1px currentColor;
-    /* efecto de grosor sin agrandar el espacio */
     transition: transform 0.2s ease;
 }
 
 .obs-icon:hover {
     color: #8b8b1b;
     transform: scale(1.1);
-    /* ligeramente más grande al pasar el mouse */
 }
 
 
@@ -139,9 +129,6 @@ ol {
 ol>li {
     display: block;
     counter-increment: item;
-    /* margin-bottom: 10px; */
-
-
 }
 
 ol>li::before {
@@ -168,7 +155,6 @@ ol ol {
 ol ol>li {
     display: block;
     counter-increment: item;
-
 }
 
 ol ol>li::before {
@@ -191,7 +177,6 @@ ol ol ol {
     text-transform: uppercase;
     padding-left: 15px;
     margin: 0px !important;
-    /* font-style: italic; */
 }
 
 ol ol ol>li {
@@ -231,26 +216,18 @@ ol ol ol>li::before {
 /* Opcional: Añadir estilos adicionales para los botones */
 #list-container .action-button {
     margin-left: 10px;
-    /* Espacio entre botones */
     padding: 0px 5px;
-    /* Espaciado interno */
     background-color: transparent;
-    /* Color de fondo */
     color: #2b79c2;
-    /* Color del texto */
     border: none;
-    /* Sin borde */
     border-radius: 5px;
-    /* Bordes redondeados */
     cursor: pointer;
-    /* Manito al pasar sobre el botón */
 }
 
 /* Cambiar el color del texto al pasar sobre el botón */
 #list-container .action-button:hover {
     color: #2bb0c2;
 }
-
 
 
 /* chat container */
@@ -291,39 +268,17 @@ ol ol ol>li::before {
     position: relative;
 }
 
-.popup-box {
-    position: absolute;
-    top: 100%;
-    /* Colocar justo debajo del botón "responder" */
-    right: 0;
-    /* Alinear el popup a la derecha */
-    z-index: 1000;
-    width: 300px;
-    background-color: white;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    padding: 10px;
-}
-
-.bi-pencil-fill:hover {
-    cursor: pointer;
-    color: #434343;
-}
 
 
 /* scroll personalizado  */
 .scroll-hidden {
     overflow-y: scroll;
-    /* habilita el scroll */
     scrollbar-width: none;
-    /* Firefox */
     -ms-overflow-style: none;
-    /* IE/Edge */
 }
 
 .scroll-hidden::-webkit-scrollbar {
     display: none;
-    /* Chrome/Safari */
 }
 
 
@@ -335,7 +290,6 @@ ol ol ol>li::before {
     margin: 0px;
     text-transform: uppercase !important;
     margin-top: 3%;
-
 }
 
 
@@ -354,17 +308,12 @@ ol ol ol>li::before {
     margin: 0px 0px;
 }
 
-
-
 /* para firmar */
 .sign-panel {
     position: absolute;
     bottom: 130%;
-    /* directamente arriba */
     left: 70%;
     transform: translateX(-85%);
-
-    
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -386,17 +335,14 @@ ol ol ol>li::before {
     pointer-events: auto;
 }
 
-/* 🔽 Clase cuando está oculto (mantiene en DOM, pero invisible) */
 .sign-panel.hidden {
     opacity: 0;
     pointer-events: none;
 }
 
-
 .sign-panel-header{
     background-color: #0C314C;
-    color: #fff;
-    
+    color: #fff; 
 }
 
 .sign-tag {

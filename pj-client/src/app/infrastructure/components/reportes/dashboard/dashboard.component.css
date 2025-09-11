@@ -1,0 +1,128 @@
+.panel-report {
+    margin: 0;
+    font-family: Nunito, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #858796;
+    text-align: left;
+}
+
+h1 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: 400;
+    unicode-bidi: isolate;
+}
+
+
+.border-left-primary {
+    border-left: .25rem solid #4e73df !important;
+}
+
+.border-left-info {
+    border-left: .25rem solid #36b9cc !important;
+}
+
+.border-left-success {
+    border-left: .25rem solid #1cc88a !important;
+}
+
+.border-left-warning {
+    border-left: .25rem solid #f6c23e !important;
+}
+
+.shadow {
+    box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, 0.19) !important;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #e3e6f0;
+    border-radius: .35rem;
+}
+
+*,
+::after,
+::before {
+    box-sizing: border-box;
+}
+
+.icon-custom-report {
+    color: #dddfeb !important;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.label-text-card-report {
+    color: #5a5c69 !important;
+    font-weight: 600 !important;
+    font-size: 1.25rem;
+}
+
+.title-card-report {
+    font-weight: 600 !important;
+    font-size: 0.9rem;
+
+}
+
+.card-report {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+h3 {
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.widget-content-right {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.widget-numbers-success {
+    color: #1cc88a;
+}
+
+.widget-numbers-warning {
+    color: #f6c23e;
+}
+
+.widget-numbers-danger {
+    color: #e85656;
+}
+
+.widget-numbers-info {
+    color: #36b9cc;
+}
+
+.widget-numbers-primary {
+    color: #0b3fdb96;
+}
+
+
+
+.widget-heading {
+    opacity: .8;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.widget-subheading {
+    opacity: .5;
+    font-size: 0.8rem;
+}
