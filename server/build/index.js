@@ -20,6 +20,7 @@ const controlRoutes_1 = __importDefault(require("./routes/controlRoutes"));
 const fedatarioRoutes_1 = __importDefault(require("./routes/fedatarioRoutes"));
 const firmaDigitalRoutes_1 = __importDefault(require("./routes/firmaDigitalRoutes"));
 const discoRoutes_1 = __importDefault(require("./routes/discoRoutes"));
+const reporteRoutes_1 = __importDefault(require("./routes/reporteRoutes"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -50,6 +51,7 @@ class Server {
         this.app.use('/', firmaDigitalRoutes_1.default);
         this.app.use('/', discoRoutes_1.default);
         this.app.use('/', fedatarioRoutes_1.default);
+        this.app.use('/', reporteRoutes_1.default);
     }
     start() {
         const server = this.app.listen(this.app.get('port'), '0.0.0.0', () => {

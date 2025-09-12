@@ -36,6 +36,14 @@ h1 {
     border-left: .25rem solid #f6c23e !important;
 }
 
+.border-left-danger {
+    border-left: .25rem solid #e85656 !important;
+}
+
+.border-lef-alert {
+    border-left: .25rem solid #b6a3f5 !important;
+}
+
 .shadow {
     box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, 0.19) !important;
 }

@@ -65,11 +65,6 @@ export const routes: Routes = [
     // {   path: 'principal/reportes', component: ReporteComponent  ,canActivate: [AuthGuard]},
     {   path: 'principal/reportes', 
         component: ReportesDemoComponent,
-        children: [
-            { path: 'dashboard', component: DashboardComponent },
-            { path: 'usuarios', component: UsuariosReporteComponent },
-            { path: '', redirectTo: 'dashboard', pathMatch: 'full' } 
-          ]
     },
 
 

@@ -5,14 +5,14 @@
     </div>
     
     <div class="row">
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col">
                             <div class="title-card-report text-primary text-uppercase mb-1">
                                 Serie Documental</div>
-                            <div class="h5 mb-0 label-text-card-report">N° 5</div>
+                            <div class="h5 mb-0 label-text-card-report">N° {{data_estaticos.total_inventarios}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-archive-fill icon-custom-report"></i>
@@ -22,14 +22,16 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        
+
+        <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 ">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col">
                             <div class="title-card-report text-success text-uppercase mb-1">
                                 total expedientes</div>
-                            <div class="h5 mb-0 label-text-card-report">N° 3256</div>
+                            <div class="h5 mb-0 label-text-card-report">N° {{data_estaticos.total_expedientes}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-folder-fill icon-custom-report"></i>
@@ -39,14 +41,14 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 ">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col">
                             <div class="title-card-report text-info text-uppercase mb-1">
                                 total digitalizados</div>
-                            <div class="h5 mb-0 label-text-card-report">N° 1586</div>
+                            <div class="h5 mb-0 label-text-card-report">N° {{data_estaticos.total_digitalizados}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-file-earmark-break-fill icon-custom-report"></i>
@@ -56,14 +58,14 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 ">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col">
                             <div class="title-card-report text-warning text-uppercase mb-1">
                                 total fojas</div>
-                            <div class="h5 mb-0 label-text-card-report">N° 189632</div>
+                            <div class="h5 mb-0 label-text-card-report">N° {{data_estaticos.total_fojas}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="bi bi-files icon-custom-report"></i>
@@ -72,10 +74,42 @@
                 </div>
             </div>
         </div>
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-success text-uppercase mb-1">
+                                total discos</div>
+                            <div class="h5 mb-0 label-text-card-report">N° {{data_estaticos.total_discos}}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-disc-fill icon-custom-report"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 ">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="title-card-report text-primary text-uppercase mb-1">
+                                Usuarios Activos</div>
+                            <div class="h5 mb-0 label-text-card-report">N° {{data_estaticos.usuarios_activos}}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-person-fill-check icon-custom-report"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
-        <div class="col-xl-8 col-md-6 mb-4">
+        <div class="col-xl-9 col-md-6 mb-4">
             <div class="card-report shadow">
                 <h3>TABLA DE PRODUCCION MENSUAL AÑO 2025</h3>
 
@@ -98,14 +132,14 @@
             </div>
 
         </div>
-        <div class="col-xl-1 col-md-4 mb-4 d-flex flex-column h-100 gap-2">
+        <!-- <div class="col-xl-1 col-md-4 mb-4 d-flex flex-column h-100 gap-2">
             <div class="card border-left-primary shadow h-100 ">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col">
                             <div class="title-card-report text-primary text-uppercase mb-1">
-                                Volumen</div>
-                            <div class="h5 mb-0 label-text-card-report">50 AxH</div>
+                                Alt (m)</div>
+                            <div class="h5 mb-0 label-text-card-report">{{data_estaticos.altura_m}} </div>
                         </div>
                     </div>
                 </div>
@@ -115,8 +149,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col">
                             <div class="title-card-report text-success text-uppercase mb-1">
-                                Peso (Kg)</div>
-                            <div class="h5 mb-0 label-text-card-report">120 Kg</div>
+                                Vol (m³)
+                            </div>
+                            <div class="h5 mb-0 label-text-card-report">
+                                {{data_estaticos.volumen_m3}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,8 +164,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col">
                             <div class="title-card-report text-info text-uppercase mb-1">
-                                Peso (Gb)</div>
-                            <div class="h5 mb-0 label-text-card-report">50 Gb</div>
+                                Peso (Kg)</div>
+                            <div class="h5 mb-0 label-text-card-report">{{data_estaticos.peso_kg}} </div>
                         </div>
                     </div>
                 </div>
@@ -138,68 +175,58 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col">
                             <div class="title-card-report text-warning text-uppercase mb-1">
-                                Discos</div>
-                            <div class="h5 mb-0 label-text-card-report">45</div>
+                                Peso (Gb)</div>
+                            <div class="h5 mb-0 label-text-card-report">{{data_estaticos.peso_gb}}</div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-        </div>
+        </div> -->
     </div>
 
     <div class="card-report shadow">
-        <h3>PRODUCCIÓN DEL DIA</h3>
+        <h3>DATOS COMPLEMENTARIOS</h3>
         <div class="d-flex justify-content-between align-items-center mx-4">
             <div class="d-flex ">
                 <div class="widget-content-right ms-0 me-3">
-                    <div class="widget-numbers-success">1896</div>
+                    <div class="widget-numbers-success">{{data_estaticos.altura_m}} m</div>
                 </div>
                 <div class="widget-content-left">
-                    <div class="widget-heading">Preparación</div>
-                    <div class="widget-subheading">expedientes</div>
+                    <div class="widget-heading">Altura (m)</div>
+                    <div class="widget-subheading">Altura alcanzada en metros</div>
                 </div>
             </div>
 
             <div class="d-flex ">
                 <div class="widget-content-right ms-0 me-3">
-                    <div class="widget-numbers-info">150</div>
+                    <div class="widget-numbers-info">{{data_estaticos.volumen_m3}} m³</div>
                 </div>
                 <div class="widget-content-left">
-                    <div class="widget-heading">Digitalización</div>
-                    <div class="widget-subheading">expedientes</div>
+                    <div class="widget-heading">Volumen (m³)</div>
+                    <div class="widget-subheading">Volumen alcanzado en metros cúbicos</div>
                 </div>
             </div>
 
             <div class="d-flex ">
                 <div class="widget-content-right ms-0 me-3">
-                    <div class="widget-numbers-primary">120</div>
+                    <div class="widget-numbers-primary">{{data_estaticos.peso_kg}} Kg</div>
                 </div>
                 <div class="widget-content-left">
-                    <div class="widget-heading">Indización</div>
-                    <div class="widget-subheading">expedientes</div>
+                    <div class="widget-heading">Peso (kg)</div>
+                    <div class="widget-subheading">Peso alcanzado en kilogramos</div>
                 </div>
             </div>
 
             <div class="d-flex ">
                 <div class="widget-content-right ms-0 me-3">
-                    <div class="widget-numbers-warning">80</div>
+                    <div class="widget-numbers-warning">{{data_estaticos.peso_gb}} Gb</div>
                 </div>
                 <div class="widget-content-left">
-                    <div class="widget-heading">Control Calidad</div>
-                    <div class="widget-subheading">expedientes</div>
+                    <div class="widget-heading">Peso (gb)</div>
+                    <div class="widget-subheading">Peso alcanzado en gigabytes</div>
                 </div>
             </div>
 
-            <div class="d-flex ">
-                <div class="widget-content-right ms-0 me-3">
-                    <div class="widget-numbers-warning">70</div>
-                </div>
-                <div class="widget-content-left">
-                    <div class="widget-heading">Fedatario</div>
-                    <div class="widget-subheading">expedientes</div>
-                </div>
-            </div>
         </div>
     </div>
 

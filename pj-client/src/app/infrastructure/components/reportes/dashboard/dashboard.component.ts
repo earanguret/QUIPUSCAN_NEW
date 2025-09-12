@@ -4,6 +4,8 @@ import {
   NgApexchartsModule,
   ApexOptions
 } from 'ng-apexcharts';
+import { datos_estaticos, estado_produccion_total } from '../../../../domain/dto/ReporteResponse.dto';
+import { ReporteService } from '../../../services/remoto/reporte/reporte.service';
 
 
 
@@ -19,13 +21,44 @@ export class DashboardComponent implements OnInit {
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions: Partial<ApexOptions> = {};
   public chartOptionsRadial: Partial<ApexOptions>= {};
+
+  data_estaticos: datos_estaticos = {
+    total_inventarios: 0,
+    total_expedientes: 0,
+    total_digitalizados: 0,
+    total_fojas: 0,
+    altura_m : 0,
+    volumen_m3 : 0,
+    peso_kg : 0,
+    peso_gb : 0,
+    total_discos : 0,
+    usuarios_activos : 0
+  }
+
+  estado_produccion_total: estado_produccion_total = {
+    total_expedientes: 0,
+    pct_preparados: 0,
+    pct_digitalizados: 0,
+    pct_indizados: 0,
+    pct_controlados: 0, 
+    pct_fedatados: 0
+  }
+
+  altura: number = 0;
+  volumen: number = 0;
+  peso_kg: number = 0;
+  peso_gb: number = 0;
+  discos: number = 0;
+
   
-  constructor() { 
+  constructor(private reporteService: ReporteService) {
   }
 
   ngOnInit(): void {
+    this.ObtenerDatosEstaticos()
+    this.ObtenerEstadoProductionTotal()
+   
     this.grafico_barras();
-    this.grafico_radial();
   }
 
   ngAfterViewInit(): void {
@@ -96,9 +129,9 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  grafico_radial(total_expedientes: number = 3256) {
+  grafico_radial(estado_expedientes: estado_produccion_total) {
     this.chartOptionsRadial = {
-      series: [26, 30.86, 44.31, 52.82, 57.52],
+      series: [Number(estado_expedientes.pct_fedatados), Number(estado_expedientes.pct_controlados), Number(estado_expedientes.pct_indizados), Number(estado_expedientes.pct_digitalizados), Number(estado_expedientes.pct_preparados)],
       chart: { type: 'radialBar', height: 350 },
       plotOptions: {
         radialBar: {
@@ -109,15 +142,47 @@ export class DashboardComponent implements OnInit {
               show: true,
               label: 'Total Expedientes',
               formatter: () =>
-                `${total_expedientes}`
+                `${estado_expedientes.total_expedientes}`
             }
           }
         }
       },
-      labels: ['edatario', 'Control', 'Indización', ' Digitalización', 'Preparacion'],
+      labels: ['Fedatario', 'Control', 'Indización', ' Digitalización', 'Preparacion'],
     };
   }
   
  
+  ObtenerDatosEstaticos(){
+    this.reporteService.ObtenerDatosEstaticos().subscribe({
+      next: (data: datos_estaticos) => {
+        this.data_estaticos = data;
+        console.log(this.data_estaticos);
+
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de reportes detalle completado');
+      }
+    })
+  }
+
+  ObtenerEstadoProductionTotal(){
+    this.reporteService.ObtenerEstadoProductionTotal().subscribe({
+      next: (data: estado_produccion_total) => {
+        this.grafico_radial(data);
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de reportes detalle completado');
+        
+
+      }
+    })
+  }
 }
 

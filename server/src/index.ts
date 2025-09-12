@@ -15,6 +15,7 @@ import controlRoutes from './routes/controlRoutes';
 import fedatarioRoutes from './routes/fedatarioRoutes';
 import firmaDigitalRoutes from './routes/firmaDigitalRoutes';
 import discoRoutes from './routes/discoRoutes';
+import reporteRoutes from './routes/reporteRoutes';
 
 
 class Server{
@@ -49,6 +50,7 @@ class Server{
         this.app.use('/',firmaDigitalRoutes);
         this.app.use('/',discoRoutes);
         this.app.use('/',fedatarioRoutes);
+        this.app.use('/',reporteRoutes);
         
     }
     start(): void {

@@ -12,7 +12,8 @@ import { UsuarioSupervisorLineaResponse } from '../../../domain/dto/UsuarioRespo
   styleUrl: './reporte.component.css'
 })
 export class ReporteComponent implements OnInit {
-  
+
+
 
     constructor(private router:Router, private supervisorLineaService:SupervisorLineaService) { }
 
