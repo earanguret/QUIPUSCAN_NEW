@@ -36,10 +36,9 @@
                                     <th scope="col">CREADO</th>
                                 </tr>
                             </thead>
-                            <!-- <tbody>
+                            <tbody>
                                 <tr class="hand_cursor" title="click para modificar usuario"
-                                    *ngFor="let usuario of listaUsuarios  | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"
-                                    (click)="modificarUsuario(usuario.id_usuario)"
+                                    *ngFor="let usuario of datosUsuarios  | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"
                                     [ngStyle]="{ opacity: usuario.estado ? '1':'0.50'  }">
                                     <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                     <td>{{usuario.dni}}</td>
@@ -49,9 +48,13 @@
                                     <td [ngStyle]="{ color: usuario.estado  ? 'green':'grey'  }">
                                         {{usuario.estado?'ACTIVO':'INACTIVO'}}
                                     </td>
+                                    <td>{{usuario.create_at | date:'dd/MM/yyyy'}}</td>
                                 </tr>
-                            </tbody> -->
+                            </tbody>
                         </table>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
                     </div>
                 </div>
 

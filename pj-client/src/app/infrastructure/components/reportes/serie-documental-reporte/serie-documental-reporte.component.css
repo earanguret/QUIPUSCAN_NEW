@@ -103,7 +103,7 @@ h3 {
   apx-chart {
     display: block;
     width: 100%;
-    min-height: 225px; /* 👈 asegura que tenga espacio */
+    min-height: 350px; /* 👈 asegura que tenga espacio */
   }
 
   .table-responsive {

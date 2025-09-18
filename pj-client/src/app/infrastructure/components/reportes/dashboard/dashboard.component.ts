@@ -4,7 +4,7 @@ import {
   NgApexchartsModule,
   ApexOptions
 } from 'ng-apexcharts';
-import { datos_estaticos, estado_produccion_total } from '../../../../domain/dto/ReporteResponse.dto';
+import { datos_estaticos, estado_produccion_total, produccion_mensual } from '../../../../domain/dto/ReporteResponse.dto';
 import { ReporteService } from '../../../services/remoto/reporte/reporte.service';
 
 
@@ -44,6 +44,8 @@ export class DashboardComponent implements OnInit {
     pct_fedatados: 0
   }
 
+  produccion_mensual: produccion_mensual[] = [];  
+
   altura: number = 0;
   volumen: number = 0;
   peso_kg: number = 0;
@@ -57,8 +59,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.ObtenerDatosEstaticos()
     this.ObtenerEstadoProductionTotal()
+    this.ObtenerProduccionMensual()
    
-    this.grafico_barras();
+    
   }
 
   ngAfterViewInit(): void {
@@ -73,33 +76,37 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  grafico_barras() {
+  grafico_barras(produccion_mensual: produccion_mensual[]) {
     this.chartOptions = {
-      // colors: [ '#008FFB','#00E396', '#FEB019', '#775DD0'],
       chart: { type: 'bar', height: 350 },
       series: [
         {
           name: 'Preparación',
-          data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
+          data: produccion_mensual.map(m => m.expedientes_preparacion),
           color: '#775DD0'
         },
         {
           name: 'Digitalización',
-          data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
+          data: produccion_mensual.map(m => m.expedientes_digitalizacion),
           color: '#008FFB'
         },
         {
           name: 'Indización',
-          data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
+          data: produccion_mensual.map(m => m.expedientes_indizacion),
           color: '#00E396'
         },
         {  
           name: 'Control',
-          data: [12, 30, 23, 20, 38, 40, 45, 50, 35],
+          data: produccion_mensual.map(m => m.expedientes_control),
           color: '#FEB019'
+        },
+        {  
+          name: 'Fedatario',
+          data: produccion_mensual.map(m => m.expedientes_fedatario),
+          color: '#FF4560'
         }
       ],
-
+  
       plotOptions: {
         bar: {
           horizontal: false,
@@ -108,17 +115,14 @@ export class DashboardComponent implements OnInit {
           borderRadiusApplication: 'end' as any,
         }
       },
-
+  
       dataLabels: { enabled: false },
       stroke: { show: true, width: 2, colors: ['transparent'] },
-
-      // Asegúrate de no tener theme.monochrome habilitado si quieres respetar colors[]
-      theme: {
-        monochrome: { enabled: false }
-      },
-
+  
+      theme: { monochrome: { enabled: false } },
+  
       xaxis: {
-        categories: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep']
+        categories: produccion_mensual.map(m => m.mes_nombre) // 👈 nombres de meses dinámicos
       },
       yaxis: { title: { text: 'N° de expedientes' } },
       fill: { opacity: 0.9 },
@@ -127,7 +131,7 @@ export class DashboardComponent implements OnInit {
       }
     };
   }
-
+  
 
   grafico_radial(estado_expedientes: estado_produccion_total) {
     this.chartOptionsRadial = {
@@ -172,6 +176,7 @@ export class DashboardComponent implements OnInit {
     this.reporteService.ObtenerEstadoProductionTotal().subscribe({
       next: (data: estado_produccion_total) => {
         this.grafico_radial(data);
+
         console.log(data);
       },
       error: (error) => {
@@ -184,5 +189,35 @@ export class DashboardComponent implements OnInit {
       }
     })
   }
+
+  ObtenerProduccionMensual() {
+    this.reporteService.ObtenerProduccionMensual().subscribe({
+      next: (data: produccion_mensual[]) => {
+        console.log("Datos recibidos:", data);
+  
+        // Filtrar solo meses con producción > 0
+        this.produccion_mensual = data.filter(mes => {
+          const total =
+            mes.expedientes_preparacion +
+            mes.expedientes_digitalizacion +
+            mes.expedientes_indizacion +
+            mes.expedientes_control +
+            mes.expedientes_fedatario;
+  
+          return total > 0;
+        });
+  
+        console.log("Datos filtrados:", this.produccion_mensual);
+        this.grafico_barras(this.produccion_mensual);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de reportes detalle completado');
+      }
+    });
+  }
+  
 }
 

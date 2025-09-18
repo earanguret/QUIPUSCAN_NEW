@@ -1,24 +1,37 @@
 <div class="panel-report">
     <div class="d-flex justify-content-between align-items-center">
-        <h1>Reportes / Produccion / Serie Documental</h1>
+        <h1>Reportes / Produccion / Usuarios</h1>
         <a class=" btn btn-sm btn-primary shadow opacity-75"><i class="bi bi-download"></i> Generate Report</a>
     </div>
 
-    <div class="card-report shadow ">
-        <apx-chart
-        #chart
-        [series]="chartOptions.series!"
-        [chart]="chartOptions.chart!"
-        [annotations]="chartOptions.annotations!"
-        [plotOptions]="chartOptions.plotOptions!"
-        [dataLabels]="chartOptions.dataLabels!"
-        [stroke]="chartOptions.stroke!"
-        [grid]="chartOptions.grid!"
-        [xaxis]="chartOptions.xaxis!"
-        [yaxis]="chartOptions.yaxis!"
-        [fill]="chartOptions.fill!">
-      </apx-chart>
-      
+    <div class="card-report shadow mb-3">
+        <div class="d-flex">
+            <button class="btn btn-primary m-2" (click)="produccionPreparacion()">Preparacion</button>
+            <button class="btn btn-primary m-2" (click)="produccionDigitalizacion()">Digitalizacion</button>
+            <button class="btn btn-primary m-2" (click)="produccionIndizacion()">Indizacion</button>
+            <button class="btn btn-primary m-2" (click)="produccionControl()">Control</button>
+            <button class="btn btn-primary m-2" (click)="produccionFedatario()">Fedatario</button>
+        </div>
+
+        <section>
+            <apx-chart   [series]="chartOptions.series!" [chart]="chartOptions.chart!"
+                [annotations]="chartOptions.annotations!" [plotOptions]="chartOptions.plotOptions!"
+                [dataLabels]="chartOptions.dataLabels!" [stroke]="chartOptions.stroke!" [grid]="chartOptions.grid!"
+                [xaxis]="chartOptions.xaxis!" [yaxis]="chartOptions.yaxis!" [fill]="chartOptions.fill!"
+                [tooltip]="chartOptions.tooltip!">
+            </apx-chart>
+        </section>
     </div>
 
+    <div class="card-report shadow">
+        <section>
+            <apx-chart [series]="chartAreaOptions.series!" [chart]="chartAreaOptions.chart!"
+                [annotations]="chartAreaOptions.annotations!" [plotOptions]="chartAreaOptions.plotOptions!"
+                [dataLabels]="chartAreaOptions.dataLabels!" [stroke]="chartAreaOptions.stroke!"
+                [grid]="chartAreaOptions.grid!" [xaxis]="chartAreaOptions.xaxis!" [yaxis]="chartAreaOptions.yaxis!"
+                [title]="chartAreaOptions.title!" [subtitle]="chartAreaOptions.subtitle!">
+            </apx-chart>
+            
+        </section>
+    </div>
 </div>

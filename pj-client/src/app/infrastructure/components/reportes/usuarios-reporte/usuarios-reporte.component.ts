@@ -1,22 +1,34 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { ReporteService } from '../../../services/remoto/reporte/reporte.service';
 import {
   ChartComponent,
   NgApexchartsModule,
   ApexOptions
 } from 'ng-apexcharts';
+import { datos_usuarios } from '../../../../domain/dto/ReporteResponse.dto';
+import { CommonModule } from '@angular/common';
+import { NgxPaginationModule } from 'ngx-pagination';
+
 
 @Component({
   selector: 'app-usuarios-reporte',
-  imports: [NgApexchartsModule],
+  imports: [NgApexchartsModule, CommonModule, NgxPaginationModule],
   templateUrl: './usuarios-reporte.component.html',
   styleUrl: './usuarios-reporte.component.css'
 })
-export class UsuariosReporteComponent implements OnInit, AfterViewInit  {
+export class UsuariosReporteComponent implements OnInit, AfterViewInit {
   @ViewChild('chart') chart!: ChartComponent;
+
+  datosUsuarios: datos_usuarios[] = [];
+  datosUsuariosTemp: datos_usuarios[] = [];
+  p: number = 1;
+
+  constructor(private reporteService: ReporteService) { }
+
   public chartOptionsPie: Partial<ApexOptions> = {};
 
   ngOnInit(): void {
-    this.grafico_pie();
+    this.obtenerDatosUsuarios();
   }
 
   ngAfterViewInit(): void {
@@ -29,9 +41,9 @@ export class UsuariosReporteComponent implements OnInit, AfterViewInit  {
     }
   }
 
-  grafico_pie() {
+  grafico_pie(activos: number, inactivos: number) {
     this.chartOptionsPie = {
-      series: [25, 15],
+      series: [activos, inactivos],
       chart: {
         type: 'pie',
         width: '100%',
@@ -41,7 +53,7 @@ export class UsuariosReporteComponent implements OnInit, AfterViewInit  {
         'Activos',
         'Inactivos',
       ],
-     
+
       plotOptions: {
         pie: {
           dataLabels: {
@@ -67,5 +79,28 @@ export class UsuariosReporteComponent implements OnInit, AfterViewInit  {
         show: true
       }
     };
+  }
+
+
+  obtenerDatosUsuarios() {
+    this.reporteService.ObtenerUsuariosReporte().subscribe({
+      next: (data: datos_usuarios[]) => {
+        console.log(data);
+        this.datosUsuarios = data;
+        this.datosUsuariosTemp = data;
+
+        const activos = data.filter(u => u.estado === true).length;
+        const inactivos = data.filter(u => u.estado === false).length;
+
+        this.grafico_pie(activos, inactivos);
+      },
+      error: (error) => {
+        console.error(error);
+      },
+      complete: () => {
+        console.log('listado de usuarios completado');
+    
+      }
+    })
   }
 }

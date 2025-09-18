@@ -4,29 +4,29 @@
         <a class=" btn btn-sm btn-primary shadow opacity-75"><i class="bi bi-download"></i> Generate Report</a>
     </div>
 
-    <div class="card-report shadow ">
+    <div *ngFor="let item of datosSerieDocumental; let i = index" class="card-report shadow mt-3">
         <div class="row">
             <div class="col-xl-7 col-md-6  col-separator">
                 <div class="">
                     <div class="row p-4">
                         <div class="col-lg-10 d-flex flex-column px-4 ">
-                            <p class="text-serie-doc m-0"><i class="bi bi-box-seam icon-box"></i>EXPEDIENTE JURIDICCIONAL FAMILIA TUTELAR 2016 </p>
+                            <p class="text-serie-doc m-0"><i class="bi bi-box-seam icon-box"></i>{{item.serie_doc}}</p>
                             <div class=" m-1 mb-2 mx-4">
-                                <p class="text-content m-0">CODIGO: EJFT2016CUSCO</p>
-                                <p class="text-content m-0">RESPONSABLE : ROMINA MARICA CANCAPA</p>
-                                <p class="text-content m-0">SEDE: CUSCO</p>
-    
+                                <p class="text-content m-0">CODIGO: {{item.codigo}}</p>
+                                <p class="text-content m-0">RESPONSABLE: {{item.nombre_responsable}}</p>
+                                <p class="text-content m-0">SEDE: {{item.sede}}</p>
+
                             </div>
-    
+
                             <samp>
                                 <div class=" bg-especialidad m-1">
-                                    <span> FAMILIA TUTELAR  </span>
+                                    <span> {{item.especialidad}} </span>
                                 </div>
                                 <div class="tag-title m-1">
-                                    <span> 2016 </span>
+                                    <span> {{item.anio}} </span>
                                 </div>
                                 <div class="tag-title m-1">
-                                    <span> EXPEDIENTE JURIDICCIONAL </span>
+                                    <span> {{item.tipo_doc}} </span>
                                 </div>
                             </samp>
                         </div>
@@ -34,34 +34,35 @@
                             <div class="text-center d-flex flex-column justify-content-between align-items-end h-100">
                                 <div class="text-center px-4 d-flex flex-column align-items-end">
                                     <div class="d-flex flex-column">
-                                        <span class="number-folio ">402</span>
+                                        <span class="number-folio ">{{item.cantidad}}</span>
                                         <samp class="text-folio mx-1">EXP</samp>
                                     </div>
                                 </div>
                                 <div class="text-center px-4 d-flex flex-column align-items-end">
                                     <div class="d-flex flex-column">
-                                        <span class="number-folio ">5</span>
+                                        <span class="number-folio ">{{item.total_discos_cerrados}}</span>
                                         <samp class="text-folio mx-1">DIS</samp>
                                     </div>
                                 </div>
                             </div>
-    
+
                         </div>
                     </div>
                 </div>
-                
+
 
             </div>
             <div class="col-xl-5 col-md-6 mb-4">
-                <apx-chart [series]="chartOptionsBar.series!" [chart]="chartOptionsBar.chart!"
-                    [labels]="chartOptionsBar.labels!" [theme]="chartOptionsBar.theme!"
-                    [plotOptions]="chartOptionsBar.plotOptions!" [grid]="chartOptionsBar.grid!"
-                    [dataLabels]="chartOptionsBar.dataLabels!" [legend]="chartOptionsBar.legend!"
-                    [xaxis]="chartOptionsBar.xaxis!">
+                <apx-chart [series]="item.chartOptionsBar.series!" [chart]="item.chartOptionsBar.chart!"
+                    [plotOptions]="item.chartOptionsBar.plotOptions!" [dataLabels]="item.chartOptionsBar.dataLabels!"
+                    [xaxis]="item.chartOptionsBar.xaxis!">
                 </apx-chart>
             </div>
 
         </div>
     </div>
+
+
+
 
 </div>

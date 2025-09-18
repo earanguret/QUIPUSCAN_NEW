@@ -29,31 +29,27 @@
                             <thead class="text-white table-success">
                                 <tr>
                                     <th scope="col">NRO</th>
-                                    <th class="text-start" scope="col">ESPECIALIDAD</th>
-                                    <th scope="col">AÑO</th>
+                                    <th class="text-start" scope="col">SERIE DOCUMENTAL</th>
+                                    <th class="text-start" scope="col">AÑO</th>
+                                    <th class="text-start" scope="col">CODIGO</th>
                                     <th class="text-start" scope="col">SEDE</th>
-                                    <th scope="col">CANTIDAD</th>
-                                    <th class="text-start" scope="col">TIPO DOC</th>
-                                    <th class="text-start" scope="col">COD</th>
-                                    <th class="text-start" scope="col">SERIE DOC</th>
+                                    <th class="text-start" scope="col">CANTIDAD</th>
                                 </tr>
                             </thead>
-                            <!-- <tbody>
-                                <tr class="hand_cursor" title="click para modificar usuario"
-                                    *ngFor="let usuario of listaUsuarios  | paginate: { itemsPerPage: 10, currentPage: p }; let i = index"
-                                    (click)="modificarUsuario(usuario.id_usuario)"
-                                    [ngStyle]="{ opacity: usuario.estado ? '1':'0.50'  }">
+                            <tbody>
+                                <tr *ngFor="let item of datosSerieDocumental  | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
                                     <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
-                                    <td>{{usuario.dni}}</td>
-                                    <td class="text-start">{{usuario.nombre+ ' '+usuario.ap_paterno+' '+usuario.ap_materno}}</td>
-                                    <td class="text-secondary "> <strong>{{usuario.username}}</strong> </td>
-                                    <td>{{usuario.perfil}}</td>
-                                    <td [ngStyle]="{ color: usuario.estado  ? 'green':'grey'  }">
-                                        {{usuario.estado?'ACTIVO':'INACTIVO'}}
-                                    </td>
+                                    <td class="text-start">{{item.serie_doc}}</td>
+                                    <td class="text-start">{{item.anio}}</td>
+                                    <td class="text-start">{{item.codigo}}</td>
+                                    <td class="text-start">{{item.sede}}</td>
+                                    <td>{{item.cantidad}}</td>
                                 </tr>
-                            </tbody> -->
+                            </tbody>
                         </table>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
                     </div>
                 </div>
 
