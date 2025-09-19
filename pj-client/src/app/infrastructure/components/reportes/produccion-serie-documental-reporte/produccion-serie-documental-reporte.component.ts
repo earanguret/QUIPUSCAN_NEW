@@ -5,9 +5,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChartComponent,
   NgApexchartsModule,
+  ApexAxisChartSeries ,
   ApexOptions
 } from 'ng-apexcharts';
 import { produccion_serie_documental_reporte } from '../../../../domain/dto/ReporteResponse.dto';
+
+
 
 @Component({
   selector: 'app-produccion-serie-documental-reporte',
@@ -16,77 +19,54 @@ import { produccion_serie_documental_reporte } from '../../../../domain/dto/Repo
   styleUrl: './produccion-serie-documental-reporte.component.css'
 })
 export class ProduccionSerieDocumentalReporteComponent implements OnInit {
-
   @ViewChild('chart') chart!: ChartComponent;
-  public chartOptionsBar: Partial<ApexOptions> = {};
 
-  datosSerieDocumental: produccion_serie_documental_reporte[] = [];
-  datosSerieDocumentalTemp: produccion_serie_documental_reporte[] = [];
+  // Skeleton inicial seguro
+  public chartOptionsBarSkeleton: ApexOptions = {
+    series: [{ name: 'Expedientes', data: [0, 0, 0, 0, 0] }],
+    chart: { type: 'bar', height: 220 },
+    plotOptions: { bar: { borderRadius: 4, borderRadiusApplication: 'end', horizontal: true } },
+    dataLabels: { enabled: true },
+    xaxis: { categories: ['Fedatario','Control','Indización','Digitalización','Preparación'] }
+  };
+  
+
+  datosSerieDocumental: (produccion_serie_documental_reporte & { chartOptionsBar: ApexOptions })[] = [];
+  datosSerieDocumentalTemp: (produccion_serie_documental_reporte & { chartOptionsBar: ApexOptions })[] = [];
 
   constructor(private reporteService: ReporteService) { }
 
   ngOnInit(): void {
-
-    this.obtenerSerieDocumentalReporte()
+    this.obtenerSerieDocumentalReporte();
   }
 
   obtenerSerieDocumentalReporte() {
     this.reporteService.ObtenerProduccionSerieDocumental().subscribe({
-      next: (data: produccion_serie_documental_reporte[]) => {
-        console.log(data);
-  
+      next: (data) => {
         this.datosSerieDocumental = data.map(item => {
-          return {
-            ...item,
-            chartOptionsBar: {
-              series: [
-                {
-                  name: "Expedientes",
-                  data: [
-                    item.expedientes_fedatados,
-                    item.expedientes_controlados,
-                    item.expedientes_indizados,
-                    item.expedientes_digitalizados,
-                    item.expedientes_preparados
-                  ]
-                }
-              ],
-              chart: {
-                type: 'bar',
-                height: 220
-              },
-              plotOptions: {
-                bar: {
-                  borderRadius: 4,
-                  borderRadiusApplication: 'end' as any,
-                  horizontal: true
-                }
-              },
-              dataLabels: {
-                enabled: true
-              },
-              xaxis: {
-                categories: [
-                  'Fedatario',
-                  'Control',
-                  'Indización',
-                  'Digitalización',
-                  'Preparación'
+          const chartOptionsBar: ApexOptions = {
+            ...this.chartOptionsBarSkeleton, // usamos el skeleton seguro
+            series: [
+              {
+                name: 'Expedientes',
+                data: [
+                  Number(item.expedientes_fedatados),
+                  Number(item.expedientes_controlados),
+                  Number(item.expedientes_indizados),
+                  Number(item.expedientes_digitalizados),
+                  Number(item.expedientes_preparados)
                 ]
               }
-            }
-          }
+            ]
+          };
+
+          return { ...item, chartOptionsBar };
         });
-  
+
         this.datosSerieDocumentalTemp = this.datosSerieDocumental;
       },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        console.log('listado de reportes detalle completado');
-      }
+      error: (err) => console.error(err),
+      complete: () => console.log('listado de reportes detalle completado')
     });
   }
-  
 }

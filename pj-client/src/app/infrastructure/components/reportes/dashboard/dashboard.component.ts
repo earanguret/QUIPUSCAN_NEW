@@ -18,9 +18,60 @@ import { ReporteService } from '../../../services/remoto/reporte/reporte.service
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+
+
+  
   @ViewChild('chart') chart!: ChartComponent;
-  public chartOptions: Partial<ApexOptions> = {};
-  public chartOptionsRadial: Partial<ApexOptions>= {};
+  public chartOptions: ApexOptions = {
+    series: [0],
+    chart: {
+      type: 'bar',
+      height: 350
+    },
+    title: { text: 'Cargando...' },
+    subtitle: { text: 'Cargando...' },
+    xaxis: { categories: ['Cargando...'] },
+    yaxis: { title: { text: 'Cargando...' } },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'light',
+        type: 'horizontal',
+        shadeIntensity: 0.25,
+        gradientToColors: undefined,
+        inverseColors: true,
+        opacityFrom: 0.85,
+        opacityTo: 0.85,
+        stops: [50, 0, 100]
+      }
+    },
+    tooltip: {
+      y: {
+        formatter: (val: number, opts: any) => {
+          const index = opts.dataPointIndex;
+          return `${val} (${index})`;
+        }
+      }
+    }
+  };
+  
+  public chartOptionsRadial: ApexOptions = {
+    series: [0],
+    chart: {
+      type: 'radialBar',
+      height: 350
+    },
+    labels: ['Cargando...'],
+    plotOptions: {
+      radialBar: {
+        hollow: {
+          size: '50%'
+        }
+      }
+    }
+  };
+  
+
 
   data_estaticos: datos_estaticos = {
     total_inventarios: 0,
@@ -65,7 +116,7 @@ export class DashboardComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    // 🔁 Fuerza aplicar colores por si el render inicial no los toma
+    // Fuerza aplicar colores por si el render inicial no los toma
     // (a veces necesario en ng-apexcharts 1.x)
     if (this.chart) {
       this.chart.updateOptions(
@@ -76,33 +127,34 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+
   grafico_barras(produccion_mensual: produccion_mensual[]) {
     this.chartOptions = {
       chart: { type: 'bar', height: 350 },
       series: [
         {
           name: 'Preparación',
-          data: produccion_mensual.map(m => m.expedientes_preparacion),
+          data: produccion_mensual.map(m => Number(m.expedientes_preparacion)) as number[],
           color: '#775DD0'
         },
         {
           name: 'Digitalización',
-          data: produccion_mensual.map(m => m.expedientes_digitalizacion),
+          data: produccion_mensual.map(m => Number(m.expedientes_digitalizacion)) as number[],
           color: '#008FFB'
         },
         {
           name: 'Indización',
-          data: produccion_mensual.map(m => m.expedientes_indizacion),
+          data: produccion_mensual.map(m => Number(m.expedientes_indizacion)) as number[],
           color: '#00E396'
         },
         {  
           name: 'Control',
-          data: produccion_mensual.map(m => m.expedientes_control),
+          data: produccion_mensual.map(m => Number(m.expedientes_control)) as number[],
           color: '#FEB019'
         },
         {  
           name: 'Fedatario',
-          data: produccion_mensual.map(m => m.expedientes_fedatario),
+          data: produccion_mensual.map(m => Number(m.expedientes_fedatario)) as number[],
           color: '#FF4560'
         }
       ],
@@ -131,6 +183,7 @@ export class DashboardComponent implements OnInit {
       }
     };
   }
+  
   
 
   grafico_radial(estado_expedientes: estado_produccion_total) {

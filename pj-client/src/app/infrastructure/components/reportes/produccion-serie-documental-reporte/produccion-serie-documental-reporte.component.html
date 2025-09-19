@@ -53,10 +53,18 @@
 
             </div>
             <div class="col-xl-5 col-md-6 mb-4">
-                <apx-chart [series]="item.chartOptionsBar.series!" [chart]="item.chartOptionsBar.chart!"
-                    [plotOptions]="item.chartOptionsBar.plotOptions!" [dataLabels]="item.chartOptionsBar.dataLabels!"
-                    [xaxis]="item.chartOptionsBar.xaxis!">
-                </apx-chart>
+                <apx-chart 
+  *ngIf="item.chartOptionsBar?.series"
+  [series]="item.chartOptionsBar.series!"
+  [chart]="item.chartOptionsBar.chart!"
+  [plotOptions]="item.chartOptionsBar.plotOptions!"
+  [dataLabels]="item.chartOptionsBar.dataLabels!"
+  [xaxis]="item.chartOptionsBar.xaxis!">
+</apx-chart>
+
+
+
+
             </div>
 
         </div>

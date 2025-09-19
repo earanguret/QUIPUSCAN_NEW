@@ -375,6 +375,24 @@ export class IndizadorExpedientesComponent implements OnInit {
     this.modificarIndizacion = false
     this.observacion_temp = '';
 
+    this.data_indizacion_temp = {
+      id_indizacion: 0,
+      id_responsable: 0,
+      id_expediente: 0,
+      indice: '',
+      observaciones: '',
+      juzgado_origen: '',
+      tipo_proceso: '',
+      materia: '',
+      demandante: '',
+      demandado: '',
+      fecha_inicial: null,
+      fecha_final: null,
+      create_at: null,
+      responsable: null,
+      username: null,
+    }
+
   }
   ListarExpedientes() {
     this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)

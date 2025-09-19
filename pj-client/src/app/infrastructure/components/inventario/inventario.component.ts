@@ -8,6 +8,8 @@ import { InventarioRequest } from '../../../domain/dto/InventarioRequest.dto';
 import { CredencialesService } from '../../services/local/credenciales.service';
 import { InventarioCrearResponse, InventarioDetalleResponse, InventarioModificarResponse } from '../../../domain/dto/InventarioResponse.dto';
 import { form_inventario_vf } from '../../validator/fromValidator/inventario.validator';
+import { dataListSedes } from '../../../../../public/info/sedes.info';
+import { dataListEspecialidad } from '../../../../../public/info/especialidad.info';
 
 declare var bootstrap: any;
 
@@ -25,6 +27,9 @@ export class InventarioComponent implements OnInit {
   isSupervisorLinea = false;
 
   private myModal: any;
+
+  sedesList: string[] = dataListSedes;
+  especialidadList: string[] = dataListEspecialidad;
 
   data_inventario: InventarioModel = {
     id_inventario: 0,

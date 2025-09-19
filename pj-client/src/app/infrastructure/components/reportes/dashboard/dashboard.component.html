@@ -3,7 +3,7 @@
         <h1>Dashboard</h1>
         <a class=" btn btn-sm btn-primary shadow opacity-75"><i class="bi bi-download"></i> Generate Report</a>
     </div>
-    
+
     <div class="row">
         <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 ">
@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        
+
 
         <div class="col-xl-2 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 ">
@@ -120,15 +120,14 @@
                 </apx-chart>
             </div>
         </div>
+
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card-report shadow">
                 <h3>ESTADO DE PRODUCCION TOTAL</h3>
-                <apx-chart
-                [series]="chartOptionsRadial.series"
-                [chart]="chartOptionsRadial.chart"
-                [labels]="chartOptionsRadial.labels"
-                [plotOptions]="chartOptionsRadial.plotOptions">
-              </apx-chart>
+                <apx-chart [series]="chartOptionsRadial.series!" [chart]="chartOptionsRadial.chart!"
+                    [labels]="chartOptionsRadial.labels!" [plotOptions]="chartOptionsRadial.plotOptions!">
+                </apx-chart>
+
             </div>
 
         </div>

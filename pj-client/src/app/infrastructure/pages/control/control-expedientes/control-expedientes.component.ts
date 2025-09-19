@@ -372,6 +372,20 @@ export class ControlExpedientesComponent implements OnInit {
     }
 
     this.ListObservacionesControl = [];
+    this.data_control_temp = {
+      id_expediente: 0,
+      id_control: 0,
+      id_responsable: 0,
+      observaciones: '',
+      val_observaciones: null,
+      val_datos: null,
+      val_nitidez: null,
+      val_pruebas_impresion: null,      
+      val_copia_fiel: null,  
+      create_at: null,
+      responsable: null,
+      username: null, 
+    }
   }
 
   ObtenerMensajesById_expediente(id_expediente: number) {
