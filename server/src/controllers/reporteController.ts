@@ -395,6 +395,27 @@ class ReporteController {
     }
     
 
+    public async listarEventosUsuariosLogin(req: Request, res: Response): Promise<void> {
+        try {
+            //consulta los ultimos 30 dias
+            const consulta = ` 
+                SELECT *
+                FROM auditoria.t_logs_accesos
+                WHERE create_at >= NOW() - INTERVAL '30 days'
+                ORDER BY create_at DESC`;
+            const expediente = await db.query(consulta);
+
+            if (expediente && expediente['rows'].length > 0) {
+                res.json(expediente['rows']);
+            } else {
+                res.status(404).json({ text: 'no existe eventos usuario' });
+            }
+        } catch (error) {
+            console.error('Error al obtener eventos usuario', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    }
+
    
 
 }

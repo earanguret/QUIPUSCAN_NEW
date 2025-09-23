@@ -99,3 +99,11 @@ export interface produccion_serie_documental_reporte {
     fecha: string;
     total_expedientes: number;
   }
+
+  export interface eventos_usuarios_login{
+    id_log_acceso: number;
+    direccion_ip: string;
+    usuario: string;
+    detalle: string;
+    create_at: Date | string;
+  }

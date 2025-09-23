@@ -19,6 +19,7 @@ class ReporteRoutes {
         this.router.get('/api/reporte/produccion_serie_documental', reporteController.ProduccionSerieDocumental.bind(reporteController));
         this.router.get('/api/reporte/produccion_usuario', reporteController.ProduccionUsuario.bind(reporteController));
         this.router.post('/api/reporte/produccion_usuario_ultimos_dias', reporteController.ProduccionUsuarioUlitmosDias.bind(reporteController));
+        this.router.get('/api/reporte/eventos_usuarios_login', reporteController.listarEventosUsuariosLogin.bind(reporteController));
     }
 }
 

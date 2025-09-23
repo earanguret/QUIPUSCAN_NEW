@@ -1,1 +1,56 @@
-<p>auditoria-accesos works!</p>
+<div class="panel-report">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Auditoria / Accesos</h1>
+        <a class=" btn btn-sm btn-primary shadow opacity-75"><i class="bi bi-download"></i> Generate Report</a>
+    </div>
+
+
+    <div class="card shadow p-4">
+
+        <div class="table-responsive">
+            <div class="form-group">
+
+                <div class="d-flex justify-content-between align-items-end mb-2">
+                 
+                  
+                    <div class="d-flex flex-column ">
+                      <label for="buscar" class="form-label mb-1">Buscar:</label>
+                      <input 
+                        type="text" 
+                        id="buscar"
+                        name="buscar" 
+                        class="form-control form-control-sm" 
+                        style="width: 300px;" 
+                      >   
+                    </div>
+
+                    <button class="btn btn-success ">
+                        <i class="bi bi-file-earmark-excel-fill"></i> Descargar
+                      </button>
+                  </div>
+                <table id="excel-table" class="table text-center  table-hover">
+
+                    <thead class="thead-ligth bg-secondary text-white table-success">
+                        <tr>
+                            <th scope="col">NRO</th>
+                            <th class="text-start" scope="col">USERNAME</th>
+                            <th class="text-start" scope="col">DIRECCIÓN_IP</th>
+                            <th class="text-start" scope="col">DETALLE</th>
+                            <th scope="col">FECHA_REGISTRO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of listaEventosUsuarios, index as i" class="table-barra">
+                            <th scope="row">{{i+1}}</th>
+                            <td class="text-start"> {{item.usuario}}</td>
+                            <td class="text-start"> {{item.direccion_ip}}</td>
+                            <td class="text-start"> {{item.detalle}}</td>
+                            <td> {{ item.create_at | date: 'dd/MM/yyyy HH:mm:ss' }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

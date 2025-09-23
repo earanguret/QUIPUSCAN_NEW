@@ -39,4 +39,6 @@ export class UsuarioService {
   ObtenerSupervisorLinea(): Observable<UsuarioSupervisorLineaResponse>{
     return this.http.get<UsuarioSupervisorLineaResponse>(`${this.api_uri_usuario}/obtener/supervisor`)
   }
+
+  
 }

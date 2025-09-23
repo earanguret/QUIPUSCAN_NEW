@@ -162,13 +162,26 @@ export class DashboardComponent implements OnInit {
       plotOptions: {
         bar: {
           horizontal: false,
-          columnWidth: '55%',
-          borderRadius: 5,
+          columnWidth: '60%',
+          borderRadius: 4,
           borderRadiusApplication: 'end' as any,
+          dataLabels: {
+            position: 'top',
+          }
         }
       },
   
-      dataLabels: { enabled: false },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val) {
+          return val + "";
+        },
+        offsetY: -15,
+        style: {
+          fontSize: '10px',
+          colors: ["#304758"]
+        }
+      },
       stroke: { show: true, width: 2, colors: ['transparent'] },
   
       theme: { monochrome: { enabled: false } },
