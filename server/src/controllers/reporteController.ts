@@ -416,6 +416,26 @@ class ReporteController {
         }
     }
 
+    public async listarEventosModulos(req: Request, res: Response) {
+        try {
+            const consulta = ` 
+                        SELECT *  
+                        FROM auditoria.t_logs_eventos
+                        ORDER BY  create_at DESC
+                `;
+            const eventoModulo = await db.query(consulta);
+
+            if (eventoModulo && eventoModulo['rows'].length > 0) {
+                res.json(eventoModulo['rows']);
+            } else {
+                res.status(404).json({ text: 'no existe eventos por modulo' });
+            }
+        } catch (error) {
+            console.error('Error al obtener eventos por modulo', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    }
+
    
 
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { datos_estaticos, datos_usuarios, estado_produccion_total, eventos_usuarios_login, produccion_mensual, produccion_serie_documental_reporte, produccion_usuario, produccion_usuario_dias, serie_documental_reporte } from '../../../../domain/dto/ReporteResponse.dto';
+import { datos_estaticos, datos_usuarios, estado_produccion_total, eventos_modulos, eventos_usuarios_login, produccion_mensual, produccion_serie_documental_reporte, produccion_usuario, produccion_usuario_dias, serie_documental_reporte } from '../../../../domain/dto/ReporteResponse.dto';
 
 
 @Injectable({
@@ -49,4 +49,9 @@ export class ReporteService {
   ObtenerEventosUsuariosLogin(): Observable<eventos_usuarios_login[]>{
     return this.http.get<eventos_usuarios_login[]>(`${this.api_uri_reporte}/eventos_usuarios_login`)
   }
+
+  ObtenerEventosModulos(): Observable<eventos_modulos[]>{
+    return this.http.get<eventos_modulos[]>(`${this.api_uri_reporte}/eventos_modulos`)
+  }
+  
 }

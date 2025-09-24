@@ -107,3 +107,13 @@ export interface produccion_serie_documental_reporte {
     detalle: string;
     create_at: Date | string;
   }
+
+  export interface eventos_modulos {
+    id_log_evento: number;
+    direccion_ip: string;
+    usuario: string;
+    modulo: string;
+    detalle: string;
+    expediente: string;
+    create_at: Date | string;
+  }
