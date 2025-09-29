@@ -32,6 +32,7 @@ class EstadoExpedienteRoutes{
         this.router.put('/api/estado_expediente/rechazar/fedatarioIndizacion/:id_expediente', UpdateMiddleware,estadoExpedienteController.RechazarFedatarioIndizacion)
         this.router.get('/api/estado_expediente/mensajes/:id_expediente',estadoExpedienteController.obtenerMensajesById_expediente)
         this.router.put('/api/estado_expediente/mensajes/:id_expediente',estadoExpedienteController.guardarMensajeById_expediente)
+        this.router.get('/api/estado_expediente/:id_expediente',estadoExpedienteController.ObtenerEstadoExpedienteByIdExpediente)
 
     }
 }

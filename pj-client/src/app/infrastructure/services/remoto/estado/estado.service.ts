@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
 import { EstadoAsociarExpedientesADiscoRequest, EstadoRequest, mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
-import { AsociarExpedientesADiscoResponse, CrearEstadoResponse, EliminarEstadoResponse, EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
+import { AsociarExpedientesADiscoResponse, CrearEstadoResponse, EliminarEstadoResponse, EstadoExpedienteResponse, EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -84,5 +84,13 @@ export class EstadoService {
 
   GuardarMensajeById_expediente(id_expediente:number,mensaje:mensajeRequest):Observable<MensajeGuardarResponse>{
     return this.http.put<MensajeGuardarResponse>(`${this.api_uri_estado}/mensajes/${id_expediente}`,mensaje)
+  }
+
+  ObtenerEstadoExpediente(id_expediente:number):Observable<EstadoExpedienteResponse>{
+    return this.http.get<EstadoExpedienteResponse>(`${this.api_uri_estado}/${id_expediente}`)
+  }
+
+  ObtenerEstadoExpedienteByIdExpediente(id_expediente:number):Observable<EstadoExpedienteResponse>{
+    return this.http.get<EstadoExpedienteResponse>(`${this.api_uri_estado}/${id_expediente}`)
   }
 }

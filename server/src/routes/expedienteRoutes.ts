@@ -22,6 +22,7 @@ class ExpedienteRoutes{
         this.router.delete('/api/expediente/:id/:app_user', DeleteExpMiddleware,expedienteController.EliminarExpediente)
         this.router.put('/api/expediente/:id', UpdateMiddleware ,expedienteController.ModificarExpediente)
         this.router.get('/api/expediente/pendientesDisco/:id_inventario',expedienteController.ObtenerExpedientesById_inventario_sinDisco)
+        this.router.post('/api/expediente/lista/coincidencias',expedienteController.ObtenerExpedintesByNro_expediente)
     }
 }
 

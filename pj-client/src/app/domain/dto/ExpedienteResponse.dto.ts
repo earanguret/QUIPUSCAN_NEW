@@ -14,6 +14,13 @@ export interface ExpedienteResponse {
     estado_finalizado?: string;
 }
 
+export interface ExpedienteCoincidenciaResponse{
+    id_expediente: number;
+    nro_expediente: string;
+    id_inventario: number;
+    codigo_inventario: string | null;
+}
+
 export interface ExpedienteResponseDataView {
     id_expediente: number;
     nro_expediente: string;

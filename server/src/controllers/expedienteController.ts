@@ -13,6 +13,27 @@ class ExpedienteController {
         }
     }
 
+    public async ObtenerExpedintesByNro_expediente(req: Request, res: Response): Promise<any> {
+        try {
+            const { nro_expediente } = req.body;
+            const consulta = `
+                            SELECT 
+                                id_expediente,
+                                id_inventario,
+                                id_responsable,
+                                nro_expediente,
+                                cod_paquete
+                            FROM archivo.t_expediente
+                            WHERE nro_expediente ILIKE '%' || $1 || '%';
+                                 `;
+            const expedientes = await db.query(consulta, [nro_expediente]);
+            res.status(200).json(expedientes["rows"]);
+        } catch (error) {
+            console.error("Error al obtener expedientes:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
     public async ObtenerExpedientesById_inventario(req: Request, res: Response): Promise<any> {
         try {
             const { id_inventario } = req.params;

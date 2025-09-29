@@ -798,6 +798,37 @@ class EstadoExpedienteController {
     }
 
 
+    public async ObtenerEstadoExpedienteByIdExpediente(req: Request, res: Response): Promise<any>{
+        try {
+            const { id_expediente } = req.params;
+            const consulta = `
+                        SELECT 
+                            e.id_estado_expediente, 
+                            e.id_expediente, 
+                            ex.id_inventario,
+                            e.estado_recepcionado,
+                            e.estado_preparado,
+                            e.estado_digitalizado,
+                            e.estado_indizado,
+                            e.estado_controlado,
+                            e.estado_fedatado,
+                            e.id_disco,
+                            e.mensajes
+                        FROM archivo.t_estado_expediente e
+                        JOIN archivo.t_expediente ex 
+                            ON e.id_expediente = ex.id_expediente
+                        WHERE e.id_expediente  = $1`;
+            const expedientes = await db.query(consulta, [id_expediente]);
+            if (expedientes && expedientes["rows"].length > 0) {
+                res.json(expedientes["rows"][0]);
+            } else {
+                res.status(404).json({ text: "no existe el total de imagenes" }); 
+            }
+        } catch (error) {
+            console.error("Error al obtener total de imagenes:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
 
 }
 
