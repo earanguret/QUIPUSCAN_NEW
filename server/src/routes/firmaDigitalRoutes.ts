@@ -14,6 +14,7 @@ class FirmaDigitalRoutes {
         this.router.post('/api/firma/', firmaDigitalController.firmarDocumentoDesdeFTP.bind(firmaDigitalController));
         this.router.post('/api/firma/lote', firmaDigitalController.firmarLoteDesdeFTP.bind(firmaDigitalController));
         this.router.post('/api/firma/buscar', firmaDigitalController.buscarFirmaDigitalByUsername.bind(firmaDigitalController));
+        this.router.post('/api/firma/detalle/certificado', firmaDigitalController.CertInfoFromFTP.bind(firmaDigitalController));
     }
 }
 

@@ -51,6 +51,7 @@ export class FedatarioExpedientesComponent implements OnInit {
 
   private myModalFedatario: any;
   private myModalReception: any;
+  private myModalDetalleIndice: any;
   show_message_panel: boolean = false;
   show_sign_panel: boolean = false;
   id_inventario: number = 0;
@@ -225,13 +226,41 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.ListarExpedientes();
     this.ObternerCodigoInventario()
     this.encontrarCertificado()
+    this.inicializadorModales()
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
+  }
+
+   
+
+  inicializadorModales() {
+    this.myModalDetalleIndice = new bootstrap.Modal(document.getElementById('Modal_detalle_indice'), {
+      backdrop: false,
+      keyboard: true
+    });
+
+    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+    this.myModalFedatario = new bootstrap.Modal(document.getElementById('ModalFedatario'), {
+      backdrop: true,
+      keyboard: true
+    });
+
+    this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'), {
+      backdrop: false,
+      keyboard: false
+    });
+
+
+   
+
   }
 
   openModalReception(id_expediente: number) {
     this.id_expediente_temp = id_expediente;
     this.modificarControl = false;
-    this.myModalReception = new bootstrap.Modal(document.getElementById('ModalReception'));
     this.myModalReception.show();
   }
 
@@ -239,10 +268,32 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.myModalReception.hide();
 
   }
+
+  openModalDetalleIndice(items: any[], index: number) {
+    console.log('datos detalle indice', items[index]);
+
+    this.myModalDetalleIndice.show();
+
+    // Setear valores
+    (<HTMLInputElement>document.getElementById('indizacion_descripcion_2')).value = items[index].descripcion;
+    (<HTMLInputElement>document.getElementById('indizacion_indice_2')).value = items[index].indice;
+    (<HTMLInputElement>document.getElementById('indizacion_fojas_2')).value = items[index].fojas;
+    (<HTMLInputElement>document.getElementById('fecha_indice_2')).value = items[index].fecha;
+    (<HTMLInputElement>document.getElementById('indizacion_textarea_2')).value = items[index].check_textarea;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_original_2')).checked = items[index].check_original;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_2')).checked = items[index].check_copia;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_certificada_2')).checked = items[index].check_copia_certificada;
+    (<HTMLInputElement>document.getElementById('indizacion_radio_copia_copia_certificada_2')).checked = items[index].check_copia_copia_certificada;
+  }
+
+  closeModalDetalleIndice() {
+    this.myModalDetalleIndice.hide();
+  }
+
+
   openModalFedatario(expediente_temp: ExpedienteResponse) {
 
     this.id_expediente_temp = expediente_temp.id_expediente;
-    this.myModalFedatario = new bootstrap.Modal(document.getElementById('ModalFedatario'));
     this.myModalFedatario.show();
     this.mostrar_mensajes_expediente = false;
     this.ObtenerExpedienteDataViewXid(expediente_temp.id_expediente);
@@ -296,7 +347,6 @@ export class FedatarioExpedientesComponent implements OnInit {
 
   openModalDesaprobar() {
 
-    this.myModalDesaprobar = new bootstrap.Modal(document.getElementById('exampleModalCenter_desaprobar'));
     this.myModalDesaprobar.show();
   }
 

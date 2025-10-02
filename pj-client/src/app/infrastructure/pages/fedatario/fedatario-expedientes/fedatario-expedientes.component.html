@@ -108,7 +108,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="ModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<div  class="modal fade" id="ModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
@@ -136,7 +136,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="ModalFedatario" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<div data-bs-focus="false" class="modal fade" id="ModalFedatario" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog   modal-custom-width " role="document">
         <div class="modal-content" style="height: 94vh;">
@@ -325,13 +325,12 @@
 
                                             <div class="form-group mt-3">
                                                 <label for="demandante" class="form-label mb-1">Demandante(s):</label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div *ngFor="let item of ListDamandantes; let i = index" class="mb-2 ">
                                                     <div class="wrapper-tag position-relative">
                                                         <div
                                                             class="form-control tag d-flex justify-content-between align-items-center">
                                                             <span>{{ item.demandante }}</span>
-                                                            <span>{{ item.id }}</span>
+                                                            <span>{{ item.identificador }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -340,48 +339,37 @@
 
                                             <div class="form-group mt-3 ">
                                                 <label for="demandados" class="form-label mb-1">Demandado(s): </label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div *ngFor="let item of ListDamandados; let i = index" class="mb-2 ">
                                                     <div class="wrapper-tag position-relative">
                                                         <div
                                                             class="form-control tag d-flex justify-content-between align-items-center">
                                                             <span>{{ item.demandado }}</span>
-                                                            <span>{{ item.id }}</span>
+                                                            <span>{{ item.identificador }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
-
-
                                             </div>
 
                                             <div class="form-group mt-3 ">
                                                 <label for="indice" class="form-label mb-1">Indice: </label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div id="list-container">
                                                     <ol>
-                                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1">
-                                                            <span class="titulo_index">{{ item.descripcion }} </span>
-                                                            <span class="titulo_index">{{ '(Pg.'+ item.indice+' )' }}
+                                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1" >
+                                                            <span class="titulo_index" (click)="openModalDetalleIndice(dataIndice, i)">{{ item.descripcion }} </span>
+                                                            <span class="titulo_index" (click)="openModalDetalleIndice(dataIndice, i)">{{ '(Pg.'+ item.indice+' )' }}
                                                             </span>
 
                                                             <ol *ngIf="item.subItems && item.subItems.length > 0">
-                                                                <li
+                                                                <li 
                                                                     *ngFor="let subItem of item.subItems; let j = index">
-                                                                    <span class="subtitulo_index">{{ subItem.descripcion
-                                                                        }} </span>
-                                                                    <span class="subtitulo_index">{{ '(Pg.'+
-                                                                        subItem.indice+' )' }} </span>
-
+                                                                    <span class="subtitulo_index" (click)="openModalDetalleIndice(item.subItems, j)">{{ subItem.descripcion}} </span>
+                                                                    <span class="subtitulo_index" (click)="openModalDetalleIndice(item.subItems, j)">{{ '(Pg.'+ subItem.indice+' )' }} </span>
                                                                     <ol
                                                                         *ngIf="subItem.subItems && subItem.subItems.length > 0">
                                                                         <li
-                                                                            *ngFor="let subSubItem of subItem.subItems; let k = index">
-                                                                            <span class="subsubtitulo_index">{{
-                                                                                subSubItem.descripcion }}
-                                                                            </span>
-                                                                            <span class="subsubtitulo_index">{{ '(Pg.'+
-                                                                                subSubItem.indice+'
-                                                                                )' }} </span>
+                                                                            *ngFor="let subSubItem of subItem.subItems; let k = index" >
+                                                                            <span class="subsubtitulo_index" (click)="openModalDetalleIndice(subItem.subItems, k)">{{subSubItem.descripcion }}</span>
+                                                                            <span class="subsubtitulo_index" (click)="openModalDetalleIndice(subItem.subItems, k)">{{ '(Pg.'+ subSubItem.indice+')' }} </span>
 
                                                                         </li>
                                                                     </ol>
@@ -395,16 +383,13 @@
 
                                             <div class="form-group mt-3">
                                                 <label for="fojas" class="form-label mb-1">Observaciones: </label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
                                                 <div *ngFor="let observacion of ListObservacionesIndizacion; let i = index"
                                                     class="  mb-2">
                                                     <div class="observation-wrapper position-relative">
                                                         <input type="text" readonly class="form-control observation-tag"
                                                             name="observacion" value="{{observacion}}">
-
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </section>
                                         <!--  -->
@@ -635,6 +620,78 @@
                         <button type="button" class="cancelar-btn mx-2"
                             (click)="closeModalDesaprobar()">Cancelar</button>
                         <button type="button" class="registrar-btn mx-2" (click)="rechazarExpediente()">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL DE VERIFICACION DE DATOS INDIZACION -->
+
+<div class="modal fade modal-lg" id="Modal_detalle_indice" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content shadow-lg" style="border: 4px solid #ccc; background-color: rgb(243, 243, 241);">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">detalle Indización</h5>
+            </div>
+            <div class="form-group container">
+                <div class="m-1 p-1 px-2">
+                    <div class="form-group mt-3">
+                        <label for="descripcion" class="form-label">Descripción:</label>
+                        <input id="indizacion_descripcion_2" type="text" class="form-control form-control-sm" readonly>
+                    </div>
+                    <div class="form-group mt-3" style="display: flex; gap: 1rem;">
+                        <div>
+                            <label for="indice" class="form-label">Página:</label>
+                            <input id="indizacion_indice_2" type="number" class="form-control form-control-sm" readonly>
+                        </div>
+                        <div>
+                            <label for="fojas" class="form-label">Fojas:</label>
+                            <input id="indizacion_fojas_2" type="number" class="form-control form-control-sm" readonly>
+                        </div>
+                        <div>
+                            <label for="fecha_indice" class="form-label ">Fecha:</label>
+                            <input id="fecha_indice_2" type="date" class="form-control form-control-sm"
+                                name="fecha_indice" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3 no-edit">
+                        <label for="opciones" class="form-label">Característica:</label>
+                        
+                        <div class="form-check mx-4">
+                            <input id="indizacion_radio_original_2" name="caracteristica_2" class="form-check-input " type="radio" >
+                            <label class="form-check-label" for="indizacion_radio_original">Original</label>
+                        </div>
+                    
+                        <div class="form-check mx-4">
+                            <input id="indizacion_radio_copia_2" name="caracteristica_2" class="form-check-input" type="radio" >
+                            <label class="form-check-label" for="indizacion_radio_copia">Copia</label>
+                        </div>
+                    
+                        <div class="form-check mx-4">
+                            <input id="indizacion_radio_copia_certificada_2" name="caracteristica_2" class="form-check-input" type="radio"  >
+                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia certificada</label>
+                        </div>
+                    
+                        <div class="form-check mx-4">
+                            <input id="indizacion_radio_copia_copia_certificada_2" name="caracteristica_2" class="form-check-input" type="radio" >
+                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de copia certificada</label>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="fecha_indice" class="form-label ">Detalle:</label>
+                        <textarea class="form-control" id="indizacion_textarea_2" rows="3" readonly></textarea>
+                    </div>
+
+
+                    <!-- <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary tn-sm" id="boton_agregar_subitem" >{{modificar_indizacion?'Modificar':'Agregar'}}</button>
+                </div> -->
+                    <div class="d-flex justify-content-center mt-3 mb-2">
+                        <button type="button" class="cancelar-btn mx-2" (click)="closeModalDetalleIndice()">Cancelar</button>
                     </div>
                 </div>
             </div>
