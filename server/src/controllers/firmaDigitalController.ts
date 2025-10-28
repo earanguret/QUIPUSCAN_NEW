@@ -545,9 +545,6 @@ class FtpServerController {
     }
 
 
-
-
-
     public async CertInfoFromFTP(req: Request, res: Response): Promise<any> {
         let client;
         const fixEncoding = (value: string): string => {
@@ -575,7 +572,7 @@ class FtpServerController {
             }
 
             // Procesar certificado con forge
-            const p12Asn1 = forge.asn1.fromDer(forge.util.createBuffer(certBuffer));
+            const p12Asn1 = forge.asn1.fromDer(forge.util.createBuffer(new Uint8Array(certBuffer)));
             const p12 = forge.pkcs12.pkcs12FromAsn1(p12Asn1, false, password);
 
             const bags = p12.getBags({ bagType: forge.pki.oids.certBag });
@@ -625,6 +622,8 @@ class FtpServerController {
             client?.close();
         }
     }
+
+    
 
 }
 

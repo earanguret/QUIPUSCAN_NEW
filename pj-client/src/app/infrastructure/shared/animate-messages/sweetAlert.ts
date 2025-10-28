@@ -98,4 +98,39 @@ export class SweetAlert {
     });
   }
 
+  // mensaje para continuar con el proceso
+  async MensajeContinuacion(mensaje: string, titulo: string = '¿Deseas continuar?'): Promise<boolean> {
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-success mx-2',
+      cancelButton: 'btn btn-danger mx-2'
+    },
+    buttonsStyling: false
+  });
+
+  const result = await swalWithBootstrapButtons.fire({
+    title: titulo,
+    text: mensaje,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, continuar',
+    cancelButtonText: 'No, cancelar',
+    reverseButtons: true
+  });
+
+  if (result.isConfirmed) {
+    return true;
+  } else if (result.dismiss === Swal.DismissReason.cancel) {
+    await swalWithBootstrapButtons.fire({
+      title: 'Cancelado',
+      text: 'No se realizó ninguna acción.',
+      icon: 'error'
+    });
+    return false;
+  }
+
+  return false;
+}
+
+
 }

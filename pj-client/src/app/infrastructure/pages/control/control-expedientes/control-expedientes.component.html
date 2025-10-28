@@ -20,11 +20,15 @@
                     <div class="title_meta mt-2">Información</div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
-                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Aprobados {{nro_concluidos}}</div>
-                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
+                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i
+                                    class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
+                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i
+                                    class="bi bi-pencil-square mx-2"></i> Aprobados {{nro_concluidos}}</div>
+                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i
+                                    class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
                         </div>
-                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
+                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i
+                                class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
                     </div>
                 </div>
                 <div class="card rounded shadow border-2 mt-2">
@@ -58,7 +62,7 @@
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
                                         <td (click)="obtenerExpedienteTem(expediente)">
-                                       
+
                                             <button *ngIf="expediente.estado_controlado==null"
                                                 class="btn btn-secondary btn-sm"
                                                 (click)="openModalReception(expediente.id_expediente)">
@@ -97,7 +101,8 @@
                                                     height="24px">
                                                 <img *ngIf="(expediente.estado_controlado=='T' && (expediente.estado_fedatado=='T' || expediente.estado_fedatado=='A'))"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
-                                                    title="ver información" width="24px" height="24px" (click)="openModalControlView(expediente.id_expediente)">
+                                                    title="ver información" width="24px" height="24px"
+                                                    (click)="openModalControlView(expediente.id_expediente)">
                                                 <img *ngIf="expediente.estado_controlado=='T' && (expediente.estado_fedatado==null || expediente.estado_fedatado=='R')"
                                                     src="/icon/lapiz.png" alt="logo" title="ver información"
                                                     width="24px" height="24px" class="mx-3"
@@ -137,7 +142,8 @@
                     preparación,
                     debe aprobar la recepcion del expediente.</p>
                 <div class="form-check text-start">
-                    <input class="form-check-input" type="checkbox" value="" id="checkChecked" [(ngModel)]="checkAprobado">
+                    <input class="form-check-input" type="checkbox" value="" id="checkChecked"
+                        [(ngModel)]="checkAprobado">
                     <label class="form-check-label" for="checkChecked">
                         Confirmo tener el documento fisico en mi poder
                     </label>
@@ -145,7 +151,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()" [disabled]="!checkAprobado">Aprobar</button>
+                <button type="button" class="btn btn-primary btn-sm" (click)="RecepcionFlujograma()"
+                    [disabled]="!checkAprobado">Aprobar</button>
             </div>
         </div>
     </div>
@@ -370,22 +377,34 @@
                                                 <label for="indice" class="form-label mb-1">Indice: </label>
                                                 <div id="list-container">
                                                     <ol>
-                                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1" >
-                                                            <span class="titulo_index" (click)="openModalDetalleIndice(dataIndice, i)">{{ item.descripcion }} </span>
-                                                            <span class="titulo_index" (click)="openModalDetalleIndice(dataIndice, i)">{{ '(Pg.'+ item.indice+' )' }}
+                                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1">
+                                                            <span class="titulo_index"
+                                                                (click)="openModalDetalleIndice(dataIndice, i)">{{
+                                                                item.descripcion }} </span>
+                                                            <span class="titulo_index"
+                                                                (click)="openModalDetalleIndice(dataIndice, i)">{{
+                                                                '(Pg.'+ item.indice+' )' }}
                                                             </span>
 
                                                             <ol *ngIf="item.subItems && item.subItems.length > 0">
-                                                                <li 
+                                                                <li
                                                                     *ngFor="let subItem of item.subItems; let j = index">
-                                                                    <span class="subtitulo_index" (click)="openModalDetalleIndice(item.subItems, j)">{{ subItem.descripcion}} </span>
-                                                                    <span class="subtitulo_index" (click)="openModalDetalleIndice(item.subItems, j)">{{ '(Pg.'+ subItem.indice+' )' }} </span>
+                                                                    <span class="subtitulo_index"
+                                                                        (click)="openModalDetalleIndice(item.subItems, j)">{{
+                                                                        subItem.descripcion}} </span>
+                                                                    <span class="subtitulo_index"
+                                                                        (click)="openModalDetalleIndice(item.subItems, j)">{{
+                                                                        '(Pg.'+ subItem.indice+' )' }} </span>
                                                                     <ol
                                                                         *ngIf="subItem.subItems && subItem.subItems.length > 0">
                                                                         <li
-                                                                            *ngFor="let subSubItem of subItem.subItems; let k = index" >
-                                                                            <span class="subsubtitulo_index" (click)="openModalDetalleIndice(subItem.subItems, k)">{{subSubItem.descripcion }}</span>
-                                                                            <span class="subsubtitulo_index" (click)="openModalDetalleIndice(subItem.subItems, k)">{{ '(Pg.'+ subSubItem.indice+')' }} </span>
+                                                                            *ngFor="let subSubItem of subItem.subItems; let k = index">
+                                                                            <span class="subsubtitulo_index"
+                                                                                (click)="openModalDetalleIndice(subItem.subItems, k)">{{subSubItem.descripcion
+                                                                                }}</span>
+                                                                            <span class="subsubtitulo_index"
+                                                                                (click)="openModalDetalleIndice(subItem.subItems, k)">{{
+                                                                                '(Pg.'+ subSubItem.indice+')' }} </span>
 
                                                                         </li>
                                                                     </ol>
@@ -412,54 +431,65 @@
                                         <!--  -->
                                         <section class="section-area">
                                             <h4 class="title-section">Data Control de calidad</h4>
-                                            <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
-                                            <div *ngIf="this.data_control_temp.id_control!=0" class="sub_titulo_expediente  ">
-                                                <p class="p-subtitle "> <strong>Responsable:</strong>
-                                                    {{data_control_temp.responsable}}</p>
-                                                <p class="p-subtitle"><strong>Creación:</strong>
-                                                    {{data_control_temp.create_at | date:'dd/MM/yyyy'}}</p>
+                                            <hr class="border border-secondary opacity-75 my-0 py-0">
+
+                                            <div *ngIf="data_control_temp.id_control != 0"
+                                                class="sub_titulo_expediente">
+                                                <p class="p-subtitle">
+                                                    <strong>Responsable:</strong> {{ data_control_temp.responsable }}
+                                                </p>
+                                                <p class="p-subtitle">
+                                                    <strong>Creación:</strong> {{ data_control_temp.create_at |
+                                                    date:'dd/MM/yyyy' }}
+                                                </p>
                                             </div>
+
                                             <label for="fojas" class="form-label mb-1">Validaciones: </label>
-                                            <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0"> -->
+
                                             <div class="form-check mt-3">
-                                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                                <input class="form-check-input" type="checkbox" id="chkObservaciones"
                                                     name="observaciones" [(ngModel)]="data_control.val_observaciones">
-                                                <label class="form-check-label" for="checkChecked">VERIFICACION DE
-                                                    OBSERVACIONES </label>
+                                                <label class="form-check-label" for="chkObservaciones">VERIFICACIÓN DE
+                                                    OBSERVACIONES</label>
                                             </div>
+
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                                <input class="form-check-input" type="checkbox" id="chkDatos"
                                                     name="datos" [(ngModel)]="data_control.val_datos">
-                                                <label class="form-check-label" for="checkChecked">VERIFICACION DE
+                                                <label class="form-check-label" for="chkDatos">VERIFICACIÓN DE
                                                     DATOS</label>
                                             </div>
+
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                                <input class="form-check-input" type="checkbox" id="chkNitidez"
                                                     name="nitidez" [(ngModel)]="data_control.val_nitidez">
-                                                <label class="form-check-label" for="checkChecked">VERIFICACION DE
+                                                <label class="form-check-label" for="chkNitidez">VERIFICACIÓN DE
                                                     NITIDEZ</label>
                                             </div>
+
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                                <input class="form-check-input" type="checkbox" id="chkImpresion"
                                                     name="impresion" [(ngModel)]="data_control.val_pruebas_impresion">
-                                                <label class="form-check-label" for="checkChecked">PRUEBAS DE
-                                                    IMPRESION</label>
+                                                <label class="form-check-label" for="chkImpresion">PRUEBAS DE
+                                                    IMPRESIÓN</label>
                                             </div>
+
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="checkChecked"
+                                                <input class="form-check-input" type="checkbox" id="chkCopiaFiel"
                                                     name="copia_fiel" [(ngModel)]="data_control.val_copia_fiel">
-                                                <label class="form-check-label" for="checkChecked">COPIA FIEL DEL
+                                                <label class="form-check-label" for="chkCopiaFiel">COPIA FIEL DEL
                                                     ORIGINAL</label>
                                             </div>
 
                                             <div class="form-group mt-3">
                                                 <label for="fojas" class="form-label mb-1">Observaciones: </label>
-                                                <!-- <hr style="border: 1px solid #6c757d;" class="my-0 py-0 mb-2"> -->
+
                                                 <div *ngFor="let observacion of ListObservacionesControl; let i = index"
-                                                    class="  mb-2">
+                                                    class="mb-2">
                                                     <div class="observation-wrapper position-relative">
                                                         <input type="text" readonly class="form-control observation-tag"
-                                                            name="observacion" value="{{observacion}}">
+                                                            name="observacion" [value]="observacion">
+
                                                         <div class="observation-icons">
                                                             <i class="bi bi-chevron-down obs-icon"
                                                                 (click)="BajarObservacion(i)"></i>
@@ -470,20 +500,26 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
                                                 <input type="text" class="form-control mt-3 observation-input"
                                                     name="observacion" id="observacion">
+
                                                 <button type="button" class="btn btn-secondary btn-sm opacity-75 mt-2"
                                                     (click)="AgregarObservacion()">+ Añadir observación</button>
                                             </div>
                                         </section>
+
                                     </fieldset>
                                 </form>
                             </div>
 
                             <!-- Elemento inferior (botones) fijo abajo -->
-                            <div class="d-flex justify-content-between" style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925;">
-                                <button *ngIf="data_expediente_temp.estado_controlado == null || data_expediente_temp.estado_controlado == 'R' || data_expediente_temp.estado_controlado == 'A'" type="button" class="rechazar-btn mx-2"
-                                    (click)="openModalDesaprobar()" >Rechazar</button>
+                            <div class="d-flex justify-content-between"
+                                style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925;">
+                                <button
+                                    *ngIf="data_expediente_temp.estado_controlado == null || data_expediente_temp.estado_controlado == 'R' || data_expediente_temp.estado_controlado == 'A'"
+                                    type="button" class="rechazar-btn mx-2"
+                                    (click)="openModalDesaprobar()">Rechazar</button>
                                 <div>
 
                                     <button type="button" class="cancelar-btn mx-2"
@@ -530,15 +566,15 @@
                     <p>{{respuesta.respuesta}}</p>
 
                 </div>
-               
+
             </div>
         </div>
     </div>
 
 
     <!-- Boton de notas -->
-    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
-        (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
+    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action=""
+        data-ember-action-4992="4992" (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
         <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
         <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
     </div>
@@ -616,25 +652,31 @@
                     </div>
                     <div class="form-group mt-3">
                         <label for="opciones" class="form-label">Característica:</label>
-                        
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_original_2" name="caracteristica_2" class="form-check-input" type="radio">
+                            <input id="indizacion_radio_original_2" name="caracteristica_2" class="form-check-input"
+                                type="radio">
                             <label class="form-check-label" for="indizacion_radio_original">Original</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_2" name="caracteristica_2" class="form-check-input" type="radio">
+                            <input id="indizacion_radio_copia_2" name="caracteristica_2" class="form-check-input"
+                                type="radio">
                             <label class="form-check-label" for="indizacion_radio_copia">Copia</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_certificada_2" name="caracteristica_2" class="form-check-input" type="radio">
-                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia certificada</label>
+                            <input id="indizacion_radio_copia_certificada_2" name="caracteristica_2"
+                                class="form-check-input" type="radio">
+                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia
+                                certificada</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_copia_certificada_2" name="caracteristica_2" class="form-check-input" type="radio">
-                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de copia certificada</label>
+                            <input id="indizacion_radio_copia_copia_certificada_2" name="caracteristica_2"
+                                class="form-check-input" type="radio">
+                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de
+                                copia certificada</label>
                         </div>
                     </div>
                     <div class="form-group mt-3">
@@ -647,7 +689,8 @@
                     <button class="btn btn-primary tn-sm" id="boton_agregar_subitem" >{{modificar_indizacion?'Modificar':'Agregar'}}</button>
                 </div> -->
                     <div class="d-flex justify-content-center mt-3 mb-2">
-                        <button type="button" class="cancelar-btn mx-2" (click)="closeModalDetalleIndice()">Cancelar</button>
+                        <button type="button" class="cancelar-btn mx-2"
+                            (click)="closeModalDetalleIndice()">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -657,15 +700,16 @@
 
 
 <!--  -->
-<div class="modal fade" id="ModalControlView" tabindex="-1" role="dialog"
-    aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+<div class="modal fade" id="ModalControlView" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog   modal-custom-width " role="document">
         <div class="modal-content" style="height: 94vh;">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">DATA CONTROL DE CALIDAD</h5>
             </div>
             <div class="modal-body m-0 p-0">
-                <app-data-progress-view *ngIf="mostrarControl" [id_expediente]="id_expediente_temp" [modulo]="'CONTROL'"></app-data-progress-view>
+                <app-data-progress-view *ngIf="mostrarControl" [id_expediente]="id_expediente_temp"
+                    [modulo]="'CONTROL'"></app-data-progress-view>
             </div>
 
         </div>

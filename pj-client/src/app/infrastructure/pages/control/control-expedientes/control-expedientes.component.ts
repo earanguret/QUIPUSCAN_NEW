@@ -33,7 +33,6 @@ import { ControlModel } from '../../../../domain/models/Control.model';
 import { Mensaje } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
-
 import { DataProgressViewComponent } from '../../../components/data-progress-view/data-progress-view.component';
 
 declare var bootstrap: any;
@@ -380,11 +379,11 @@ export class ControlExpedientesComponent implements OnInit {
       val_observaciones: null,
       val_datos: null,
       val_nitidez: null,
-      val_pruebas_impresion: null,      
-      val_copia_fiel: null,  
+      val_pruebas_impresion: null,
+      val_copia_fiel: null,
       create_at: null,
       responsable: null,
-      username: null, 
+      username: null,
     }
   }
 
@@ -564,34 +563,120 @@ export class ControlExpedientesComponent implements OnInit {
     }
   }
 
-  GuardarControl() {
-    const data_control_request: ControlRequest = {
-      id_responsable: this.credencialesService.credenciales.id_usuario,
-      id_expediente: this.id_expediente_temp,
-      observaciones: this.ListObservacionesControl.length ? this.ListObservacionesControl.join('|') : null,
-      val_observaciones: this.data_control.val_observaciones,
-      val_datos: this.data_control.val_datos,
-      val_nitidez: this.data_control.val_nitidez,
-      val_pruebas_impresion: this.data_control.val_pruebas_impresion,
-      val_copia_fiel: this.data_control.val_copia_fiel,
-      app_user: this.credencialesService.credenciales.username
+async GuardarControl(): Promise<void> {
+  const { id_usuario, username } = this.credencialesService.credenciales;
+
+  const data_control_request: ControlRequest = {
+    id_responsable: id_usuario,
+    id_expediente: this.id_expediente_temp,
+    observaciones: this.ListObservacionesControl.length
+      ? this.ListObservacionesControl.join('|')
+      : null,
+    val_observaciones: this.data_control.val_observaciones,
+    val_datos: this.data_control.val_datos,
+    val_nitidez: this.data_control.val_nitidez,
+    val_pruebas_impresion: this.data_control.val_pruebas_impresion,
+    val_copia_fiel: this.data_control.val_copia_fiel,
+    app_user: username,
+  };
+
+  // ✅ Revisa si hay algún valor false
+  const controles = [
+    data_control_request.val_pruebas_impresion,
+    data_control_request.val_copia_fiel,
+    data_control_request.val_nitidez,
+    data_control_request.val_datos,
+    data_control_request.val_observaciones
+  ];
+
+  const hayCamposFalsos = controles.includes(false || null);
+
+  // ✅ Si hay falsos, pide confirmación
+  if (hayCamposFalsos) {
+    const continuar = await this.sweetAlert.MensajeContinuacion(
+      '¿deseas continuar con el proceso?',
+      'Algunos campos están sin marcar'
+    );
+
+    if (!continuar) {
+      console.log('❌ Proceso cancelado por el usuario.');
+      return;
     }
-    console.log(data_control_request)
-    this.controlService.CrearControl(data_control_request).subscribe({
-      next: (data: CrearControlResponse) => {
-        console.log(data.message);
-      },
-      error: (error) => {
-        console.log(error);
-      },
-      complete: () => {
-        console.log('Aprobacion de control completado');
-        this.EstadoControlTrabajado()
-        this.closeModalControl();
-        this.sweetAlert.MensajeSimpleSuccess('Expediente Controlado', `Expediente ${this.data_preparacion_header.nro_expediente} paso el control de calidad con exito`);
-      }
-    })
   }
+
+  // ✅ Ejecuta la creación del control
+  this.controlService.CrearControl(data_control_request).subscribe({
+    next: (data: CrearControlResponse) => {
+      console.log('✅ Control creado:', data.message);
+    },
+    error: (error) => {
+      console.error('❌ Error al crear control:', error);
+      this.sweetAlert.MensajeError('Error No se pudo completar el control de calidad.');
+    },
+    complete: () => {
+      console.log('✔️ Aprobación de control completada');
+      this.EstadoControlTrabajado();
+      this.closeModalControl();
+      this.sweetAlert.MensajeSimpleSuccess(
+        'Expediente Controlado',
+        `Expediente ${this.data_preparacion_header.nro_expediente} pasó el control de calidad con éxito.`
+      );
+    },
+  });
+}
+
+  // GuardarControl() {
+  //   const data_control_request: ControlRequest = {
+  //     id_responsable: this.credencialesService.credenciales.id_usuario,
+  //     id_expediente: this.id_expediente_temp,
+  //     observaciones: this.ListObservacionesControl.length ? this.ListObservacionesControl.join('|') : null,
+  //     val_observaciones: this.data_control.val_observaciones,
+  //     val_datos: this.data_control.val_datos,
+  //     val_nitidez: this.data_control.val_nitidez,
+  //     val_pruebas_impresion: this.data_control.val_pruebas_impresion,
+  //     val_copia_fiel: this.data_control.val_copia_fiel,
+  //     app_user: this.credencialesService.credenciales.username
+  //   }
+
+  //   if (this.data_control.val_pruebas_impresion == false || this.data_control.val_copia_fiel == false || this.data_control.val_nitidez == false || this.data_control.val_datos == false || this.data_control.val_observaciones == false) {
+  //     let  result =  this.sweetAlert.MensajeContinuacion('algunos campos estan vacios, continuar con el proceso?', '¿Deseas continuar?')
+  //     if ( result) {
+  //       this.controlService.CrearControl(data_control_request).subscribe({
+  //         next: (data: CrearControlResponse) => {
+  //           console.log(data.message);
+  //         },
+  //         error: (error) => {
+  //           console.log(error);
+  //         },
+  //         complete: () => {
+  //           console.log('Aprobacion de control completado');
+  //           this.EstadoControlTrabajado()
+  //           this.closeModalControl();
+  //           this.sweetAlert.MensajeSimpleSuccess('Expediente Controlado', `Expediente ${this.data_preparacion_header.nro_expediente} paso el control de calidad con exito`);
+  //         }
+  //       })
+  //     }
+
+  //   } else {
+  //     this.controlService.CrearControl(data_control_request).subscribe({
+  //       next: (data: CrearControlResponse) => {
+  //         console.log(data.message);
+  //       },
+  //       error: (error) => {
+  //         console.log(error);
+  //       },
+  //       complete: () => {
+  //         console.log('Aprobacion de control completado');
+  //         this.EstadoControlTrabajado()
+  //         this.closeModalControl();
+  //         this.sweetAlert.MensajeSimpleSuccess('Expediente Controlado', `Expediente ${this.data_preparacion_header.nro_expediente} paso el control de calidad con exito`);
+  //       }
+  //     })
+  //   }
+
+
+
+  // }
 
   ModificarControl() {
     const data_control_request: ControlRequest = {
