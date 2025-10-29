@@ -230,7 +230,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
   }
 
-   
+
 
   inicializadorModales() {
     this.myModalDetalleIndice = new bootstrap.Modal(document.getElementById('Modal_detalle_indice'), {
@@ -252,10 +252,6 @@ export class FedatarioExpedientesComponent implements OnInit {
       backdrop: false,
       keyboard: false
     });
-
-
-   
-
   }
 
   openModalReception(id_expediente: number) {
@@ -297,10 +293,10 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.myModalFedatario.show();
     this.mostrar_mensajes_expediente = false;
     this.ObtenerExpedienteDataViewXid(expediente_temp.id_expediente);
-    if(expediente_temp.estado_fedatado=='T'){
+    if (expediente_temp.estado_fedatado == 'T') {
       this.recuperarFileFirmado(expediente_temp.nro_expediente);
       this.RecuperarDatosFedatario(expediente_temp.id_expediente);
-    }else{
+    } else {
       this.recuperarFile(expediente_temp.nro_expediente);
     }
     this.recuperarDataPreparacion(expediente_temp.id_expediente);
@@ -341,8 +337,8 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.show_sign_panel = false;
     this.msg_firmado = false;
     this.buttonFirma = true;
-    (document.getElementById('password_certificado') as HTMLInputElement).value='';
-  
+    (document.getElementById('password_certificado') as HTMLInputElement).value = '';
+
   }
 
   openModalDesaprobar() {
@@ -391,58 +387,58 @@ export class FedatarioExpedientesComponent implements OnInit {
       }
     })
   }
-  
+
   async recuperarFileFirmado(nro_expediente_temp: string) {
     const fileName = nro_expediente_temp + '.pdf';
     const folderPath = this.folderPathDocument!;
     const pathFirmados = this.folderPathFirma!; // 👈 asegúrate de tener esta ruta configurada
-  
+
     try {
       // Descargar expediente
       const expediente$ = this.ftpService.downloadFile(fileName, folderPath);
       // Descargar firmado
       const firmado$ = this.ftpService.downloadFile(fileName, pathFirmados);
-  
+
       // Esperar ambos en paralelo
       const [expedienteBlob, firmadoBlob] = await Promise.all([
         expediente$.toPromise(),
         firmado$.toPromise()
       ]);
-  
+
       // Convertir a ArrayBuffer
       const expedienteBuffer = await expedienteBlob!.arrayBuffer();
       const firmadoBuffer = await firmadoBlob!.arrayBuffer();
-  
+
       // Cargar PDFs
       const expedientePdf = await PDFDocument.load(expedienteBuffer);
       const firmadoPdf = await PDFDocument.load(firmadoBuffer);
-  
+
       // Crear un nuevo PDF
       const finalPdf = await PDFDocument.create();
-  
+
       // Copiar la primera página desde firmado
       const [firstPageFirmado] = await finalPdf.copyPages(firmadoPdf, [0]);
       finalPdf.addPage(firstPageFirmado);
-  
+
       // Copiar el resto de las páginas del expediente (desde la segunda)
       const restPages = await finalPdf.copyPages(
         expedientePdf,
         expedientePdf.getPageIndices().slice(1)
       );
       restPages.forEach(p => finalPdf.addPage(p));
-  
+
       // Guardar como Uint8Array
       const finalBytes = await finalPdf.save();
-  
+
       // Convertir a Blob y mostrar en el visor
-      const temp = new Blob([finalBytes], { type: 'application/pdf' });
+      const temp = new Blob([Uint8Array.from(finalBytes).buffer], { type: 'application/pdf' });
       this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         URL.createObjectURL(temp)
       );
-  
-      console.log('📄 Expediente combinado generado correctamente');
+
+      console.log('Expediente combinado generado correctamente');
     } catch (error) {
-      console.error('❌ Error al recuperar o combinar archivos:', error);
+      console.error('Error al recuperar o combinar archivos:', error);
     }
   }
 
@@ -552,8 +548,8 @@ export class FedatarioExpedientesComponent implements OnInit {
     })
   }
 
- 
-  
+
+
   informacionTags(expedientes: ExpedienteResponse[]) {
     this.nro_expedientes = expedientes.length;
     this.nro_concluidos = expedientes.filter(e => e.estado_fedatado === 'T').length;
@@ -567,7 +563,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.digitalizacionService.ObtenerTotalImagenesEnFedatario(this.id_inventario).subscribe({
       next: (data: DigitalizacionTotalImagenesResponse) => {
         console.log(data);
-        this.nro_imagenes = Number( data.total_imagenes);
+        this.nro_imagenes = Number(data.total_imagenes);
       },
       error: (error) => {
         console.log(error);
@@ -606,7 +602,7 @@ export class FedatarioExpedientesComponent implements OnInit {
       .pipe(
         map((data: ExpedienteResponse[]) =>
           data.filter(exp => exp.estado_controlado === 'T')
-        
+
         )
       )
       .subscribe({
@@ -716,15 +712,15 @@ export class FedatarioExpedientesComponent implements OnInit {
   rechazarExpediente() {
     const razon = this.rechazoRazon?.toUpperCase();
     const destino = this.moduloSeleccionado;
-  
+
     if (!destino || !razon) {
       alert('Debe seleccionar un módulo y proporcionar una razón');
       return;
     }
-  
+
     const idExpediente = this.data_expediente_temp.id_expediente;
     const usuario = this.credencialesService.credenciales.username;
-  
+
     // Mapa de funciones por módulo
     const rechazarFnMap = {
       DIGITALIZACION: () =>
@@ -732,21 +728,21 @@ export class FedatarioExpedientesComponent implements OnInit {
       INDIZACION: () =>
         this.estadoService.RechazarFedatarioIndizacion(idExpediente, usuario)
     };
-  
+
     const rechazarFn = rechazarFnMap[destino as keyof typeof rechazarFnMap];
-  
+
     if (!rechazarFn) {
       console.error('Destino no soportado:', destino);
       return;
     }
-  
+
     rechazarFn().subscribe({
       next: (data: ModificarEstadoResponse) => console.log(data.message),
       error: (error) => console.error(error),
       complete: () => {
         console.log(`rechazo a ${destino} exitoso`);
         this.ListarExpedientes();
-  
+
         const nuevoMensaje: Mensaje = {
           area_remitente: 'FEDATARIO',
           responsable: usuario,
@@ -755,20 +751,20 @@ export class FedatarioExpedientesComponent implements OnInit {
           mensaje: razon,
           respuestas: []
         };
-  
+
         this.MensajesExpedienteTemp.push(nuevoMensaje);
-  
+
         const dataMessage: mensajeRequest = {
           mensaje: JSON.stringify(this.MensajesExpedienteTemp),
           app_user: usuario
         };
-  
+
         this.estadoService.GuardarMensajeById_expediente(idExpediente, dataMessage).subscribe({
           next: (data: MensajeGuardarResponse) => console.log(data.message),
           error: (error) => console.error(error),
           complete: () => {
             console.log('guardar mensaje exitosa');
-            this.sweetAlert.MensajeSimpleInfo('EXPEDIENTE RECHAZADO',`El expediente ${this.data_expediente_temp.nro_expediente} ha sido rechazado correctamente` );
+            this.sweetAlert.MensajeSimpleInfo('EXPEDIENTE RECHAZADO', `El expediente ${this.data_expediente_temp.nro_expediente} ha sido rechazado correctamente`);
             this.closeModalDesaprobar();
             this.closeModalFedatario();
             this.ListarExpedientes();
@@ -811,7 +807,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     }, 500);
   }
 
-  terminarFirma(){
+  terminarFirma() {
     this.closeModalFedatario();
     this.sweetAlert.MensajeExito('Expediente firmado correctamente');
   }
