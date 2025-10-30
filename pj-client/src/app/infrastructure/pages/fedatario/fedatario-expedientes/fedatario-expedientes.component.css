@@ -379,7 +379,7 @@ ol ol ol>li::before {
   }
 
 
-  .no-edit input[type="radio"] {
+  .no-edit-radio input[type="radio"] {
     pointer-events: none; /* bloquea clics */
   }
 
