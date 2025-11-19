@@ -354,6 +354,25 @@ CREATE TABLE maestro.t_juzgado (
     juzgado varchar
 );
 
+CREATE TABLE maestro.t_general (
+    f_aud          TIMESTAMP,
+    b_aud          CHAR(1),
+    c_aud_uid      VARCHAR(30),
+    c_aud_uidred   VARCHAR(30),
+    c_aud_pc       VARCHAR(30),
+    c_aud_ip       VARCHAR(15),
+    c_aud_mac      VARCHAR(17),
+
+    create_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    id_general     INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
+    institucion    VARCHAR(150),
+    direccion      VARCHAR(80),
+    ruc            VARCHAR(11),
+    departamento   VARCHAR(20)
+);
+
 --------------------------------------------------------
 --  Insertar datos de ejemplo
 --------------------------------------------------------
@@ -2458,3 +2477,1016 @@ CREATE OR REPLACE TRIGGER utg_t_estado_expediente_del
 BEFORE DELETE ON archivo.t_estado_expediente
 FOR EACH ROW
 EXECUTE FUNCTION archivo.ufn_auditar_t_estado_expediente_del();
+
+-- SCRIPTS DE AUDITORIA COMPLEMENTARIA ************************************************************************************************************************************************
+
+-------------------------------------------------------------------------------------------------------
+-- 13.- GENERAL
+-------------------------------------------------------------------------------------------------------
+CREATE TABLE auditoria.aud_t_general (
+    n_trns_id SERIAL PRIMARY KEY,
+	
+    f_trns TIMESTAMP,
+    b_trns CHAR(1),
+    c_trns_uidred VARCHAR(30),
+    c_trns_pc VARCHAR(30),
+    c_trns_ip VARCHAR(15),
+    c_trns_mac VARCHAR(17),
+
+    f_aud TIMESTAMP,
+    b_aud CHAR(1),
+    c_aud_uid VARCHAR(30),
+    c_aud_uidred VARCHAR(30),
+    c_aud_pc VARCHAR(30),
+    c_aud_ip VARCHAR(15),
+    c_aud_mac VARCHAR(17),
+
+			create_at timestamp,
+		    id_general integer,
+		    institucion varchar,
+		    direccion varchar,
+		    ruc varchar,
+		    departamento varchar
+);
+
+-- TRIGGER GENERAL
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_general_upd() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insertar los datos antes de la modificación en la tabla de auditoría
+    INSERT INTO auditoria.aud_t_general (
+        f_trns,               -- Fecha de la transacción
+        b_trns,               -- Indicador de transacción ('U' para update)
+        c_trns_uidred,        -- Usuario que hizo la modificación
+        c_trns_pc,            -- PC
+        c_trns_ip,            -- IP
+        c_trns_mac,           -- MAC
+
+		f_aud,                -- Fecha de auditoría anterior
+        b_aud,                -- Indicador de auditoría anterior
+        c_aud_uid,            -- UID de auditoría anterior
+        c_aud_uidred,         -- UID de red anterior
+        c_aud_pc,             -- PC anterior
+        c_aud_ip,             -- IP anterior
+        c_aud_mac,             -- MAC anterior
+
+          create_at,
+		  id_general,
+		  institucion,
+		  direccion,
+		  ruc,
+		  departamento
+		
+    ) VALUES (
+        CURRENT_TIMESTAMP,    -- Fecha de la transacción actual
+        'U',                  -- Indicador de transacción (U para update)
+        NEW.c_aud_uidred,        -- Usuario que hizo la modificación (nuevos datos)
+        NEW.c_aud_pc,         -- PC (nuevos datos)
+        NEW.c_aud_ip,         -- IP (nuevos datos)
+        NEW.c_aud_mac,        -- MAC (nuevos datos)
+
+        OLD.f_aud,            -- Fecha de auditoría antes de la modificación
+        OLD.b_aud,            -- Indicador de auditoría antes de la modificación
+        OLD.c_aud_uid,        -- UID de auditoría anterior
+        OLD.c_aud_uidred,     -- UID de red anterior
+        OLD.c_aud_pc,         -- PC anterior        
+        OLD.c_aud_ip,         -- IP anterior
+        OLD.c_aud_mac,         -- MAC anterior
+
+        OLD.create_at,
+        OLD.id_general,
+        OLD.institucion,
+        OLD.direccion,
+        OLD.ruc,
+        OLD.departamento
+    );
+
+    -- Continuar con la operación de actualización
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER utg_t_general_upd
+AFTER UPDATE ON maestro.t_general
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_general_upd();
+
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_general_del()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insertar en la tabla de auditoría los datos antes de la eliminación
+  INSERT INTO auditoria.aud_t_general (
+      f_trns, 
+	  b_trns, 
+	  c_trns_uidred, 
+	  c_trns_pc, 
+	  c_trns_ip, 
+	  c_trns_mac,
+
+	  f_aud, 
+	  b_aud, 
+	  c_aud_uid, 
+	  c_aud_uidred, 
+	  c_aud_pc, 
+	  c_aud_ip, 
+	  c_aud_mac,
+	  
+	  	  create_at,
+		  id_general,
+		  institucion,
+		  direccion,
+		  ruc,
+		  departamento
+  )
+  VALUES (
+    CURRENT_TIMESTAMP, -- Fecha y hora de la transacción
+	'D',
+	COALESCE(current_setting('myapp.c_trns_uidred', true), current_user), -- Parámetro de sesión para c_trns_uidred
+    current_setting('myapp.c_trns_pc', true), -- Parámetro de sesión para c_trns_pc
+    COALESCE(current_setting('myapp.c_trns_ip', true), '172.0.0.1'), -- Parámetro de sesión para c_trns_ip
+    current_setting('myapp.c_trns_mac', true), -- Parámetro de sesión para c_trns_mac
+
+	OLD.f_aud, 
+	OLD.b_aud, 
+	OLD.c_aud_uid, 
+	OLD.c_aud_uidred, 
+	OLD.c_aud_pc, 
+	OLD.c_aud_ip, 
+	OLD.c_aud_mac,
+	
+       	  OLD.create_at,
+		  OLD.id_general,
+		  OLD.institucion,
+		  OLD.direccion,
+		  OLD.ruc,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+		  OLD.departamento
+  );
+
+  RETURN OLD; -- Devolver OLD en un trigger antes de eliminar
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER utg_t_general_del
+BEFORE DELETE ON maestro.t_general
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_general_del();
+
+-- Insertar datos de ejemplo (importante)
+INSERT INTO maestro.t_general (
+    f_aud,
+    b_aud,
+    c_aud_uid,
+    c_aud_uidred,
+    c_aud_ip,
+    c_aud_pc,
+    c_aud_mac,
+    institucion,
+    direccion,
+    ruc,
+    departamento
+)
+VALUES (
+    CURRENT_TIMESTAMP,   -- f_aud: fecha actual
+    'I',                 -- b_aud: indica 'Insert'
+    CURRENT_USER,        -- c_aud_uid: usuario actual de PostgreSQL
+    CURRENT_USER,        -- c_aud_uidred: usuario actual
+    '172.0.0.1',         -- c_aud_ip: IP fija indicada
+    NULL,                -- c_aud_pc
+    NULL,                -- c_aud_mac
+    NULL,                -- institucion
+    NULL,                -- direccion
+    NULL,                -- ruc
+    NULL                 -- departamento
+);
+
+-------------------------------------------------------------------------------------------------------
+-- 14.- SEDE
+-------------------------------------------------------------------------------------------------------
+
+CREATE TABLE auditoria.aud_t_sede (
+    n_trns_id SERIAL PRIMARY KEY,
+	
+    f_trns TIMESTAMP,
+    b_trns CHAR(1),
+    c_trns_uidred VARCHAR(30),
+    c_trns_pc VARCHAR(30),
+    c_trns_ip VARCHAR(15),
+    c_trns_mac VARCHAR(17),
+
+    f_aud TIMESTAMP,
+    b_aud CHAR(1),
+    c_aud_uid VARCHAR(30),
+    c_aud_uidred VARCHAR(30),
+    c_aud_pc VARCHAR(30),
+    c_aud_ip VARCHAR(15),
+    c_aud_mac VARCHAR(17),
+
+				create_at timestamp,
+			    id_sede integer,
+			    sede varchar
+);
+
+-- TRIGGER SEDE
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_sede_upd() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insertar los datos antes de la modificación en la tabla de auditoría
+    INSERT INTO auditoria.aud_t_sede (
+        f_trns,               -- Fecha de la transacción
+        b_trns,               -- Indicador de transacción ('U' para update)
+        c_trns_uidred,        -- Usuario que hizo la modificación
+        c_trns_pc,            -- PC
+        c_trns_ip,            -- IP
+        c_trns_mac,           -- MAC
+
+		f_aud,                -- Fecha de auditoría anterior
+        b_aud,                -- Indicador de auditoría anterior
+        c_aud_uid,            -- UID de auditoría anterior
+        c_aud_uidred,         -- UID de red anterior
+        c_aud_pc,             -- PC anterior
+        c_aud_ip,             -- IP anterior
+        c_aud_mac,             -- MAC anterior
+
+          create_at,
+		  id_sede,
+		  sede
+		
+    ) VALUES (
+        CURRENT_TIMESTAMP,    -- Fecha de la transacción actual
+        'U',                  -- Indicador de transacción (U para update)
+        NEW.c_aud_uidred,        -- Usuario que hizo la modificación (nuevos datos)
+        NEW.c_aud_pc,         -- PC (nuevos datos)
+        NEW.c_aud_ip,         -- IP (nuevos datos)
+        NEW.c_aud_mac,        -- MAC (nuevos datos)
+
+        OLD.f_aud,            -- Fecha de auditoría antes de la modificación
+        OLD.b_aud,            -- Indicador de auditoría antes de la modificación
+        OLD.c_aud_uid,        -- UID de auditoría anterior
+        OLD.c_aud_uidred,     -- UID de red anterior
+        OLD.c_aud_pc,         -- PC anterior
+        OLD.c_aud_ip,         -- IP anterior
+        OLD.c_aud_mac,         -- MAC anterior
+
+        OLD.create_at,
+        OLD.id_sede,
+        OLD.sede
+    );
+
+    -- Continuar con la operación de actualización
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER utg_t_sede_upd
+AFTER UPDATE ON maestro.t_sede
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_sede_upd();
+
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_sede_del()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insertar en la tabla de auditoría los datos antes de la eliminación
+  INSERT INTO auditoria.aud_t_sede (
+      f_trns, 
+	  b_trns, 
+	  c_trns_uidred, 
+	  c_trns_pc, 
+	  c_trns_ip, 
+	  c_trns_mac,
+
+	  f_aud, 
+	  b_aud, 
+	  c_aud_uid, 
+	  c_aud_uidred, 
+	  c_aud_pc, 
+	  c_aud_ip, 
+	  c_aud_mac,
+	  
+	  	  create_at,
+		  id_sede,
+		  sede
+  )
+  VALUES (
+    CURRENT_TIMESTAMP, -- Fecha y hora de la transacción
+	'D',
+	COALESCE(current_setting('myapp.c_trns_uidred', true), current_user), -- Parámetro de sesión para c_trns_uidred
+    current_setting('myapp.c_trns_pc', true), -- Parámetro de sesión para c_trns_pc
+    COALESCE(current_setting('myapp.c_trns_ip', true), '172.0.0.1'), -- Parámetro de sesión para c_trns_ip
+    current_setting('myapp.c_trns_mac', true), -- Parámetro de sesión para c_trns_mac
+
+	OLD.f_aud, 
+	OLD.b_aud, 
+	OLD.c_aud_uid, 
+	OLD.c_aud_uidred, 
+	OLD.c_aud_pc, 
+	OLD.c_aud_ip, 
+	OLD.c_aud_mac,
+	
+       	  OLD.create_at,
+		  OLD.id_sede,
+		  OLD.sede
+  );
+
+  RETURN OLD; -- Devolver OLD en un trigger antes de eliminar
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER utg_t_sede_del
+BEFORE DELETE ON maestro.t_sede
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_sede_del();
+
+
+
+
+-------------------------------------------------------------------------------------------------------
+-- 15.- ESPECIALIDAD
+-------------------------------------------------------------------------------------------------------
+
+CREATE TABLE auditoria.aud_t_especialidad (
+    n_trns_id SERIAL PRIMARY KEY,
+	
+    f_trns TIMESTAMP,
+    b_trns CHAR(1),
+    c_trns_uidred VARCHAR(30),
+    c_trns_pc VARCHAR(30),
+    c_trns_ip VARCHAR(15),
+    c_trns_mac VARCHAR(17),
+
+    f_aud TIMESTAMP,
+    b_aud CHAR(1),
+    c_aud_uid VARCHAR(30),
+    c_aud_uidred VARCHAR(30),
+    c_aud_pc VARCHAR(30),
+    c_aud_ip VARCHAR(15),
+    c_aud_mac VARCHAR(17),
+
+	    create_at timestamp,
+		id_especialidad integer,
+		especialidad varchar
+);
+
+-- TRIGGER ESPECIALIDAD
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_especialidad_upd() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insertar los datos antes de la modificación en la tabla de auditoría
+    INSERT INTO auditoria.aud_t_especialidad (
+        f_trns,               -- Fecha de la transacción
+        b_trns,               -- Indicador de transacción ('U' para update)
+        c_trns_uidred,        -- Usuario que hizo la modificación
+        c_trns_pc,            -- PC
+        c_trns_ip,            -- IP
+        c_trns_mac,           -- MAC
+
+		f_aud,                -- Fecha de auditoría anterior
+        b_aud,                -- Indicador de auditoría anterior
+        c_aud_uid,            -- UID de auditoría anterior
+        c_aud_uidred,         -- UID de red anterior
+        c_aud_pc,             -- PC anterior
+        c_aud_ip,             -- IP anterior
+        c_aud_mac,             -- MAC anterior
+
+          create_at,
+		  id_especialidad,
+		  especialidad
+		
+    ) VALUES (
+        CURRENT_TIMESTAMP,    -- Fecha de la transacción actual
+        'U',                  -- Indicador de transacción (U para update)
+        NEW.c_aud_uidred,        -- Usuario que hizo la modificación (nuevos datos)
+        NEW.c_aud_pc,         -- PC (nuevos datos)
+        NEW.c_aud_ip,         -- IP (nuevos datos)
+        NEW.c_aud_mac,        -- MAC (nuevos datos)
+
+        OLD.f_aud,            -- Fecha de auditoría antes de la modificación
+        OLD.b_aud,            -- Indicador de auditoría antes de la modificación
+        OLD.c_aud_uid,        -- UID de auditoría anterior
+        OLD.c_aud_uidred,     -- UID de red anterior
+        OLD.c_aud_pc,         -- PC anterior
+        OLD.c_aud_ip,         -- IP anterior
+        OLD.c_aud_mac,         -- MAC anterior
+
+        OLD.create_at,
+        OLD.id_especialidad,
+        OLD.especialidad
+    );
+
+    -- Continuar con la operación de actualización
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER utg_t_especialidad_upd
+AFTER UPDATE ON maestro.t_especialidad
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_especialidad_upd();
+
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_especialidad_del()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insertar en la tabla de auditoría los datos antes de la eliminación
+  INSERT INTO auditoria.aud_t_especialidad (
+      f_trns, 
+	  b_trns, 
+	  c_trns_uidred, 
+	  c_trns_pc, 
+	  c_trns_ip, 
+	  c_trns_mac,
+
+	  f_aud, 
+	  b_aud, 
+	  c_aud_uid, 
+	  c_aud_uidred, 
+	  c_aud_pc, 
+	  c_aud_ip, 
+	  c_aud_mac,
+	  
+	  	  create_at,
+		  id_especialidad,
+		  especialidad
+  )
+  VALUES (
+    CURRENT_TIMESTAMP, -- Fecha y hora de la transacción
+	'D',
+	COALESCE(current_setting('myapp.c_trns_uidred', true), current_user), -- Parámetro de sesión para c_trns_uidred
+    current_setting('myapp.c_trns_pc', true), -- Parámetro de sesión para c_trns_pc
+    COALESCE(current_setting('myapp.c_trns_ip', true), '172.0.0.1'), -- Parámetro de sesión para c_trns_ip
+    current_setting('myapp.c_trns_mac', true), -- Parámetro de sesión para c_trns_mac
+
+	OLD.f_aud, 
+	OLD.b_aud, 
+	OLD.c_aud_uid, 
+	OLD.c_aud_uidred, 
+	OLD.c_aud_pc, 
+	OLD.c_aud_ip, 
+	OLD.c_aud_mac,
+	
+       	  OLD.create_at,
+		  OLD.id_especialidad,
+		  OLD.especialidad
+  );        
+  RETURN OLD; -- Devolver OLD en un trigger antes de eliminar
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER utg_t_especialidad_del
+BEFORE DELETE ON maestro.t_especialidad
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_especialidad_del();
+
+
+-------------------------------------------------------------------------------------------------------
+-- 16.- TIPO DE DOCUMENTO
+-------------------------------------------------------------------------------------------------------
+
+CREATE TABLE auditoria.aud_t_tipo_documento (
+    n_trns_id SERIAL PRIMARY KEY,
+	
+    f_trns TIMESTAMP,
+    b_trns CHAR(1),
+    c_trns_uidred VARCHAR(30),
+    c_trns_pc VARCHAR(30),
+    c_trns_ip VARCHAR(15),
+    c_trns_mac VARCHAR(17),
+
+    f_aud TIMESTAMP,
+    b_aud CHAR(1),
+    c_aud_uid VARCHAR(30),
+    c_aud_uidred VARCHAR(30),
+    c_aud_pc VARCHAR(30),
+    c_aud_ip VARCHAR(15),
+    c_aud_mac VARCHAR(17),
+
+				create_at timestamp,
+			    id_tipo_documento integer,
+			    tipo_documento varchar
+);
+
+-- TRIGGER TIPO DE DOCUMENTO
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_tipo_documento_upd() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insertar los datos antes de la modificación en la tabla de auditoría
+    INSERT INTO auditoria.aud_t_tipo_documento (
+        f_trns,               -- Fecha de la transacción
+        b_trns,               -- Indicador de transacción ('U' para update)
+        c_trns_uidred,        -- Usuario que hizo la modificación
+        c_trns_pc,            -- PC
+        c_trns_ip,            -- IP
+        c_trns_mac,           -- MAC
+
+		f_aud,                -- Fecha de auditoría anterior
+        b_aud,                -- Indicador de auditoría anterior
+        c_aud_uid,            -- UID de auditoría anterior
+        c_aud_uidred,         -- UID de red anterior
+        c_aud_pc,             -- PC anterior
+        c_aud_ip,             -- IP anterior
+        c_aud_mac,             -- MAC anterior
+
+          create_at,
+		  id_tipo_documento,
+		  tipo_documento
+		
+    ) VALUES (
+        CURRENT_TIMESTAMP,    -- Fecha de la transacción actual
+        'U',                  -- Indicador de transacción (U para update)
+        NEW.c_aud_uidred,        -- Usuario que hizo la modificación (nuevos datos)
+        NEW.c_aud_pc,         -- PC (nuevos datos)
+        NEW.c_aud_ip,         -- IP (nuevos datos)
+        NEW.c_aud_mac,        -- MAC (nuevos datos)
+
+        OLD.f_aud,            -- Fecha de auditoría antes de la modificación
+        OLD.b_aud,            -- Indicador de auditoría antes de la modificación
+        OLD.c_aud_uid,        -- UID de auditoría anterior
+        OLD.c_aud_uidred,     -- UID de red anterior
+        OLD.c_aud_pc,         -- PC anterior
+        OLD.c_aud_ip,         -- IP anterior
+        OLD.c_aud_mac,         -- MAC anterior
+
+        OLD.create_at,
+        OLD.id_tipo_documento,
+        OLD.tipo_documento
+    );
+
+    -- Continuar con la operación de actualización
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER utg_t_tipo_documento_upd
+AFTER UPDATE ON maestro.t_tipo_documento
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_tipo_documento_upd();
+
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_tipo_documento_del()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insertar en la tabla de auditoría los datos antes de la eliminación
+  INSERT INTO auditoria.aud_t_tipo_documento (
+      f_trns, 
+	  b_trns, 
+	  c_trns_uidred, 
+	  c_trns_pc, 
+	  c_trns_ip, 
+	  c_trns_mac,
+
+	  f_aud, 
+	  b_aud, 
+	  c_aud_uid, 
+	  c_aud_uidred, 
+	  c_aud_pc, 
+	  c_aud_ip, 
+	  c_aud_mac,
+	  
+	  	  create_at,
+		  id_tipo_documento,
+		  tipo_documento
+  )
+  VALUES (
+    CURRENT_TIMESTAMP, -- Fecha y hora de la transacción
+	'D',
+	COALESCE(current_setting('myapp.c_trns_uidred', true), current_user), -- Parámetro de sesión para c_trns_uidred
+    current_setting('myapp.c_trns_pc', true), -- Parámetro de sesión para c_trns_pc
+    COALESCE(current_setting('myapp.c_trns_ip', true), '172.0.0.1'), -- Parámetro de sesión para c_trns_ip
+    current_setting('myapp.c_trns_mac', true), -- Parámetro de sesión para c_trns_mac
+
+	OLD.f_aud, 
+	OLD.b_aud, 
+	OLD.c_aud_uid, 
+	OLD.c_aud_uidred, 
+	OLD.c_aud_pc, 
+	OLD.c_aud_ip, 
+	OLD.c_aud_mac,
+	
+       	  OLD.create_at,
+		  OLD.id_tipo_documento,
+		  OLD.tipo_documento
+  );
+
+  RETURN OLD; -- Devolver OLD en un trigger antes de eliminar
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER utg_t_tipo_documento_del
+BEFORE DELETE ON maestro.t_tipo_documento
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_tipo_documento_del();
+
+
+-------------------------------------------------------------------------------------------------------
+-- 17.- JUZGADO DE ORIGEN
+-------------------------------------------------------------------------------------------------------
+
+CREATE TABLE auditoria.aud_t_juzgado (
+    n_trns_id SERIAL PRIMARY KEY,
+	
+    f_trns TIMESTAMP,
+    b_trns CHAR(1),
+    c_trns_uidred VARCHAR(30),
+    c_trns_pc VARCHAR(30),
+    c_trns_ip VARCHAR(15),
+    c_trns_mac VARCHAR(17),
+
+    f_aud TIMESTAMP,
+    b_aud CHAR(1),
+    c_aud_uid VARCHAR(30),
+    c_aud_uidred VARCHAR(30),
+    c_aud_pc VARCHAR(30),
+    c_aud_ip VARCHAR(15),
+    c_aud_mac VARCHAR(17),
+
+				create_at timestamp,
+			    id_juzgado integer,
+			    juzgado varchar
+);
+
+-- TRIGGER JUZGADO DE ORIGEN
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_juzgado_upd() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insertar los datos antes de la modificación en la tabla de auditoría
+    INSERT INTO auditoria.aud_t_juzgado (
+        f_trns,               -- Fecha de la transacción
+        b_trns,               -- Indicador de transacción ('U' para update)
+        c_trns_uidred,        -- Usuario que hizo la modificación
+        c_trns_pc,            -- PC
+        c_trns_ip,            -- IP
+        c_trns_mac,           -- MAC
+
+		f_aud,                -- Fecha de auditoría anterior
+        b_aud,                -- Indicador de auditoría anterior
+        c_aud_uid,            -- UID de auditoría anterior
+        c_aud_uidred,         -- UID de red anterior
+        c_aud_pc,             -- PC anterior
+        c_aud_ip,             -- IP anterior
+        c_aud_mac,             -- MAC anterior
+
+          create_at,
+		  id_juzgado,
+		  juzgado
+		
+    ) VALUES (              
+        CURRENT_TIMESTAMP,    -- Fecha de la transacción actual
+        'U',                  -- Indicador de transacción (U para update)
+        NEW.c_aud_uidred,        -- Usuario que hizo la modificación (nuevos datos)
+        NEW.c_aud_pc,         -- PC (nuevos datos)
+        NEW.c_aud_ip,         -- IP (nuevos datos)
+        NEW.c_aud_mac,        -- MAC (nuevos datos)
+
+        OLD.f_aud,            -- Fecha de auditoría antes de la modificación
+        OLD.b_aud,            -- Indicador de auditoría antes de la modificación
+        OLD.c_aud_uid,        -- UID de auditoría anterior
+        OLD.c_aud_uidred,     -- UID de red anterior
+        OLD.c_aud_pc,         -- PC anterior
+        OLD.c_aud_ip,         -- IP anterior
+        OLD.c_aud_mac,         -- MAC anterior
+
+            OLD.create_at,
+            OLD.id_juzgado,
+            OLD.juzgado
+    );
+
+    -- Continuar con la operación de actualización
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;    
+
+CREATE OR REPLACE TRIGGER utg_t_juzgado_upd
+AFTER UPDATE ON maestro.t_juzgado
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_juzgado_upd();
+
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_juzgado_del()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insertar en la tabla de auditoría los datos antes de la eliminación
+  INSERT INTO auditoria.aud_t_juzgado (
+      f_trns, 
+	  b_trns, 
+	  c_trns_uidred, 
+	  c_trns_pc, 
+	  c_trns_ip, 
+	  c_trns_mac,
+
+	  f_aud, 
+	  b_aud, 
+	  c_aud_uid, 
+	  c_aud_uidred, 
+	  c_aud_pc, 
+	  c_aud_ip, 
+	  c_aud_mac,
+	  
+	  	  create_at,
+		  id_juzgado,
+		  juzgado
+  )
+  VALUES (
+    CURRENT_TIMESTAMP, -- Fecha y hora de la transacción
+	'D',
+	COALESCE(current_setting('myapp.c_trns_uidred', true), current_user), -- Parámetro de sesión para c_trns_uidred
+    current_setting('myapp.c_trns_pc', true), -- Parámetro de sesión para c_trns_pc
+    COALESCE(current_setting('myapp.c_trns_ip', true), '172.0.0.1'), -- Parámetro de sesión para c_trns_ip
+    current_setting('myapp.c_trns_mac', true), -- Parámetro de sesión para c_trns_mac
+
+	OLD.f_aud, 
+	OLD.b_aud, 
+	OLD.c_aud_uid, 
+	OLD.c_aud_uidred, 
+	OLD.c_aud_pc, 
+	OLD.c_aud_ip,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+	OLD.c_aud_mac,
+	
+        OLD.create_at,
+        OLD.id_juzgado,
+        OLD.juzgado
+  );
+
+  RETURN OLD; -- Devolver OLD en un trigger antes de eliminar
+END;    
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER utg_t_juzgado_del
+BEFORE DELETE ON maestro.t_juzgado
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_juzgado_del();
+
+-------------------------------------------------------------------------------------------------------
+-- 18.- MATERIA
+-------------------------------------------------------------------------------------------------------
+CREATE TABLE auditoria.aud_t_materia (
+    n_trns_id SERIAL PRIMARY KEY,
+	
+    f_trns TIMESTAMP,
+    b_trns CHAR(1),
+    c_trns_uidred VARCHAR(30),
+    c_trns_pc VARCHAR(30),
+    c_trns_ip VARCHAR(15),
+    c_trns_mac VARCHAR(17),
+
+    f_aud TIMESTAMP,
+    b_aud CHAR(1),
+    c_aud_uid VARCHAR(30),
+    c_aud_uidred VARCHAR(30),
+    c_aud_pc VARCHAR(30),
+    c_aud_ip VARCHAR(15),
+    c_aud_mac VARCHAR(17),
+
+				create_at timestamp,
+			    id_materia integer,
+			    materia varchar
+);
+
+-- TRIGGER MATERIA
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_materia_upd() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insertar los datos antes de la modificación en la tabla de auditoría
+    INSERT INTO auditoria.aud_t_materia (
+        f_trns,               -- Fecha de la transacción
+        b_trns,               -- Indicador de transacción ('U' para update)
+        c_trns_uidred,        -- Usuario que hizo la modificación
+        c_trns_pc,            -- PC
+        c_trns_ip,            -- IP
+        c_trns_mac,           -- MAC
+
+		f_aud,                -- Fecha de auditoría anterior
+        b_aud,                -- Indicador de auditoría anterior
+        c_aud_uid,            -- UID de auditoría anterior
+        c_aud_uidred,         -- UID de red anterior
+        c_aud_pc,             -- PC anterior
+        c_aud_ip,             -- IP anterior
+        c_aud_mac,             -- MAC anterior
+
+          create_at,
+		  id_materia,
+		  materia
+		
+    ) VALUES (              
+        CURRENT_TIMESTAMP,    -- Fecha de la transacción actual
+        'U',                  -- Indicador de transacción (U para update)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+        NEW.c_aud_uidred,        -- Usuario que hizo la modificación (nuevos datos)
+        NEW.c_aud_pc,         -- PC (nuevos datos)
+        NEW.c_aud_ip,         -- IP (nuevos datos)
+        NEW.c_aud_mac,        -- MAC (nuevos datos)
+
+        OLD.f_aud,            -- Fecha de auditoría antes de la modificación
+        OLD.b_aud,            -- Indicador de auditoría antes de la modificación
+        OLD.c_aud_uid,        -- UID de auditoría anterior
+        OLD.c_aud_uidred,     -- UID de red anterior
+        OLD.c_aud_pc,         -- PC anterior
+        OLD.c_aud_ip,         -- IP anterior
+        OLD.c_aud_mac,         -- MAC anterior
+
+        OLD.create_at,
+        OLD.id_materia,
+        OLD.materia
+    );
+
+    -- Continuar con la operación de actualización
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;    
+
+CREATE OR REPLACE TRIGGER utg_t_materia_upd
+AFTER UPDATE ON maestro.t_materia
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_materia_upd();
+
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_materia_del()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insertar en la tabla de auditoría los datos antes de la eliminación
+  INSERT INTO auditoria.aud_t_materia (
+      f_trns, 
+	  b_trns, 
+	  c_trns_uidred, 
+	  c_trns_pc, 
+	  c_trns_ip, 
+	  c_trns_mac,
+
+	  f_aud, 
+	  b_aud, 
+	  c_aud_uid, 
+	  c_aud_uidred, 
+	  c_aud_pc, 
+	  c_aud_ip, 
+	  c_aud_mac,
+	  
+	  	  create_at,
+		  id_materia,
+		  materia
+  )
+  VALUES (
+    CURRENT_TIMESTAMP, -- Fecha y hora de la transacción
+	'D',
+	COALESCE(current_setting('myapp.c_trns_uidred', true), current_user), -- Parámetro de sesión para c_trns_uidred
+    current_setting('myapp.c_trns_pc', true), -- Parámetro de sesión para c_trns_pc             
+    COALESCE(current_setting('myapp.c_trns_ip', true), '172.0.0.1'), -- Parámetro de sesión para c_trns_ip
+    current_setting('myapp.c_trns_mac', true), -- Parámetro de sesión para c_trns_mac
+
+	OLD.f_aud, 
+	OLD.b_aud, 
+	OLD.c_aud_uid, 
+	OLD.c_aud_uidred, 
+	OLD.c_aud_pc, 
+	OLD.c_aud_ip, 
+	OLD.c_aud_mac,
+	
+       	  OLD.create_at,
+		  OLD.id_materia,
+		  OLD.materia
+  );
+
+  RETURN OLD; -- Devolver OLD en un trigger antes de eliminar
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER utg_t_materia_del
+BEFORE DELETE ON maestro.t_materia
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_materia_del();
+
+-------------------------------------------------------------------------------------------------------
+-- 19.- TIPO DE PROCESO
+-------------------------------------------------------------------------------------------------------
+CREATE TABLE auditoria.aud_t_tipo_proceso (
+    n_trns_id SERIAL PRIMARY KEY,
+	
+    f_trns TIMESTAMP,
+    b_trns CHAR(1),
+    c_trns_uidred VARCHAR(30),
+    c_trns_pc VARCHAR(30),
+    c_trns_ip VARCHAR(15),
+    c_trns_mac VARCHAR(17),
+
+    f_aud TIMESTAMP,
+    b_aud CHAR(1),
+    c_aud_uid VARCHAR(30),
+    c_aud_uidred VARCHAR(30),
+    c_aud_pc VARCHAR(30),
+    c_aud_ip VARCHAR(15),
+    c_aud_mac VARCHAR(17),
+
+				create_at timestamp,
+			    id_tipo_proceso integer,
+			    tipo_proceso varchar
+);
+
+-- TRIGGER TIPO DE PROCESO
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_tipo_proceso_upd() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insertar los datos antes de la modificación en la tabla de auditoría
+    INSERT INTO auditoria.aud_t_tipo_proceso (
+        f_trns,               -- Fecha de la transacción
+        b_trns,               -- Indicador de transacción ('U' para update)
+        c_trns_uidred,        -- Usuario que hizo la modificación
+        c_trns_pc,            -- PC
+        c_trns_ip,            -- IP
+        c_trns_mac,           -- MAC
+
+		f_aud,                -- Fecha de auditoría anterior
+        b_aud,                -- Indicador de auditoría anterior
+        c_aud_uid,            -- UID de auditoría anterior
+        c_aud_uidred,         -- UID de red anterior
+        c_aud_pc,             -- PC anterior
+        c_aud_ip,             -- IP anterior
+        c_aud_mac,             -- MAC anterior
+
+          create_at,
+		  id_tipo_proceso,
+		  tipo_proceso
+		
+    ) VALUES (              
+        CURRENT_TIMESTAMP,    -- Fecha de la transacción actual
+        'U',                  -- Indicador de transacción (U para update)
+        NEW.c_aud_uidred,        -- Usuario que hizo la modificación (nuevos datos)
+        NEW.c_aud_pc,         -- PC (nuevos datos)
+        NEW.c_aud_ip,         -- IP (nuevos datos)
+        NEW.c_aud_mac,        -- MAC (nuevos datos)
+
+        OLD.f_aud,            -- Fecha de auditoría antes de la modificación
+        OLD.b_aud,            -- Indicador de auditoría antes de la modificación
+        OLD.c_aud_uid,        -- UID de auditoría anterior
+        OLD.c_aud_uidred,     -- UID de red anterior
+        OLD.c_aud_pc,         -- PC anterior
+        OLD.c_aud_ip,         -- IP anterior
+        OLD.c_aud_mac,         -- MAC anterior
+
+        OLD.create_at,
+        OLD.id_tipo_proceso,
+        OLD.tipo_proceso
+    );
+
+    -- Continuar con la operación de actualización
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;    
+
+CREATE OR REPLACE TRIGGER utg_t_tipo_proceso_upd
+AFTER UPDATE ON maestro.t_tipo_proceso
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_tipo_proceso_upd();
+
+CREATE OR REPLACE FUNCTION archivo.ufn_auditar_t_tipo_proceso_del()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Insertar en la tabla de auditoría los datos antes de la eliminación
+  INSERT INTO auditoria.aud_t_tipo_proceso (
+      f_trns, 
+	  b_trns, 
+	  c_trns_uidred, 
+	  c_trns_pc, 
+	  c_trns_ip, 
+	  c_trns_mac,
+
+	  f_aud, 
+	  b_aud, 
+	  c_aud_uid, 
+	  c_aud_uidred, 
+	  c_aud_pc, 
+	  c_aud_ip, 
+	  c_aud_mac,
+	  
+	  	  create_at,
+		  id_tipo_proceso,
+		  tipo_proceso
+  )
+  VALUES (
+    CURRENT_TIMESTAMP, -- Fecha y hora de la transacción
+	'D',
+	COALESCE(current_setting('myapp.c_trns_uidred', true), current_user), -- Parámetro de sesión para c_trns_uidred
+    current_setting('myapp.c_trns_pc', true), -- Parámetro de sesión para c_trns_pc
+    COALESCE(current_setting('myapp.c_trns_ip', true), '172.0.0.1'), -- Parámetro de sesión para c_trns_ip
+    current_setting('myapp.c_trns_mac', true), -- Parámetro de sesión para c_trns_mac
+
+	OLD.f_aud, 
+	OLD.b_aud, 
+	OLD.c_aud_uid, 
+	OLD.c_aud_uidred, 
+	OLD.c_aud_pc, 
+	OLD.c_aud_ip,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+	OLD.c_aud_mac,
+	
+       	  OLD.create_at,
+		  OLD.id_tipo_proceso,
+		  OLD.tipo_proceso
+  );
+
+  RETURN OLD; -- Devolver OLD en un trigger antes de eliminar
+END;    
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE TRIGGER utg_t_tipo_proceso_del
+BEFORE DELETE ON maestro.t_tipo_proceso 
+FOR EACH ROW
+EXECUTE FUNCTION archivo.ufn_auditar_t_tipo_proceso_del();
+

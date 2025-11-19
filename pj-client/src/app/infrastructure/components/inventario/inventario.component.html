@@ -97,14 +97,14 @@
                         <label for="especialidad" class="form-label">Especialidad:</label>
                         <select id="especialidad" name="especialidad" class="form-select" [(ngModel)]="data_inventario.especialidad">
                             <option value="" disabled selected>ELIJE ESPECIALIDAD </option>
-                            <option *ngFor="let especialidad of especialidadList" [value]="especialidad">{{ especialidad }}</option>
+                            <option *ngFor="let item of especialidadList" [value]="item.especialidad">{{ item.especialidad }}</option>
                         </select>
                     </div>
                     <div class="form-group mt-3">
                         <label for="sede" class="form-label ">Sede:</label>
                         <select id="sede" name="sede" class="form-select" [(ngModel)]="data_inventario.sede">
                             <option value="" disabled selected>SEDE </option>
-                            <option *ngFor="let sede of sedesList" [value]="sede">{{ sede }}</option>
+                            <option *ngFor="let item of sedesList" [value]="item.sede">{{ item.sede }}</option>
                         </select>
                     </div>
                     <div class="form-group mt-3">
@@ -115,9 +115,7 @@
                         <label for="tipo_doc" class="form-label">Tipo de Documento:</label>
                         <select id="tipo_doc" name="tipo_doc" class="form-select" [(ngModel)]="data_inventario.tipo_doc">
                             <option value="" disabled selected>ELIJE EL TIPO DE DOCUMENTO </option>
-                            <option value="EXPEDIENTE JURIDICCIONAL">EXPEDIENTE JURIDICCIONAL</option>
-                            <option value="EXPEDIENTE ADMINISTRATIVO">EXPEDIENTE ADMINISTRATIVO</option>
-                            <option value="LEGAJO ADMINISTRATIVO">LEGAJO ADMINISTRATIVO</option>
+                            <option *ngFor="let documento of tipo_documentoList" [value]="documento.tipo_documento" >{{documento.tipo_documento}}</option>
                         </select>
                     </div>
                     <div class="form-group mt-3">

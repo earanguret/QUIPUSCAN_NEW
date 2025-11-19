@@ -14,7 +14,7 @@ import { ExpedienteService } from '../../../services/remoto/expediente/expedient
 import { CredencialesService } from '../../../services/local/credenciales.service';
 import { FlujogramaService } from '../../../services/remoto/flujograma/flujograma.service';
 import { EstadoService } from '../../../services/remoto/estado/estado.service';
-import { FtpService } from '../../../services/remoto/ftp/ftp.service';
+import { SftpService } from '../../../services/remoto/sftp/sftp.service';
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
 import { DigitalizacionService } from '../../../services/remoto/digitalizacion/digitalizacion.service';
@@ -210,7 +210,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     private flujogramaService: FlujogramaService,
     private estadoService: EstadoService,
     private sanitizer: DomSanitizer,
-    private ftpService: FtpService,
+    private sftpService: SftpService,
     private inventarioService: InventarioService,
     private preparacionService: PreparacionService,
     private digitalizacionService: DigitalizacionService,
@@ -373,7 +373,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     let folderPath = this.folderPathDocument!;
     console.log(folderPath);
     console.log(fileName);
-    this.ftpService.downloadFile(fileName, folderPath).subscribe({
+    this.sftpService.downloadFile(fileName, folderPath).subscribe({
       next: (data: Blob) => {
         console.log(data);
         let temp = new Blob([data], { type: 'application/pdf' });
@@ -395,9 +395,9 @@ export class FedatarioExpedientesComponent implements OnInit {
 
     try {
       // Descargar expediente
-      const expediente$ = this.ftpService.downloadFile(fileName, folderPath);
+      const expediente$ = this.sftpService.downloadFile(fileName, folderPath);
       // Descargar firmado
-      const firmado$ = this.ftpService.downloadFile(fileName, pathFirmados);
+      const firmado$ = this.sftpService.downloadFile(fileName, pathFirmados);
 
       // Esperar ambos en paralelo
       const [expedienteBlob, firmadoBlob] = await Promise.all([
@@ -536,7 +536,7 @@ export class FedatarioExpedientesComponent implements OnInit {
         this.codigo_inventario = data.codigo;
         this.folderPathDocument = `${this.codigo_inventario}/EXPEDIENTES`;
         this.folderPathPortada = `${this.codigo_inventario}/PORTADAS`;
-        this.folderPathFirma = `/${this.codigo_inventario}/FIRMADOS`;
+        this.folderPathFirma = `${this.codigo_inventario}/FIRMADOS`;
 
       },
       error: (error) => {

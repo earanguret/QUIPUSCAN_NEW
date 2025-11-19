@@ -8,8 +8,10 @@ import { InventarioRequest } from '../../../domain/dto/InventarioRequest.dto';
 import { CredencialesService } from '../../services/local/credenciales.service';
 import { InventarioCrearResponse, InventarioDetalleResponse, InventarioModificarResponse } from '../../../domain/dto/InventarioResponse.dto';
 import { form_inventario_vf } from '../../validator/fromValidator/inventario.validator';
-import { dataListSedes } from '../../../../../public/info/sedes.info';
-import { dataListEspecialidad } from '../../../../../public/info/especialidad.info';
+
+import { ConfiguracionService } from '../../services/remoto/configuracion/configuracion.service';
+import { EspecialidadResponse, TipoDocumentoResponse } from '../../../domain/dto/ConfiguracionResponse.dto';
+import { SedeResponse } from '../../../domain/dto/ConfiguracionResponse.dto';
 
 declare var bootstrap: any;
 
@@ -28,8 +30,9 @@ export class InventarioComponent implements OnInit {
 
   private myModal: any;
 
-  sedesList: string[] = dataListSedes;
-  especialidadList: string[] = dataListEspecialidad;
+  sedesList: SedeResponse[] = [];
+  especialidadList: EspecialidadResponse[] = [];
+  tipo_documentoList: TipoDocumentoResponse[] = [];
 
   data_inventario: InventarioModel = {
     id_inventario: 0,
@@ -46,51 +49,63 @@ export class InventarioComponent implements OnInit {
   ListInventarioDetalle: InventarioDetalleResponse[] = [];
   ListInventarioDetalleTemp: InventarioDetalleResponse[] = [];
 
-  constructor(private router:Router, private inventarioService:InventarioService, private credencialesService:CredencialesService) { }
 
-  
+  constructor(private router: Router,
+    private inventarioService: InventarioService,
+    private credencialesService: CredencialesService,
+    private configuracionService: ConfiguracionService) { }
+
+
 
   ngOnInit(): void {
     if (!this.ruta) {
       this.ruta = '/principal';
     }
     this.ListarInventarios()
-    this.isSupervisorLinea = this.credencialesService.credenciales.perfil=='SUPERVISORL'||this.credencialesService.credenciales.perfil=='ADMINISTRADOR'?true:false
+
+    this.isSupervisorLinea = this.credencialesService.credenciales.perfil == 'SUPERVISORL' || this.credencialesService.credenciales.perfil == 'ADMINISTRADOR' ? true : false
   }
 
   closeModal() {
     this.myModal.hide();
   }
   openModalCreate() {
+    this.listarEspecialidad()
+    this.listarSedes()
+    this.ListarTipoDocumento()
     this.limpiarDatosInventario();
+
     this.modificarInventario = false;
     this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
     this.myModal.show();
   }
 
-  openModalEdit(data_inventario:InventarioModel) {
-      this.data_inventario = {
-        id_inventario: data_inventario.id_inventario,
-        id_responsable: data_inventario.id_responsable,
-        especialidad: data_inventario.especialidad,
-        anio: data_inventario.anio,
-        cantidad: data_inventario.cantidad,
-        tipo_doc: data_inventario.tipo_doc,
-        serie_doc: data_inventario.serie_doc,
-        sede: data_inventario.sede,
-        codigo: data_inventario.codigo
-      }
-      console.log(this.data_inventario);
-  
-      this.modificarInventario = true;
-      this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
-      this.myModal.show();
+  openModalEdit(data_inventario: InventarioModel) {
+    this.listarEspecialidad()
+    this.listarSedes()
+    this.ListarTipoDocumento()
+    this.data_inventario = {
+      id_inventario: data_inventario.id_inventario,
+      id_responsable: data_inventario.id_responsable,
+      especialidad: data_inventario.especialidad,
+      anio: data_inventario.anio,
+      cantidad: data_inventario.cantidad,
+      tipo_doc: data_inventario.tipo_doc,
+      serie_doc: data_inventario.serie_doc,
+      sede: data_inventario.sede,
+      codigo: data_inventario.codigo
     }
+    console.log(this.data_inventario);
+
+    this.modificarInventario = true;
+    this.myModal = new bootstrap.Modal(document.getElementById('exampleModalCenter'));
+    this.myModal.show();
+  }
 
 
-  ListarInventarios(){
+  ListarInventarios() {
     this.inventarioService.ListarInventarios().subscribe({
-      next: (data:InventarioDetalleResponse[]) => {
+      next: (data: InventarioDetalleResponse[]) => {
         this.ListInventarioDetalle = data;
         this.ListInventarioDetalleTemp = data;
         console.log(this.ListInventarioDetalle);
@@ -104,29 +119,29 @@ export class InventarioComponent implements OnInit {
     })
   }
 
-  EventAction(){
-    if(this.modificarInventario){
-       this.ModificarInventario();
+  EventAction() {
+    if (this.modificarInventario) {
+      this.ModificarInventario();
     } else {
-       this.GuardarInventario();
+      this.GuardarInventario();
     }
   }
-  
-  GuardarInventario(){
+
+  GuardarInventario() {
     let erroresValidacion = form_inventario_vf(this.data_inventario);
     if (erroresValidacion.length > 0) {
       let errorMensaje = '';
-      erroresValidacion.forEach((error:any) => {
+      erroresValidacion.forEach((error: any) => {
         errorMensaje += `Error en el campo :"${error.campo}": ${error.mensaje} \n`;
       });
       return alert(errorMensaje);
     }
     this.data_inventario.id_responsable = this.credencialesService.credenciales.id_usuario;
-    let data_inventario_temp:InventarioRequest = {...this.data_inventario, app_user: this.credencialesService.credenciales.username};
+    let data_inventario_temp: InventarioRequest = { ...this.data_inventario, app_user: this.credencialesService.credenciales.username };
     let id_inventario = 0;
 
     this.inventarioService.CrearInventario(data_inventario_temp).subscribe({
-      next: (data:InventarioCrearResponse) => {
+      next: (data: InventarioCrearResponse) => {
         console.log(data);
         id_inventario = data.id_inventario;
       },
@@ -141,20 +156,20 @@ export class InventarioComponent implements OnInit {
     })
   }
 
-  ModificarInventario(){
+  ModificarInventario() {
     let erroresValidacion = form_inventario_vf(this.data_inventario);
     if (erroresValidacion.length > 0) {
       let errorMensaje = '';
-      erroresValidacion.forEach((error:any) => {
+      erroresValidacion.forEach((error: any) => {
         errorMensaje += `Error en el campo :"${error.campo}": ${error.mensaje} \n`;
       });
       return alert(errorMensaje);
     }
     this.data_inventario.id_responsable = this.credencialesService.credenciales.id_usuario;
-    let data_inventario_temp:InventarioRequest = {...this.data_inventario, app_user: this.credencialesService.credenciales.username};
-    
-    this.inventarioService.ModificarInventario(data_inventario_temp.id_inventario,data_inventario_temp).subscribe({
-      next: (data:InventarioModificarResponse) => {
+    let data_inventario_temp: InventarioRequest = { ...this.data_inventario, app_user: this.credencialesService.credenciales.username };
+
+    this.inventarioService.ModificarInventario(data_inventario_temp.id_inventario, data_inventario_temp).subscribe({
+      next: (data: InventarioModificarResponse) => {
         console.log(data);
       },
       error: (error) => {
@@ -169,7 +184,7 @@ export class InventarioComponent implements OnInit {
   }
 
 
-  limpiarDatosInventario(){
+  limpiarDatosInventario() {
     this.data_inventario = {
       id_inventario: 0,
       id_responsable: 0,
@@ -196,10 +211,55 @@ export class InventarioComponent implements OnInit {
     this.ListInventarioDetalle = objetosFiltrados
   }
 
-  ExpedientesSerieDocumental(id_inventario:number){
-    this.router.navigate([this.ruta , id_inventario]);
+  ExpedientesSerieDocumental(id_inventario: number) {
+    this.router.navigate([this.ruta, id_inventario]);
   }
 
+
+  listarEspecialidad() {
+    this.configuracionService.ListarEspecialidad().subscribe({
+      next: (data: EspecialidadResponse[]) => {
+        this.especialidadList = data;
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de especialidad completado');
+      }
+    })
+  }
+
+  listarSedes() {
+    this.configuracionService.ListarSedes().subscribe({
+      next: (data: SedeResponse[]) => {
+        this.sedesList = data;
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de sedes completado');
+      }
+    })
+  }
+
+  ListarTipoDocumento() {
+    this.configuracionService.ListarTipoDocumento().subscribe({
+      next: (data: TipoDocumentoResponse[]) => {
+        this.tipo_documentoList = data;
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de tipo de documento completado');
+      }
+    })
+  }
 
 
 }

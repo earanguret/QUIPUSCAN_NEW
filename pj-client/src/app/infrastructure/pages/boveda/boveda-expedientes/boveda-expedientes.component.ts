@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DiscoModel } from '../../../../domain/models/Disco.model';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
-import { FtpService } from '../../../services/remoto/ftp/ftp.service';
+import { SftpService } from '../../../services/remoto/sftp/sftp.service';
 import { CrearDigitalizacionResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { ExpedienteService } from '../../../services/remoto/expediente/expediente.service';
 import { ExpedienteSinDiscoResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
@@ -102,7 +102,8 @@ export class BovedaExpedientesComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private expedienteService: ExpedienteService,
     private estadoService: EstadoService,
-    private ftpService:FtpService) { }
+    private sftpService: SftpService) { }
+
 
   ngOnInit(): void {
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
@@ -290,7 +291,7 @@ export class BovedaExpedientesComponent implements OnInit {
       try {
         
         const folderPathDisco = `${this.data_inventario.codigo}/DISCOS/${this.data_disco_temp.nombre}`;
-        this.ftpService.uploadFile(file, folderPathDisco, nameFile).subscribe({
+        this.sftpService.uploadFile(file, folderPathDisco, nameFile).subscribe({
           next: (data: CrearDigitalizacionResponse) => {
             console.log("Respuesta portada:", data);
           },

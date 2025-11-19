@@ -17,6 +17,7 @@ export class SweetAlert {
       timer: time,
       timerProgressBar: true,
       didOpen: (toast) => {
+        toast.style.marginTop = '100px'; // <<< DESPLAZA EL TOAST HACIA ABAJO
         toast.addEventListener('mouseenter', Swal.stopTimer);
         toast.addEventListener('mouseleave', Swal.resumeTimer);
       }
@@ -28,14 +29,14 @@ export class SweetAlert {
     });
   }
 
-  MensajeError(mensaje:string){
+  MensajeError(mensaje: string) {
     Swal.fire({
       icon: 'error',
       title: mensaje
     });
-  }   
+  }
 
-  MensajeExito(mensaje:string){
+  MensajeExito(mensaje: string) {
     Swal.fire({
       position: "top-end",
       icon: "success",
@@ -74,7 +75,7 @@ export class SweetAlert {
     });
   }
 
-  async MensajeSimpleWarning(title: string, text: string ){
+  async MensajeSimpleWarning(title: string, text: string) {
     Swal.fire({
       title: title,
       text: text,
@@ -82,7 +83,7 @@ export class SweetAlert {
     });
   }
 
-  async MensajeSimpleInfo(title: string, text: string ){
+  async MensajeSimpleInfo(title: string, text: string) {
     Swal.fire({
       title: title,
       text: text,
@@ -90,7 +91,7 @@ export class SweetAlert {
     });
   }
 
-  async MensajeSimpleSuccess(title: string, text: string ){
+  async MensajeSimpleSuccess(title: string, text: string) {
     Swal.fire({
       title: title,
       text: text,
@@ -100,37 +101,37 @@ export class SweetAlert {
 
   // mensaje para continuar con el proceso
   async MensajeContinuacion(mensaje: string, titulo: string = '¿Deseas continuar?'): Promise<boolean> {
-  const swalWithBootstrapButtons = Swal.mixin({
-    customClass: {
-      confirmButton: 'btn btn-success mx-2',
-      cancelButton: 'btn btn-danger mx-2'
-    },
-    buttonsStyling: false
-  });
-
-  const result = await swalWithBootstrapButtons.fire({
-    title: titulo,
-    text: mensaje,
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sí, continuar',
-    cancelButtonText: 'No, cancelar',
-    reverseButtons: true
-  });
-
-  if (result.isConfirmed) {
-    return true;
-  } else if (result.dismiss === Swal.DismissReason.cancel) {
-    await swalWithBootstrapButtons.fire({
-      title: 'Cancelado',
-      text: 'No se realizó ninguna acción.',
-      icon: 'error'
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success mx-2',
+        cancelButton: 'btn btn-danger mx-2'
+      },
+      buttonsStyling: false
     });
+
+    const result = await swalWithBootstrapButtons.fire({
+      title: titulo,
+      text: mensaje,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, continuar',
+      cancelButtonText: 'No, cancelar',
+      reverseButtons: true
+    });
+
+    if (result.isConfirmed) {
+      return true;
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      await swalWithBootstrapButtons.fire({
+        title: 'Cancelado',
+        text: 'No se realizó ninguna acción.',
+        icon: 'error'
+      });
+      return false;
+    }
+
     return false;
   }
-
-  return false;
-}
 
 
 }

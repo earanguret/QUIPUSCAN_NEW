@@ -1,0 +1,408 @@
+<div class="panel">
+    <app-navegator></app-navegator>
+    <app-subnavegator [ruta]="'/principal'"></app-subnavegator>
+
+    <div class="contenedor">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="menu-listado-reportes">
+                    <div class="titulo">ADMINISTRACION</div>
+                    <div class="lista">
+
+                        <div class="item">
+                            <div class="name" (click)="showSection('general')"
+                                [class.active]="activeSection === 'general'">
+                                <i class="bi bi-gear mx-2"></i> General
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="name" (click)="showSection('recepcion')"
+                                [class.active]="activeSection === 'recepcion'">
+                                <i class="bi bi-archive mx-2"></i> Recepción
+                            </div>
+
+                            <div class="sublista">
+                                <div class="subitem">Especialidad</div>
+                                <div class="subitem">Sede</div>
+                                <div class="subitem">Tipo de documento</div>
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="name" (click)="showSection('indizacion')"
+                                [class.active]="activeSection === 'indizacion'">
+                                <i class="bi bi-list-columns mx-2"></i> Indización
+                            </div>
+
+                            <div class="sublista">
+                                <div class="subitem">Juzgado de origen</div>
+                                <div class="subitem">Tipo de Proceso</div>
+                                <div class="subitem">Materia</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <!-- GENERAL -->
+                <section class="mx-3" *ngIf="activeSection === 'general'">
+                    <div class="d-flex justify-content-start align-items-start mb-4">
+                        <div>
+                            <i class="bi bi-gear icon-custom-encabezado"></i>
+                        </div>
+                        <div class="mx-3">
+                            <h1 class="text-header-config">General</h1>
+                            <p class="text-paragraph-config">Opciones de configuración general</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="institucion" class="form-label">Nombre de la institución:</label>
+                        <input type="text" class="form-control" name="institucion"
+                            [(ngModel)]="data_general.institucion">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="direccion" class="form-label">Dirección:</label>
+                        <input type="text" class="form-control" name="direccion" [(ngModel)]="data_general.direccion">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="ruc" class="form-label">RUC:</label>
+                        <input type="text" class="form-control" name="ruc" [(ngModel)]="data_general.ruc">
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="departamento" class="form-label">Departamento:</label>
+                        <select id="departamento" name="departamento" class="form-select"
+                            [(ngModel)]="data_general.departamento">
+                            <option value="" disabled selected>DEPARTAMENTO</option>
+                            <option value="AMAZONAS">AMAZONAS</option>
+                            <option value="ANCASH">ANCASH</option>
+                            <option value="APURIMAC">APURIMAC</option>
+                            <option value="AREQUIPA">AREQUIPA</option>
+                            <option value="AYACUCHO">AYACUCHO</option>
+                            <option value="CAJAMARCA">CAJAMARCA</option>
+                            <option value="CUSCO">CUSCO</option>
+                            <option value="HUANCAVELICA">HUANCAVELICA</option>
+                            <option value="HUANUCO">HUANUCO</option>
+                            <option value="ICA">ICA</option>
+                            <option value="JUNIN">JUNIN</option>
+                            <option value="LA LIBERTAD">LA LIBERTAD</option>
+                            <option value="LAMBAYEQUE">LAMBAYEQUE</option>
+                            <option value="LIMA">LIMA</option>
+                            <option value="LORETO">LORETO</option>
+                            <option value="MADRE DE DIOS">MADRE DE DIOS</option>
+                            <option value="MOQUEGUA">MOQUEGUA</option>
+                            <option value="PASCO">PASCO</option>
+                            <option value="PIURA">PIURA</option>
+                            <option value="PUNO">PUNO</option>
+                            <option value="SAN MARTIN">SAN MARTIN</option>
+                            <option value="TACNA">TACNA</option>
+                            <option value="TUMBES">TUMBES</option>
+                            <option value="UCAYALI">UCAYALI</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="guardar-btn p-1 px-3"
+                        (click)="modificarGeneral(data_general.id_general)"> <i class="bi bi-gear m-1"> </i>
+                        Guardar</button>
+
+                </section>
+                <!-- RECEPCION -->
+                <section class="mx-3" *ngIf="activeSection === 'recepcion'">
+                    <div class="d-flex justify-content-start align-items-start mb-4">
+                        <div>
+                            <i class="bi bi-archive icon-custom-encabezado"></i>
+                        </div>
+                        <div class="mx-3">
+                            <h1 class="text-header-config">Recepción</h1>
+                            <p class="text-paragraph-config">Opciones de configuración en el modulo de recepcion</p>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex flex-column align-items-start gap-1 mb-4">
+                        <label for="sede" class="form-label" style="font-size: 1.3rem;">Sede</label>
+                        <button type="button" class="guardar-btn p-1 px-3" (click)="openModalRegistrarSede()"> + ADD
+                        </button>
+
+                        <div class="d-flex flex-wrap">
+                            <div *ngFor="let sede of sedes_list; let i = index"
+                                class="card-sede d-flex align-items-center">
+                                <label class="mb-0 me-3">{{ sede.sede }}</label>
+                                <i class="bi bi-trash" (click)="eliminarSede(sede.id_sede)"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column align-items-start gap-1 mb-4">
+                        <label for="especialidad" class="form-label" style="font-size: 1.3rem;">Especialidad</label>
+                        <button type="button" class="guardar-btn p-1 px-3" (click)="openModalRegistrarEspecialidad()"> +
+                            ADD </button>
+
+                        <div style="width: 100%;">
+                            <div *ngFor="let especialidad of especialidad_list; let i = index"
+                                class="card-especialidad">
+                                <div class="d-flex justify-content-between">
+                                    <label class="mb-0 me-3">{{ especialidad.especialidad }}</label>
+                                    <i class="bi bi-trash"
+                                        (click)="eliminarEspecialidad(especialidad.id_especialidad)"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column align-items-start gap-1  mb-4">
+                        <label for="documento" class="form-label" style="font-size: 1.3rem;">Tipo de Documento</label>
+                        <button type="button" class="guardar-btn p-1 px-3" (click)="openModalRegistrarTipoDocumento()">
+                            + ADD </button>
+                        <div class="d-flex flex-wrap">
+                            <div *ngFor="let documento of tipo_documento_list; let i = index"
+                                class="card-sede d-flex align-items-center">
+                                <label class="mb-0 me-3">{{ documento.tipo_documento }}</label>
+                                <i class="bi bi-trash" (click)="eliminarTipoDocumento(documento.id_tipo_documento)"></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </section>
+                <!-- INDIZACION -->
+                <section class="mx-3" *ngIf="activeSection === 'indizacion'">
+                    <div class="d-flex justify-content-start align-items-start mb-4">
+                        <div>
+                            <i class="bi bi-list-columns icon-custom-encabezado"></i>
+                        </div>
+                        <div class="mx-3">
+                            <h1 class="text-header-config">Indización</h1>
+                            <p class="text-paragraph-config">Opciones de configuración en el modulo de Indización</p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start gap-1 mb-4">
+
+                        <div class="card-button" (click)="showSubSection('juzgados')"
+                            [class.active]="activeSubSection === 'juzgados'">
+                            <h1>Juzgados</h1>
+                            <p>Registro de Juzgados de origen</p>
+                        </div>
+
+                        <div class="card-button" (click)="showSubSection('materia')"
+                            [class.active]="activeSubSection === 'materia'">
+                            <h1>Materia</h1>
+                            <p>Registro de materias</p>
+                        </div>
+
+                        <div class="card-button" (click)="showSubSection('procesos')"
+                            [class.active]="activeSubSection === 'procesos'">
+                            <h1>Procesos</h1>
+                            <p>Registro de tipos de proceso</p>
+                        </div>
+
+                    </div>
+
+                    <!-- section juzgados-->
+                    <section *ngIf="activeSubSection === 'juzgados'">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <button type="button" class="guardar-btn p-1 px-3" (click)="openModalRegistrarJuzgado()"> +
+                                ADD </button>
+                            <div style="width: 350px; margin-right: 40px;">
+                                <input type="text" class="form-control mx-4" placeholder="Buscar" name="juzgado_origen"
+                                    (input)="buscarJuzgado($event)">
+                            </div>
+
+                        </div>
+                        <div style="width: 100%;">
+                            <div *ngFor="let juzgado of juzgados_list; let i = index" class="card-especialidad">
+                                <div class="d-flex justify-content-between">
+                                    <label class="mb-0 me-3">{{ juzgado.juzgado }}</label>
+                                    <i class="bi bi-trash" (click)="eliminarJuzgado(juzgado.id_juzgado)"></i>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </section>
+                    <!-- section materia -->
+                    <section *ngIf="activeSubSection === 'materia'">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <button type="button" class="guardar-btn p-1 px-3" (click)="openModalRegistrarMateria()"> +
+                                ADD </button>
+                            <div style="width: 350px; margin-right: 40px;">
+                                <input type="text" class="form-control mx-4" placeholder="Buscar" name="materia"
+                                    (input)="buscarMateria($event)">
+                            </div>
+                        </div>
+                        <div style="width: 100%;">
+                            <div *ngFor="let materia of materia_list; let i = index" class="card-especialidad">
+                                <div class="d-flex justify-content-between">
+                                    <label class="mb-0 me-3">{{ materia.materia }}</label>
+                                    <i class="bi bi-trash" (click)="eliminarMateria(materia.id_materia)"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+                    <!-- section procesos -->
+                    <section *ngIf="activeSubSection === 'procesos'">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <button type="button" class="guardar-btn p-1 px-3"
+                                (click)="openModalRegistrarTipoProceso()"> + ADD </button>
+                            <div style="width: 350px; margin-right: 40px;">
+                                <input type="text" class="form-control mx-4" placeholder="Buscar" name="tipo_proceso"
+                                    (input)="buscarTipoProceso($event)">
+                            </div>
+                        </div>
+                        <div style="width: 100%;">
+                            <div *ngFor="let proceso of tipo_proceso_list; let i = index" class="card-especialidad">
+                                <div class="d-flex justify-content-between">
+                                    <label class="mb-0 me-3">{{ proceso.tipo_proceso }}</label>
+                                    <i class="bi bi-trash" (click)="eliminarTipoProceso(proceso.id_tipo_proceso)"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE REGISTRO DE SEDE -->
+<div class="modal fade" id="ModalRegistrarSede" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Registrar sede</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="sede" class="form-label">Sede:</label>
+                    <input type="text" class="form-control" name="sede" id="sede" [(ngModel)]="nuevaSede">
+                </div>
+                <div class="d-flex justify-content-center my-2 pt-3 gap-3">
+                    <button type="button" class="cancelar-btn" (click)="closeModalRegistrarSede()">Cancelar</button>
+                    <button type="button" class="guardar-btn" (click)="guardarSede()"> Registrar </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE REGISTRO DE ESPECIALIDAD -->
+<div class="modal fade" id="ModalRegistrarEspecialidad" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Registrar especialidad</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="especialidad" class="form-label">Especialidad:</label>
+                    <input type="text" class="form-control" name="especialidad" [(ngModel)]="nuevaEspecialidad">
+                </div>
+                <div class="d-flex justify-content-center my-2 pt-3 gap-3">
+                    <button type="button" class="cancelar-btn"
+                        (click)="closeModalRegistrarEspecialidad()">Cancelar</button>
+                    <button type="button" class="guardar-btn" (click)="guardarEspecialidad()"> Registrar </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TIPO DE DOCUMENTO -->
+<div class="modal fade" id="ModalTipoDocumento" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">TIPO DE DOCUMENTO</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="tipo_documento" class="form-label">Tipo de documento:</label>
+                    <input type="text" class="form-control" name="tipo_documento" [(ngModel)]="nuevaTipoDocumento">
+                </div>
+                <div class="d-flex justify-content-center my-2 pt-3 gap-3">
+                    <button type="button" class="cancelar-btn" (click)="closeModalTipoDocumento()">Cancelar</button>
+                    <button type="button" class="guardar-btn" (click)="guardarTipoDocumento()"> Registrar </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL JUZGADO DE ORIGEN   -->
+<div class="modal fade" id="ModalJuzgadoOrigen" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">TIPO DE DOCUMENTO</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="juzgado_origen" class="form-label">Tipo de documento:</label>
+                    <input type="text" class="form-control" name="juzgado_origen" [(ngModel)]="nuevoJuzgado">
+                </div>
+                <div class="d-flex justify-content-center my-2 pt-3 gap-3">
+                    <button type="button" class="cancelar-btn" (click)="closeModalJuzgado()">Cancelar</button>
+                    <button type="button" class="guardar-btn" (click)="guardarJuzgadoOrigen()"> Registrar </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MATERIA   -->
+<div class="modal fade" id="ModalMateria" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Registrar materia</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="materia" class="form-label">Materia:</label>
+                    <input type="text" class="form-control" name="materia" [(ngModel)]="nuevaMateria">
+                </div>
+                <div class="d-flex justify-content-center my-2 pt-3 gap-3">
+                    <button type="button" class="cancelar-btn" (click)="closeModalRegistrarMateria()">Cancelar</button>
+                    <button type="button" class="guardar-btn" (click)="guardarMateria()"> Registrar </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TIPO DE PROCESO   -->
+<div class="modal fade" id="ModalTipoProceso" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Registrar tipo de proceso</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="tipo_proceso" class="form-label">Tipo de proceso:</label>
+                    <input type="text" class="form-control" name="tipo_proceso" [(ngModel)]="nuevaTipoProceso">
+                </div>
+                <div class="d-flex justify-content-center my-2 pt-3 gap-3">
+                    <button type="button" class="cancelar-btn"
+                        (click)="closeModalRegistrarTipoProceso()">Cancelar</button>
+                    <button type="button" class="guardar-btn" (click)="guardarTipoProceso()"> Registrar </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

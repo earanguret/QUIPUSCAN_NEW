@@ -16,6 +16,8 @@ import fedatarioRoutes from './routes/fedatarioRoutes';
 import firmaDigitalRoutes from './routes/firmaDigitalRoutes';
 import discoRoutes from './routes/discoRoutes';
 import reporteRoutes from './routes/reporteRoutes';
+import sftpRoutes from './routes/sftpRoutes';
+import configuracionRoutes from './routes/configuracionRoutes';
 
 
 class Server{
@@ -51,6 +53,8 @@ class Server{
         this.app.use('/',discoRoutes);
         this.app.use('/',fedatarioRoutes);
         this.app.use('/',reporteRoutes);
+        this.app.use('/',sftpRoutes);
+        this.app.use('/',configuracionRoutes);
         
     }
     start(): void {

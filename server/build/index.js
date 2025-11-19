@@ -21,6 +21,8 @@ const fedatarioRoutes_1 = __importDefault(require("./routes/fedatarioRoutes"));
 const firmaDigitalRoutes_1 = __importDefault(require("./routes/firmaDigitalRoutes"));
 const discoRoutes_1 = __importDefault(require("./routes/discoRoutes"));
 const reporteRoutes_1 = __importDefault(require("./routes/reporteRoutes"));
+const sftpRoutes_1 = __importDefault(require("./routes/sftpRoutes"));
+const configuracionRoutes_1 = __importDefault(require("./routes/configuracionRoutes"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -52,6 +54,8 @@ class Server {
         this.app.use('/', discoRoutes_1.default);
         this.app.use('/', fedatarioRoutes_1.default);
         this.app.use('/', reporteRoutes_1.default);
+        this.app.use('/', sftpRoutes_1.default);
+        this.app.use('/', configuracionRoutes_1.default);
     }
     start() {
         const server = this.app.listen(this.app.get('port'), '0.0.0.0', () => {

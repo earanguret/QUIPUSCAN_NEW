@@ -33,7 +33,7 @@
                 <div class="card rounded shadow border-2 mt-2">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center ">
                         <input type="text" class="form-control form-control-sm mx-2" name="registroexpediente"
-                            placeholder="Buscar expediente" (input)=" buscarEnObjeto($event)">
+                            placeholder="Buscar expediente" (input)="buscarEnObjeto($event)">
                     </div>
                     <div class="card-body px-5 bg-white rounded">
                         <div class="mb-2 d-flex align-items-center">
@@ -308,12 +308,10 @@
                                                     list="datalistOptions1" id="input_juzgado_origen">
 
                                                 <datalist id="datalistOptions1">
-                                                    <option *ngFor="let option of listDistJudiciales" [value]="option">
+                                                    <option *ngFor="let option of listDistJudiciales" [value]="option.juzgado">
                                                     </option>
                                                 </datalist>
                                             </div>
-
-
 
                                             <div class="form-group mt-3">
                                                 <label for="tipo_proceso" class="form-label">Tipo de proceso:</label>
@@ -321,18 +319,16 @@
                                                     name="tipo_proceso" [(ngModel)]="dataIndizacion.tipo_proceso"
                                                     list="datalistTipoProceso">
                                                 <datalist id="datalistTipoProceso">
-                                                    <option *ngFor="let option of listTipoProceso " [value]="option">
+                                                    <option *ngFor="let option of listTipoProceso" [value]="option.tipo_proceso">
                                                     </option>
                                                 </datalist>
                                             </div>
 
                                             <div class="form-group mt-3">
                                                 <label for="materia" class="form-label">Materia:</label>
-                                                <input type="text" class="form-control form-control-sm" name="materia"
-                                                    [(ngModel)]="dataIndizacion.materia" list="datalistOptionsMateria">
+                                                <input type="text" class="form-control form-control-sm" name="materia" [(ngModel)]="dataIndizacion.materia" list="datalistOptionsMateria">
                                                 <datalist id="datalistOptionsMateria">
-                                                    <option *ngFor="let option of listMateria " [value]="option">
-                                                    </option>
+                                                    <option *ngFor="let option of listMateria " [value]="option.materia"></option>
                                                 </datalist>
                                             </div>
 

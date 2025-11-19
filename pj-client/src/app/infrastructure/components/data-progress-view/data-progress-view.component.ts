@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { PreparacionService } from '../../services/remoto/preparacion/preparacion.service';
 import { DigitalizacionService } from '../../services/remoto/digitalizacion/digitalizacion.service';
 import { EstadoService } from '../../services/remoto/estado/estado.service';
-import { FtpService } from '../../services/remoto/ftp/ftp.service';
+import { SftpService } from '../../services/remoto/sftp/sftp.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PreparacionResponseDataView } from '../../../domain/dto/PreparacionResponse.dto';
@@ -126,7 +126,7 @@ export class DataProgressViewComponent {
     private digitalizacionService: DigitalizacionService,
     private indizacionService: IndizacionService,
     private controlService: ControlService,
-    private ftpService: FtpService,
+    private sftpService: SftpService,
     private sanitizer: DomSanitizer,
     private expedienteService: ExpedienteService,
     private estadoService: EstadoService) { }
@@ -202,7 +202,7 @@ export class DataProgressViewComponent {
     let fileName = this.data_expediente_header.nro_expediente + '.pdf';
     let folderPath = `${this.data_expediente_header.codigo_inventario}/EXPEDIENTES`;
     console.log('ftp:', folderPath, fileName)
-    this.ftpService.downloadFile(fileName, folderPath).subscribe({
+    this.sftpService.downloadFile(fileName, folderPath).subscribe({
       next: (data: Blob) => {
         console.log(data);
         let temp = new Blob([data], { type: 'application/pdf' });

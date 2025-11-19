@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { CrearFlujogramaResponse, EliminarFlujogramaResponse } from '../../../../domain/dto/FlujogramaResponse.dto';
+import { CrearFlujogramaResponse, EliminarFlujogramaResponse, FlujogramaResponse } from '../../../../domain/dto/FlujogramaResponse.dto';
 import { FlujogramaRequest } from '../../../../domain/dto/FlujogramaRequest.dto';
 
 @Injectable({
@@ -14,8 +14,12 @@ export class FlujogramaService {
 
   api_uri_flujograma=`${environment.urlApi}/flujograma`;
 
-  ListarFlujogramaByIdExpediente(id_expediente:number):Observable<any>{
-    return this.http.get<any>(`${this.api_uri_flujograma}/lista/${id_expediente}`)
+  // ListarFlujogramaByIdExpediente(id_expediente:number):Observable<any>{
+  //   return this.http.get<any>(`${this.api_uri_flujograma}/lista/${id_expediente}`)
+  // }
+
+  ObtenerFlujogramaById(id_expediente:number):Observable<FlujogramaResponse[]>{
+    return this.http.get<FlujogramaResponse[]>(`${this.api_uri_flujograma}/detalle/${id_expediente}`)
   }
 
   CrearFlujograma(cuerpo_flujograma:FlujogramaRequest):Observable<CrearFlujogramaResponse>{

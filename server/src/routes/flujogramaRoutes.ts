@@ -15,6 +15,7 @@ class FlujogramaRoutes{
         this.router.get('/api/flujograma/lista/:id_expediente',flujogramaController.listarFlujogramaByIdExpediente)
         this.router.post('/api/flujograma',flujogramaController.crearFlujograma)
         this.router.delete('/api/flujograma/:id_expediente',flujogramaController.EliminarFlujograma)
+        this.router.get('/api/flujograma/detalle/:id_expediente',flujogramaController.obtenerFlujogramaById)
     }
 }
 

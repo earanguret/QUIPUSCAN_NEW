@@ -15,7 +15,7 @@ import { CrearFlujogramaResponse } from '../../../../domain/dto/FlujogramaRespon
 import { EstadoService } from '../../../services/remoto/estado/estado.service';
 import { EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 import { CommonModule } from '@angular/common';
-import { FtpService } from '../../../services/remoto/ftp/ftp.service';
+import { SftpService } from '../../../services/remoto/sftp/sftp.service';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 import { PreparacionService } from '../../../services/remoto/preparacion/preparacion.service';
@@ -196,7 +196,7 @@ export class ControlExpedientesComponent implements OnInit {
     private flujogramaService: FlujogramaService,
     private estadoService: EstadoService,
     private sanitizer: DomSanitizer,
-    private ftpService: FtpService,
+    private sftpService: SftpService,
     private inventarioService: InventarioService,
     private preparacionService: PreparacionService,
     private digitalizacionService: DigitalizacionService,
@@ -435,7 +435,7 @@ export class ControlExpedientesComponent implements OnInit {
     let folderPath = this.folderPath!;
     console.log(folderPath);
     console.log(fileName);
-    this.ftpService.downloadFile(fileName, folderPath).subscribe({
+    this.sftpService.downloadFile(fileName, folderPath).subscribe({
       next: (data: Blob) => {
         console.log(data);
         let temp = new Blob([data], { type: 'application/pdf' });

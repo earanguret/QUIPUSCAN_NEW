@@ -1,8 +1,8 @@
 export interface FlujogramaResponse {
     id_flujograma?: number;
     create_at: Date | null;
-    id_expediente: number;
-    id_responsable: number;
+    username: string | null;
+    ip: string | null;
     area: string;
 }
 

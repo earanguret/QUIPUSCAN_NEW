@@ -13,6 +13,17 @@ class FlujogramaController {
         }
     }
 
+    public async obtenerFlujogramaById(req: Request, res: Response): Promise<any> {
+        const { id_expediente } = req.params;
+        try {
+            const flujograma = await db.query('select id_flujograma, create_at, c_aud_uidred as username, c_aud_ip as ip,  area  from archivo.t_flujograma where id_expediente = $1 order by create_at desc', [id_expediente]);
+            res.status(200).json(flujograma['rows']);
+        } catch (error) {
+            console.error('Error al obtener flujograma:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    }
+
     public async crearFlujograma(req: Request, res: Response) {
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -85,6 +96,8 @@ class FlujogramaController {
         }
 
     }
+
+
 
 
 }

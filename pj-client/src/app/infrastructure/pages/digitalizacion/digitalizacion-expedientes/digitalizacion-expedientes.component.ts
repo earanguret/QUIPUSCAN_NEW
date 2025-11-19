@@ -20,7 +20,8 @@ import { PreparacionService } from '../../../services/remoto/preparacion/prepara
 import { DigitalizacionService } from '../../../services/remoto/digitalizacion/digitalizacion.service';
 import { PreparacionViewComponent } from '../../../components/preparacion-view/preparacion-view.component';
 import { DigitalizacionModel } from '../../../../domain/models/Digitalizacion.model';
-import { FtpService } from '../../../services/remoto/ftp/ftp.service';
+// import { FtpService } from '../../../services/remoto/ftp/ftp.service';
+import { SftpService } from '../../../services/remoto/sftp/sftp.service';
 import { CrearDigitalizacionResponse, DigitalizacionDataResponse, DigitalizacionResponseDataView, ModificarDigitalizacionResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { DigitalizacionRequest } from '../../../../domain/dto/DigitalizacionRequest.dto';
 import { getFileHash } from '../../../functions/hashFuntions';
@@ -190,7 +191,8 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private preparacionService: PreparacionService,
     private digitalizacionService: DigitalizacionService,
-    private ftpService: FtpService,
+    // private ftpService: FtpService,
+    private sftpService: SftpService,
     private sweetAlert: SweetAlert,
     private inventarioService: InventarioService) { }
 
@@ -212,7 +214,68 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     }
   }
 
-  async guardarPDF(file: File, nameFile: string) {
+  // async guardarPDF(file: File, nameFile: string) {
+    
+  //   if (!file) {
+  //     alert("El archivo no puede estar vacío");
+  //     return;
+  //   }
+
+  //   try {
+  //     // Leer el archivo como ArrayBuffer
+  //     const arrayBuffer = await file.arrayBuffer();
+
+  //     // Cargar el PDF original
+  //     const originalPdf = await PDFDocument.load(arrayBuffer);
+
+  //     // Crear un nuevo PDF y copiar la primera página
+  //     const newPdf = await PDFDocument.create();
+  //     const [firstPage] = await newPdf.copyPages(originalPdf, [0]);
+  //     newPdf.addPage(firstPage);
+
+  //     // Serializar el nuevo PDF a bytes
+  //     const pdfBytes = await newPdf.save();
+
+  //     // Crear nuevo archivo con la primera página
+  //     // const firstPageFile = new File([pdfBytes], `primera_${nameFile}`, { type: 'application/pdf' });
+  //     const firstPageFile = new File([Uint8Array.from(await newPdf.save()).buffer], `primera_${nameFile}`, { type: 'application/pdf' });
+
+
+  //     // Subir portada primero
+  //     this.ftpService.uploadFile(firstPageFile, this.folderPathPortada!, nameFile).subscribe({
+  //       next: (data: CrearDigitalizacionResponse) => {
+  //         console.log("Respuesta portada:", data);
+  //       },
+  //       error: (error) => {
+  //         console.error("Error al subir la portada:", error);
+  //         alert("Error al subir la portada. Detalle: " + (error?.message || ''));
+  //       },
+  //       complete: () => {
+  //         console.log("Portada subida correctamente");
+
+  //         // Ahora subir el documento completo
+  //         this.ftpService.uploadFile(file, this.folderPathDocument!, nameFile).subscribe({
+  //           next: (data: CrearDigitalizacionResponse) => {
+  //             console.log("Respuesta documento:", data);
+  //           },
+  //           error: (error) => {
+  //             console.error("Error al subir el documento:", error);
+  //             alert("Error al subir el documento. Detalle: " + (error?.message || ''));
+  //           },
+  //           complete: () => {
+  //             console.log("Documento completo subido correctamente");
+  //             this.GuardarDatosDigitalizacion();
+  //           }
+  //         });
+  //       }
+  //     });
+
+  //   } catch (error) {
+  //     console.error("Error al procesar el PDF:", error);
+  //     alert("Ocurrió un error al extraer la primera hoja del PDF.");
+  //   }
+  // }
+   async guardarPDF(file: File, nameFile: string) {
     
     if (!file) {
       alert("El archivo no puede estar vacío");
@@ -232,7 +295,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
       newPdf.addPage(firstPage);
 
       // Serializar el nuevo PDF a bytes
-      const pdfBytes = await newPdf.save();
+      // const pdfBytes = await newPdf.save();
 
       // Crear nuevo archivo con la primera página
       // const firstPageFile = new File([pdfBytes], `primera_${nameFile}`, { type: 'application/pdf' });
@@ -240,7 +303,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
 
 
       // Subir portada primero
-      this.ftpService.uploadFile(firstPageFile, this.folderPathPortada!, nameFile).subscribe({
+      this.sftpService.uploadFile(firstPageFile, this.folderPathPortada!, nameFile).subscribe({
         next: (data: CrearDigitalizacionResponse) => {
           console.log("Respuesta portada:", data);
         },
@@ -252,7 +315,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
           console.log("Portada subida correctamente");
 
           // Ahora subir el documento completo
-          this.ftpService.uploadFile(file, this.folderPathDocument!, nameFile).subscribe({
+          this.sftpService.uploadFile(file, this.folderPathDocument!, nameFile).subscribe({
             next: (data: CrearDigitalizacionResponse) => {
               console.log("Respuesta documento:", data);
             },
@@ -744,7 +807,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
    */
   private subirArchivoFTP(file: File, folderPath: string, nameFile: string, tipo: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.ftpService.uploadFile(file, folderPath, nameFile).subscribe({
+      this.sftpService.uploadFile(file, folderPath, nameFile).subscribe({
         next: (data: CrearDigitalizacionResponse) => {
           console.log(`📁 ${tipo} subida correctamente:`, data);
         },
@@ -761,147 +824,7 @@ export class DigitalizacionExpedientesComponent implements OnInit {
     });
   }
 
-  // async ModificarDigitalizacion(nameFile: string) {
-  //   const usuario = this.credencialesService.credenciales;
-  //   const expediente = this.id_expediente_temp;
-  //   const isArchivoCargado = !!this.file;
 
-  //   const hashActual = isArchivoCargado ? await getFileHash(this.file!) : this.data_digitalizacion.hash_doc;
-  //   const hashPrevio = this.data_digitalizacion.hash_doc;
-  //   const archivoModificado = hashActual !== hashPrevio;
-
-  //   const dataDigitalizacion: DigitalizacionRequest = {
-  //     id_responsable: usuario.id_usuario,
-  //     id_expediente: expediente,
-  //     fojas_total: this.data_digitalizacion.fojas_total,
-  //     ocr: this.data_digitalizacion.ocr,
-  //     escala_gris: this.data_digitalizacion.escala_gris,
-  //     color: this.data_digitalizacion.color,
-  //     observaciones: this.ListObservacionesDigitalizacion.length ? this.ListObservacionesDigitalizacion.join('|') : null,
-  //     dir_ftp: this.folderPathDocument,
-  //     hash_doc: hashActual,
-  //     peso_doc: isArchivoCargado ? this.file!.size : this.data_digitalizacion.peso_doc,
-  //     app_user: usuario.username
-  //   };
-
-
-  //   const erroresValidacion = form_digitalizacion_modificar_vf(dataDigitalizacion);
-  //   if (erroresValidacion.length > 0) {
-  //     let errorMensaje = '';
-  //     erroresValidacion.forEach(error => {
-  //       errorMensaje += `Error en el campo :"${error.campo}": ${error.mensaje}`;
-  //     });
-  //     alert(errorMensaje)
-  //     console.log(errorMensaje)
-  //     return;
-  //   }
-  //   // Función auxiliar para actualizar datos en backend
-  //   const actualizarDatos = () => {
-  //     this.digitalizacionService.ModificarDatosDigitalizacion(expediente, dataDigitalizacion).subscribe({
-  //       next: (data: ModificarDigitalizacionResponse) => {
-  //         console.log("✅ Datos actualizados:", data);
-  //       },
-  //       complete: () => {
-  //         console.log("✔️ Modificación de digitalización completada");
-  //         this.EstadoDigitalizacionTrabajado();
-  //         this.ModificarRespuestaMensaje();
-  //         this.closeModalDigitalizacion();
-  //         this.sweetAlert.MensajeSimpleSuccess('Expediente Modificado',`Expediente ${this.data_preparacion_header.nro_expediente} modificado con exito` );
-
-  //       }
-  //     });
-  //   };
-
-  //   // Si hay archivo cargado y fue modificado
-  //   // if (isArchivoCargado && archivoModificado) {
-  //     console.log("entramos a modificar file");
-
-  //     // this.ftpService.uploadFile(this.file!, this.folderPathDocument!, this.data_expediente_temp.nro_expediente + '.pdf').subscribe({
-  //     //   next: (data: CrearDigitalizacionResponse) => {
-  //     //     console.log("📁 Archivo subido:", data);
-  //     //   },
-  //     //   error: (error) => {
-  //     //     if (error.status === 503) {
-  //     //       console.error("No se pudo conectar al servidor FTP.");
-  //     //       alert("Error de conexión al servidor FTP. Comuníquese con el área de informática.");
-  //     //     } else if (error.status === 400) {
-  //     //       console.error("Solicitud inválida. Verifique los datos enviados.");
-  //     //       alert("Datos inválidos. Verifica el nombre del archivo y la carpeta.");
-  //     //     } else {
-  //     //       console.error("Error inesperado al subir el archivo:", error);
-  //     //       alert("Ocurrió un error inesperado al subir el archivo.");
-  //     //     }
-  //     //   },
-  //     //   complete: () => {
-  //     //     console.log("Archivo subido correctamente.");
-  //     //     actualizarDatos();
-  //     //     this.ModificarRespuestaMensaje();
-  //     //   }
-  //     // });
-  //     try {
-  //     // Leer el archivo como ArrayBuffer
-  //     const arrayBuffer = await this.file!.arrayBuffer();
-
-  //     // Cargar el PDF original
-  //     const originalPdf = await PDFDocument.load(arrayBuffer);
-
-  //     // Crear un nuevo PDF y copiar la primera página
-  //     const newPdf = await PDFDocument.create();
-  //     const [firstPage] = await newPdf.copyPages(originalPdf, [0]);
-  //     newPdf.addPage(firstPage);
-
-  //     // Serializar el nuevo PDF a bytes
-  //     const pdfBytes = await newPdf.save();
-
-  //     // Crear nuevo archivo con la primera página
-  //     const firstPageFile = new File([pdfBytes], `primera_${nameFile}`, { type: 'application/pdf' });
-
-  //     // Subir portada primero
-  //     this.ftpService.uploadFile(firstPageFile, this.folderPathPortada!, nameFile).subscribe({
-  //       next: (data: CrearDigitalizacionResponse) => {
-  //         console.log("Respuesta portada:", data);
-  //       },
-  //       error: (error) => {
-  //         console.error("Error al subir la portada:", error);
-  //         alert("Error al subir la portada. Detalle: " + (error?.message || ''));
-  //       },
-  //       complete: () => {
-  //         console.log("Portada subida correctamente");
-
-  //         // Ahora subir el documento completo
-  //         this.ftpService.uploadFile(this.file!, this.folderPathDocument!, nameFile).subscribe({
-  //           next: (data: CrearDigitalizacionResponse) => {
-  //             console.log("Respuesta documento:", data);
-  //           },
-  //           error: (error) => {
-  //             console.error("Error al subir el documento:", error);
-  //             alert("Error al subir el documento. Detalle: " + (error?.message || ''));
-  //           },
-  //           complete: () => {
-  //             console.log("nuevo documento subido correctamente");
-  //             actualizarDatos();
-  //             this.ModificarRespuestaMensaje();
-  //           }
-  //         });
-  //       }
-  //     });
-
-  //   } catch (error) {
-  //     console.error("Error al procesar el PDF:", error);
-  //     alert("Ocurrió un error al extraer la primera hoja del PDF.");
-  //   }
-  //     this.ModificarRespuestaMensaje();
-  //   // } else {
-  //   //   // No hay archivo cargado o es el mismo que ya existía
-  //   //   if (!isArchivoCargado) {
-  //   //     console.warn("No se cargó ningún archivo nuevo.");
-  //   //   } else {
-  //   //     console.log("ℹEl archivo no ha cambiado. Solo se actualizarán los metadatos.");
-  //   //   }
-  //   //   actualizarDatos();
-  //   //   this.ModificarRespuestaMensaje();
-  //   // }
-  // }
 
   ObternerDigitalizacionByIdExpediente(id_expediente: number) {
 
@@ -924,11 +847,10 @@ export class DigitalizacionExpedientesComponent implements OnInit {
   recuperarFile() {
     let fileName = this.data_expediente_temp.nro_expediente + '.pdf';
     let folderPath = this.folderPathDocument!;
-    this.ftpService.downloadFile(fileName, folderPath).subscribe({
+    this.sftpService.downloadFile(fileName, folderPath).subscribe({
       next: (data: Blob) => {
         console.log(data);
         let temp = new Blob([data], { type: 'application/pdf' });
-
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(temp));
       },
       error: (error) => {

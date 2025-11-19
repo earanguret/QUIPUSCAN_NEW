@@ -16,54 +16,140 @@
 
         <!-- Card relativo al buscador -->
         <div class="card-expedientes shadow" [class.show]="mostrarCard">
-            <div *ngFor="let expediente of lista_expedientes" class="expediente-item" >
-                <label >{{ expediente.nro_expediente }}</label>
-                <button class="btn btn-light btn-sm " (click)="buscarDatosExpediente(expediente.id_expediente)">Ver detalle</button>
+            <div *ngFor="let expediente of lista_expedientes" class="expediente-item">
+                <label>{{ expediente.nro_expediente }}</label>
+                <button class="btn btn-light btn-sm " (click)="buscarDatosExpediente(expediente.id_expediente)">Ver
+                    detalle</button>
             </div>
         </div>
     </div>
     <!-- fin del contendor relativo -->
 
-    <div class="card-report shadow">
-        <div class="panel_stepper">
-            <div class="d-flex justify-content-center">
-                <div class="progress-container">
-                    <div class="progress" role="progressbar" aria-label="Progreso del proceso" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-warning" [style.width.%]="(this.nro_progreso -1) * 20"></div>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card-report shadow p-4 rounded-2xl bg-white">
+                <!-- ENCABEZADO DEL EXPEDIENTE -->
+                <h2 class="text-xl font-bold mb-3">📁 Detalle del Exp</h2>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <strong>N° Expediente:</strong> {{ data_expediente_header.nro_expediente || '—' }}
                     </div>
-                    <div class="item d-flex flex-column align-items-center" style="left: 0%;">
-                        <img [src]="this.estadoExpediente.estado_recepcionado=='T' ? '/icon/recepcion.png' : '/icon/recepcion.png'" alt="" width="50px">
-                        <div class="step-circle mt-2" [style]="this.estadoExpediente.estado_recepcionado=='T' ? 'background-color: brown; color: aliceblue':null ">1</div>
-                        <p> RECEPCIÓN</p> 
+                    <div>
+                        <strong>Código de Paquete:</strong> {{ data_expediente_header.cod_paquete || '—' }}
                     </div>
-                    <div class="item d-flex flex-column align-items-center" style="left: 20%;">
-                        <img [src]="this.estadoExpediente.estado_preparado=='T' ? '/icon/preparacion.png' : '/icon/preparacion_b.png'" alt="" width="50px">
-                        <div class="step-circle mt-2" [style]="this.estadoExpediente.estado_preparado=='T' ? 'background-color: brown; color: aliceblue':null ">2</div>
-                        <p> PREPARACIÓN</p> 
+                    <div>
+                        <strong>Responsable:</strong> {{ data_expediente_header.responsable}}
                     </div>
-                    <div class="item d-flex flex-column align-items-center" style="left: 40%;">
-                        <img [src]="this.estadoExpediente.estado_digitalizado=='T' ? '/icon/digitalizacion.png' : '/icon/digitalizacion_b.png'" alt="" width="50px">
-                        <div class="step-circle mt-2" [style]="this.estadoExpediente.estado_digitalizado=='T' ? 'background-color: brown; color: aliceblue':null ">3</div>
-                        <p> DIGITALIZACIÓN</p> 
+                    <div>
+                        <strong>Fecha de Registro:</strong>
+                        {{ data_expediente_header.create_at ? (data_expediente_header.create_at | date:'dd/MM/yyyy') :
+                        '—' }}
                     </div>
-                    <div class="item d-flex flex-column align-items-center" style="left: 60%;">
-                        <img [src]="this.estadoExpediente.estado_indizado=='T' ? '/icon/indizacion.png' : '/icon/indizacion_b.png'" alt="" width="50px">
-                        <div class="step-circle mt-2" [style]="this.estadoExpediente.estado_indizado=='T' ? 'background-color: brown; color: aliceblue':null ">4</div>
-                        <p> INDIZACIÓN</p> 
-                    </div>
-                    <div class="item d-flex flex-column align-items-center" style="left: 80%;">
-                        <img [src]="this.estadoExpediente.estado_controlado=='T' ? '/icon/control.png' : '/icon/control_b.png'" alt="" width="50px">
-                        <div class="step-circle mt-2" [style]="this.estadoExpediente.estado_controlado=='T' ? 'background-color: brown; color: aliceblue':null ">5</div>
-                        <p> CONTROL</p> 
-                    </div>
-                    <div class="item d-flex flex-column align-items-center" style="left: 100%;">
-                        <img [src]="this.estadoExpediente.estado_fedatado=='T' ? '/icon/fedatario.png' : '/icon/fedatario_b.png'" alt="" width="50px">
-                        <div class="step-circle mt-2" [style]="this.estadoExpediente.estado_fedatado=='T' ? 'background-color: brown; color: aliceblue':null ">6</div>
-                        <p> FEDATARIO</p> 
-                    </div>
+                </div>
 
+                <hr class="my-4 border-gray-300" />
+
+                <!-- DATOS DEL INVENTARIO -->
+                <h3 class="text-lg font-semibold mb-3">🗂️ Información de Inventario</h3>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><strong>Código Inventario:</strong> {{ data_inventario.codigo || '—' }}</div>
+                    <div><strong>Año:</strong> {{ data_inventario.anio || '—' }}</div>
+                    <div><strong>Tipo Documento:</strong> {{ data_inventario.tipo_doc || '—' }}</div>
+                    <div><strong>Serie Documental:</strong> {{ data_inventario.serie_doc || '—' }}</div>
+                    <div><strong>Especialidad:</strong> {{ data_inventario.especialidad || '—' }}</div>
+                    <div><strong>Sede:</strong> {{ data_inventario.sede || '—' }}</div>
                 </div>
             </div>
         </div>
+        <div class="col-lg-9">
+            <div class="card-report shadow">
+                <div class="panel_stepper">
+                    <div class="d-flex justify-content-center">
+                        <div class="progress-container">
+                            <div class="progress" role="progressbar" aria-label="Progreso del proceso" aria-valuemin="0"
+                                aria-valuemax="100">
+                                <div class="progress-bar bg-warning" [style.width.%]="(this.nro_progreso -1) * 20">
+                                </div>
+                            </div>
+                            <div class="item d-flex flex-column align-items-center" style="left: 0%;">
+                                <img [src]="this.estadoExpediente.estado_recepcionado=='T' ? '/icon/recepcion.png' : '/icon/recepcion.png'"
+                                    alt="" width="50px">
+                                <div class="step-circle mt-2"
+                                    [style]="this.estadoExpediente.estado_recepcionado=='T' ? 'background-color: brown; color: aliceblue':null ">
+                                    1</div>
+                                <p> RECEPCIÓN</p>
+                            </div>
+                            <div class="item d-flex flex-column align-items-center" style="left: 20%;">
+                                <img [src]="this.estadoExpediente.estado_preparado=='T' ? '/icon/preparacion.png' : '/icon/preparacion_b.png'"
+                                    alt="" width="50px">
+                                <div class="step-circle mt-2"
+                                    [style]="this.estadoExpediente.estado_preparado=='T' ? 'background-color: brown; color: aliceblue':null ">
+                                    2</div>
+                                <p> PREPARACIÓN</p>
+                            </div>
+                            <div class="item d-flex flex-column align-items-center" style="left: 40%;">
+                                <img [src]="this.estadoExpediente.estado_digitalizado=='T' ? '/icon/digitalizacion.png' : '/icon/digitalizacion_b.png'"
+                                    alt="" width="50px">
+                                <div class="step-circle mt-2"
+                                    [style]="this.estadoExpediente.estado_digitalizado=='T' ? 'background-color: brown; color: aliceblue':null ">
+                                    3</div>
+                                <p> DIGITALIZACIÓN</p>
+                            </div>
+                            <div class="item d-flex flex-column align-items-center" style="left: 60%;">
+                                <img [src]="this.estadoExpediente.estado_indizado=='T' ? '/icon/indizacion.png' : '/icon/indizacion_b.png'"
+                                    alt="" width="50px">
+                                <div class="step-circle mt-2"
+                                    [style]="this.estadoExpediente.estado_indizado=='T' ? 'background-color: brown; color: aliceblue':null ">
+                                    4</div>
+                                <p> INDIZACIÓN</p>
+                            </div>
+                            <div class="item d-flex flex-column align-items-center" style="left: 80%;">
+                                <img [src]="this.estadoExpediente.estado_controlado=='T' ? '/icon/control.png' : '/icon/control_b.png'"
+                                    alt="" width="50px">
+                                <div class="step-circle mt-2"
+                                    [style]="this.estadoExpediente.estado_controlado=='T' ? 'background-color: brown; color: aliceblue':null ">
+                                    5</div>
+                                <p> CONTROL</p>
+                            </div>
+                            <div class="item d-flex flex-column align-items-center" style="left: 100%;">
+                                <img [src]="this.estadoExpediente.estado_fedatado=='T' ? '/icon/fedatario.png' : '/icon/fedatario_b.png'"
+                                    alt="" width="50px">
+                                <div class="step-circle mt-2"
+                                    [style]="this.estadoExpediente.estado_fedatado=='T' ? 'background-color: brown; color: aliceblue':null ">
+                                    6</div>
+                                <p> FEDATARIO</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card-report shadow">
+                <h3>Flujo</h3>
+                <table id="excel-table" class="table text-center  table-hover">
+
+                    <thead class="thead-ligth bg-secondary text-white table-success">
+                        <tr>
+                            <th scope="col">NRO</th>
+                            <th class="text-start" scope="col">FECHA DE RECEPCION</th>
+                            <th class="text-start" scope="col">USERNAME</th>
+                            <th class="text-start" scope="col">IP</th>
+                            <th scope="col">AREA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of data_flujograma, index as i" class="table-barra">
+                            <th scope="row">{{i+1}}</th>
+                            <td> {{ item.create_at | date: 'dd/MM/yyyy HH:mm:ss' }} </td>
+                            <td class="text-start"> {{item.username}}</td>
+                            <td class="text-start"> {{item.ip}}</td>
+                            <td class="text-start"> {{item.area}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
+
 </div>

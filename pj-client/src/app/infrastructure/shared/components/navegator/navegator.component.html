@@ -30,11 +30,13 @@
                 <li class="nav-item">
                     <label class="user_text mx-md-3 mt-2"> {{credenciales.username}} </label>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" routerLink="/principal/mod-usuario/{{credenciales.id_usuario}}">
                         <i class="bi bi-person-fill-gear icon-custom " title="información del usuario"></i>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" >
                         <i class="bi bi-box-arrow-in-right icon-custom mx-2" title="salir" (click)="confirmarSalida()"></i>
@@ -46,11 +48,14 @@
                         <i style="color: rgb(211, 180, 7);" class="bi  bi-info-circle icon-custom mx-2" title="infromacion del sistema"></i>
                     </a>
                 </li>
-                
+
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/principal/configuracion" >
+                        <i class="bi bi-gear icon-custom mx-2" title="salir" ></i>
+                    </a>
+                </li>
+        
             </ul>
-
         </div>
-
     </div>
-
 </nav>

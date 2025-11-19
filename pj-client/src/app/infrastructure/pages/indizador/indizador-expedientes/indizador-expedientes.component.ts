@@ -15,7 +15,7 @@ import { FlujogramaService } from '../../../services/remoto/flujograma/flujogram
 import { EstadoService } from '../../../services/remoto/estado/estado.service';
 import { EstadoMensajesResponse, MensajeGuardarResponse, ModificarEstadoResponse } from '../../../../domain/dto/EstadoResponse.dto';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
-import { FtpService } from '../../../services/remoto/ftp/ftp.service';
+import { SftpService } from '../../../services/remoto/sftp/sftp.service';
 import { InventarioService } from '../../../services/remoto/inventario/inventario.service';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { form_indizacion_creacion_vf, form_indizacion_modificar_vf } from '../../../validator/fromValidator/indizacion.validator';
@@ -33,10 +33,12 @@ import { Mensaje, Respuesta } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 import { datalistDistJudiciales } from '../../../../../../public/info/juzgados.info';
+import { ConfiguracionService } from '../../../services/remoto/configuracion/configuracion.service';
 import { dataListProceso } from '../../../../../../public/info/proceso.info';
 import { dataListMateria } from '../../../../../../public/info/materia.info';
 
 import { DataProgressViewComponent } from '../../../components/data-progress-view/data-progress-view.component';
+import { JuzgadoResponse, MateriaResponse, TipoProcesoResponse } from '../../../../domain/dto/ConfiguracionResponse.dto';
 
 declare var bootstrap: any;
 
@@ -65,9 +67,10 @@ export class IndizadorExpedientesComponent implements OnInit {
   mostrarPopupIndex: number | null = null; // Índice del mensaje con popup abierto
   nuevaRespuesta: string = '';
 
-  listDistJudiciales: string[] = datalistDistJudiciales;
-  listTipoProceso: string[] = dataListProceso;
-  listMateria: string[] = dataListMateria;
+  listDistJudiciales: JuzgadoResponse[] = [];
+
+  listTipoProceso: TipoProcesoResponse[] = [];
+  listMateria: MateriaResponse[] = [];
 
   // data de cabecera de informacion
   nro_expedientes: number = 0;
@@ -208,20 +211,21 @@ export class IndizadorExpedientesComponent implements OnInit {
     private credencialesService: CredencialesService,
     private flujogramaService: FlujogramaService,
     private estadoService: EstadoService,
-    private ftpService: FtpService,
+    private sftpService: SftpService,
     private inventarioService: InventarioService,
     private preparacionService: PreparacionService,
     private sweetAlert: SweetAlert,
     private digitalizacionService: DigitalizacionService,
-    private indizacionService: IndizacionService) { }
+    private indizacionService: IndizacionService,
+    private configuracionService: ConfiguracionService) { }
 
   ngOnInit(): void {
     this.id_inventario = this.activatedRoute.snapshot.params['id'];
-    this.ListarExpedientes()
+    this.ListarExpedientes();
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
-    this.ObternerCodigoInventario()
+    this.ObternerCodigoInventario();
     this.inicializadorModales();
-
+   
   }
 
   inicializadorModales() {
@@ -267,7 +271,9 @@ export class IndizadorExpedientesComponent implements OnInit {
   }
 
   openModalIndizacion(id_expediente: number, nro_expediente: string, modificar_indizacion: boolean) {
-
+    this.ObtenerListaMateria();
+    this.ObtenerListaJuzgados();
+    this.ObtenerListaTipoProceso();
     this.recuperarFile(nro_expediente)
     this.id_expediente_temp = id_expediente;
     this.ObtenerExpedienteDataViewXid(id_expediente)
@@ -353,6 +359,51 @@ export class IndizadorExpedientesComponent implements OnInit {
     })
   }
 
+  ObtenerListaJuzgados() {
+    this.configuracionService.ListarJuzgado().subscribe({
+      next: (data: JuzgadoResponse[]) => {
+        this.listDistJudiciales = data;
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de juzgados completado');
+      }
+    })
+  }
+
+  ObtenerListaTipoProceso() {
+    this.configuracionService.ListarTipoProceso().subscribe({
+      next: (data: TipoProcesoResponse[]) => {
+        this.listTipoProceso = data;
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de tipo de proceso completado');
+      }
+    })
+  }
+
+  ObtenerListaMateria() {
+    this.configuracionService.ListarMateria().subscribe({
+      next: (data: MateriaResponse[]) => {
+        this.listMateria = data;
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de materias completado');
+      }
+    })
+  }
+
   LimpiarIndizacion() {
     this.dataIndizacion = {
       id_responsable: 0,
@@ -394,6 +445,7 @@ export class IndizadorExpedientesComponent implements OnInit {
     }
 
   }
+
   ListarExpedientes() {
     this.expedienteService.ListarExpedientesXidInventario(this.id_inventario)
       .pipe(
@@ -468,7 +520,7 @@ export class IndizadorExpedientesComponent implements OnInit {
     let folderPath = this.folderPath!;
     console.log(folderPath);
     console.log(fileName);
-    this.ftpService.downloadFile(fileName, folderPath).subscribe({
+    this.sftpService.downloadFile(fileName, folderPath).subscribe({
       next: (data: Blob) => {
         console.log(data);
         let temp = new Blob([data], { type: 'application/pdf' });

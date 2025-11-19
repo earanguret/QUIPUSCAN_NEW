@@ -1,0 +1,163 @@
+.contenedor {
+    margin: 2% 4%;
+    max-width: 1640px;
+  }
+
+.menu-listado-reportes {
+    box-sizing: border-box;
+    background-color: #F6F4EE;
+    padding: 20px;
+    border-radius: 16px;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* opcional, para que quede encima de otros elementos */
+}
+
+.menu-listado-reportes .titulo {
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6E7A89;
+}
+
+.menu-listado-reportes .lista {
+    margin: 10px 0;
+}
+
+.menu-listado-reportes .lista .item .name {
+    display: inline-block;
+    padding: 0 0 0 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #434343;   
+}
+
+.menu-listado-reportes .lista .item .name:hover {
+    cursor: pointer;
+    color: #0f0f0f;
+}
+
+.menu-listado-reportes .lista .item .name.active {
+    display: inline-block;
+    padding: 0 0 0 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #434343a8; 
+}
+
+.menu-listado-reportes .lista .sublista {
+    margin-left: 50px; 
+    margin-top: 0px;
+}
+
+.menu-listado-reportes .lista .subitem {
+    padding: 0px 0;
+    /* cursor: pointer; */
+    color: #555;
+    font-size: 14px;
+}
+
+.text-header-config 
+{
+    font-size: 2rem;
+    font-weight: 700;
+    color: #404B5A;
+}
+
+.text-paragraph-config 
+{
+    font-size: 1rem;
+    font-weight: 400;
+    color: #404B5A;
+}
+
+/* card sede */
+.card-sede {
+    background-color: #F8F9FA;
+    color: #6E7A89;
+    border: 1px solid #E1E7EB;
+    padding: 0.5rem;
+
+    font-size: 1rem;
+    font-weight: 500;
+   
+    text-align: left;
+
+    margin: 15px 15px 0px 0px; 
+    padding: 10px 30px;
+    border-radius: 4px;
+
+
+    display: inline-flex; /* Mantener tamaño natural */
+    align-items: center;
+}
+
+/* card especialidad */
+.card-especialidad {
+    background-color: #F8F9FA;
+    color: #6E7A89;
+    border: 1px solid #E1E7EB;
+    padding: 0.5rem;
+
+    font-size: 1rem;
+    font-weight: 500;
+   
+    text-align: left;
+
+    margin: 15px 15px 0px 0px; 
+    padding: 10px 30px;
+    border-radius: 4px;
+}
+
+/* card-button */
+.card-button {
+    background-color: #F8F9FA;
+    color: #6E7A89;
+    border: 1px solid #E1E7EB;
+    padding: 0.5rem;
+    text-align: left;
+    margin: 15px 15px 0px 0px; 
+    padding: 10px 30px;
+    border-radius: 4px;   
+    width: 300px;  
+}
+
+.card-button h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+   
+}
+
+.card-button p {
+    font-size: 0.9rem;
+    font-weight: 400; 
+    margin-bottom: 5px;
+    
+}
+
+.card-button:hover {
+    cursor: pointer;
+    background-color: #E1E7EB;      
+}
+
+.card-button:hover h1 {
+    color: #404B5A;
+}
+
+.card-button:hover p {
+    color: #404B5A;
+}
+
+
+/* Cuando está activo */
+.card-button.active {
+    background-color: #FDF5E3 !important;
+    border: 1px solid #FAE5B3 !important;
+}
+
+.card-button.active h1,
+.card-button.active p {
+    color: #936B0A !important;        /* color de texto activo */
+   
+}
