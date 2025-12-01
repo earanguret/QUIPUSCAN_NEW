@@ -6,7 +6,7 @@ import { InventarioModel } from '../../../domain/models/Inventario.model';
 import { InventarioService } from '../../../infrastructure/services/remoto/inventario/inventario.service';
 import { InventarioRequest } from '../../../domain/dto/InventarioRequest.dto';
 import { CredencialesService } from '../../services/local/credenciales.service';
-import { InventarioCrearResponse, InventarioDetalleResponse, InventarioModificarResponse } from '../../../domain/dto/InventarioResponse.dto';
+import { InventarioConteoResponse, InventarioCrearResponse, InventarioDetalleResponse, InventarioModificarResponse } from '../../../domain/dto/InventarioResponse.dto';
 import { form_inventario_vf } from '../../validator/fromValidator/inventario.validator';
 
 import { ConfiguracionService } from '../../services/remoto/configuracion/configuracion.service';
@@ -48,6 +48,7 @@ export class InventarioComponent implements OnInit {
 
   ListInventarioDetalle: InventarioDetalleResponse[] = [];
   ListInventarioDetalleTemp: InventarioDetalleResponse[] = [];
+  ListInventarioConteo: InventarioConteoResponse[] = [];
 
 
   constructor(private router: Router,
@@ -61,7 +62,8 @@ export class InventarioComponent implements OnInit {
     if (!this.ruta) {
       this.ruta = '/principal';
     }
-    this.ListarInventarios()
+    this.ListarInventarios();
+    this.ObtenerConteoInventario();
 
     this.isSupervisorLinea = this.credencialesService.credenciales.perfil == 'SUPERVISORL' || this.credencialesService.credenciales.perfil == 'ADMINISTRADOR' ? true : false
   }
@@ -115,6 +117,21 @@ export class InventarioComponent implements OnInit {
       },
       complete: () => {
         console.log('listado de inventarios completado');
+      }
+    })
+  }
+
+  ObtenerConteoInventario() {
+    this.inventarioService.ObtenerConteoInventario().subscribe({
+      next: (data: InventarioConteoResponse[]) => {
+        this.ListInventarioConteo = data;
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('listado de inventarios conteo completado');
       }
     })
   }
@@ -210,6 +227,24 @@ export class InventarioComponent implements OnInit {
     });
     this.ListInventarioDetalle = objetosFiltrados
   }
+
+  BuscaInventarioPorEspecialidad(especialidad: string) {
+    let objetosFiltrados = []
+   
+    objetosFiltrados = this.ListInventarioDetalleTemp.filter((objeto:
+      {
+        especialidad: string;
+      }) => {
+      const serie_doc = objeto.especialidad;
+      return serie_doc.includes(especialidad);
+    });
+    this.ListInventarioDetalle = objetosFiltrados
+  }
+
+  MostrarTotalInventario() {
+    this.ListInventarioDetalle=this.ListInventarioDetalleTemp;
+  }
+
 
   ExpedientesSerieDocumental(id_inventario: number) {
     this.router.navigate([this.ruta, id_inventario]);

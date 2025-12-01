@@ -17,6 +17,7 @@ class ExpedienteRoutes{
     config():void{
         this.router.get('/api/expediente',expedienteController.listarExpedientes)
         this.router.get('/api/expediente/lista/:id_inventario',expedienteController.ObtenerExpedientesById_inventario)
+        this.router.get('/api/expediente/pendientesDisco/:id_inventario/:id_disco',expedienteController.ObtenerExpedientesDisco)
         this.router.get('/api/expediente/dataview/:id',expedienteController.ObtenerExpedienteDataViewXid)
         this.router.post('/api/expediente', CreateMiddleware ,expedienteController.CrearExpediente)
         this.router.delete('/api/expediente/:id/:app_user', DeleteExpMiddleware,expedienteController.EliminarExpediente)

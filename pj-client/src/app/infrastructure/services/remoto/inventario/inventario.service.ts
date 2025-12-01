@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { InventarioCrearResponse, InventarioDetalleResponse, InventarioModificarResponse } from '../../../../domain/dto/InventarioResponse.dto';
+import { InventarioConteoResponse, InventarioCrearResponse, InventarioDetalleResponse, InventarioModificarResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { InventarioRequest } from '../../../../domain/dto/InventarioRequest.dto';
 
 
@@ -19,7 +19,11 @@ export class InventarioService {
   }
 
   ObtenerInventarioDetalle(id_inventario:number):Observable<InventarioDetalleResponse>{
-    return this.http.get<InventarioDetalleResponse>(this.api_uri_inventario+`/${id_inventario}`)
+    return this.http.get<InventarioDetalleResponse>(this.api_uri_inventario+`/detalle/${id_inventario}`)
+  }
+
+  ObtenerConteoInventario():Observable<InventarioConteoResponse[]>{
+    return this.http.get<InventarioConteoResponse[]>(this.api_uri_inventario+'/conteo')
   }
 
   CrearInventario(cuerpo_inventario:InventarioRequest):Observable<InventarioCrearResponse>{
@@ -33,5 +37,7 @@ export class InventarioService {
     cuerpo_inventario.codigo=cuerpo_inventario.codigo.trim().toUpperCase()
     return this.http.put<InventarioModificarResponse>(`${this.api_uri_inventario}/${id_inventario}`,cuerpo_inventario)
   }
+
+
 
 }

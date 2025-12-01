@@ -1,0 +1,132 @@
+.contenedor {
+    margin: 2% 4%;
+    max-width: 1640px;
+}
+
+
+.menu-listado-reportes {
+    box-sizing: border-box;
+    background-color: #e7e7e68c;
+    padding: 20px;
+    border-radius: 16px;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* opcional, para que quede encima de otros elementos */
+}
+
+.menu-listado-reportes .titulo {
+    text-transform: uppercase;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6E7A89;
+}
+
+.menu-listado-reportes .lista {
+    margin: 10px 0;
+}
+
+.menu-listado-reportes .lista .item .name {
+    display: inline-block;
+    padding: 0 0 0 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #434343;   
+}
+
+.text-header-config 
+{
+    font-size: 2rem;
+    font-weight: 700;
+    color: #404B5A;
+}
+
+.text-paragraph-config 
+{
+    font-size: 1rem;
+    font-weight: 400;
+    color: #404B5A;
+}
+
+.icon-custom-detail {
+
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #929FB1;
+    margin-right: 15px;
+
+}
+
+/* progress bar */
+.progress-bar {
+ background: #7094b3c8  !important;
+}
+/* indicador */
+.indicador {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: #929FB1;
+}
+
+/* cerrar disco */
+  .bg-cerrar{
+    /* background-color: #FCF0D3;
+    color: #C28E0E; */
+    /* background-color: #D3E8FC;
+    color: #0E5BC2; */
+/* background-color: #FFE8D6;
+color: #D97A2E; */
+background-color: #E5F6E8;
+color: #2F8F46;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #D3E8FC ;
+    padding: .25rem 1.2rem;
+}
+
+  .buton-agregar-doc{
+    background-color: #FCF0D3;
+    color: #C28E0E;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #FFE8D6 ;
+    padding: .25rem 1.2rem;
+}
+
+.buton-cerrar{
+    background-color: #fcfdfd;
+    color: #494b49;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    display: inline-block;
+ 
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #d6dcf6 ;
+    padding: .35rem 1.5rem;
+}
+
+.buton-cerrar:hover{
+   background-color: #494b498c;
+    color: #fcfdfd;
+    box-shadow: 1px 1px 3px 0 #D5DDE5;
+    display: inline-block;
+ 
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #494b493c ;
+    padding: .35rem 1.5rem;
+}

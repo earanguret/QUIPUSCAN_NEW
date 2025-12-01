@@ -338,8 +338,33 @@ img {
     text-transform: uppercase;
 }
 
+.label_abierto {
+    background-color: #39C171;
+    color: #F8F9FA;
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 3px;
+    padding: .3rem .7rem;
+    text-transform: uppercase;
+}
+
+
+
 .label_open {
     background-color: #6E7A89;
+    color: #F8F9FA;
+    text-transform: uppercase;
+    border-radius: 3px;
+    display: inline-block;
+    margin: 5px 5px 5px 0;
+    padding: .3rem .7rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.label_cerrado {
+    background-color: #509cce;
     color: #F8F9FA;
     text-transform: uppercase;
     border-radius: 3px;

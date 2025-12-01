@@ -39,6 +39,16 @@ export interface ExpedienteSinDiscoResponse {
     id_inventario: number;
     estado_fedatado: string;
     peso_doc: number;
+    fojas_total: number;
+}
+
+export interface ExpedientesDiscoResponse {
+    id_expediente: number;
+    nro_expediente: string;
+    id_inventario: number;
+    estado_fedatado: string;
+    peso_doc: number;
+    fojas_total: number;
 }
 
 export interface CrearExpedienteResponse {

@@ -31,6 +31,11 @@ export interface InventarioDetalleResponse {
     
 }
 
+export interface InventarioConteoResponse {
+    especialidad: string;
+    cantidad: number;
+}
+
 export interface InventarioCrearResponse{
     id_inventario: number;
     message: string;

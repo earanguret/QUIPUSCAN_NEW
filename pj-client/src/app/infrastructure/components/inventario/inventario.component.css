@@ -8,6 +8,10 @@
     background-color: #F6F4EE;
     padding: 20px;
     border-radius: 16px;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000; 
 }
 
 .menu-listado-reportes .titulo {
@@ -18,16 +22,15 @@
 }
 
 .menu-listado-reportes .lista {
-    margin: 10px 0;
+    margin: 10px 0px;
 }
 
 .menu-listado-reportes .lista .item .name {
     display: inline-block;
     padding: 0 0 0 8px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    color: #434343;
-    
+    color: #434343;    
 }
 
 .menu-listado-reportes .lista .item .name:hover {

@@ -1,9 +1,13 @@
 .menu-listado-inventario{
     box-sizing: border-box;
     /* background-color: #f1e55d5d; */
-    background-color: #ebdfb77c   !important;
+    background-color: #F6F4EE   !important;
     padding: 5px;
     border-radius: 16px;
+
+     position: sticky;
+    top: 0;
+    z-index: 1000; /* opcional, para que quede encima de otros elementos */
 }
 
 .icon-title-container {

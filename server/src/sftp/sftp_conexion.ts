@@ -22,7 +22,7 @@ async function createConnection(): Promise<Client> {
     hostVerifier: () => true,
   });
 
-  console.log("🔌 Nueva conexión SFTP creada");
+  console.log(" Nueva conexión SFTP creada");
   return sftp;
 }
 

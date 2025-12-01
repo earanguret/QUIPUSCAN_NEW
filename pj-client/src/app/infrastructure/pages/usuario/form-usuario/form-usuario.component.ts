@@ -9,7 +9,7 @@ import { UsuarioModel } from '../../../../domain/models/Usuario.model';
 import { PersonaService } from '../../../services/remoto/persona/persona.service';
 import { UsuarioService } from '../../../services/remoto/usuario/usuario.service';
 import { CrearPersonaMessageResponse, ModificarPersonaMessageResponse } from '../../../../domain/dto/PersonaResponse.dto';
-import { CrearUsuarioResponse, ModificarDatosUsuarioResponse } from '../../../../domain/dto/UsuarioResponse.dto';
+import { CrearUsuarioResponse, ModificarDatosUsuarioResponse, UsuarioResponse } from '../../../../domain/dto/UsuarioResponse.dto';
 import { form_usuario_vf } from '../../../validator/fromValidator/usuario.validator';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 import { SoloNumerosDirective } from '../../../directives/solo-numeros.directive';
@@ -335,8 +335,7 @@ export class FormUsuarioComponent implements OnInit {
 
   ObtenerDatosUsuario(id_usuario: number) {
     this.usuarioService.ObtenerUsuario(id_usuario).subscribe({
-      next: (usuario: UsuarioModel) => {
-        delete usuario.password
+      next: (usuario: UsuarioResponse) => {
         this.dataUsuario.id_usuario = usuario.id_usuario;
         this.dataUsuario.id_persona = usuario.id_persona;
         this.dataUsuario.username = usuario.username;

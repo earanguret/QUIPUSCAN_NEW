@@ -9,7 +9,7 @@ import { InventarioService } from '../../../services/remoto/inventario/inventari
 import { CredencialesService } from '../../../services/local/credenciales.service';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { InventarioModel } from '../../../../domain/models/Inventario.model';
-import { DiscoListaResponse, ModificarDiscoResponse } from '../../../../domain/dto/DiscoResponse.dto';
+import { DiscoResponse, ModificarDiscoResponse } from '../../../../domain/dto/DiscoResponse.dto';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DiscoModel } from '../../../../domain/models/Disco.model';
@@ -46,7 +46,7 @@ export class BovedaExpedientesComponent implements OnInit {
   id_inventario: number = 0;
   file: File | null = null;
 
-  list_data_discos:  DiscoListaResponse[] = [];
+  list_data_discos:  DiscoResponse[] = [];
   isLoadingCerrarDisco: boolean[] = [];
   ListExpedientesPendentesDisco: ExpedienteSinDiscoResponse[] = [];
 
@@ -193,7 +193,7 @@ export class BovedaExpedientesComponent implements OnInit {
 
   listarDiscosByInventario(id_inventario: number) {
     this.discoService.ListarDiscosByInventario(id_inventario).subscribe({
-      next: (data: DiscoListaResponse[]) => {
+      next: (data: DiscoResponse[]) => {
         this.list_data_discos = data;
       },
       error: (error) => {
@@ -496,7 +496,7 @@ export class BovedaExpedientesComponent implements OnInit {
 
   }
   
-  descargarMicroformas(disco: DiscoListaResponse) {
+  descargarMicroformas(disco: DiscoResponse) {
     this.cargandoZip = true;
     this.discoService.GenerarDiscoMicroformas(disco.id_disco!,this.credencialesService.credenciales.username).subscribe({
       next: (blob) => {

@@ -4,26 +4,20 @@
             <div class="menu-listado-reportes">
                 <div class="titulo">FILTER</div>
                 <div class="lista">
-                    <div class="item">
-                        <div class="name"><i class="bi bi-archive mx-2"></i> ALL (16)</div>
+                    <div class="item mb-4" (click)="MostrarTotalInventario()">
+                        <div class="name"><i class="bi bi-globe mx-2"></i> All (16)</div>
                     </div>
                 </div>
                 <div class="titulo">ESPECIALIDAD</div>
-                <div class="lista">
-                    <div class="item">
-                        <div class="name"> <i class="bi bi-geo-alt mx-2"></i> FAMILIA CIVIL (32)</div>
+                <div class="lista" *ngFor="let item of ListInventarioConteo">
+
+                    <div class="item" (click)="BuscaInventarioPorEspecialidad(item.especialidad)">
+                        <div class="name"> <i class="bi bi-archive mx-2"></i> {{item.especialidad}} ({{item.cantidad}})
+                        </div>
                     </div>
+
                 </div>
-                <div class="lista">
-                    <div class="item">
-                        <div class="name"><i class="bi bi-calendar-check mx-2"></i> FAMILIA TUTELAR (15)</div>
-                    </div>
-                </div>
-                <div class="lista">
-                    <div class="item">
-                        <div class="name"><i class="bi bi-bus-front mx-2"></i> PENAL (6)</div>
-                    </div>
-                </div>
+
             </div>
         </div>
         <div class="col-md-9">
@@ -31,21 +25,34 @@
                 <i class="bi bi-box-seam icon-custom-encabezado" style="font-size: 3rem;"></i>
                 <p class="titulo_menu"> SERIE DOCUMENTAL</p>
             </div>
-            <div class="my-4 d-flex" style="max-width: 90%;">
-                <input type="text" class="form-control form-control-busqueda" name="buscar" placeholder="BUSCAR POR SERIE DOCUMENTAL" (input)=" buscarEnObjeto($event)">
-                <button *ngIf="isSupervisorLinea" class="btn btn-success opacity-75 mx-2" (click)="openModalCreate()">+ ADD</button>
+            <div class="d-flex justify-content-between align-items-start my-4" style="width: 90%;">
+                <button type="button" class="guardar-btn p-1 px-3" (click)="openModalCreate()"> +
+                    ADD </button>
+                <div style="width: 350px; margin-right: 40px;">
+                    <input type="text" class="form-control mx-4" placeholder="Buscar" name="materia"
+                        (input)="buscarEnObjeto($event)">
+                </div>
             </div>
+            <!-- <div class="my-4 d-flex" style="max-width: 90%;">
+                <input type="text" class="form-control form-control-busqueda" name="buscar"
+                    placeholder="BUSCAR POR SERIE DOCUMENTAL" (input)=" buscarEnObjeto($event)">
+                <button *ngIf="isSupervisorLinea" class="btn btn-success opacity-75 mx-2" (click)="openModalCreate()">+ ADD</button>
+            </div> -->
 
             <div *ngIf="ListInventarioDetalle.length>0">
                 <div *ngFor="let item of ListInventarioDetalle" class="card_panel position-relative">
-                    <i *ngIf="isSupervisorLinea" class="bi bi-pencil-square  position-absolute edit-icon" title="modificar " (click)="openModalEdit(item)">
+                    <i *ngIf="isSupervisorLinea" class="bi bi-pencil-square  position-absolute edit-icon"
+                        title="modificar " (click)="openModalEdit(item)">
                     </i>
 
                     <div class="row p-4" (click)="ExpedientesSerieDocumental(item.id_inventario)">
                         <div class="col-lg-10 d-flex flex-column px-4 ">
-                            <p class="text-serie-doc m-0"><i class="bi bi-box-seam icon-box"></i>{{ item.serie_doc}} /  <samp class="text-codigo">{{item.codigo}}</samp></p>
+                            <p class="text-serie-doc m-0"><i class="bi bi-box-seam icon-box"></i>{{ item.serie_doc}} /
+                                <samp class="text-codigo">{{item.codigo}}</samp>
+                            </p>
                             <div class=" m-1 mb-2 mx-4">
-                                <p class="text-content m-0">RESPONSABLE : {{item.nombre}} {{item.ap_paterno}} {{item.ap_materno}}</p>
+                                <p class="text-content m-0">RESPONSABLE : {{item.nombre}} {{item.ap_paterno}}
+                                    {{item.ap_materno}}</p>
                                 <p class="text-content m-0">SEDE: {{item.sede}}</p>
 
                             </div>
@@ -95,9 +102,11 @@
                 <fieldset class="p-4">
                     <div class="form-group">
                         <label for="especialidad" class="form-label">Especialidad:</label>
-                        <select id="especialidad" name="especialidad" class="form-select" [(ngModel)]="data_inventario.especialidad">
+                        <select id="especialidad" name="especialidad" class="form-select"
+                            [(ngModel)]="data_inventario.especialidad">
                             <option value="" disabled selected>ELIJE ESPECIALIDAD </option>
-                            <option *ngFor="let item of especialidadList" [value]="item.especialidad">{{ item.especialidad }}</option>
+                            <option *ngFor="let item of especialidadList" [value]="item.especialidad">{{
+                                item.especialidad }}</option>
                         </select>
                     </div>
                     <div class="form-group mt-3">
@@ -113,9 +122,11 @@
                     </div>
                     <div class="form-group mt-3">
                         <label for="tipo_doc" class="form-label">Tipo de Documento:</label>
-                        <select id="tipo_doc" name="tipo_doc" class="form-select" [(ngModel)]="data_inventario.tipo_doc">
+                        <select id="tipo_doc" name="tipo_doc" class="form-select"
+                            [(ngModel)]="data_inventario.tipo_doc">
                             <option value="" disabled selected>ELIJE EL TIPO DE DOCUMENTO </option>
-                            <option *ngFor="let documento of tipo_documentoList" [value]="documento.tipo_documento" >{{documento.tipo_documento}}</option>
+                            <option *ngFor="let documento of tipo_documentoList" [value]="documento.tipo_documento">
+                                {{documento.tipo_documento}}</option>
                         </select>
                     </div>
                     <div class="form-group mt-3">
@@ -123,9 +134,10 @@
                         <input type="text" class="form-control" name="serie_doc"
                             [(ngModel)]="data_inventario.serie_doc">
                     </div>
-                    <div class="form-group mt-3" >
+                    <div class="form-group mt-3">
                         <label for="codigo" class="form-label">Código:</label>
-                        <input type="text" class="form-control" name="codigo" [(ngModel)]="data_inventario.codigo" [disabled]="modificarInventario">
+                        <input type="text" class="form-control" name="codigo" [(ngModel)]="data_inventario.codigo"
+                            [disabled]="modificarInventario">
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">

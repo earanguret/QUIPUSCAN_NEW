@@ -14,7 +14,8 @@ class InventarioRoutes{
     }
     config():void{
         this.router.get('/api/inventario',inventarioController.listarInventarioDetalle)
-        this.router.get('/api/inventario/:id',inventarioController.ObtenerInventarioDetalleXid)
+        this.router.get('/api/inventario/detalle/:id',inventarioController.ObtenerInventarioDetalleXid)
+        this.router.get('/api/inventario/conteo',inventarioController.ObtenerConteoInventario)
         this.router.post('/api/inventario', CreateMiddleware ,inventarioController.CrearInventario)
         this.router.put('/api/inventario/:id', UpdateMiddleware ,inventarioController.ModificarInventario)
     }

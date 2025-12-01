@@ -3,6 +3,6 @@ export const key = {
     password: "12345",
     host: "localhost",
     port: 5432,
-    database: "demo",
+    database: "quipu_prueba",
     max: 20, // Número máximo de conexiones en el pool
   };

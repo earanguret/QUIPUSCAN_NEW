@@ -296,7 +296,8 @@ class ExpedienteController {
                                 e.nro_expediente,
                                 e.id_inventario,
                                 s.estado_fedatado,
-                                d.peso_doc
+                                d.peso_doc,
+                                d.fojas_total
                             FROM
                                 archivo.t_expediente e
                             JOIN 
@@ -313,6 +314,40 @@ class ExpedienteController {
                                 e.id_expediente;
                                  `;
             const expedientes = await db.query(consulta, [id_inventario]);
+            res.status(200).json(expedientes["rows"]);
+        } catch (error) {
+            console.error("Error al obtener expedientes:", error);
+            res.status(500).json({ error: "Error interno del servidor" });
+        }
+    }
+
+    public async ObtenerExpedientesDisco(req: Request, res: Response): Promise<any> {
+        try {
+            const { id_inventario, id_disco } = req.params;
+            const consulta = `
+                            SELECT
+                                e.id_expediente,
+                                e.nro_expediente,
+                                e.id_inventario,
+                                s.estado_fedatado,
+                                d.peso_doc,
+                                d.fojas_total
+                            FROM
+                                archivo.t_expediente e
+                            JOIN 
+                                archivo.t_estado_expediente s ON e.id_expediente = s.id_expediente
+                            JOIN
+                                archivo.t_inventario i ON e.id_inventario = i.id_inventario
+                            JOIN 
+                                archivo.t_digitalizacion d ON e.id_expediente = d.id_expediente 
+                            WHERE 
+                                e.id_inventario = $1
+                                AND s.id_disco =$2
+                                AND s.estado_fedatado = 'T'
+                            ORDER BY 
+                                e.id_expediente;
+                                 `;
+            const expedientes = await db.query(consulta, [id_inventario, id_disco]);
             res.status(200).json(expedientes["rows"]);
         } catch (error) {
             console.error("Error al obtener expedientes:", error);

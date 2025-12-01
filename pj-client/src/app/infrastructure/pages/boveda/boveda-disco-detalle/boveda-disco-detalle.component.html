@@ -1,0 +1,325 @@
+<div class="panel">
+    <app-navegator></app-navegator>
+    <app-subnavegator [ruta]="'/principal/boveda/serie-documental/discos/' + id_inventario"></app-subnavegator>
+    <div class="contenedor">
+        <div class="row">
+            <div class="col-lg-3">
+                <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
+
+
+            </div>
+            <div class="col-lg-9">
+                <!-- GENERAL -->
+                <section class="mx-3">
+                    <div class="d-flex justify-content-start align-items-start mb-4">
+                        <div>
+                            <i class="bi bi-disc icon-custom-encabezado"></i>
+                        </div>
+                        <div class="mx-3">
+                            <h1 class="text-header-config">Descripción de disco</h1>
+                            <p class="text-paragraph-config">{{data_disco.nombre}} </p>
+                        </div>
+                    </div>
+
+                    <div class="document-meta-wrapper pb-2">
+                        <label class="title_meta mt-2" *ngIf="data_disco.estado_cerrado==null" for="">Progress
+                            ( {{porcentajeExpedientes.toFixed(2)}} )%</label>
+                        <label class="title_meta mt-2" *ngIf="data_disco.estado_cerrado==true" for="">Progress
+                            {{data_disco.espacio_ocupado}}%</label>
+                        <div class="d-flex align-items-center w-50 mt-2 ">
+                            <!-- <i class="bi bi-floppy icon-custom-detail "></i> -->
+
+                            <!-- <div class="progress flex-grow-1" role="progressbar" aria-label="Success example"
+                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 8px">
+                                <div class="progress-bar bg-success" style="width: 60%"></div>
+                            </div> -->
+                            <div class="progress flex-grow-1" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                style="height: 8px">
+
+                                <!-- Si NO está cerrado -->
+                                <div *ngIf="data_disco.estado_cerrado == null" class="progress-bar"
+                                    [style.width]="porcentajeExpedientes + '%'"
+                                    [attr.aria-valuenow]="porcentajeExpedientes" [ngClass]="{
+                                        'bg-info': porcentajeExpedientes < 90,
+                                        'bg-warning': porcentajeExpedientes >= 90 && porcentajeExpedientes < 95,
+                                        'bg-danger': porcentajeExpedientes >= 95
+                                        }">
+                                </div>
+
+                                <!-- Si está cerrado -->
+                                <div *ngIf="data_disco.estado_cerrado == true" class="progress-bar bg-success"
+                                    [style.width]="data_disco.espacio_ocupado + '%'"
+                                    [attr.aria-valuenow]="data_disco.espacio_ocupado">
+                                </div>
+
+                            </div>
+
+
+
+
+
+                        </div>
+                        <div class="title_meta mt-2">Status</div>
+                        <div *ngIf="data_disco.estado_cerrado==null" class="label_abierto"><i class="bi bi-unlock"></i>
+                            Abierto</div>
+                        <div *ngIf="data_disco.estado_cerrado==true" class="label_cerrado"><i class="bi bi-lock"></i>
+                            Disco cerrado</div>
+                        <div class="label_open mx-2">25 gb</div>
+                        <div class="title_meta mt-2">Información</div>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="meta_label_expedientes px-3"><i class="bi bi-folder-check mx-2"></i>
+                                    Expedientes {{ListExpedientes_temp.length}} </div>
+                                <div class="meta_label mx-2 px-3"><i class="bi bi-files mx-2"></i> Total de
+                                    fojas {{ cantidadFojas }}</div>
+                            </div>
+                            <div class="flex items-center justify-center mx-2">
+                                <button *ngIf="data_disco.estado_cerrado==null && data_disco.id_responsable_ac != null" type="button" class="buton-cerrar" (click)="CerrarDisco()"> <i
+                                        class="bi bi-lock-fill mx-2"></i> Cerrar disco</button>
+                                <button *ngIf="data_disco.estado_cerrado==true" type="button" class="buton-agregar-doc" (click)="descargarMicroformas()" [disabled]="cargandoZip">
+                                    <i *ngIf="!cargandoZip" class="bi bi-database-lock" ></i><span *ngIf="cargandoZip" class="spinner-border spinner-border-sm"
+                                                role="status" aria-hidden="true"></span> Descargar disco</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="m-3 mt-4">
+                    <div class="form-group mb-3 ">
+                        <div class="d-flex flex-column">
+                            <label for="cca" class="form-label">Tarjeta de calibración de apertura:</label>
+                            <div *ngIf="data_disco.id_responsable_tca!=null">
+                                <div class="d-flex align-items-center gap-1">
+                                    <!-- <i class="bi bi-file-earmark-pdf" style="font-size: 1.5rem; color: #929FB1;"></i> -->
+                                    <!-- <img src="/icon/expediente_eye.png" class="mx-1" alt="logo" title="ver información"
+                                                    title="ver información" width="28px" height="28px" > -->
+                                    <input type="text" class="form-control form-control-sm" name="tca" readonly
+                                        placeholder="{{ responsable_tca.nombre }} {{ responsable_tca.ap_paterno }} {{ responsable_tca.ap_materno }} - {{ data_disco.fecha_tarjeta_apertura | date:'dd/MM/yyyy HH:mm'}}">
+
+
+                                </div>
+                                <!-- <label class="indicador">Responsable / fecha y hora <samp class="mx-4 px-2"
+                                        style="border: 1px solid rgba(62, 59, 59, 0.274);"> <i
+                                            class="bi bi-file-earmark-pdf"></i> documento</samp></label> -->
+                            </div>
+                            <div *ngIf="data_disco.id_responsable_tca==null">
+                                <button type="button" class="buton-agregar-doc  p-1 px-3 "
+                                    (click)="openModalTarjetaApertura()"> + </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="data_disco.id_responsable_tca!=null" class="form-group mb-4">
+                        <div class="d-flex flex-column">
+                            <label for="aa" class="form-label">Acta de apertura:</label>
+
+                            <div *ngIf="data_disco.id_responsable_aa != null">
+                                <input type="text" class="form-control form-control-sm" name="aa" readonly
+                                    placeholder="{{ responsable_aa.nombre }} {{ responsable_aa.ap_paterno }} {{ responsable_aa.ap_materno }} - {{ data_disco.fecha_acta_apertura |  date:'dd/MM/yyyy HH:mm' }}">
+
+                                <!-- <label class="indicador">Responsable / fecha y hora <samp class="mx-4 px-2"
+                                        style="border: 1px solid rgba(62, 59, 59, 0.274);"> <i
+                                            class="bi bi-file-earmark-pdf"></i> documento</samp></label> -->
+                            </div>
+
+                            <div *ngIf="data_disco.id_responsable_aa == null">
+                                <button type="button" class="buton-agregar-doc p-1 px-3"
+                                    (click)="openModalActaApertura()"> + </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="data_disco.id_responsable_aa != null" class="form-group mb-4">
+                        <div class="d-flex flex-column">
+
+                            <label for="cca" class="form-label">Tarjeta de calibración de cierre:</label>
+
+                            <div *ngIf="data_disco.id_responsable_tcc != null">
+                                <input type="text" class="form-control form-control-sm" name="tca" readonly
+                                    placeholder="{{ responsable_tcc.nombre }} {{ responsable_tcc.ap_paterno }} {{ responsable_tcc.ap_materno }} - {{ data_disco.fecha_tarjeta_cierre | date:'dd/MM/yyyy HH:mm' }}">
+
+                                <!-- <label class="indicador">
+                                    Responsable / fecha y hora
+                                    <samp class="mx-4 px-2" style="border: 1px solid rgba(62, 59, 59, 0.274);">
+                                        <i class="bi bi-file-earmark-pdf"></i> documento
+                                    </samp>
+                                </label> -->
+                            </div>
+
+                            <div *ngIf="data_disco.id_responsable_tcc == null">
+                                <button type="button" class="buton-agregar-doc p-1 px-3"
+                                    (click)="openModalTarjetaCierre()"> + </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div *ngIf="data_disco.id_responsable_tcc != null" class="form-group mb-4">
+                        <div class="d-flex flex-column">
+
+                            <label for="cca" class="form-label">Acta de cierre:</label>
+
+                            <div *ngIf="data_disco.id_responsable_ac != null">
+                                <input type="text" class="form-control form-control-sm" name="tca" readonly
+                                    placeholder="{{ responsable_ac.nombre }} {{ responsable_ac.ap_paterno }} {{ responsable_ac.ap_materno }} - {{ data_disco.fecha_acta_cierre | date:'dd/MM/yyyy HH:mm' }}">
+
+                                <!-- <label class="indicador">
+                                    Responsable / fecha y hora
+                                    <samp class="mx-4 px-2" style="border: 1px solid rgba(62, 59, 59, 0.274);">
+                                        <i class="bi bi-file-earmark-pdf"></i> documento
+                                    </samp>
+                                </label> -->
+                            </div>
+
+                            <div *ngIf="data_disco.id_responsable_ac == null">
+                                <button type="button" class="buton-agregar-doc p-1 px-3"
+                                    (click)="openModalActaCierre()"> + </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </section>
+                <section class="m-3">
+                    <table class="table text-center" id="excel-table">
+                        <colgroup>
+                            <col style="width: 5%;">
+
+                        </colgroup>
+                        <thead class="table-success ">
+                            <tr>
+                                <th scope="col">Nro</th>
+                                <th scope="col">EXPEDIENTE</th>
+                                <th scope="col">FOJAS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let expediente of ListExpedientes_temp; let i = index">
+                                <th scope="row">{{i+1}}</th>
+                                <td>{{expediente.nro_expediente}} </td>
+                                <td>{{expediente.fojas_total}} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal registrar tarjeta de calibracion de apertura-->
+<div class="modal fade modal-lg" id="exampleModaltarjetaApertura" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom-width" role="document">
+        <div class="modal-content" style="position: relative;">
+            <div class="modal-header">
+                <div class="custom-width text-center">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Tarjeta de calibración de apertura</h5>
+                </div>
+            </div>
+            <div class="modal-body text-start">
+                <input class="form-control form-control-sm" type="file" id="formFileTarjetaApertura"
+                    (change)="onFileSelectedTarjetaApertura($event)" accept=".pdf">
+
+                <div style="margin: 10px;">
+                    <iframe [src]="pdfUrlTarjetaApertura" type="application/pdf" width="100%"
+                        style="height: 77vh;"></iframe>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" class="guardar-btn mx-2"
+                        (click)="guardarPDFTarjetaCalibracionApertura()">Guardar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal registrar tarjeta de calibracion de cierre-->
+<div class="modal fade modal-lg" id="exampleModaltarjetaCierre" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom-width" role="document">
+        <div class="modal-content" style="position: relative;">
+            <div class="modal-header">
+                <div class="custom-width text-center">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Tarjeta de calibración de cierre</h5>
+                </div>
+            </div>
+            <div class="modal-body text-start">
+                <input class="form-control form-control-sm" type="file" id="formFileTarjetaCierre"
+                    (change)="onFileSelectedTarjetaCierre($event)" accept=".pdf">
+
+                <div style="margin: 10px;">
+                    <iframe [src]="pdfUrlTarjetaCierre" type="application/pdf" width="100%"
+                        style="height: 77vh;"></iframe>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="guardar-btn mx-2"
+                        (click)="guardarPDFTarjetaCalibracionCierre()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal registrar acta de apertura-->
+<div class="modal fade modal-lg" id="exampleModalActaApertura" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom-width" role="document">
+        <div class="modal-content" style="position: relative;">
+            <div class="modal-header">
+                <div class="custom-width text-center">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Acta de apertura</h5>
+                </div>
+            </div>
+            <div class="modal-body text-start">
+
+
+                <input class="form-control form-control-sm mx-2" type="file" id="formFileActaApertura"
+                    (change)="onFileSelectedActaApertura($event)" accept=".pdf">
+
+                <div style="margin: 10px;">
+                    <iframe [src]="pdfUrlActaApertura" type="application/pdf" width="100%"
+                        style="height: 77vh;"></iframe>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="guardar-btn mx-2" (click)="guardarPDFActaApertura()">Guardar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal registrar acta de cierre-->
+<div class="modal fade modal-lg" id="exampleModalActaCierre" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom-width" role="document">
+        <div class="modal-content" style="position: relative;">
+
+
+            <div class="modal-header">
+                <div class="custom-width text-center">
+                    <h4 class="text-white mx-4">Registro de acta de cierre</h4>
+                </div>
+            </div>
+            <div class="modal-body text-start">
+
+                <input class="form-control form-control-sm" type="file" id="formFileActaCierre"
+                    (change)="onFileSelectedActaCierre($event)" accept=".pdf">
+
+
+                <div style="margin: 10px;">
+                    <iframe [src]="pdfUrlActaCierre" type="application/pdf" width="100%" style="height: 77vh;"></iframe>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="guardar-btn mx-2" (click)="guardarPDFActaCierre()">Guardar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

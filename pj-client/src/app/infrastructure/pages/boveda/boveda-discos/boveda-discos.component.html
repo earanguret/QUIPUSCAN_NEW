@@ -1,0 +1,113 @@
+<div class="panel">
+    <app-navegator></app-navegator>
+    <app-subnavegator [ruta]="'/principal/boveda/list-serie-documental'"></app-subnavegator>
+    <div class="contenedor">
+        <div class="row">
+            <div class="col-lg-3">
+                <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
+                <div class="text-end mt-4">
+                    <button type="button" class="guardar-btn  p-1 px-3 " (click)="openModalCrearDisco()"
+                        [disabled]="list_data_discos.length==0?false:list_data_discos[list_data_discos.length-1].estado_cerrado==null?true:false">
+                        +
+                        ADD </button>
+                </div>
+            </div>
+            <div class="col-lg-9 px-4">
+
+                <div class="encabezado_pages mb-4 ">
+                    <i class="bi bi-disc icon-custom"></i>
+                    <p class="titulo_menu px-4">DISCOS</p>
+
+
+                </div>
+
+                <div class="d-flex flex-wrap gap-4">
+                    <div *ngFor="let disco of list_data_discos; let i = index">
+                        <div class="card my-card" style="width: 15rem;">
+                            <div *ngIf="disco.estado_cerrado==null" class="ribbon-active">ACTIVO</div>
+                            <div *ngIf="disco.estado_cerrado==true" class="ribbon-closed">CERRADO</div>
+
+                            <div class="text-center">
+                                <h5  class="my-2">volumen: {{ disco.volumen }}</h5>
+                                
+                            </div>
+
+                            <img src="icon/cd.jpg" class="card-img-top" alt="...">
+
+                            <div class="d-flex justify-content-center">
+                                <h6>{{ disco.nombre }}</h6>
+                            </div>
+
+                            <div class="card-body">
+                                <label *ngIf="disco.estado_cerrado == null">
+                                    {{ porcentajeExpedientes.toFixed(2) }}%
+                                </label>
+                                <label *ngIf="disco.estado_cerrado == true " >
+                                    {{ disco.espacio_ocupado }}%
+                                </label>
+
+                                <div class="progress progress-sm mr-2">
+                                    <div *ngIf="disco.estado_cerrado == null" class="progress-bar" role="progressbar"
+                                        [style.width]="porcentajeExpedientes + '%'"
+                                        [attr.aria-valuenow]="porcentajeExpedientes" aria-valuemin="0"
+                                        aria-valuemax="100" [ngClass]="{
+                            'bg-info': porcentajeExpedientes < 90,
+                            'bg-warning': porcentajeExpedientes >= 90 && porcentajeExpedientes < 95,
+                            'bg-danger': porcentajeExpedientes >= 95
+                         }">
+                                    </div>
+
+                                    <div *ngIf="disco.estado_cerrado == true" class="progress-bar bg-info"
+                                        role="progressbar" [style.width]="disco.espacio_ocupado + '%'"
+                                        [attr.aria-valuenow]="disco.espacio_ocupado" aria-valuemin="0"
+                                        aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer text-center"
+                                style="background-color: rgba(30, 31, 32, 0.601); color: white;"
+                                (click)="redireccionarDiscoDetalle(disco.id_disco!)">
+                                ver detalle
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <button type="button" class="btn btn-success" (click)="openModalCrearDisco()"
+                    [disabled]="list_data_discos.length==0?false:list_data_discos[list_data_discos.length-1].estado_cerrado==null?true:false">Agregar
+                    Disco</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ModalCrearDisco" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Creación de Disco</h5>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center">
+                    <img src="/icon/cd.jpg" class="m-3" alt="..." style="width: 130px; height: 120px;">
+
+                    <div class="d-flex flex-column justify-content-center my-3">
+                        <label class="form-label">Nombre disco:
+                            {{`${this.data_inventario.codigo}V${this.list_data_discos.length + 1}`}}</label>
+                        <label class="form-label">Capacidad: 25GB</label>
+                        <label class="form-label">Volumen: {{`${this.list_data_discos.length + 1}`}}</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer d-flex justify-content-center gap-2 ">
+                    <button type="button" class="cancelar-btn mt-3" (click)="closeModalCrearDisco()">Cancelar</button>
+                    <button type="button" class="guardar-btn px-4 mt-3" (click)="crearDisco()">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

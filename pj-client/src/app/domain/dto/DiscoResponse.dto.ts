@@ -1,4 +1,4 @@
-export interface DiscoListaResponse {
+export interface DiscoResponse {
     id_disco: number | null;
     id_inventario: number | null;
     id_responsable_crear: number | null;

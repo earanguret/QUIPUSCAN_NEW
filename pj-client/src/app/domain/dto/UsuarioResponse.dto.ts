@@ -1,7 +1,7 @@
 
 export interface UsuarioResponse {
-
     id_usuario: number;
+    id_persona: number;
     username: string;
     perfil: string;
     estado: boolean | null;

@@ -58,6 +58,17 @@ class DiscoController {
         }
     }
 
+    public async obtenerDiscoDetalle(req: Request, res: Response): Promise<any> {
+        const { id_disco } = req.params;
+        try {
+            const disco = await db.query('select * from archivo.t_disco where id_disco=$1', [id_disco]);
+            res.status(200).json(disco['rows'][0]);
+        } catch (error) {
+            console.error('Error al obtener disco detalle:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
+        }
+    }
+
     public async crearDisco(req: Request, res: Response): Promise<any> {
         try {
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -124,7 +135,7 @@ class DiscoController {
         try {
             const { id_disco } = req.params;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const { dir_ftp_acta_apertura, peso_acta_apertura, fecha_acta_apertura, id_responsable_aa, app_user } = req.body;
+            const { nombre, dir_ftp_acta_apertura, peso_acta_apertura, id_responsable_aa, app_user } = req.body;
             const consulta = `
                 UPDATE archivo.t_disco
                 SET 
@@ -138,10 +149,10 @@ class DiscoController {
 
                     dir_ftp_acta_apertura=$5,
                     peso_acta_apertura=$6,
-                    fecha_acta_apertura=$7,
-                    id_responsable_aa=$8
+                    fecha_acta_apertura=CURRENT_TIMESTAMP,
+                    id_responsable_aa=$7
 
-                    WHERE id_disco=$9;
+                    WHERE id_disco=$8;
                          `;
             const valores = [
                 app_user,
@@ -151,7 +162,6 @@ class DiscoController {
 
                 dir_ftp_acta_apertura,
                 peso_acta_apertura,
-                fecha_acta_apertura,
                 id_responsable_aa,
                 id_disco
 
@@ -161,6 +171,12 @@ class DiscoController {
                     console.error("Error al registrar acta de apertura", error);
                 } else {
                     console.log('Acta de apertura registrada correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "DISCO",
+                        detalle: `Registro de acta de apertura, disco ${nombre}`,
+                    };
                     res.status(200).json({ message: 'Acta de apertura registrada correctamente' });
                 }
             });
@@ -174,7 +190,7 @@ class DiscoController {
         try {
             const { id_disco } = req.params;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const { dir_ftp_acta_cierre, peso_acta_cierre, fecha_acta_cierre, id_responsable_ac, app_user } = req.body;
+            const { nombre, dir_ftp_acta_cierre, peso_acta_cierre, id_responsable_ac, app_user } = req.body;
             const consulta = `
                 UPDATE archivo.t_disco
                 SET 
@@ -188,10 +204,10 @@ class DiscoController {
 
                     dir_ftp_acta_cierre=$5,
                     peso_acta_cierre=$6,
-                    fecha_acta_cierre=$7,
-                    id_responsable_ac=$8
+                    fecha_acta_cierre=CURRENT_TIMESTAMP,
+                    id_responsable_ac=$7
 
-                    WHERE id_disco=$9;
+                    WHERE id_disco=$8;
                          `;
             const valores = [
                 app_user,
@@ -201,7 +217,6 @@ class DiscoController {
 
                 dir_ftp_acta_cierre,
                 peso_acta_cierre,
-                fecha_acta_cierre,
                 id_responsable_ac,
                 id_disco
 
@@ -211,6 +226,12 @@ class DiscoController {
                     console.error("Error al registrar acta de cierre", error);
                 } else {
                     console.log('Acta de cierre registrada correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "DISCO",
+                        detalle: `Registro de acta de cierre, disco ${nombre}`,
+                    };
                     res.status(200).json({ message: 'Acta de cierre registrada correctamente' });
                 }
             });
@@ -224,7 +245,7 @@ class DiscoController {
         try {
             const { id_disco } = req.params;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const { dir_ftp_tarjeta_apertura, peso_tarjeta_apertura, fecha_tarjeta_apertura, id_responsable_tca, app_user } = req.body;
+            const { nombre, dir_ftp_tarjeta_apertura, peso_tarjeta_apertura, id_responsable_tca, app_user } = req.body;
             const consulta = `
                 UPDATE archivo.t_disco
                 SET 
@@ -238,10 +259,10 @@ class DiscoController {
 
                     dir_ftp_tarjeta_apertura=$5,
                     peso_tarjeta_apertura=$6,
-                    fecha_tarjeta_apertura=$7,
-                    id_responsable_tca=$8
+                    fecha_tarjeta_apertura=CURRENT_TIMESTAMP,
+                    id_responsable_tca=$7
 
-                    WHERE id_disco=$9;
+                    WHERE id_disco=$8;
                          `;
             const valores = [
                 app_user,
@@ -251,7 +272,6 @@ class DiscoController {
 
                 dir_ftp_tarjeta_apertura,
                 peso_tarjeta_apertura,
-                fecha_tarjeta_apertura,
                 id_responsable_tca,
                 id_disco
 
@@ -261,6 +281,12 @@ class DiscoController {
                     console.error("Error al registrar tarjeta de apertura", error);
                 } else {
                     console.log('Tarjeta de apertura registrada correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "DISCO",
+                        detalle: `Registro de tarjeta de calibración de apertura, disco ${nombre}`,
+                    };
                     res.status(200).json({ message: 'Tarjeta de apertura registrada correctamente' });
                 }
             });
@@ -274,7 +300,7 @@ class DiscoController {
         try {
             const { id_disco } = req.params;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const { dir_ftp_tarjeta_cierre, peso_tarjeta_cierre, fecha_tarjeta_cierre, id_responsable_tcc, app_user } = req.body;
+            const { nombre, dir_ftp_tarjeta_cierre, peso_tarjeta_cierre, id_responsable_tcc, app_user } = req.body;
             const consulta = `
                 UPDATE archivo.t_disco
                 SET 
@@ -288,9 +314,9 @@ class DiscoController {
 
                     dir_ftp_tarjeta_cierre=$5,
                     peso_tarjeta_cierre=$6,
-                    fecha_tarjeta_cierre=$7,
-                    id_responsable_tcc=$8
-                    WHERE id_disco=$9;
+                    fecha_tarjeta_cierre=CURRENT_TIMESTAMP,
+                    id_responsable_tcc=$7
+                    WHERE id_disco=$8;
                          `;
             const valores = [
                 app_user,
@@ -300,7 +326,6 @@ class DiscoController {
 
                 dir_ftp_tarjeta_cierre,
                 peso_tarjeta_cierre,
-                fecha_tarjeta_cierre,
                 id_responsable_tcc,
                 id_disco
 
@@ -310,6 +335,12 @@ class DiscoController {
                     console.error("Error al registrar tarjeta de cierre", error);
                 } else {
                     console.log('Tarjeta de cierre registrada correctamente:',);
+                    res.locals.body = {
+                        direccion_ip: ipAddressClient,
+                        usuario: app_user,
+                        modulo: "DISCO",
+                        detalle: `Registro de tarjeta de calibración de cierre, disco ${nombre}`,
+                    };
                     res.status(200).json({ message: 'Tarjeta de cierre registrada correctamente' });
                 }
             });
@@ -322,9 +353,8 @@ class DiscoController {
     public async cerrarDisco(req: Request, res: Response): Promise<any> {
         try {
             const { id_disco } = req.params;
-            const { id_responsable_cierre, espacio_ocupado, app_user } = req.body;
+            const { nombre, id_responsable_cierre, espacio_ocupado, app_user } = req.body;
             const ipAddressClient = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-            const disco = await db.query('select * from archivo.t_disco where id_disco=$1', [id_disco]);
             const consulta = `
                 UPDATE archivo.t_disco
                 SET 
@@ -339,7 +369,6 @@ class DiscoController {
                     estado_cerrado=true,
                     id_responsable_cierre=$5,
                     espacio_ocupado=$6
-
                     WHERE id_disco=$7;
                          `;
             const valores = [
@@ -361,7 +390,7 @@ class DiscoController {
                         direccion_ip: ipAddressClient,
                         usuario: app_user,
                         modulo: "DISCO",
-                        detalle: `Cierre de disco ${disco["rows"][0]["nombre"]}`,
+                        detalle: `Cierre de disco ${nombre}`,
 
 
                     };
@@ -374,6 +403,225 @@ class DiscoController {
             res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
+
+    public async descargarDiscoZip(req: Request, res: Response): Promise<any> {
+        const { id_disco, app_user } = req.params;
+        const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+        try {
+            // Obtener datos del disco
+            const disco = await db.query("SELECT * FROM archivo.t_disco WHERE id_disco=$1", [id_disco]);
+            if (!disco.rows.length) {
+                return res.status(404).json({ error: "No se encontró disco" });
+            }
+
+            // Logs del registro
+            res.locals.body = {
+                direccion_ip: ipAddressClient,
+                usuario: app_user,
+                modulo: "DISCO",
+                detalle: `Descarga de disco ${disco.rows[0].nombre}`,
+            };
+
+            // Cabeceras ZIP
+            res.setHeader("Content-Type", "application/zip");
+            res.setHeader("Content-Disposition", `attachment; filename=disco_${id_disco}.zip`);
+
+            const archive = archiver("zip", { zlib: { level: 9 } });
+            archive.pipe(res);
+
+            await useSftpConnection(async (sftp) => {
+
+                // ============================================================
+                // 🔥 FIX: Agregado manejo de fechas para archivos del SFTP
+                // ============================================================
+                const downloadAndAppend = async (remotePath: string, zipPath: string, customDate?: string | Date): Promise<void> => {
+                    try {
+                        const exists = await sftp.exists(remotePath);
+                        if (!exists) {
+                            console.warn(`No existe en SFTP: ${remotePath}`);
+                            return;
+                        }
+
+                        // Metadata SFTP (solo usada si no envías customDate)
+                        const stats = await sftp.stat(remotePath);
+                        const fileDate = new Date(stats.modifyTime * 1000);
+
+                        const finalDate = customDate ? new Date(customDate) : fileDate;
+
+                        const result = await sftp.get(remotePath);
+
+                        if (Buffer.isBuffer(result)) {
+                            archive.append(result, {
+                                name: zipPath,
+                                date: finalDate
+                            });
+                            return;
+                        }
+
+                        if (typeof Readable.fromWeb === "function" && result instanceof ReadableStream) {
+                            const nodeReadable = Readable.fromWeb(result as unknown as NodeReadableStream);
+                            archive.append(nodeReadable, {
+                                name: zipPath,
+                                date: finalDate
+                            });
+                            return;
+                        }
+
+                        const maybeStream = result as any;
+                        if (maybeStream && typeof maybeStream.pipe === "function") {
+                            archive.append(maybeStream as unknown as import("stream").Readable, {
+                                name: zipPath,
+                                date: finalDate
+                            });
+                            return;
+                        }
+
+                        console.warn(`Tipo no reconocido devuelto por sftp.get(${remotePath}):`, typeof result);
+                    } catch (err: any) {
+                        console.warn(`No se pudo descargar ${remotePath}, se omite.`, err.message);
+                    }
+                };
+
+
+
+                // ============================================================
+                // 1️⃣ Agregar archivos locales del VISOR
+                // ============================================================
+                const projectRoot = path.resolve(__dirname, "../");
+                const filesToLoad = [
+                    "visor/libs/pdf-lib.min.js",
+                    "visor/bootstrap-icons.min.css",
+                    "visor/bootstrap.min.css",
+                    "visor/index.html",
+                    "visor/jquery-3.6.0.min.js",
+                    "visor/script.js",
+                    "visor/styles.css",
+                    "visor/visor.bat",
+                ];
+
+                for (const relativePath of filesToLoad) {
+                    const fullPath = path.join(projectRoot, relativePath);
+                    const zipPath = path.join("VISOR", relativePath.replace(/^visor[\\/]/, ""));
+
+                    if (fs.existsSync(fullPath)) {
+                        const stats = fs.statSync(fullPath); // ← Fecha del archivo local
+
+                        archive.file(fullPath, {
+                            name: zipPath,
+                            date: stats.mtime  // ← Fecha real del archivo
+                        });
+                    } else {
+                        console.warn(`⚠️ Archivo local omitido: ${fullPath}`);
+                    }
+                }
+
+                // ============================================================
+                // 2️⃣ Obtener información del disco e inventario
+                // ============================================================
+                const data_disco = await db.query(
+                    `SELECT 
+                            d.*, i.especialidad, i.anio, i.sede, i.tipo_doc, i.serie_doc
+                        FROM archivo.t_disco d
+                        JOIN archivo.t_inventario i ON d.id_inventario = i.id_inventario
+                        WHERE d.id_disco = $1`,
+                    [id_disco]
+                );
+                const discoData = data_disco.rows[0];
+
+                // ============================================================
+                // 3️⃣ Obtener expedientes asociados
+                // ============================================================
+                const resultado = await db.query(
+                    `SELECT 
+                        e.id_expediente, e.nro_expediente, d.dir_ftp, 
+                        i.fecha_inicial, i.fecha_final, es.id_disco, i.juzgado_origen,
+                        p.create_at as fecha_preparacion, d.create_at as fecha_digitalizacion,
+                        i.create_at as fecha_indizacion, cc.create_at as fecha_control,
+                        f.create_at as fecha_fedatario, d.peso_doc, d.fojas_total,
+                        inv.codigo as codigo_inventario
+                    FROM archivo.t_expediente e
+                    JOIN archivo.t_estado_expediente es ON e.id_expediente = es.id_expediente
+                    JOIN archivo.t_preparacion p ON e.id_expediente = p.id_expediente
+                    JOIN archivo.t_digitalizacion d ON e.id_expediente = d.id_expediente
+                    JOIN archivo.t_indizacion i ON e.id_expediente = i.id_expediente
+                    JOIN archivo.t_control cc ON e.id_expediente = cc.id_expediente
+                    JOIN archivo.t_fedatar f ON e.id_expediente = f.id_expediente
+                    JOIN archivo.t_inventario inv ON e.id_inventario = inv.id_inventario
+                    WHERE es.id_disco = $1`,
+                    [id_disco]
+                );
+
+                const expedientes = resultado.rows;
+
+                if (!expedientes.length) {
+                    return res.status(404).json({ error: "No se encontraron expedientes" });
+                }
+
+                // ============================================================
+                // 4️⃣ Descargar expedientes PDF desde SFTP
+                // ============================================================
+                for (const exp of expedientes) {
+                    const remotoExp = `${exp.codigo_inventario}/EXPEDIENTES/${exp.nro_expediente}.pdf`;
+                    await downloadAndAppend(remotoExp, `VISOR/ADJUNTOS/MICROFORMAS/EXPEDIENTES/${exp.nro_expediente}.pdf`, exp.fecha_digitalizacion);
+                   
+
+                    const remotoFirmado = `${exp.codigo_inventario}/FIRMADOS/${exp.nro_expediente}.pdf`;
+                    await downloadAndAppend(remotoFirmado, `VISOR/ADJUNTOS/MICROFORMAS/FIRMADOS/${exp.nro_expediente}.pdf`,exp.fecha_fedatario);
+                }
+
+                // ============================================================
+                // 5️⃣ Documentos adicionales del disco
+                // ============================================================
+                const documentos = [
+                    { name: "TCA.pdf", zipName: "TCA.pdf" , fecha: discoData.fecha_tarjeta_apertura },
+                    { name: "TCC.pdf", zipName: "TCC.pdf" , fecha: discoData.fecha_tarjeta_cierre },
+                    { name: "AA.pdf", zipName: "AA.pdf" , fecha: discoData.fecha_acta_apertura },
+                    { name: "AC.pdf", zipName: "AC.pdf" , fecha: discoData.fecha_acta_cierre },
+                ];
+
+                for (const doc of documentos) {
+                    const remotePath = `${discoData.dir_ftp_acta_apertura}/${doc.name}`;
+                    const zipPath = `VISOR/ADJUNTOS/DOCUMENTOS/${doc.zipName}`;
+                    await downloadAndAppend(remotePath, zipPath, doc.fecha);
+                }
+
+                // ============================================================
+                // 6️⃣ Archivo JSON metadata
+                // ============================================================
+                const inventario = {
+                    especialidad: discoData.especialidad,
+                    anio: discoData.anio,
+                    sede: discoData.sede,
+                    tipoDoc: discoData.tipo_doc,
+                    serieDoc: discoData.serie_doc,
+                    volumen: discoData.volumen,
+                    fecha_acta_apertura: discoData.fecha_acta_apertura,
+                    fecha_acta_cierre: discoData.fecha_acta_cierre,
+                    fecha_tarjeta_apertura: discoData.fecha_tarjeta_apertura,
+                    fecha_tarjeta_cierre: discoData.fecha_tarjeta_cierre,
+                    total_fojas: expedientes.reduce((sum, exp) => sum + (exp.fojas_total || 0), 0),
+                    cantidad_expedientes: expedientes.length,
+                };
+
+                archive.append(
+                    JSON.stringify({ datosGenerales: inventario, expedientes }, null, 2),
+                    { name: "VISOR/ADJUNTOS/metadata.json" }
+                );
+
+                // ============================================================
+                // 7️⃣ Finalizar el ZIP
+                // ============================================================
+                await archive.finalize();
+            });
+
+        } catch (error) {
+            console.error("Error generando ZIP:", error);
+            res.status(500).json({ error: "Error generando el ZIP" });
+            res.locals.body = { text: `"Error al generar el ZIP:" ${error}` };
+        }
+    }
+
 
     // public async descargarDiscoZip(req: Request, res: Response): Promise<any> {
     //     const { id_disco, app_user } = req.params;
@@ -607,237 +855,220 @@ class DiscoController {
     //     }
     // }
 
-    public async descargarDiscoZip(req: Request, res: Response): Promise<any> {
-        const { id_disco, app_user } = req.params;
-        const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    // public async descargarDiscoZip(req: Request, res: Response): Promise<any> {
+    //     const { id_disco, app_user } = req.params;
+    //     const ipAddressClient = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-        try {
-            // Obtener datos del disco
-            const disco = await db.query("SELECT * FROM archivo.t_disco WHERE id_disco=$1", [id_disco]);
-            if (!disco.rows.length) {
-                return res.status(404).json({ error: "No se encontró disco" });
-            }
+    //     try {
+    //         // Obtener datos del disco
+    //         const disco = await db.query("SELECT * FROM archivo.t_disco WHERE id_disco=$1", [id_disco]);
+    //         if (!disco.rows.length) {
+    //             return res.status(404).json({ error: "No se encontró disco" });
+    //         }
 
-            // Logs del registro
-                res.locals.body = {
-                    direccion_ip: ipAddressClient,
-                    usuario: app_user,
-                    modulo: "DISCO",
-                    detalle: `Descarga de disco ${disco.rows[0].nombre}`,
-                };
+    //         // Logs del registro
+    //         res.locals.body = {
+    //             direccion_ip: ipAddressClient,
+    //             usuario: app_user,
+    //             modulo: "DISCO",
+    //             detalle: `Descarga de disco ${disco.rows[0].nombre}`,
+    //         };
 
-            // Configura cabeceras HTTP para la respuesta ZIP
-            res.setHeader("Content-Type", "application/zip");
-            res.setHeader("Content-Disposition", `attachment; filename=disco_${id_disco}.zip`);
+    //         // Configura cabeceras HTTP para la respuesta ZIP
+    //         res.setHeader("Content-Type", "application/zip");
+    //         res.setHeader("Content-Disposition", `attachment; filename=disco_${id_disco}.zip`);
 
-            const archive = archiver("zip", { zlib: { level: 9 } });
-            archive.pipe(res);
+    //         const archive = archiver("zip", { zlib: { level: 9 } });
+    //         archive.pipe(res);
 
-            await useSftpConnection(async (sftp) => {
+    //         await useSftpConnection(async (sftp) => {
 
-                /** ✅ Helper para añadir archivos desde el SFTP al ZIP */
-                // const downloadAndAppend = async (remotePath: string, zipPath: string): Promise<void> => {
-                //   try {
-                //     const stream = await sftp.get(remotePath);
-                //     archive.append(stream, { name: zipPath });
-                //   } catch (err: any) {
-                //     console.warn(`❌ No se pudo descargar ${remotePath}, se omite.`, err.message);
-                //   }
-                // };
+    //             // const downloadAndAppend = async (remotePath: string, zipPath: string): Promise<void> => {
+    //             //     try {
+    //             //         const exists = await sftp.exists(remotePath);
+    //             //         if (!exists) {
+    //             //             console.warn(` No existe en SFTP: ${remotePath}`);
+    //             //             return;
+    //             //         }
 
-                // const downloadAndAppend = async (remotePath: string, zipPath: string): Promise<void> => {
-                //     try {
-                //         // 1️⃣ Verifica que exista en el servidor
-                //         const exists = await sftp.exists(remotePath);
-                //         if (!exists) {
-                //             console.warn(`⚠️ No existe en SFTP: ${remotePath}`);
-                //             return;
-                //         }
+    //             //         const result = await sftp.get(remotePath);
 
-                //         // 2️⃣ Descarga desde el SFTP
-                //         const result = await sftp.get(remotePath);
+    //             //         if (Buffer.isBuffer(result)) {
+    //             //             archive.append(result, { name: zipPath });
+    //             //             return;
+    //             //         }
 
-                //         // 3️⃣ Si es Buffer → perfecto, se puede usar directo
-                //         if (Buffer.isBuffer(result)) {
-                //             archive.append(result, { name: zipPath });
-                //             console.log(`✅ Añadido (Buffer): ${zipPath}`);
-                //             return;
-                //         }
+    //             //         // Aquí va el fix importante
+    //             //         if (typeof Readable.fromWeb === "function" && result instanceof ReadableStream) {
+    //             //             const nodeReadable = Readable.fromWeb(result as unknown as NodeReadableStream);
+    //             //             archive.append(nodeReadable, { name: zipPath });
+    //             //             return;
+    //             //         }
 
-                //         // 4️⃣ Si es un Web ReadableStream (nuevo tipo de Node 18+)
-                //         if (typeof Readable.fromWeb === "function" && result instanceof ReadableStream) {
-                //             const nodeStream = Readable.fromWeb(result as unknown as globalThis.ReadableStream);
-                //             archive.append(nodeStream, { name: zipPath });
-                //             console.log(`✅ Añadido (WebStream): ${zipPath}`);
-                //             return;
-                //         }
+    //             //         const maybeStream = result as any;
+    //             //         if (maybeStream && typeof maybeStream.pipe === "function") {
+    //             //             archive.append(maybeStream as unknown as import("stream").Readable, { name: zipPath });
+    //             //             return;
+    //             //         }
 
-                //         // 5️⃣ Si es un stream clásico de Node.js
-                //         const maybeStream = result as any;
-                //         if (maybeStream && typeof maybeStream.pipe === "function") {
-                //             archive.append(maybeStream as NodeJS.ReadableStream, { name: zipPath });
-                //             console.log(`✅ Añadido (NodeStream): ${zipPath}`);
-                //             return;
-                //         }
+    //             //         console.warn(` Tipo no reconocido devuelto por sftp.get(${remotePath}):`, typeof result);
+    //             //     } catch (err: any) {
+    //             //         console.warn(` No se pudo descargar ${remotePath}, se omite.`, err.message);
+    //             //     }
+    //             // };
 
-                //         // 6️⃣ Si nada de lo anterior aplica
-                //         console.warn(`⚠️ Tipo no reconocido devuelto por sftp.get(${remotePath}):`, typeof result);
-                //     } catch (err: any) {
-                //         console.warn(`❌ No se pudo descargar ${remotePath}, se omite.`, err.message);
-                //     }
-                // };
+    //             const downloadAndAppend = async (remotePath: string, zipPath: string): Promise<void> => {
+    //                 try {
+    //                     const exists = await sftp.exists(remotePath);
+    //                     if (!exists) {
+    //                         console.warn(` No existe en SFTP: ${remotePath}`);
+    //                         return;
+    //                     }
 
-                const downloadAndAppend = async (remotePath: string, zipPath: string): Promise<void> => {
-                    try {
-                        const exists = await sftp.exists(remotePath);
-                        if (!exists) {
-                            console.warn(`⚠️ No existe en SFTP: ${remotePath}`);
-                            return;
-                        }
+    //                     const result = await sftp.get(remotePath);
 
-                        const result = await sftp.get(remotePath);
+    //                     if (Buffer.isBuffer(result)) {
+    //                         archive.append(result, { name: zipPath });
+    //                         return;
+    //                     }
 
-                        if (Buffer.isBuffer(result)) {
-                            archive.append(result, { name: zipPath });
-                            return;
-                        }
+    //                     // Aquí va el fix importante
+    //                     if (typeof Readable.fromWeb === "function" && result instanceof ReadableStream) {
+    //                         const nodeReadable = Readable.fromWeb(result as unknown as NodeReadableStream);
+    //                         archive.append(nodeReadable, { name: zipPath });
+    //                         return;
+    //                     }
 
-                        // ✅ Aquí va el fix importante
-                        if (typeof Readable.fromWeb === "function" && result instanceof ReadableStream) {
-                            const nodeReadable = Readable.fromWeb(result as unknown as NodeReadableStream);
-                            archive.append(nodeReadable, { name: zipPath });
-                            return;
-                        }
+    //                     const maybeStream = result as any;
+    //                     if (maybeStream && typeof maybeStream.pipe === "function") {
+    //                         archive.append(maybeStream as unknown as import("stream").Readable, { name: zipPath });
+    //                         return;
+    //                     }
 
-                        const maybeStream = result as any;
-                        if (maybeStream && typeof maybeStream.pipe === "function") {
-                            archive.append(maybeStream as unknown as import("stream").Readable, { name: zipPath });
-                            return;
-                        }
-
-                        console.warn(`⚠️ Tipo no reconocido devuelto por sftp.get(${remotePath}):`, typeof result);
-                    } catch (err: any) {
-                        console.warn(`❌ No se pudo descargar ${remotePath}, se omite.`, err.message);
-                    }
-                };
+    //                     console.warn(` Tipo no reconocido devuelto por sftp.get(${remotePath}):`, typeof result);
+    //                 } catch (err: any) {
+    //                     console.warn(` No se pudo descargar ${remotePath}, se omite.`, err.message);
+    //                 }
+    //             };
 
 
-                // 1️⃣ Agregar los archivos del entorno VISOR local
-                const projectRoot = path.resolve(__dirname, "../");
-                const filesToLoad = [
-                    "visor/libs/pdf-lib.min.js",
-                    "visor/bootstrap-icons.min.css",
-                    "visor/bootstrap.min.css",
-                    "visor/index.html",
-                    "visor/jquery-3.6.0.min.js",
-                    "visor/script.js",
-                    "visor/styles.css",
-                    "visor/visor.bat",
-                ];
 
-                for (const relativePath of filesToLoad) {
-                    const fullPath = path.join(projectRoot, relativePath);
-                    const zipPath = path.join("VISOR", relativePath.replace(/^visor[\\/]/, ""));
-                    if (fs.existsSync(fullPath)) {
-                        archive.file(fullPath, { name: zipPath });
-                    } else {
-                        console.warn(`⚠️ Archivo local omitido: ${fullPath}`);
-                    }
-                }
+    //             // 1 Agregar los archivos del entorno VISOR local
+    //             const projectRoot = path.resolve(__dirname, "../");
+    //             const filesToLoad = [
+    //                 "visor/libs/pdf-lib.min.js",
+    //                 "visor/bootstrap-icons.min.css",
+    //                 "visor/bootstrap.min.css",
+    //                 "visor/index.html",
+    //                 "visor/jquery-3.6.0.min.js",
+    //                 "visor/script.js",
+    //                 "visor/styles.css",
+    //                 "visor/visor.bat",
+    //             ];
 
-                // 2️⃣ Obtener información del disco e inventario
-                const data_disco = await db.query(
-                    `SELECT 
-              d.*, i.especialidad, i.anio, i.sede, i.tipo_doc, i.serie_doc
-           FROM archivo.t_disco d
-           JOIN archivo.t_inventario i ON d.id_inventario = i.id_inventario
-           WHERE d.id_disco = $1`,
-                    [id_disco]
-                );
-                const discoData = data_disco.rows[0];
+    //             for (const relativePath of filesToLoad) {
+    //                 const fullPath = path.join(projectRoot, relativePath);
+    //                 const zipPath = path.join("VISOR", relativePath.replace(/^visor[\\/]/, ""));
+    //                 if (fs.existsSync(fullPath)) {
+    //                     archive.file(fullPath, { name: zipPath });
+    //                 } else {
+    //                     console.warn(`⚠️ Archivo local omitido: ${fullPath}`);
+    //                 }
+    //             }
 
-                // 3️⃣ Obtener los expedientes asociados
-                const resultado = await db.query(
-                    `SELECT 
-              e.id_expediente, e.nro_expediente, d.dir_ftp, 
-              i.fecha_inicial, i.fecha_final, es.id_disco, i.juzgado_origen,
-              p.create_at as fecha_preparacion, d.create_at as fecha_digitalizacion,
-              i.create_at as fecha_indizacion, cc.create_at as fecha_control,
-              f.create_at as fecha_fedatario, d.peso_doc, d.fojas_total,
-              inv.codigo as codigo_inventario
-           FROM archivo.t_expediente e
-           JOIN archivo.t_estado_expediente es ON e.id_expediente = es.id_expediente
-           JOIN archivo.t_preparacion p ON e.id_expediente = p.id_expediente
-           JOIN archivo.t_digitalizacion d ON e.id_expediente = d.id_expediente
-           JOIN archivo.t_indizacion i ON e.id_expediente = i.id_expediente
-           JOIN archivo.t_control cc ON e.id_expediente = cc.id_expediente
-           JOIN archivo.t_fedatar f ON e.id_expediente = f.id_expediente
-           JOIN archivo.t_inventario inv ON e.id_inventario = inv.id_inventario
-           WHERE es.id_disco = $1`,
-                    [id_disco]
-                );
-                const expedientes = resultado.rows;
+    //             // 2 Obtener información del disco e inventario
+    //             const data_disco = await db.query(
+    //                 `SELECT 
+    //                     d.*, i.especialidad, i.anio, i.sede, i.tipo_doc, i.serie_doc
+    //                 FROM archivo.t_disco d
+    //                 JOIN archivo.t_inventario i ON d.id_inventario = i.id_inventario
+    //                 WHERE d.id_disco = $1`,
+    //                 [id_disco]
+    //             );
+    //             const discoData = data_disco.rows[0];
 
-                if (!expedientes.length) {
-                    return res.status(404).json({ error: "No se encontraron expedientes" });
-                }
+    //             // 3️⃣ Obtener los expedientes asociados
+    //             const resultado = await db.query(
+    //                 `SELECT 
+    //                     e.id_expediente, e.nro_expediente, d.dir_ftp, 
+    //                     i.fecha_inicial, i.fecha_final, es.id_disco, i.juzgado_origen,
+    //                     p.create_at as fecha_preparacion, d.create_at as fecha_digitalizacion,
+    //                     i.create_at as fecha_indizacion, cc.create_at as fecha_control,
+    //                     f.create_at as fecha_fedatario, d.peso_doc, d.fojas_total,
+    //                     inv.codigo as codigo_inventario
+    //                 FROM archivo.t_expediente e
+    //                 JOIN archivo.t_estado_expediente es ON e.id_expediente = es.id_expediente
+    //                 JOIN archivo.t_preparacion p ON e.id_expediente = p.id_expediente
+    //                 JOIN archivo.t_digitalizacion d ON e.id_expediente = d.id_expediente
+    //                 JOIN archivo.t_indizacion i ON e.id_expediente = i.id_expediente
+    //                 JOIN archivo.t_control cc ON e.id_expediente = cc.id_expediente
+    //                 JOIN archivo.t_fedatar f ON e.id_expediente = f.id_expediente
+    //                 JOIN archivo.t_inventario inv ON e.id_inventario = inv.id_inventario
+    //                 WHERE es.id_disco = $1`,
+    //                 [id_disco]
+    //             );
+    //             const expedientes = resultado.rows;
 
-                // 4️⃣ Descargar expedientes (PDFs)
-                for (const exp of expedientes) {
-                    const remotoExp = `${exp.codigo_inventario}/EXPEDIENTES/${exp.nro_expediente}.pdf`;
-                    await downloadAndAppend(remotoExp, `VISOR/ADJUNTOS/MICROFORMAS/EXPEDIENTES/${exp.nro_expediente}.pdf`);
+    //             if (!expedientes.length) {
+    //                 return res.status(404).json({ error: "No se encontraron expedientes" });
+    //             }
 
-                    const remotoFirmado = `${exp.codigo_inventario}/FIRMADOS/${exp.nro_expediente}.pdf`;
-                    await downloadAndAppend(remotoFirmado, `VISOR/ADJUNTOS/MICROFORMAS/FIRMADOS/${exp.nro_expediente}.pdf`);
-                }
+    //             // 4️⃣ Descargar expedientes (PDFs)
+    //             for (const exp of expedientes) {
+    //                 const remotoExp = `${exp.codigo_inventario}/EXPEDIENTES/${exp.nro_expediente}.pdf`;
+    //                 await downloadAndAppend(remotoExp, `VISOR/ADJUNTOS/MICROFORMAS/EXPEDIENTES/${exp.nro_expediente}.pdf`);
 
-                // 5️⃣ Documentos adicionales del disco
-                const documentos = [
-                    { name: "TCA.pdf", zipName: "TCA.pdf" },
-                    { name: "TCC.pdf", zipName: "TCC.pdf" },
-                    { name: "AA.pdf", zipName: "AA.pdf" },
-                    { name: "AC.pdf", zipName: "AC.pdf" },
-                ];
+    //                 const remotoFirmado = `${exp.codigo_inventario}/FIRMADOS/${exp.nro_expediente}.pdf`;
+    //                 await downloadAndAppend(remotoFirmado, `VISOR/ADJUNTOS/MICROFORMAS/FIRMADOS/${exp.nro_expediente}.pdf`);
+    //             }
 
-                for (const doc of documentos) {
-                    const remotePath = `${discoData.dir_ftp_acta_apertura}/${doc.name}`;
-                    const zipPath = `VISOR/ADJUNTOS/DOCUMENTOS/${doc.zipName}`;
-                    await downloadAndAppend(remotePath, zipPath);
-                }
+    //             // 5️⃣ Documentos adicionales del disco
+    //             const documentos = [
+    //                 { name: "TCA.pdf", zipName: "TCA.pdf" },
+    //                 { name: "TCC.pdf", zipName: "TCC.pdf" },
+    //                 { name: "AA.pdf", zipName: "AA.pdf" },
+    //                 { name: "AC.pdf", zipName: "AC.pdf" },
+    //             ];
 
-                // 6️⃣ Agregar archivo JSON (metadata)
-                const inventario = {
-                    especialidad: discoData.especialidad,
-                    anio: discoData.anio,
-                    sede: discoData.sede,
-                    tipoDoc: discoData.tipo_doc,
-                    serieDoc: discoData.serie_doc,
-                    volumen: discoData.volumen,
-                    fecha_acta_apertura: discoData.fecha_acta_apertura,
-                    fecha_acta_cierre: discoData.fecha_acta_cierre,
-                    fecha_tarjeta_apertura: discoData.fecha_tarjeta_apertura,
-                    fecha_tarjeta_cierre: discoData.fecha_tarjeta_cierre,
-                    total_fojas: expedientes.reduce((sum, exp) => sum + (exp.fojas_total || 0), 0),
-                    cantidad_expedientes: expedientes.length,
-                };
+    //             for (const doc of documentos) {
+    //                 const remotePath = `${discoData.dir_ftp_acta_apertura}/${doc.name}`;
+    //                 const zipPath = `VISOR/ADJUNTOS/DOCUMENTOS/${doc.zipName}`;
+    //                 await downloadAndAppend(remotePath, zipPath);
+    //             }
 
-                archive.append(
-                    JSON.stringify({ datosGenerales: inventario, expedientes }, null, 2),
-                    { name: "VISOR/ADJUNTOS/metadata.json" }
-                );
+    //             // 6️⃣ Agregar archivo JSON (metadata)
+    //             const inventario = {
+    //                 especialidad: discoData.especialidad,
+    //                 anio: discoData.anio,
+    //                 sede: discoData.sede,
+    //                 tipoDoc: discoData.tipo_doc,
+    //                 serieDoc: discoData.serie_doc,
+    //                 volumen: discoData.volumen,
+    //                 fecha_acta_apertura: discoData.fecha_acta_apertura,
+    //                 fecha_acta_cierre: discoData.fecha_acta_cierre,
+    //                 fecha_tarjeta_apertura: discoData.fecha_tarjeta_apertura,
+    //                 fecha_tarjeta_cierre: discoData.fecha_tarjeta_cierre,
+    //                 total_fojas: expedientes.reduce((sum, exp) => sum + (exp.fojas_total || 0), 0),
+    //                 cantidad_expedientes: expedientes.length,
+    //             };
 
-                // 7️⃣ Finalizar el ZIP
-                await archive.finalize();
+    //             archive.append(
+    //                 JSON.stringify({ datosGenerales: inventario, expedientes }, null, 2),
+    //                 { name: "VISOR/ADJUNTOS/metadata.json" }
+    //             );
 
-                
-            });
+    //             // 7️⃣ Finalizar el ZIP
+    //             await archive.finalize();
 
-        } catch (error) {
-            console.error("Error generando ZIP:", error);
-            res.status(500).json({ error: "Error generando el ZIP" });
-            res.locals.body = { text: `"Error al generar el ZIP:" ${error}` };
-        }
-    }
+
+    //         });
+
+    //     } catch (error) {
+    //         console.error("Error generando ZIP:", error);
+    //         res.status(500).json({ error: "Error generando el ZIP" });
+    //         res.locals.body = { text: `"Error al generar el ZIP:" ${error}` };
+    //     }
+    // }
 }
 
 const discoController = new DiscoController();

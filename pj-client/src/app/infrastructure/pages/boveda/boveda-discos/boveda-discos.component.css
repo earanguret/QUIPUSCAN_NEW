@@ -1,0 +1,43 @@
+.contenedor {
+    margin: 2% 4%;
+    max-width: 1680px;
+    max-width: 1680px;
+  }
+
+
+  .my-card {
+    position: relative;         /* permite posicionar elementos dentro */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+}
+
+/* Ribbon */
+.ribbon-active {
+    position: absolute;
+    top: -10px;
+    left: -20px;                /* mueve el ribbon hacia afuera */
+    background-color: #28a745;  /* verde */
+    color: white;
+    padding: 5px 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+   /*  transform: rotate(-45deg);  inclinado */
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.ribbon-closed {
+    position: absolute;
+    top: -10px;
+    left: -20px;                /* mueve el ribbon hacia afuera */
+    background-color: #509cce;  /* verde */
+    color: white;
+    padding: 5px 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+   /*  transform: rotate(-45deg);  inclinado */
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}

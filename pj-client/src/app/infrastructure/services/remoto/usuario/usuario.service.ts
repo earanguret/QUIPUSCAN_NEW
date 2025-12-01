@@ -18,8 +18,8 @@ export class UsuarioService {
     return this.http.get<UsuarioResponse[]>(`${this.api_uri_usuario}/lista/detalle`)
   }
 
-  ObtenerUsuario(id_usuario:number):Observable<UsuarioModel>{
-    return this.http.get<UsuarioModel>(`${this.api_uri_usuario}/${id_usuario}`)
+  ObtenerUsuario(id_usuario:number):Observable<UsuarioResponse>{
+    return this.http.get<UsuarioResponse>(`${this.api_uri_usuario}/${id_usuario}`)
   }
 
   CrearUsuario(cuerpo_usuario:UsuarioRequest):Observable<CrearUsuarioResponse>{

@@ -101,6 +101,23 @@ class InventarioController {
       console.error("Error al obtener inventario detalle:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
+
+  }
+
+  public async ObtenerConteoInventario(req: Request, res: Response): Promise<void> {
+    try {
+      const consulta = `
+                SELECT especialidad, COUNT(*) AS cantidad
+                FROM archivo.t_inventario
+                GROUP BY especialidad
+                ORDER BY especialidad;
+                `;
+      const personas = await db.query(consulta);
+      res.json(personas["rows"]);
+    } catch (error) {
+      console.error("Error al obtener conteo de inventarios:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
   }
 
   public async CrearInventario(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -169,7 +186,7 @@ class InventarioController {
             usuario: app_user,
             modulo: "RECEPCION",
             detalle: `Creación de Serie Documental ${codigo} `,
-            expediente:null
+            expediente: null
           };
 
           res.status(200).json({
@@ -177,7 +194,7 @@ class InventarioController {
             message: "el inventario se creó correctamente",
           });
 
-          
+
         }
       });
     } catch (error) {
@@ -187,7 +204,7 @@ class InventarioController {
         text: `"Error al crear el inventario:"${error}`,
       };
       res.status(500).json({ error: "Error interno del servidor" });
-    } 
+    }
   }
 
   public async ModificarInventario(req: Request, res: Response): Promise<void> {

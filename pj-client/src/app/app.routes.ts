@@ -23,6 +23,8 @@ import { ReportesDemoComponent } from './infrastructure/pages/reportes-demo/repo
 import { UsuariosReporteComponent } from './infrastructure/components/reportes/usuarios-reporte/usuarios-reporte.component';
 import { DashboardComponent } from './infrastructure/components/reportes/dashboard/dashboard.component';
 import { ConfiguracionComponent } from './infrastructure/pages/configuracion/configuracion.component';
+import { BovedaDiscosComponent } from './infrastructure/pages/boveda/boveda-discos/boveda-discos.component';
+import { BovedaDiscoDetalleComponent } from './infrastructure/pages/boveda/boveda-disco-detalle/boveda-disco-detalle.component';
 
 import { AuthGuard } from './guard/auth.guard';
 
@@ -61,6 +63,10 @@ export const routes: Routes = [
 
     {   path: 'principal/boveda/list-serie-documental', component: BovedaListSerieDocComponent  ,canActivate: [AuthGuard]},
     {   path: 'principal/boveda/serie-documental/expedientes/:id', component: BovedaExpedientesComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/boveda/serie-documental/discos/:id_inventario', component: BovedaDiscosComponent, canActivate: [AuthGuard] },
+    {   path: 'principal/boveda/serie-documental/disco/detalle/:id_inventario/:id_disco', component: BovedaDiscoDetalleComponent ,canActivate: [AuthGuard]},
+
+
 
     {   path: 'principal/configuracion', component: ConfiguracionComponent  ,canActivate: [AuthGuard]},
 

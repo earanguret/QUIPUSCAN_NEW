@@ -821,7 +821,7 @@ export class FedatarioExpedientesComponent implements OnInit {
       cargo: "Fedatario-QUIPUSCAN",
       carpetaOrigen: `${this.folderPathPortada}`,
       carpetaFirmados: `${this.folderPathFirma}`,
-      carpetaCertificados: "/CERTIFICADOS"
+      carpetaCertificados: "CERTIFICADOS"
     }
     console.log(dataFirma)
 

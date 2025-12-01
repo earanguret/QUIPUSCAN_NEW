@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
-import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteCoincidenciaResponse, ExpedienteResponse, ExpedienteResponseDataView, ExpedienteSinDiscoResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
+import { CrearExpedienteResponse, EliminarExpedienteResponse, ExpedienteCoincidenciaResponse, ExpedienteResponse, ExpedienteResponseDataView, ExpedientesDiscoResponse, ExpedienteSinDiscoResponse, ModificarExpedienteResponse } from '../../../../domain/dto/ExpedienteResponse.dto';
 import { ExpedienteRequest } from '../../../../domain/dto/ExpedienteRequest.dto';
 
 
@@ -41,6 +41,10 @@ export class ExpedienteService {
 
   ObtenerExpedientesById_inventario_sinDisco(id_inventario:number):Observable<ExpedienteSinDiscoResponse[]>{
     return this.http.get<ExpedienteSinDiscoResponse[]>(`${this.api_uri_expediente}/pendientesDisco/${id_inventario}`)
+  }
+
+  ObtenerExpedientesDisco(id_inventario:number,id_disco:number):Observable<ExpedientesDiscoResponse[]>{
+    return this.http.get<ExpedientesDiscoResponse[]>(`${this.api_uri_expediente}/pendientesDisco/${id_inventario}/${id_disco}`)
   }
 
   ObtenerExpedintesByNro_expediente(nro_expediente:string):Observable<ExpedienteCoincidenciaResponse[]>{

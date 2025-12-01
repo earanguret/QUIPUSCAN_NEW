@@ -3,7 +3,7 @@ import { environment } from '../../../../../../environment/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DiscoRequest } from '../../../../domain/dto/DiscoRequest.dto';
-import { DiscoCrearResponse, DiscoListaResponse, ModificarDiscoResponse } from '../../../../domain/dto/DiscoResponse.dto';
+import { DiscoCrearResponse, DiscoResponse, ModificarDiscoResponse } from '../../../../domain/dto/DiscoResponse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,12 @@ export class DiscoService {
 
   api_uri_disco=`${environment.urlApi}/disco`;
 
-  ListarDiscosByInventario(id_inventario:number):Observable<DiscoListaResponse[]>{
-    return this.http.get<DiscoListaResponse[]>(`${this.api_uri_disco}/lista/${id_inventario}`)
+  ListarDiscosByInventario(id_inventario:number):Observable<DiscoResponse[]>{
+    return this.http.get<DiscoResponse[]>(`${this.api_uri_disco}/lista/${id_inventario}`)
+  }
+
+  ObtenerDiscoDetalle(id_disco:number):Observable<DiscoResponse>{
+    return this.http.get<DiscoResponse>(`${this.api_uri_disco}/detalle/${id_disco}`)
   }
 
   CrearDisco(cuerpo_disco:DiscoRequest):Observable<DiscoCrearResponse>{

@@ -47,6 +47,7 @@ class UsuarioController {
             const consulta = `
                         SELECT 
                             u.id_usuario,
+                            u.id_persona,
                             u.username,
                             u.estado,
                             u.perfil,

@@ -46,7 +46,7 @@ public async downloadFile(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  // 🚀 Depuración: listar archivos en la carpeta
+  //  Depuración: listar archivos en la carpeta
   // await useSftpConnection(async (sftp) => {
   //   const list = await sftp.list(folderPath);
   //   console.log("Archivos disponibles:", list.map(f => f.name));
