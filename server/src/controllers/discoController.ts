@@ -447,7 +447,12 @@ class DiscoController {
                         const stats = await sftp.stat(remotePath);
                         const fileDate = new Date(stats.modifyTime * 1000);
 
-                        const finalDate = customDate ? new Date(customDate) : fileDate;
+                        const finalDateRaw = customDate
+                            ? new Date(customDate)
+                            : new Date(stats.modifyTime * 1000);
+
+
+                        const finalDate = customDate ? new Date(finalDateRaw.getTime() - (5 * 60 * 60 * 1000)) : fileDate;
 
                         const result = await sftp.get(remotePath);
 
@@ -483,6 +488,61 @@ class DiscoController {
                     }
                 };
 
+                // const downloadAndAppend = async (remotePath: string, zipPath: string, customDate?: string | Date): Promise<void> => {
+                //     try {
+                //         const exists = await sftp.exists(remotePath);
+                //         if (!exists) {
+                //             console.warn(`No existe en SFTP: ${remotePath}`);
+                //             return;
+                //         }
+
+                //         const stats = await sftp.stat(remotePath);
+                //         const fileDate = new Date(stats.modifyTime * 1000);
+
+                //         const finalDate = (() => {
+                //             if (!customDate) return fileDate;
+
+                //             // eliminar microsegundos si existen
+                //             const clean = customDate.toString().split('.')[0];
+
+                //             // convertir a formato local
+                //             return new Date(clean.replace(" ", "T"));
+                //         })();
+
+
+                //         const result = await sftp.get(remotePath);
+
+                //         if (Buffer.isBuffer(result)) {
+                //             archive.append(result, {
+                //                 name: zipPath,
+                //                 date: finalDate
+                //             });
+                //             return;
+                //         }
+
+                //         const maybeStream = result as any;
+                //         if (maybeStream?.pipe) {
+                //             archive.append(maybeStream, { name: zipPath, date: finalDate });
+                //             return;
+                //         }
+
+                //         console.warn(`Tipo no reconocido devuelto por sftp.get(${remotePath}):`, typeof result);
+                //     } catch (err: any) {
+                //         console.warn(`No se pudo descargar ${remotePath}, se omite.`, err.message);
+                //     }
+                // };
+
+                function parseLocalDate(dateStr: string): Date {
+                    const [datePart, timePart] = dateStr.split(" ");
+                    const [year, month, day] = datePart.split("-").map(Number);
+
+                    const [time, msPart = "0"] = timePart.split(".");
+                    const [hours, minutes, seconds] = time.split(":").map(Number);
+
+                    const milliseconds = Number(msPart.substring(0, 3));
+
+                    return new Date(year, month - 1, day, hours, minutes, seconds, milliseconds);
+                }
 
 
                 // ============================================================
@@ -564,20 +624,20 @@ class DiscoController {
                 for (const exp of expedientes) {
                     const remotoExp = `${exp.codigo_inventario}/EXPEDIENTES/${exp.nro_expediente}.pdf`;
                     await downloadAndAppend(remotoExp, `VISOR/ADJUNTOS/MICROFORMAS/EXPEDIENTES/${exp.nro_expediente}.pdf`, exp.fecha_digitalizacion);
-                   
+
 
                     const remotoFirmado = `${exp.codigo_inventario}/FIRMADOS/${exp.nro_expediente}.pdf`;
-                    await downloadAndAppend(remotoFirmado, `VISOR/ADJUNTOS/MICROFORMAS/FIRMADOS/${exp.nro_expediente}.pdf`,exp.fecha_fedatario);
+                    await downloadAndAppend(remotoFirmado, `VISOR/ADJUNTOS/MICROFORMAS/FIRMADOS/${exp.nro_expediente}.pdf`, exp.fecha_fedatario);
                 }
 
                 // ============================================================
                 // 5️⃣ Documentos adicionales del disco
                 // ============================================================
                 const documentos = [
-                    { name: "TCA.pdf", zipName: "TCA.pdf" , fecha: discoData.fecha_tarjeta_apertura },
-                    { name: "TCC.pdf", zipName: "TCC.pdf" , fecha: discoData.fecha_tarjeta_cierre },
-                    { name: "AA.pdf", zipName: "AA.pdf" , fecha: discoData.fecha_acta_apertura },
-                    { name: "AC.pdf", zipName: "AC.pdf" , fecha: discoData.fecha_acta_cierre },
+                    { name: "TCA.pdf", zipName: "TCA.pdf", fecha: discoData.fecha_tarjeta_apertura },
+                    { name: "TCC.pdf", zipName: "TCC.pdf", fecha: discoData.fecha_tarjeta_cierre },
+                    { name: "AA.pdf", zipName: "AA.pdf", fecha: discoData.fecha_acta_apertura },
+                    { name: "AC.pdf", zipName: "AC.pdf", fecha: discoData.fecha_acta_cierre },
                 ];
 
                 for (const doc of documentos) {

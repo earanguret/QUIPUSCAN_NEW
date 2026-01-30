@@ -6,7 +6,7 @@ import { ExpedienteResponse, ExpedienteResponseDataView } from '../../../../doma
 import { PreparacionResponseDataView } from '../../../../domain/dto/PreparacionResponse.dto';
 import { DigitalizacionResponseDataView, DigitalizacionTotalImagenesResponse } from '../../../../domain/dto/DigitalizacionResponse.dto';
 import { IndizacionResponseDataView } from '../../../../domain/dto/IndizacionResponse.dto';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { InventarioResponse } from '../../../../domain/dto/InventarioResponse.dto';
 import { FechaConFormato } from '../../../functions/formateDate';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
@@ -36,6 +36,11 @@ import { Mensaje } from '../../../../domain/models/Mensaje.model';
 import { mensajeRequest } from '../../../../domain/dto/EstadoRequest.dto';
 import { SweetAlert } from '../../../shared/animate-messages/sweetAlert';
 import { PDFDocument } from 'pdf-lib';
+
+import { FirmaAgenteServiceService } from '../../../services/remoto/firmaAgente/firma-agente.service.service';
+import { firstValueFrom } from 'rxjs';
+import { forkJoin } from 'rxjs';
+
 
 
 declare var bootstrap: any;
@@ -82,6 +87,8 @@ export class FedatarioExpedientesComponent implements OnInit {
   progreso_firma = 0;
   firmaProgressStatus = false;
   buttonFirma = true;
+
+  firmaAgente = false;
 
 
   // data de cabecera de informacion
@@ -219,6 +226,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     private fedatarioService: FedatarioService,
     private sweetAlert: SweetAlert,
     private firmaDigitalService: FirmaDigitalService,
+    private firmaAgenteService: FirmaAgenteServiceService,
   ) { }
 
   ngOnInit(): void {
@@ -227,6 +235,7 @@ export class FedatarioExpedientesComponent implements OnInit {
     this.ObternerCodigoInventario()
     this.encontrarCertificado()
     this.inicializadorModales()
+    this.verifiarConexion()
     this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`img/carga_error/error_carga.pdf`);
   }
 
@@ -442,7 +451,16 @@ export class FedatarioExpedientesComponent implements OnInit {
     }
   }
 
+  async recuperarPortada(nro_expediente_temp: string): Promise<Blob> {
+    const fileName = `${nro_expediente_temp}.pdf`;
+    const folderPath = this.folderPathPortada!;
 
+    const data = await firstValueFrom(
+      this.sftpService.downloadFile(fileName, folderPath)
+    );
+
+    return new Blob([data], { type: 'application/pdf' });
+  }
 
 
   recuperarDataPreparacion(id_expediente: number) {
@@ -779,11 +797,11 @@ export class FedatarioExpedientesComponent implements OnInit {
   }
 
   progress_bar_sign() {
-    let password = (document.getElementById('password_certificado') as HTMLInputElement).value;
-    if (password.trim() === '') {
-      alert("La contraseña no puede estar vacía")
-      return;
-    }
+    // let password = (document.getElementById('password_certificado') as HTMLInputElement).value;
+    // if (password.trim() === '') {
+    //   alert("La contraseña no puede estar vacía")
+    //   return;
+    // }
 
     this.firmaProgressStatus = true;
     this.buttonFirma = false;
@@ -797,12 +815,12 @@ export class FedatarioExpedientesComponent implements OnInit {
         clearInterval(interval);
 
         // Esperar 2 segundos antes de ocultar la barra
-        setTimeout(() => {
-          this.firmaProgressStatus = false;
-          this.progreso_firma = 0;
-          this.msg_firmado = true;
-          this.mensaje_firmado = '¡Firma exitosa!';
-        }, 2000);
+        // setTimeout(() => {
+        //   this.firmaProgressStatus = false;
+        //   this.progreso_firma = 0;
+        //   this.msg_firmado = true;
+        //   this.mensaje_firmado = '¡Firma exitosa!';
+        // }, 2000);
       }
     }, 500);
   }
@@ -873,4 +891,267 @@ export class FedatarioExpedientesComponent implements OnInit {
       }
     });
   }
+
+
+
+
+
+
+
+
+  // PROCESO DE FIRMA--------------------------------------------------------------
+
+  abrirFirmaOnPe() {
+
+    this.firmaAgenteService.signPdf(`${this.data_expediente_temp.nro_expediente}.pdf`).subscribe({
+      next: (data: any) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('firmado correctamente');
+      }
+    })
+  }
+
+
+
+  // enviar pdf y luego levantar firmador
+  async enviarPdfLocalServer(): Promise<void> {
+    const blob = await this.recuperarPortada(this.data_expediente_temp.nro_expediente);
+
+    const filePortada = new File(
+      [blob],
+      `${this.data_expediente_temp.nro_expediente}.pdf`,
+      { type: 'application/pdf' }
+    );
+
+    this.firmaAgenteService.savePdf(filePortada).subscribe({
+      next: (data: any) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log('envio de pdf finalizado');
+        this.abrirFirmaOnPe();
+      }
+    })
+  }
+  //  Firma con AppFirmaONPE
+  verifiarConexion() {
+    this.firmaAgenteService.ConfirmarConexion().subscribe({
+      next: (data: any) => {
+        console.log(data);
+        if (data.status === 'UP') {
+          console.log('Conexión estable con el agente de firma');
+          this.firmaAgente = true;
+        }
+
+      },
+      error: (error) => {
+        console.log(error);
+        this.firmaAgente = false;
+      },
+      complete: () => {
+        console.log('verificacion de conexion finalizada');
+      }
+    })
+  }
+
+  // Paso 1
+  paso1Completado = false;
+  estadoPaso1 = false;
+  mensajePaso1 = '';
+
+  // Paso 2
+  paso2Completado = false;
+  estadoPaso2 = false;
+  mensajePaso2 = '';
+
+  // Paso 3
+  paso3Completado = false;
+  estadoPaso3 = false;
+
+  async paso1() {
+    this.estadoPaso1 = false;
+    const blob = await this.recuperarPortada(this.data_expediente_temp.nro_expediente);
+
+    const filePortada = new File(
+      [blob],
+      `${this.data_expediente_temp.nro_expediente}.pdf`,
+      { type: 'application/pdf' }
+    );
+
+    this.firmaAgenteService.savePdf(filePortada).subscribe({
+      next: (data: any) => {
+        console.log(data);
+      },
+      error: (error) => {
+        console.log(error);
+        this.paso1Completado = false;
+        this.mensajePaso1 = 'Sign-Agent desconectado';
+        this.estadoPaso1 = true;
+
+      },
+      complete: () => {
+        console.log('envio de pdf finalizado');
+        this.abrirFirmaOnPe();
+        this.paso1Completado = true;
+        this.mensajePaso1 = 'Proceso satisfactorio';
+        setTimeout(() => {
+          this.estadoPaso1 = true;
+        }, 2000);
+      }
+    })
+
+
+    // setTimeout(() => {
+    //   const exito = true; // ← aquí tu validación real
+
+    //   this.estadoPaso1 = true;
+
+    //   if (exito) {
+    //     this.paso1Completado = true;
+    //     this.mensajePaso1 = 'Proceso satisfactorio';
+    //   } else {
+    //     this.paso1Completado = false;
+    //     this.mensajePaso1 = 'Servidor desconectado';
+    //   }
+    // }, 1000);
+  }
+
+  pdfFirmadoOriginal: Blob | null = null;
+
+  paso2() {
+    this.estadoPaso2 = false;
+
+    const fileName = `${this.data_expediente_temp.nro_expediente}.pdf`;
+    const folderPath = this.folderPathDocument!;
+
+    forkJoin({
+      // PDF BASE
+      pdfBase: this.sftpService.downloadFile(fileName, folderPath),
+
+      // PDF FIRMADO (PORTADA)
+      pdfFirmado: this.firmaAgenteService.getSignedPdf(fileName)
+    }).subscribe({
+      next: async ({ pdfBase, pdfFirmado }) => {
+
+        // 🔐 1️⃣ Guardar el PDF firmado ORIGINAL (para BD)
+        this.pdfFirmadoOriginal = pdfFirmado;
+
+        // 🔗 2️⃣ Unir PDFs SOLO para visualización
+        const pdfUnido = await this.unirPdfsReemplazandoPrimeraPagina(
+          pdfBase,
+          pdfFirmado
+        );
+
+        // 👁️ 3️⃣ Mostrar en visor
+        this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+          URL.createObjectURL(pdfUnido)
+        );
+
+        // ✅ 4️⃣ Estado del paso
+        this.paso2Completado = true;
+        this.mensajePaso2 = 'Documento firmado cargado correctamente';
+        this.estadoPaso2 = true;
+      },
+      error: (error) => {
+        console.error(error);
+        this.paso2Completado = false;
+        this.mensajePaso2 = 'Error al recuperar el documento firmado';
+        this.estadoPaso2 = true;
+      }
+    });
+
+
+    // setTimeout(() => {
+    //   const exito = true; // ← aquí tu validación real
+
+    //   this.estadoPaso2 = true;
+
+    //   if (exito) {
+    //     this.paso2Completado = true;
+    //     this.mensajePaso2 = 'Documento subido correctamente';
+    //   } else {
+    //     this.paso2Completado = false;
+    //     this.mensajePaso2 = 'Error al subir documento';
+    //   }
+    // }, 1000);
+  }
+
+  paso3() {
+    // Ahora subir el documento completo
+    if (!this.pdfFirmadoOriginal) {
+      console.error('No existe PDF firmado para guardar');
+      return;
+    }
+
+
+    const file = new File(
+      [this.pdfFirmadoOriginal],
+      this.data_expediente_temp.nro_expediente,
+      { type: 'application/pdf' }
+    );
+    this.sftpService.uploadFile(file, this.folderPathFirma!, this.data_expediente_temp.nro_expediente + '.pdf').subscribe({
+      next: () => {
+        console.log("Documento firmado subido correctamente:");
+      },
+      error: (error) => {
+        console.error("Error al subir el documento:", error);
+        alert("Error al subir el documento. Detalle: " + (error?.message || ''));
+      },
+      complete: () => {
+        console.log("Documento completo subido correctamente");
+        this.EstadoFedatarioTrabajado();
+        this.crearFedatario()
+        this.progress_bar_sign()
+        this.paso3Completado = true;
+        this.estadoPaso3 = true;
+      }
+    });
+  }
+
+
+  async unirPdfsReemplazandoPrimeraPagina(
+    pdfBaseBlob: Blob,
+    pdfFirmadoBlob: Blob
+  ): Promise<Blob> {
+
+    const pdfBaseBytes = await pdfBaseBlob.arrayBuffer();
+    const pdfFirmadoBytes = await pdfFirmadoBlob.arrayBuffer();
+
+    const pdfBase = await PDFDocument.load(pdfBaseBytes);
+    const pdfFirmado = await PDFDocument.load(pdfFirmadoBytes);
+
+    const finalPdf = await PDFDocument.create();
+
+    // 1️⃣ Primera página: PDF firmado
+    const paginasFirmadas = await finalPdf.copyPages(
+      pdfFirmado,
+      [0] // solo la primera página firmada
+    );
+    finalPdf.addPage(paginasFirmadas[0]);
+
+    // 2️⃣ Resto del PDF base (desde la página 2)
+    const paginasBase = await finalPdf.copyPages(
+      pdfBase,
+      pdfBase.getPageIndices().slice(1)
+    );
+    paginasBase.forEach(p => finalPdf.addPage(p));
+
+    // 3️⃣ Guardar (solo visualización)
+    const finalBytes = await finalPdf.save();
+
+    return new Blob(
+      [Uint8Array.from(finalBytes).buffer],
+      { type: 'application/pdf' }
+    );
+  }
+
+
 }

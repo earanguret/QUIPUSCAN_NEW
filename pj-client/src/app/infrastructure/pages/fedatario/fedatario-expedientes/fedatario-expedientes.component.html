@@ -19,13 +19,29 @@
                     <div class="title_meta mt-2">Información</div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
-                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Firmados {{nro_concluidos}}</div>
-                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
-                            <div *ngIf="nro_imagenes>0" class="meta_label mx-2 px-3"><i class="bi bi-files mx-2" ></i> Imagenes {{nro_imagenes}}</div>
+                            <div *ngIf="nro_expedientes>0" class="meta_label_expedientes px-3"><i
+                                    class="bi bi-folder-check mx-2"></i> Expedientes {{nro_expedientes}}</div>
+                            <div *ngIf="nro_concluidos>0" class="meta_label mx-2 px-3"><i
+                                    class="bi bi-pencil-square mx-2"></i> Firmados {{nro_concluidos}}</div>
+                            <div *ngIf="nro_pendientes>0" class="meta_label mx-2 px-3"><i
+                                    class="bi bi-pencil-square mx-2"></i> Pendientes {{nro_pendientes}}</div>
+                            <div *ngIf="nro_imagenes>0" class="meta_label mx-2 px-3"><i class="bi bi-files mx-2"></i>
+                                Imagenes {{nro_imagenes}}</div>
                         </div>
-                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
+                        <div *ngIf="nro_rechazados>0" class="meta_label_rechazado mx-2 px-3"><i
+                                class="bi bi-bookmark-x mx-2"></i> Rechazados {{nro_rechazados}}</div>
                     </div>
+                </div>
+                <div>
+                    <label *ngIf="firmaAgente; else noConectado">
+                        Agente de firma conectado
+                    </label>
+
+                    <ng-template #noConectado>
+                        <label>
+                            Agente de firma no conectado
+                        </label>
+                    </ng-template>
                 </div>
                 <div class="card rounded shadow border-2 mt-2 ">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center ">
@@ -58,7 +74,7 @@
                                         <th scope="row">{{ i + (p - 1) * 10 + 1 }}</th>
                                         <td>{{expediente.nro_expediente}} </td>
                                         <td (click)="obtenerExpedienteTemp(expediente)">
-                                        
+
 
                                             <button *ngIf="expediente.estado_fedatado==null"
                                                 class="btn btn-secondary btn-sm"
@@ -86,7 +102,8 @@
                                                     height="24px">
                                                 <img *ngIf="expediente.estado_fedatado=='T'"
                                                     src="/icon/expediente_eye.png" class="mx-3" alt="logo"
-                                                    title="ver información" width="24px" height="24px" (click)="openModalFedatario(expediente)">
+                                                    title="ver información" width="24px" height="24px"
+                                                    (click)="openModalFedatario(expediente)">
                                             </div>
 
                                         </td>
@@ -108,7 +125,7 @@
     </div>
 </div>
 
-<div  class="modal fade" id="ModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<div class="modal fade" id="ModalReception" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
@@ -136,8 +153,8 @@
     </div>
 </div>
 
-<div data-bs-focus="false" class="modal fade" id="ModalFedatario" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true" data-bs-backdrop="static">
+<div data-bs-focus="false" class="modal fade" id="ModalFedatario" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog   modal-custom-width " role="document">
         <div class="modal-content" style="height: 94vh;">
             <div class="modal-header">
@@ -354,22 +371,34 @@
                                                 <label for="indice" class="form-label mb-1">Indice: </label>
                                                 <div id="list-container">
                                                     <ol>
-                                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1" >
-                                                            <span class="titulo_index" (click)="openModalDetalleIndice(dataIndice, i)">{{ item.descripcion }} </span>
-                                                            <span class="titulo_index" (click)="openModalDetalleIndice(dataIndice, i)">{{ '(Pg.'+ item.indice+' )' }}
+                                                        <li *ngFor="let item of dataIndice; let i = index" class="mb-1">
+                                                            <span class="titulo_index"
+                                                                (click)="openModalDetalleIndice(dataIndice, i)">{{
+                                                                item.descripcion }} </span>
+                                                            <span class="titulo_index"
+                                                                (click)="openModalDetalleIndice(dataIndice, i)">{{
+                                                                '(Pg.'+ item.indice+' )' }}
                                                             </span>
 
                                                             <ol *ngIf="item.subItems && item.subItems.length > 0">
-                                                                <li 
+                                                                <li
                                                                     *ngFor="let subItem of item.subItems; let j = index">
-                                                                    <span class="subtitulo_index" (click)="openModalDetalleIndice(item.subItems, j)">{{ subItem.descripcion}} </span>
-                                                                    <span class="subtitulo_index" (click)="openModalDetalleIndice(item.subItems, j)">{{ '(Pg.'+ subItem.indice+' )' }} </span>
+                                                                    <span class="subtitulo_index"
+                                                                        (click)="openModalDetalleIndice(item.subItems, j)">{{
+                                                                        subItem.descripcion}} </span>
+                                                                    <span class="subtitulo_index"
+                                                                        (click)="openModalDetalleIndice(item.subItems, j)">{{
+                                                                        '(Pg.'+ subItem.indice+' )' }} </span>
                                                                     <ol
                                                                         *ngIf="subItem.subItems && subItem.subItems.length > 0">
                                                                         <li
-                                                                            *ngFor="let subSubItem of subItem.subItems; let k = index" >
-                                                                            <span class="subsubtitulo_index" (click)="openModalDetalleIndice(subItem.subItems, k)">{{subSubItem.descripcion }}</span>
-                                                                            <span class="subsubtitulo_index" (click)="openModalDetalleIndice(subItem.subItems, k)">{{ '(Pg.'+ subSubItem.indice+')' }} </span>
+                                                                            *ngFor="let subSubItem of subItem.subItems; let k = index">
+                                                                            <span class="subsubtitulo_index"
+                                                                                (click)="openModalDetalleIndice(subItem.subItems, k)">{{subSubItem.descripcion
+                                                                                }}</span>
+                                                                            <span class="subsubtitulo_index"
+                                                                                (click)="openModalDetalleIndice(subItem.subItems, k)">{{
+                                                                                '(Pg.'+ subSubItem.indice+')' }} </span>
 
                                                                         </li>
                                                                     </ol>
@@ -449,7 +478,8 @@
 
                                             </div>
                                         </section>
-                                        <section *ngIf="this.data_expediente_temp.estado_fedatado=='T'" class="section-area">
+                                        <section *ngIf="this.data_expediente_temp.estado_fedatado=='T'"
+                                            class="section-area">
                                             <h4 class="title-section">Data Fedatario</h4>
                                             <hr style="border: 1px solid #6c757d;" class="my-0 py-0">
                                             <div class="sub_title">
@@ -465,73 +495,138 @@
 
                             <!-- Elemento inferior (botones) fijo abajo -->
                             <div style="margin-bottom: -5px; padding: 10px 5px; background-color: #b5b8b925; ">
-                                <div  class="d-flex justify-content-between" *ngIf="this.data_expediente_temp.estado_fedatado!='T'">
-                                    <button type="button" class="rechazar-btn mx-2" (click)="openModalDesaprobar()" [disabled]="!this.buttonFirma">Rechazar</button>
+                                <div class="d-flex justify-content-between"
+                                    *ngIf="this.data_expediente_temp.estado_fedatado!='T'">
+                                    <button type="button" class="rechazar-btn mx-2" (click)="openModalDesaprobar()"
+                                        [disabled]="!this.buttonFirma">Rechazar</button>
                                     <div style="position: relative;">
-    
-                                        <button type="button" class="cancelar-btn mx-2"
-                                            (click)="closeModalFedatario()" [disabled]="!this.buttonFirma">Cancelar</button>
-                                        <button type="button" class="guardar-btn mx-2"
-                                            (click)="mostarSignPanel()" [disabled]="!this.buttonFirma">Firmar</button>
-    
+
+                                        <button type="button" class="cancelar-btn mx-2" (click)="closeModalFedatario()"
+                                            [disabled]="!this.buttonFirma">Cancelar</button>
+                                        <button type="button" class="guardar-btn mx-2" (click)="mostarSignPanel()"
+                                            [disabled]="!this.buttonFirma">Firmar</button>
+
+
                                         <!-- popup de firmar -->
-                                        <div [ngClass]="{ 'visible': show_sign_panel, 'hidden': !show_sign_panel }"
-                                            class="sign-panel shadow-lg" style="width: 400px; height: 220px;">
+                                        <!-- <div [ngClass]="{ 'visible': show_sign_panel, 'hidden': !show_sign_panel }" class="sign-panel shadow-lg" style="width: 400px; height: 220px;">
                                             <div class="sign-panel-header px-3" style="width: 100%;">
                                                 <p class="m-1 p-1 mb-0 pb-0">{{titulo_certificado}}</p>
                                                 <div class="form-control sign-tag">
-                                                    <img src="/icon/certificado.png" alt="logo" title="Recepcion"
-                                                        width="20px" height="18px">
+                                                    <img src="/icon/certificado.png" alt="logo" title="Recepcion" width="20px" height="18px">
                                                     <label for="" class=" mx-2"> {{certificado}}</label>
                                                 </div>
-    
+
                                                 <div class="d-flex mt-3">
                                                     <p class="m-1 p-1 mb-0 pb-0 px-2">Password</p>
-                                                    <input type="password" class="form-control form-control-sm sign-tag " name="observacion" id="password_certificado">
+                                                    <input type="password"  class="form-control form-control-sm sign-tag " name="observacion" id="password_certificado">
                                                 </div>
-    
+
                                                 <div class="text-end mt-2" *ngIf="buttonFirma">
-                                                    <!-- <button *ngIf="!firmaProgressStatus" type="button" class="guardar-btn mx-2"
-                                                    (click)="progress_bar_sign()">Firmar</button> -->
-                                                    <button type="button" class="btn btn-secondary btn-sm"
-                                                        (click)="firmarDocumento()">Firmar</button>
+                                                    <button type="button" class="btn btn-secondary btn-sm" (click)="firmarDocumento()">Firmar</button>
                                                 </div>
-    
-    
+
+
                                                 <div *ngIf="firmaProgressStatus"
                                                     class="d-flex flex-column align-items-center mx-3">
-                                                    <img src="/gif/acuerdo_clean.gif" alt="Firma" width="50" height="50">
-    
-                                                    <div class="progress" role="progressbar" aria-label="Example 4px high"
+                                                    <img src="/gif/acuerdo_clean.gif" alt="Firma" width="50"
+                                                        height="50">
+
+                                                    <div class="progress" role="progressbar"
+                                                        aria-label="Example 4px high"
                                                         [attr.aria-valuenow]="progreso_firma" aria-valuemin="0"
                                                         aria-valuemax="100" style="width: 100%; height: 8px;">
-                                                        <!-- ← altura ajustada aquí -->
-    
+
                                                         <div class="progress-bar progress-bar-striped progress-bar-animated opacity-75"
                                                             [style.width.%]="progreso_firma">
                                                         </div>
-    
-    
+
+
                                                     </div>
                                                 </div>
                                                 <div *ngIf="msg_firmado"
                                                     class="alert alert-success alert-dismissible fade show mt-3"
                                                     role="alert" style="margin-bottom: 0px; padding: 8px 8px; ">
                                                     <div class="d-flex justify-content-between align-items-center">
-                                                        <label for="">{{mensaje_firmado}}</label> 
-                                                        <button class="btn btn-secondary btn-sm" (click)="terminarFirma()">Terminar</button>
+                                                        <label for="">{{mensaje_firmado}}</label>
+                                                        <button class="btn btn-secondary btn-sm"
+                                                            (click)="terminarFirma()">Terminar</button>
                                                     </div>
-                                                    
+
                                                 </div>
-    
-                                                <!-- <input type="text" readonly class="form-control sign-tag" name="observacion" value="prueba"> -->
                                             </div>
-    
+
+                                        </div> -->
+
+                                        <!-- popup de firmar -->
+                                        <div [ngClass]="{ 'visible': show_sign_panel, 'hidden': !show_sign_panel }"
+                                            class="sign-panel shadow-lg" style="width: 400px; height: 220px;">
+                                            <div class="sign-panel-header px-3" style="width: 100%;">
+
+                                                <div class="p-4">
+
+                                                    <!-- PASO 1 -->
+                                                    <button *ngIf="!estadoPaso1" class="btn btn-secondary btn-sm w-100 mb-2"
+                                                        (click)="paso1()" [disabled]="paso1Completado">
+                                                        Abrir Firma ONPE
+                                                    </button>
+
+                                                    <div *ngIf="estadoPaso1" class="mb-2">
+                                                        <span class="badge w-100" [ngClass]="{
+                                                                        'bg-success': paso1Completado,
+                                                                        'bg-danger': !paso1Completado
+                                                                    }">
+                                                            {{ mensajePaso1 }}
+                                                        </span>
+                                                    </div>
+
+                                                    <!-- PASO 2 -->
+                                                    <button *ngIf="!estadoPaso2" class="btn btn-secondary btn-sm w-100 mb-2"
+                                                        (click)="paso2()"
+                                                        [disabled]="!paso1Completado || paso2Completado">
+                                                        Subir Documento Firmado
+                                                    </button>
+
+                                                    <div *ngIf="estadoPaso2" class="mb-2">
+                                                        <span class="badge w-100" [ngClass]="{
+                                                                'bg-success': paso2Completado,
+                                                                'bg-danger': !paso2Completado
+                                                            }">
+                                                            {{ mensajePaso2 }}
+                                                        </span>
+                                                    </div>
+
+                                                    <!-- PASO 3 -->
+                                                    <button class="btn btn-secondary btn-sm w-100 mb-2"
+                                                        (click)="paso3()" [disabled]="!paso2Completado">
+                                                        <img src="/icon/guardar.png" width="20" height="18">
+                                                        Guardar
+                                                    </button>
+
+                                                </div>
+
+
+                                                <div *ngIf="firmaProgressStatus"
+                                                    class="d-flex flex-column align-items-center mx-3">
+                                                    <div class="progress" role="progressbar"
+                                                        aria-label="Example 4px high"
+                                                        [attr.aria-valuenow]="progreso_firma" aria-valuemin="0"
+                                                        aria-valuemax="100" style="width: 100%; height: 8px;">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated opacity-75"
+                                                            [style.width.%]="progreso_firma">
+                                                        </div>
+                                                    </div>
+                                                    <button *ngIf="estadoPaso3" class="btn btn-secondary btn-sm"
+                                                            (click)="terminarFirma()">Terminar</button>
+                                                </div>
+
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
                                 <div *ngIf="this.data_expediente_temp.estado_fedatado=='T'" class="text-end">
-                                    <button type="button" class="cancelar-btn mx-2" (click)="closeModalFedatario()" [disabled]="!this.buttonFirma">Cancelar</button>
+                                    <button type="button" class="cancelar-btn mx-2" (click)="closeModalFedatario()"
+                                        [disabled]="!this.buttonFirma">Cancelar</button>
                                 </div>
 
                             </div>
@@ -580,8 +675,8 @@
 
 
     <!-- Boton de notas -->
-    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action="" data-ember-action-4992="4992"
-        (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
+    <div *ngIf="this.MensajesExpedienteTemp.length>0" class="doc-chat-popper" data-ember-action=""
+        data-ember-action-4992="4992" (click)="mostrar_mensajes_expediente = !mostrar_mensajes_expediente">
         <i *ngIf="!mostrar_mensajes_expediente" class="bi bi-chat-square-text-fill" style="font-size: 1.5rem;"></i>
         <i *ngIf="mostrar_mensajes_expediente" class="bi bi-x-lg" style="font-size: 1.2rem;"></i>
     </div>
@@ -653,30 +748,37 @@
                         </div>
                         <div>
                             <label for="fecha_indice" class="form-label ">Fecha:</label>
-                            <input id="fecha_indice_2" type="date" class="form-control form-control-sm" name="fecha_indice" readonly>
+                            <input id="fecha_indice_2" type="date" class="form-control form-control-sm"
+                                name="fecha_indice" readonly>
                         </div>
                     </div>
                     <div class="form-group mt-3 no-edit-radio">
                         <label for="opciones" class="form-label">Característica:</label>
-                        
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_original_2" name="caracteristica_2" class="form-check-input " type="radio" >
+                            <input id="indizacion_radio_original_2" name="caracteristica_2" class="form-check-input "
+                                type="radio">
                             <label class="form-check-label" for="indizacion_radio_original">Original</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_2" name="caracteristica_2" class="form-check-input" type="radio" >
+                            <input id="indizacion_radio_copia_2" name="caracteristica_2" class="form-check-input"
+                                type="radio">
                             <label class="form-check-label" for="indizacion_radio_copia">Copia</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_certificada_2" name="caracteristica_2" class="form-check-input" type="radio"  >
-                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia certificada</label>
+                            <input id="indizacion_radio_copia_certificada_2" name="caracteristica_2"
+                                class="form-check-input" type="radio">
+                            <label class="form-check-label" for="indizacion_radio_copia_certificada">Copia
+                                certificada</label>
                         </div>
-                    
+
                         <div class="form-check mx-4">
-                            <input id="indizacion_radio_copia_copia_certificada_2" name="caracteristica_2" class="form-check-input" type="radio" >
-                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de copia certificada</label>
+                            <input id="indizacion_radio_copia_copia_certificada_2" name="caracteristica_2"
+                                class="form-check-input" type="radio">
+                            <label class="form-check-label" for="indizacion_radio_copia_copia_certificada">Copia de
+                                copia certificada</label>
                         </div>
                     </div>
                     <div class="form-group mt-3">
@@ -689,7 +791,8 @@
                     <button class="btn btn-primary tn-sm" id="boton_agregar_subitem" >{{modificar_indizacion?'Modificar':'Agregar'}}</button>
                 </div> -->
                     <div class="d-flex justify-content-center mt-3 mb-2">
-                        <button type="button" class="cancelar-btn mx-2" (click)="closeModalDetalleIndice()">Cancelar</button>
+                        <button type="button" class="cancelar-btn mx-2"
+                            (click)="closeModalDetalleIndice()">Cancelar</button>
                     </div>
                 </div>
             </div>

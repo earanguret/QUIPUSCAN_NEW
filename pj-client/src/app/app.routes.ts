@@ -58,8 +58,8 @@ export const routes: Routes = [
     {   path: 'principal/controlcalidad/list-serie-documental', component: ControlListSerieDocComponent  ,canActivate: [AuthGuard]},
     {   path: 'principal/controlcalidad/serie-documental/expedientes/:id', component: ControlExpedientesComponent  ,canActivate: [AuthGuard]},
 
-    {   path: 'principal/fedatario/list-serie-documental', component: FedatarioListSerieDocComponent  ,canActivate: [AuthGuard]},
-    {   path: 'principal/fedatario/serie-documental/expedientes/:id', component: FedatarioExpedientesComponent  ,canActivate: [AuthGuard]},
+    {   path: 'principal/fedatario/list-serie-documental', component: FedatarioListSerieDocComponent },
+    {   path: 'principal/fedatario/serie-documental/expedientes/:id', component: FedatarioExpedientesComponent },
 
     {   path: 'principal/boveda/list-serie-documental', component: BovedaListSerieDocComponent  ,canActivate: [AuthGuard]},
     {   path: 'principal/boveda/serie-documental/expedientes/:id', component: BovedaExpedientesComponent  ,canActivate: [AuthGuard]},

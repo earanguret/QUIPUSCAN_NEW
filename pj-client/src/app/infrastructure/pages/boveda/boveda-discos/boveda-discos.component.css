@@ -41,3 +41,14 @@
     text-align: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
+
+/* card-footer */
+.card-footer {
+    background-color: rgba(52, 53, 53, 0.601); 
+    color: white;
+}
+.card-footer:hover {
+    background-color: rgba(52, 53, 53, 0.482); 
+    color: white;
+    cursor: pointer;
+}

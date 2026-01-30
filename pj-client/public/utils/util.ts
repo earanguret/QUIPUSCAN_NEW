@@ -8,4 +8,5 @@ export const Util = Object({
     "v7": "",// id google analitics
     "v8": "", // link interno
     "v9": "", // link externo
+    "v10": "http://127.0.0.1:50403/api" // atenge de firma local
 });

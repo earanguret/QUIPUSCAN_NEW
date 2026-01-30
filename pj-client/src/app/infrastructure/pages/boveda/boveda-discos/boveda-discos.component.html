@@ -7,9 +7,8 @@
                 <app-info-inventario [id_inventario]="id_inventario"></app-info-inventario>
                 <div class="text-end mt-4">
                     <button type="button" class="guardar-btn  p-1 px-3 " (click)="openModalCrearDisco()"
-                        [disabled]="list_data_discos.length==0?false:list_data_discos[list_data_discos.length-1].estado_cerrado==null?true:false">
-                        +
-                        ADD </button>
+                        *ngIf="list_data_discos.length==0 || list_data_discos[list_data_discos.length-1].estado_cerrado==true">
+                        + ADD </button>
                 </div>
             </div>
             <div class="col-lg-9 px-4">
@@ -66,7 +65,6 @@
                             </div>
 
                             <div class="card-footer text-center"
-                                style="background-color: rgba(30, 31, 32, 0.601); color: white;"
                                 (click)="redireccionarDiscoDetalle(disco.id_disco!)">
                                 ver detalle
                             </div>
